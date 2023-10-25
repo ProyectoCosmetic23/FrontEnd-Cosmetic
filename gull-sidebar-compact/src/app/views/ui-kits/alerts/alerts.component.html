@@ -1,0 +1,26 @@
+<div class="breadcrumb">
+  <h1>Alerts</h1>
+  <ul>
+    <li><a href="">UI Kits</a></li>
+    <li>Alerts</li>
+  </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+
+
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="card-title">Bootstrap Alerts</div>
+
+
+
+  <div class="col-md-12">
+    <ngb-alert class="alert-card mb-4" [type]="alert.type" *ngFor="let alert of alertCards" (close)="closeAlertCard(alert)">
+        <strong class="text-capitalize">{{alert.type}}!</strong> {{alert.message}}
+    </ngb-alert>
+  </div>
+
+</div>
