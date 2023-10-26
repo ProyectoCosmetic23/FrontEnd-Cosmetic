@@ -20,11 +20,6 @@ const adminRoutes: Routes = [
     },
     {
       path: 'invoice',
-      loadChildren: () => import('./views/categorias/categorias.module').then(m => m.CategoriasModule)
-    },
-  
-    {
-      path: 'categorias',
       loadChildren: () => import('./views/invoice/invoice.module').then(m => m.InvoiceModule)
     },
     {
