@@ -1,1 +1,13 @@
-node_modules
+/node_modules/
+/.angular/
+/e2e/
+
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/0.pack
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/1.pack
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/2.pack
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/3.pack
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/4.pack
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/index.pack
+.angular/cache/14.2.5/angular-webpack/e9e887501a0518ca3109358d049c07411ca20704/index.pack.old
+
+
