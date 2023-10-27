@@ -59,7 +59,7 @@ export class NavigationService {
             icon: 'i-Bar-Chart',
             sub: [
                 { icon: 'i-Clock-3', name: 'Version 1', state: '/dashboard/v1', type: 'link' },
-          
+
             ]
         },
         {
@@ -154,12 +154,12 @@ export class NavigationService {
         },
         {
             name: 'Servicios',
-            description: 'Gestión de Empleados',
+            description: 'Este apartado se encuentra el modulo de Empleados,Comisiones y Usuarios',
             type: 'dropDown',
             icon: 'i-Files',
             sub: [
                 { icon: 'i-Conference', name: 'Usuarios', state: 'por arreglar', type: 'link' },
-                { icon: 'i-Conference', name: 'Empleados', state: 'por arreglar', type: 'link' },
+                { icon: 'i-Conference', name: 'Empleados', state: '/empleados', type: 'link' },
                 { icon: 'i-Money-2', name: 'Comisiones', state: 'por arreglar', type: 'link' },
 
             ]

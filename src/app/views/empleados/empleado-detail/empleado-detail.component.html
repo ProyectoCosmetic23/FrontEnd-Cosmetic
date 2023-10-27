@@ -1,0 +1,54 @@
+<div class="breadcrumb">
+    <h1>Registrar Empleado</h1>
+    <ul>
+        <li><a href="#">Servicios</a></li>
+        <li>Empleados</li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title mb-3">Formulario de Empleados</div>
+                <form [formGroup]="formBasic" (ngSubmit)="submit()">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="cedula_empleado">Cédula de empleado</label>
+                            <input type="text" class="form-control" id="cedula_empleado" placeholder="Cédula de empleado">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="nombre_empleado">Nombre de empleado</label>
+                            <input type="text" class="form-control" id="nombre_empleado" placeholder="Nombre de empleado">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="correo">Correo</label>
+                            <input type="email" class="form-control" id="correo" placeholder="Correo">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="direccion">Dirección</label>
+                            <input class="form-control" id="direccion" placeholder="Dirección">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="telefono">Teléfono</label>
+                            <input class="form-control" id="telefono" placeholder="Teléfono">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="observacion">Observación</label>
+                            <textarea class="form-control" id="observacion" placeholder="Observación"></textarea>
+                        </div>
+
+                        <div class="col-md-12">
+                            <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Registrar Empleado</btn-loading>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
