@@ -1,0 +1,92 @@
+<div class="breadcrumb">
+    <h1>CosmeTic</h1>
+    <ul>
+        <li><a href="">Servicios</a></li>
+        <li>Empleados</li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row mb-3">
+    <div class="col-md-12 mb-3">
+        <button class="btn btn-primary float-right" [routerLink]="['/empleados/new']">Crear nuevo Empleado</button>
+   
+    </div>
+    <div class="col-md-12">
+        <div class="card o-hidden">
+            <ngx-datatable *ngIf="listEmpleados?.length" style="box-shadow: none" class="material fullscreen" [style.height]="60 * listEmpleados.length + 60 + 'px'" [columnMode]="'force'"
+                [headerHeight]="50" [footerHeight]="0" [rowHeight]="60" [scrollbarV]="true" [scrollbarH]="true" [rows]="listEmpleados">
+                <ngx-datatable-column name="cedula_empleado">
+                    <ng-template ngx-datatable-header-template>
+                        Cédula
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.cedula_empleado }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="nombre_empleado">
+                    <ng-template ngx-datatable-header-template>
+                        Nombre
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.nombre_empleado }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="correo">
+                    <ng-template ngx-datatable-header-template>
+                        Correo
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.correo }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="direccion">
+                    <ng-template ngx-datatable-header-template>
+                        Dirección
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.direccion }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="telefono">
+                    <ng-template ngx-datatable-header-template>
+                        Teléfono
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.telefono }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="estado_empleado">
+                    <ng-template ngx-datatable-header-template>
+                        Estado
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.estado_empleado }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="observacion">
+                    <ng-template ngx-datatable-header-template>
+                        Observación
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.observacion }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los empleados -->
+                <ngx-datatable-column [width]="120">
+                    <ng-template ngx-datatable-header-template>
+                        Actions
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <button class="btn btn-wide btn-outline-secondary me-3" [routerLink]="['/invoice/edit', row.id]">View</button>
+                        <button class="btn btn-outline-danger" (click)="deleteInvoice(row.id, deleteConfirmModal)">
+                            Delete
+                        </button>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+</div>
+

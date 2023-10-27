@@ -11,6 +11,10 @@ const adminRoutes: Routes = [
       loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
     },
     {
+      path: 'empleados',
+      loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
+    },
+    {
       path: 'uikits',
       loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
     },
