@@ -15,6 +15,10 @@ const adminRoutes: Routes = [
       loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
     },
     {
+      path: 'proveedores',
+      loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
+    },
+    {
       path: 'uikits',
       loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
     },

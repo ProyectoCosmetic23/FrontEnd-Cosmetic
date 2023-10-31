@@ -1,0 +1,59 @@
+<div class="breadcrumb">
+    <h1>Registrar Proveedor</h1>
+    <ul>
+        <li><a href="#">Compras</a></li>
+        <li>Proveedores</li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title mb-3">Formulario de Proveedores</div>
+                <form [formGroup]="formBasic" (ngSubmit)="submit()">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="nit_cedula_proveedor">Cédula o NIT del proveedor</label>
+                            <input type="text" class="form-control" id="nit_cedula_proveedor" placeholder="Cédula o NIT del proveedor">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="nombre_proveedor">Nombre del proveedor</label>
+                            <input type="text" class="form-control" id="nombre_proveedor" placeholder="Nombre del proveedor">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="correo_proveedor">Correo del proveedor</label>
+                            <input type="email" class="form-control" id="correo_proveedor" placeholder="Correo del proveedor">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="direccion_proveedor">Dirección del proveedor</label>
+                            <input class="form-control" id="direccion_proveedor" placeholder="Dirección del proveedor">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="telefono_proveedor">Teléfono del proveedor</label>
+                            <input class="form-control" id="telefono_proveedor" placeholder="Teléfono del proveedor">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="observacion_proveedor">Observación del proveedor</label>
+                            <textarea class="form-control" id="observacion_proveedor" placeholder="Observación del proveedor"></textarea>
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="nombre_contacto">Nombre del contacto</label>
+                            <textarea class="form-control" id="nombre_contacto" placeholder="Nombre del contacto"></textarea>
+                        </div>
+
+                        <div class="col-md-12">
+                            <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Registrar Proveedor</btn-loading>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
