@@ -1,141 +1,124 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
-import { Utils } from 'src/app/shared/utils';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataLayerService } from 'src/app/shared/services/data-layer.service';
+import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder, FormGroup } from '@angular/forms';
 
-
+interface Provider {
+  name_provider: string;
+  nit_cedula: string;
+  email_provider: string;
+  address_provider: string;
+  phone_provider: string;
+  state_provider: string;
+  observation_provider: string;
+  name_contact: string;
+  creation_date_provider: Date;
+}
 
 @Component({
-    selector: 'app-provider-detail',
-    templateUrl: './provider-detail.component.html',
-    styleUrls: ['./provider-detail.component.scss']
+  selector: 'app-providers-detail',
+  templateUrl: './provider-detail.component.html',
+  styleUrls: ['./provider-detail.component.scss']
 })
-export class ProviderDetailComponent implements OnInit {
-    loading: boolean;
-    formBasic: FormGroup;
-    viewMode: 'edit' | 'print' = 'edit';
-    id: string;
-    isNew: boolean;
-    invoice: any = {};
-    invoiceForm: UntypedFormGroup;
-    invoiceFormSub: Subscription;
-    subTotal: number;
-    saving: boolean;
+export class ProvidersDetailComponent implements OnInit {
+  loading: boolean;
+  formBasic: FormGroup;
+  viewMode: 'new' | 'edit' | 'print' = 'new';
+  id: string;
+  isNew: boolean;
+  provider: Provider = {
+    name_provider: '',
+    state_provider: 'Activo',
+    nit_cedula: '',
+    email_provider: '',
+    address_provider: '',
+    phone_provider: '',
+    observation_provider: '',
+    name_contact: '',
+    creation_date_provider: new Date(),
+  };
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-        private fb: UntypedFormBuilder,
-        private dl: DataLayerService,
-        private toastr: ToastrService
-    ) {  this.formBasic = this.formBuilder.group({
-    
-      });}
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private _providersService: ProvidersService, // Cambio de _rolesService a _providersService
+    private toastr: ToastrService
+  ) {
+    this.formBasic = this.formBuilder.group({});
+  }
 
-    ngOnInit() {
-        this.id = this.route.snapshot.params['id'];
-        this.isNew = !this.id;
-        this.buildInvoiceForm(this.invoice);
-        if (this.id) {
-            this.viewMode = 'print';
-            this.dl.getInvoice(this.id)
-                .subscribe(res => {
-                    this.invoice = res;
-                    this.buildInvoiceForm(this.invoice);
-                    this.subTotal = this.calculateSubtotal(this.invoiceForm.value);
-                })
-        }
+  ngOnInit() {
+    this.id = this.route.snapshot.params['id'];
+    this.isNew = !this.id;
+    this.buildProvidersForm(this.provider); // Cambio de buildRolesForm a buildProvidersForm
+    this.setViewMode();
+    this.getProvider(); // Cambio de getRole a getProvider
+  }
+
+  buildProvidersForm(i: any = {}) {
+    this.formBasic = this.formBuilder.group({
+      // Aquí debes definir tus campos del formulario
+      name_provider: [i.name_provider],
+      nit_cedula: [i.nit_cedula],
+      email_provider: [i.email_provider],
+      address_provider: [i.address_provider],
+      phone_provider: [i.phone_provider],
+      state_provider: [i.state_provider],
+      observation_provider: [i.observation_provider],
+      name_contact: [i.name_contact],
+      creation_date_provider: [i.creation_date_provider],
+    });
+  }
+
+  setViewMode() {
+    const currentRoute = this.router.url;
+    if (currentRoute === '/new') {
+      this.viewMode = 'new';
+    } else if (currentRoute.includes('/edit/')) {
+      this.viewMode = 'edit';
+    } else if (currentRoute.includes('/detail/')) {
+      this.viewMode = 'print';
     }
-    submit() {
-        this.loading = true;
-        setTimeout(() => {
-          this.loading = false;
-          this.toastr.success('Profile updated.', 'Success!', {progressBar: true});
-        }, 3000);
+  }
+
+  getProvider() {
+    this.id = this.route.snapshot.params['id_provider'];
+    console.log(this.id);
+    this._providersService.getProviderById(this.id).subscribe(
+      (data) => {
+        this.provider = data;
+        console.log(this.provider);
+      },
+      (error) => {
+        console.error('Error al obtener proveedor:', error);
       }
-    buildInvoiceForm(i: any = {}) {
-        this.invoiceForm = this.fb.group({
-            id: [i.id],
-            orderNumber: [i.orderNumber],
-            orderStatus: [i.orderStatus],
-            currency: [i.currency],
-            vat: [i.vat],
-            orderDate: [i.orderDate ? Utils.dateToNgbDate(i.orderDate) : {}],
-            billFrom: this.fb.group({
-                name: [i.billFrom ? i.billFrom.name : ''],
-                address: [i.billFrom ? i.billFrom.address : '']
-            }),
-            billTo: this.fb.group({
-                name: [i.billTo ? i.billTo.name : ''],
-                address: [i.billTo ? i.billTo.address : '']
-            }),
-            items: this.fb.array((() => {
-                if (!i.items) {
-                    return [];
-                }
-                return i.items.map((item) => this.createItem(item));
-            })())
-        });
-        // LINSTEN FOR VALUE CHANGES AND CALCULATE TOTAL
-        if (this.invoiceFormSub) {
-            this.invoiceFormSub.unsubscribe();
+    );
+  }
+
+  submit() {
+    const currentRoute = this.router.url;
+    console.log(currentRoute);
+
+    if (currentRoute.includes('/new')) {
+      // Si estás creando un nuevo proveedor
+      console.log(this.provider);
+      this._providersService.createProvider(this.provider).subscribe(
+        (data) => {
+          this.loading = false;
+          this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true });
+          console.log(data);
+        },
+        (error) => {
+          this.loading = false;
+          this.toastr.error('Fallo al crear el proveedor.', 'Error', { progressBar: true });
+          console.error('Error al crear el proveedor:', error);
         }
-        this.invoiceFormSub = this.invoiceForm.valueChanges
-            .subscribe(formValue => {
-                this.subTotal = this.calculateSubtotal(formValue);
-            });
+      );
     }
 
-    createItem(item: any = {}) {
-        return this.fb.group({
-            name: [item.name],
-            unit: [item.unit],
-            unitPrice: [item.unitPrice]
-        });
-    }
-    addItem() {
-        const control = <UntypedFormArray>this.invoiceForm.controls['items'];
-        control.push(this.createItem());
-    }
-    removeItem(i) {
-        const control = <UntypedFormArray>this.invoiceForm.controls['items'];
-        control.removeAt(i);
-    }
-
-    saveInvoice() {
-        this.saving = true;
-        this.invoice = this.invoiceForm.value;
-        this.invoice.orderDate = Utils.ngbDateToDate(this.invoiceForm.value.orderDate);
-        this.dl.saveInvoice(this.invoiceForm.value)
-            .subscribe((savedInvoice: any) => {
-                this.viewMode = 'print';
-                this.saving = false;
-                this.toastr.success('Invoice Saved!', 'Success!', { timeOut: 3000 });
-                if(this.isNew) {
-                    this.router.navigateByUrl('/invoice/edit/'+savedInvoice.id);
-                }
-            });
-    }
-
-
-
-    calculateSubtotal(invoice) {
-        let total = 0;
-        invoice.items.forEach(i => {
-            total += (i.unit * i.unitPrice);
-        });
-        return total;
-    }
-
-    print() {
-        if (window) {
-            window.print();
-        }
-    }
-
+    this.loading = true;
+  }
 }

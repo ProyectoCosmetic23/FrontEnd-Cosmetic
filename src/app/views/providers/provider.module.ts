@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { ProviderDetailComponent } from './provider-detail/provider-detail.component';
+import { ProvidersDetailComponent } from './provider-detail/provider-detail.component';
 import { ProviderListComponent } from './provider-list/provider-list.component';
 import { ProviderRoutingModule } from './provider-routing.module';
 
@@ -19,6 +19,6 @@ import { ProviderRoutingModule } from './provider-routing.module';
     NgbModule,
     ProviderRoutingModule
   ],
-  declarations: [ProviderDetailComponent, ProviderListComponent]
+  declarations: [ProvidersDetailComponent, ProviderListComponent]
 })
 export class ProviderModule { }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProviderDetailComponent } from './provider-detail/provider-detail.component';
+import { ProvidersDetailComponent } from './provider-detail/provider-detail.component';
 import { ProviderListComponent } from './provider-list/provider-list.component';
 
 const routes: Routes = [
@@ -10,15 +10,15 @@ const routes: Routes = [
     },
     {
         path: 'new',
-        component: ProviderDetailComponent
+        component: ProvidersDetailComponent
     },
     {
         path: 'edit/:id_provider',
-        component: ProviderDetailComponent
+        component: ProvidersDetailComponent
     },
     {
         path: 'detalle/:id_provider',
-        component: ProviderDetailComponent
+        component: ProvidersDetailComponent
     }
 ];
 
