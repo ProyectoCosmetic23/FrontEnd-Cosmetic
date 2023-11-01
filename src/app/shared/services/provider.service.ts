@@ -23,7 +23,7 @@ export class ProvidersService {
   }
 
 
-  updateProvider(providerId: number, providerData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${providerId}`, providerData);
+  updateProviderStatus(providerId: any): Observable<any> {
+    return this.http.get(`${this.baseUrl}/estado/${providerId}`);
   }
 }
