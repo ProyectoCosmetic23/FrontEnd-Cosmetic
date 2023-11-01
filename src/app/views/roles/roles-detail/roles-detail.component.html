@@ -1,0 +1,57 @@
+<div class="breadcrumb">
+  <h1 *ngIf="viewMode === 'new'">Registrar Rol</h1>
+  <h1 *ngIf="viewMode === 'edit'">Editar Rol</h1>
+  <h1 *ngIf="viewMode === 'print'">Ver Detalle de Rol</h1>
+  <ul>
+    <li><a [routerLink]="['/roles']">Roles</a></li>
+    <li *ngIf="viewMode === 'new'">Registrar Rol</li>
+    <li *ngIf="viewMode === 'edit'">Editar Rol</li>
+    <li *ngIf="viewMode === 'print'">Ver Detalle de Rol</li>
+  </ul>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="card-title mb-3">Formulario de Rol</div>
+        <form [formGroup]="formBasic" (ngSubmit)="createRole()">
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="nombre_rol">Nombre del Rol</label>
+              <input type="text" class="form-control" id="nombre_rol" (change)="handleNameSelection($event)"
+                [placeholder]="role?.name_role || 'Ingrese el nombre del rol'" [readonly]="viewMode === 'print'">
+
+            </div>
+            <div class="col-md-12">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <div class="card-title">Módulos</div>
+                  <div
+                    *ngFor="let modulo of ['Usuarios', 'Categorías de Productos', 'Productos', 'Proveedores', 'Compras', 'Empleados', 'Clientes', 'Pedidos', 'Ventas', 'Comisiones']">
+                    <label class="checkbox checkbox-primary me-3">
+                      <span>{{ modulo }}</span>
+                      <input type="checkbox" [disabled]="viewMode === 'print'"
+                        [checked]="role?.modules_role.includes(modulo)" (change)="handleModuleSelection(modulo)">
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-danger float-right" [routerLink]="['/roles']">Volver</button>
+                <div style="width: 10px;"></div>
+                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">Crear
+                  Rol</btn-loading>
+                <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">Editar
+                  Rol</btn-loading>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

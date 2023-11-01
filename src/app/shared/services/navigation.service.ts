@@ -170,7 +170,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Gear',
             sub: [
-                { icon: 'i-Error-404-Window', name: 'Roles', state: '/others/404', type: 'link' },
+                { icon: 'i-Error-404-Window', name: 'Roles', state: '/roles', type: 'link' },
                 { icon: 'i-Error-404-Window', name: 'Usuarios', state: '/others/404', type: 'link' },
             ]
         },

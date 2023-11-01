@@ -6,36 +6,39 @@ import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/
 
 
 const adminRoutes: Routes = [
-    {
-      path: 'dashboard',
-      loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
-    },
-    {
-      path: 'empleados',
-      loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
-    },
-    {
-      path: 'uikits',
-      loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
-    },
-    {
-      path: 'forms',
-      loadChildren: () => import('./views/forms/forms.module').then(m => m.AppFormsModule)
-    },
-    {
-      path: 'invoice',
-      loadChildren: () => import('./views/invoice/invoice.module').then(m => m.InvoiceModule)
-    },
-    {
-      path: 'tables',
-      loadChildren: () => import('./views/data-tables/data-tables.module').then(m => m.DataTablesModule)
-    },
- 
-    {
-        path: 'icons',
-        loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-    }
-  ];
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  {
+    path: 'empleados',
+    loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
+  },
+  {
+    path: 'roles',
+    loadChildren: () => import('./views/roles/roles.module').then(m => m.RolesModule)
+  },
+  {
+    path: 'uikits',
+    loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
+  },
+  {
+    path: 'forms',
+    loadChildren: () => import('./views/forms/forms.module').then(m => m.AppFormsModule)
+  },
+  {
+    path: 'invoice',
+    loadChildren: () => import('./views/invoice/invoice.module').then(m => m.InvoiceModule)
+  },
+  {
+    path: 'tables',
+    loadChildren: () => import('./views/data-tables/data-tables.module').then(m => m.DataTablesModule)
+  },
+  {
+    path: 'icons',
+    loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
+  }
+];
 
 const routes: Routes = [
   {
