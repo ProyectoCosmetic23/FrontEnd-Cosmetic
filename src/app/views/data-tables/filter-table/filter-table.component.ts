@@ -54,5 +54,4 @@ export class FilterTableComponent implements OnInit {
     });
     this.filteredProducts = rows;
   }
-
 }
