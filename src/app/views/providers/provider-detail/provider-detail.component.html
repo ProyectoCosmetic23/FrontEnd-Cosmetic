@@ -1,8 +1,12 @@
 <div class="breadcrumb">
-    <h1>Registrar Proveedor</h1>
+    <h1 *ngIf="viewMode === 'new'">Registrar Proveedor</h1>
+    <h1 *ngIf="viewMode === 'edit'">Editar Proveedor</h1>
+    <h1 *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</h1>
     <ul>
-        <li><a href="#">Compras</a></li>
-        <li>Proveedores</li>
+        <li><a [routerLink]="['/proveedores']">Proveedores</a></li>
+        <li *ngIf="viewMode === 'new'">Registrar Proveedor</li>
+        <li *ngIf="viewMode === 'edit'">Editar Proveedor</li>
+        <li *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</li>
     </ul>
 </div>
 
@@ -10,46 +14,107 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title mb-3">Formulario de Proveedores</div>
+                <div class="card-title mb-3">Formulario de Proveedor</div>
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
-                            <label for="nit_cedula_proveedor">Cédula o NIT del proveedor</label>
-                            <input type="text" class="form-control" id="nit_cedula_proveedor" placeholder="Cédula o NIT del proveedor">
+                            <label for="nit_cedula">Cédula o NIT del proveedor</label>
+
+                            <input type="numer" class="form-control" id="nit_cedula" (change)="handleNitSelection($event)"
+                              [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'" 
+                              [readonly]="viewMode === 'print' || viewMode === 'edit'"
+                              [ngClass]="{'placeholder-black': viewMode === 'print'}">  
+                          </div>
+
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="name_provider">Nombre del proveedor</label>
+                            <input type="text" class="form-control" id="name_provider"(change)="handleNameProviderSelection($event)"
+                                [placeholder]="provider?.name_provider || 'Nombre del proveedor'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="nombre_proveedor">Nombre del proveedor</label>
-                            <input type="text" class="form-control" id="nombre_proveedor" placeholder="Nombre del proveedor">
+                            <label for="email_provider">Correo del proveedor</label>
+                            <input type="email" class="form-control" id="email_provider"(change)="handleMailSelection($event)"
+                                [placeholder]="provider?.email_provider || 'Correo del proveedor'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="correo_proveedor">Correo del proveedor</label>
-                            <input type="email" class="form-control" id="correo_proveedor" placeholder="Correo del proveedor">
+                            <label for="address_provider">Dirección del proveedor</label>
+                            <input class="form-control" id="address_provider"(change)="handleAddressSelection($event)"
+                                [placeholder]="provider?.address_provider || 'Dirección del proveedor'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="direccion_proveedor">Dirección del proveedor</label>
-                            <input class="form-control" id="direccion_proveedor" placeholder="Dirección del proveedor">
+                            <label for="phone_provider">Teléfono del proveedor</label>
+                            <input class="form-control" id="phone_provider"(change)="handlePhoneSelection($event)"
+                                [placeholder]="provider?.phone_provider || 'Teléfono del proveedor'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        </div>
+
+
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new'">
+                            <label for="creation_date_provider">Fecha de creación</label>
+                            <input type="date" class="form-control" id="creation_date_provider"
+                                [placeholder]="viewMode === 'print' ? 'Fecha de creación' : ''"
+                                [readonly]="viewMode === 'print' || viewMode === 'edit'"
+                                [ngClass]="{'gray-text': viewMode === 'edit'}"
+                                [value]="provider?.creation_date_provider | date:'yyyy-MM-dd'">
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="telefono_proveedor">Teléfono del proveedor</label>
-                            <input class="form-control" id="telefono_proveedor" placeholder="Teléfono del proveedor">
+                            <label for="name_contact">Nombre del contacto</label>
+                            <input type="text" class="form-control" id="name_contact"(change)="handleNameContactSelection($event)"
+                                [placeholder]="provider?.name_contact || 'Nombre del contacto'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new'">
+                            <label for="state_provider">Estado del proveedor</label>
+                            <ng-container *ngIf="viewMode === 'edit'; else viewModeDisplay">
+                                <select class="form-control" id="state_provider"(change)="handleStateSelection($event)">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                </select>
+                            </ng-container>
+                            <ng-template #viewModeDisplay>
+                                <input type="text" class="form-control" id="state_provider"
+                                    [placeholder]="provider?.state_provider || 'Estado del proveedor'"
+                                    [readonly]="viewMode === 'print'"
+                                    [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                            </ng-template>
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="observacion_proveedor">Observación del proveedor</label>
-                            <textarea class="form-control" id="observacion_proveedor" placeholder="Observación del proveedor"></textarea>
+                            <label for="observation_provider">Observación del proveedor</label>
+                            <textarea class="form-control" id="observation_provider"(change)="handleObservationSelection($event)"
+                                [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}"></textarea>
                         </div>
 
-                        <div class="col-md-6 form-group mb-3">
-                            <label for="nombre_contacto">Nombre del contacto</label>
-                            <textarea class="form-control" id="nombre_contacto" placeholder="Nombre del contacto"></textarea>
-                        </div>
+
 
                         <div class="col-md-12">
-                            <btn-loading btnClass="btn-primary btn-rounded" [loading]="loading">Registrar Proveedor</btn-loading>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-danger float-right"
+                                    [routerLink]="['/proveedores']">Volver</button>
+                                <div style="width: 10px;"></div>
+                                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary"
+                                    [loading]="loading">Registrar
+                                    Proveedor</btn-loading>
+                                <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary"
+                                    [loading]="loading">Editar
+                                    Proveedor</btn-loading>
+                            </div>
                         </div>
                     </div>
                 </form>

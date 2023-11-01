@@ -9,11 +9,11 @@ const routes: Routes = [
         component: ProviderListComponent
     },
     {
-        path: 'new',
+        path: 'registrar', 
         component: ProvidersDetailComponent
     },
     {
-        path: 'edit/:id_provider',
+        path: 'editar/:id_provider',
         component: ProvidersDetailComponent
     },
     {

@@ -22,6 +22,7 @@ interface Provider {
   templateUrl: './provider-detail.component.html',
   styleUrls: ['./provider-detail.component.scss']
 })
+
 export class ProvidersDetailComponent implements OnInit {
   loading: boolean;
   formBasic: FormGroup;
@@ -39,12 +40,23 @@ export class ProvidersDetailComponent implements OnInit {
     name_contact: '',
     creation_date_provider: new Date(),
   };
+  new_provider = {
+    name_provider: '',
+    state_provider: 'Activo',
+    nit_cedula: '',
+    email_provider: '',
+    address_provider: '',
+    phone_provider: '',
+    observation_provider: '',
+    name_contact: '',
+    creation_date_provider: new Date(),
+  };
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private _providersService: ProvidersService, // Cambio de _rolesService a _providersService
+    private _providersService: ProvidersService,
     private toastr: ToastrService
   ) {
     this.formBasic = this.formBuilder.group({});
@@ -53,14 +65,16 @@ export class ProvidersDetailComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.params['id'];
     this.isNew = !this.id;
-    this.buildProvidersForm(this.provider); // Cambio de buildRolesForm a buildProvidersForm
+    this.buildProvidersForm(this.provider);
     this.setViewMode();
-    this.getProvider(); // Cambio de getRole a getProvider
+    this.getProvider();
   }
+
+
 
   buildProvidersForm(i: any = {}) {
     this.formBasic = this.formBuilder.group({
-      // Aquí debes definir tus campos del formulario
+      id: [i.id_provider],
       name_provider: [i.name_provider],
       nit_cedula: [i.nit_cedula],
       email_provider: [i.email_provider],
@@ -72,22 +86,32 @@ export class ProvidersDetailComponent implements OnInit {
       creation_date_provider: [i.creation_date_provider],
     });
   }
-
   setViewMode() {
+
     const currentRoute = this.router.url;
-    if (currentRoute === '/new') {
+
+    if (currentRoute.includes('/registrar')) {
       this.viewMode = 'new';
-    } else if (currentRoute.includes('/edit/')) {
+    } else if (currentRoute.includes('/editar/')) {
       this.viewMode = 'edit';
-    } else if (currentRoute.includes('/detail/')) {
+
+    } else if (currentRoute.includes('/detalle/')) {
       this.viewMode = 'print';
     }
+    console.log('viewMode:', this.viewMode);
   }
-
   getProvider() {
     this.id = this.route.snapshot.params['id_provider'];
     console.log(this.id);
-    this._providersService.getProviderById(this.id).subscribe(
+
+    const providerId = parseInt(this.id, 10); // Convierte this.id a un número
+
+    if (isNaN(providerId)) {
+      console.error('ID no válido');
+      return;
+    }
+
+    this._providersService.getProviderById(providerId).subscribe(
       (data) => {
         this.provider = data;
         console.log(this.provider);
@@ -97,15 +121,40 @@ export class ProvidersDetailComponent implements OnInit {
       }
     );
   }
+  handleStateSelection(event: any) {
+    this.new_provider.state_provider = event.target.value;
+  }
+  handleNameProviderSelection(event: any) {
+    this.new_provider.name_provider = event.target.value;
+  }
+  handleNameContactSelection(event: any) {
+    this.new_provider.name_contact = event.target.value;
+  }
+  handleNitSelection(event: any) {
+    this.new_provider.nit_cedula = event.target.value;
+  }
+  handleMailSelection(event: any) {
+    this.new_provider.email_provider = event.target.value;
+  }
+  handleAddressSelection(event: any) {
+    this.new_provider.address_provider = event.target.value;
+  }
+  handleObservationSelection(event: any) {
+    this.new_provider.observation_provider = event.target.value;
+  }
+  handlePhoneSelection(event: any) {
+    this.new_provider.phone_provider = event.target.value;
+  }
+  
 
   submit() {
     const currentRoute = this.router.url;
-    console.log(currentRoute);
 
-    if (currentRoute.includes('/new')) {
-      // Si estás creando un nuevo proveedor
-      console.log(this.provider);
-      this._providersService.createProvider(this.provider).subscribe(
+  
+    if (currentRoute.includes('/registrar')) {
+      console.log(this.new_provider);
+      this.loading = true; 
+      this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
           this.loading = false;
           this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true });
@@ -118,7 +167,5 @@ export class ProvidersDetailComponent implements OnInit {
         }
       );
     }
-
-    this.loading = true;
   }
 }

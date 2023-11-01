@@ -10,7 +10,7 @@
 
 <div class="row mb-3">
     <div class="col-md-12 mb-3">
-        <button class="btn btn-primary float-right" [routerLink]="['/proveedor/new']">Crear nuevo proveedor</button>
+        <button class="btn btn-primary float-right" [routerLink]="['/proveedores/registrar']">Crear nuevo proveedor</button>
 
     </div>
     <div class="col-md-12">
@@ -58,8 +58,8 @@
                         {{ row.phone_provider }}
                     </ng-template>
                 </ngx-datatable-column>
-               
-                
+
+
                 <ngx-datatable-column name="name_contact">
                     <ng-template ngx-datatable-header-template>
                         Nombre contacto
@@ -84,17 +84,17 @@
                         {{ row.state_provider }}
                     </ng-template>
                 </ngx-datatable-column>
-                
-                <ngx-datatable-column [width]="200">
+
+                <ngx-datatable-column [width]="100">
                     <ng-template ngx-datatable-header-template>
-                        Actions
+                        Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-wide btn-outline-secondary me-3"
-                            [routerLink]="['/proveedores/detalle', row.id_provider]">Ver</button>
-                        <button class="btn btn-outline-danger"
-                            (click)="deleteProvider(row.id_provider, deleteConfirmModal)">
-                            Delete
+                        <button class="btn  btn btn-dark m-1 me-3" [routerLink]="['/proveedores/detalle', row.id_provider]">
+                            <i class="i-Eye"></i> 
+                        </button>
+                        <button class="btn btn btn-info m-1 me-3" [routerLink]="['/proveedores/editar', row.id_provider]">
+                            <i class="i-Pen-4"></i> 
                         </button>
                     </ng-template>
                 </ngx-datatable-column>
