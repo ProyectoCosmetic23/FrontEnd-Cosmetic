@@ -16,7 +16,8 @@ import { debounceTime } from 'rxjs/operators';
 export class ProviderListComponent implements OnInit {
     loading: boolean;
     listProviders: any[] = []
-    modalAbierto = false;
+    originalListProviders: any[] = [];
+    openedModal = false;
     searchControl: UntypedFormControl = new UntypedFormControl();
     providers;
     filteredProviders;
@@ -32,6 +33,7 @@ export class ProviderListComponent implements OnInit {
             .subscribe((res: any[]) => {
                 this.listProviders = [...res];
                 this.filteredProviders = res;
+                this.originalListProviders = [...res];
             });
 
         this.searchControl.valueChanges
@@ -64,15 +66,16 @@ export class ProviderListComponent implements OnInit {
         this.filteredProviders = rows;
     }
 
-    sortListRolesById() {
-        this.listProviders.sort((a, b) => a.id_role - b.id_role);
+    sortListProvidersById() {
+        this.listProviders.sort((a, b) => a.id_provider - b.id_provider);
     }
 
-    getRoles() {
+    getProviders() {
         this._providersService.getAllProviders().subscribe(
             (data) => {
                 this.listProviders = data;
-                this.sortListRolesById();
+                this.sortListProvidersById();
+                location.reload();
             },
             (error) => {
                 console.error('Error al obtener los proveedores:', error);
@@ -80,15 +83,15 @@ export class ProviderListComponent implements OnInit {
         );
     }
 
-    @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
+    @ViewChild('changeStateModal', { static: true }) changeStateModal: any;
 
     openModal(idProvider: number) {
         this._providersService.getProviderById(idProvider).subscribe
-        if (!this.modalAbierto) {
-            this.modalAbierto = true;
-            this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
+        if (!this.openedModal) {
+            this.openedModal = true;
+            this.modalService.open(this.changeStateModal, { centered: true }).result.then(
                 (result) => {
-                    if (result === 'Ok') {
+                    if (result === 'Yes') {
                         this._providersService.updateProviderStatus(idProvider).subscribe(
                             (data) => {
 
@@ -107,14 +110,14 @@ export class ProviderListComponent implements OnInit {
                             }
                         );
                     } else if (result === 'Cancel') {
-                        this.modalAbierto = false;
+                        this.openedModal = false;
                         setTimeout(() => {
                             location.reload();
                         }, 2000);
                     }
                 },
                 (reason) => {
-                    this.modalAbierto = false;
+                    this.openedModal = false;
                     location.reload();
                 }
             );

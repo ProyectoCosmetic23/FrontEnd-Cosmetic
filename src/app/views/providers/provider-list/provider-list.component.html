@@ -89,7 +89,7 @@
                             <i class="i-Pen-4"></i> 
                         </button>
                         <label class="switch switch-success me-3" (click)="openModal(row.id_provider)">
-                            <input type="checkbox" [checked]="row.state_provider === 'Activo'">
+                            <input type="checkbox" [checked]="row.state_provider === 'Activo' || row.state_provider === 'Active'">
                             <span class="slider"></span>
                         </label>
                     </ng-template>
@@ -101,7 +101,7 @@
 </div>
 
 
-<ng-template #deleteConfirmModal let-modal>
+<ng-template #changeStateModal let-modal>
     <div class="modal-header">
         <h4 class="Cambiar estado" id="modal-title">Cambiar Estado del Proveedor</h4>
         <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
@@ -117,6 +117,6 @@
         <button type="button" class="btn btn-outline-secondary btn-rounded"
             (click)="modal.dismiss('cancel')">Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
-            (click)="modal.close('Ok')">Aceptar</button>
+            (click)="modal.close('Yes')">Aceptar</button>
     </div>
 </ng-template>

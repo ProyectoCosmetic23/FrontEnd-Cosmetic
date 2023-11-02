@@ -22,8 +22,7 @@ export class ProvidersService {
     return this.http.get(`${this.baseUrl}/${providerId}`);
   }
 
-
   updateProviderStatus(providerId: any): Observable<any> {
-    return this.http.get(`${this.baseUrl}/estado/${providerId}`);
+    return this.http.put(`${this.baseUrl}/estado/${providerId}`, null);
   }
 }
