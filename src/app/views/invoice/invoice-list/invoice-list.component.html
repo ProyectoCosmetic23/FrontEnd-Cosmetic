@@ -60,7 +60,7 @@
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <button class="btn btn-wide btn-outline-secondary me-3" [routerLink]="['/invoice/edit', row.id]">View</button>
-                        <button class="btn btn-outline-danger" (click)="deleteInvoice(row.id, deleteConfirmModal)">
+                        <button class="btn btn-outline-danger" (click)="deleteInvoice(row.id, changeStateModal)">
                             Delete
                         </button>
                     </ng-template>
@@ -70,7 +70,7 @@
     </div>
 </div>
 
-<ng-template #deleteConfirmModal let-modal>
+<ng-template #changeStateModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-title">Invoice deletion</h4>
         <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">

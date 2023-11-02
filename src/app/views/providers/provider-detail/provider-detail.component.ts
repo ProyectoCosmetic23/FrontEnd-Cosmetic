@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validator } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { set } from 'date-fns';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 
 interface Provider {
   name_provider: string;
@@ -148,21 +148,23 @@ export class ProvidersDetailComponent implements OnInit {
   }
   
 
-  submit() {
+  createProvider() {
     const currentRoute = this.router.url;
-
+    console.log(currentRoute);
   
     if (currentRoute.includes('/registrar')) {
       console.log(this.new_provider);
-      this.loading = true; 
-      setTimeout(() =>{ 
+      
+      console.log(this.new_provider);
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
-          this.loading = false;
-          this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
-          console.log(data);
+          this.loading = true;
           setTimeout(() => {
-            this.router.navigateByUrl('/proveedores');
+            this.loading = false;
+            this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+            setTimeout(() => {
+              this.router.navigate(['/proveedores']);
+            }, 3000);
           }, 3000);
         },
         (error) => {
@@ -181,5 +183,6 @@ export class ProvidersDetailComponent implements OnInit {
     } else {
       provider.state_provider = 'Activo';
     }
+    this.loading = true;
   }
 }

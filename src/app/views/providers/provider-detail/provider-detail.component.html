@@ -15,7 +15,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <div class="card-title mb-3">Formulario de Proveedor</div>
-                <form [formGroup]="formBasic" (ngSubmit)="submit()">
+                <form [formGroup]="formBasic" (ngSubmit)="createProvider()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
                             <label for="nit_cedula">Cédula o NIT del proveedor</label>
@@ -60,7 +60,7 @@
                         </div>
 
 
-                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new'">
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new' && viewMode !== 'edit'">
                             <label for="creation_date_provider">Fecha de creación</label>
                             <input type="date" class="form-control" id="creation_date_provider"
                                 [placeholder]="viewMode === 'print' ? 'Fecha de creación' : ''"
@@ -77,10 +77,10 @@
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
 
-                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new'">
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new' && viewMode !== 'edit'">
                             <label for="state_provider">Estado del proveedor</label>
                             <ng-container *ngIf="viewMode === 'edit'; else viewModeDisplay">
-                                <select class="form-control" id="state_provider"(change)="handleStateSelection($event)">
+                                <select class="form-control" id="state_provider" (change)="handleStateSelection($event)">
                                     <option value="Activo">Activo</option>
                                     <option value="Inactivo">Inactivo</option>
                                 </select>
@@ -100,9 +100,6 @@
                                 [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}"></textarea>
                         </div>
-
-
-
                         <div class="col-md-12">
                             <div class="d-flex justify-content-end">
                                 <button class="btn btn-danger float-right"

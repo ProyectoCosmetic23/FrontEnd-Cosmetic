@@ -68,14 +68,6 @@
                         {{ row.name_contact }}
                     </ng-template>
                 </ngx-datatable-column>
-                <!-- <ngx-datatable-column name="observation_provider">
-                    <ng-template ngx-datatable-header-template>
-                        Observación
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.observation_provider }}
-                    </ng-template>
-                </ngx-datatable-column> -->
                 <ngx-datatable-column name="state_provider">
                     <ng-template ngx-datatable-header-template>
                         Estado
@@ -96,10 +88,10 @@
                         <button class="btn btn btn-info m-1 me-3" [routerLink]="['/proveedores/editar', row.id_provider]">
                             <i class="i-Pen-4"></i> 
                         </button>
-                        <label class="switch switch-success me-3">
-                            <input type="checkbox" [checked]="row.state_provider === 'Activo'">
+                        <label class="switch switch-success me-3" (click)="openModal(row.id_provider)">
+                            <input type="checkbox" [checked]="row.state_provider === 'Activo' || row.state_provider === 'Active'">
                             <span class="slider"></span>
-                          </label>
+                        </label>
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
@@ -107,3 +99,24 @@
         </div>
     </div>
 </div>
+
+
+<ng-template #changeStateModal let-modal>
+    <div class="modal-header">
+        <h4 class="Cambiar estado" id="modal-title">Cambiar Estado del Proveedor</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea inhabilitar este proveedor?</strong></p>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-rounded"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+            (click)="modal.close('Yes')">Aceptar</button>
+    </div>
+</ng-template>
