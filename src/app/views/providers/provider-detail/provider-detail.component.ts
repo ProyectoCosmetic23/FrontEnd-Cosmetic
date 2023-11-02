@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { set } from 'date-fns';
 
 interface Provider {
   name_provider: string;
@@ -154,11 +155,15 @@ export class ProvidersDetailComponent implements OnInit {
     if (currentRoute.includes('/registrar')) {
       console.log(this.new_provider);
       this.loading = true; 
+      setTimeout(() =>{ 
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
           this.loading = false;
-          this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true });
+          this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
           console.log(data);
+          setTimeout(() => {
+            this.router.navigateByUrl('/proveedores');
+          }, 3000);
         },
         (error) => {
           this.loading = false;
@@ -166,6 +171,15 @@ export class ProvidersDetailComponent implements OnInit {
           console.error('Error al crear el proveedor:', error);
         }
       );
+    }, 3000);
+    }
+  }
+  toggleProviderState(provider: Provider) {
+    // Cambiar el estado del proveedor
+    if (provider.state_provider === 'Activo') {
+      provider.state_provider = 'Inactivo';
+    } else {
+      provider.state_provider = 'Activo';
     }
   }
 }

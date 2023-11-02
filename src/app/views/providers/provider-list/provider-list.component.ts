@@ -25,26 +25,5 @@ import { ProvidersService } from 'src/app/shared/services/provider.service';
     }, error => {
         console.log(error);
         })
-        
     }
-    /*
-    loadInvoices() {
-        this.dl.getInvoices()
-            .subscribe(res => {
-                this.invoices = res;
-            })
-    }
-
-    deleteInvoice(id, modal) {
-        this.modalService.open(modal, { ariaLabelledBy: 'modal-basic-title', centered: true })
-            .result.then((result) => {
-                this.dl.deleteInvoice(id)
-                    .subscribe(res => {
-                        this.toastr.success('Invoice Deleted!', 'Success!', { timeOut: 3000 });
-                        this.loadInvoices();
-                    })
-            }, (reason) => {
-            });
-    }*/
-
 }

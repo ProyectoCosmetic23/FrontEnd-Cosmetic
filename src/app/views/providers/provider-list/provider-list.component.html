@@ -85,7 +85,7 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column [width]="100">
+                <ngx-datatable-column [width]="180">
                     <ng-template ngx-datatable-header-template>
                         Acciones
                     </ng-template>
@@ -96,6 +96,10 @@
                         <button class="btn btn btn-info m-1 me-3" [routerLink]="['/proveedores/editar', row.id_provider]">
                             <i class="i-Pen-4"></i> 
                         </button>
+                        <label class="switch switch-success me-3">
+                            <input type="checkbox" [checked]="row.state_provider === 'Activo'">
+                            <span class="slider"></span>
+                          </label>
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>

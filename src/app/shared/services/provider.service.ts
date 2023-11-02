@@ -21,9 +21,4 @@ export class ProvidersService {
   getProviderById(providerId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${providerId}`);
   }
-
-
-  updateProvider(providerId: number, providerData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${providerId}`, providerData);
-  }
 }
