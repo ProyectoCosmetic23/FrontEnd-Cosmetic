@@ -5,9 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { EmpleadoDetailComponent } from './empleado-detail/empleado-detail.component';
-import { EmpleadoListComponent } from './empleado-list/empleado-list.component';
-import { EmpleadoRoutingModule } from './empleado-routing.module';
+import { EmployeeDetailComponent } from './employee-detail/employee-detail.component';
+import { EmployeeListComponent } from './employee-list/employee-list.component';
+import { EmployeeRoutingModule } from './employee-routing.module';
 
 @NgModule({
   imports: [
@@ -17,8 +17,8 @@ import { EmpleadoRoutingModule } from './empleado-routing.module';
     ReactiveFormsModule,
     SharedComponentsModule,
     NgbModule,
-    EmpleadoRoutingModule
+    EmployeeRoutingModule
   ],
-  declarations: [EmpleadoDetailComponent, EmpleadoListComponent]
+  declarations: [EmployeeDetailComponent, EmployeeListComponent]
 })
-export class EmpleadoModule { }
+export class EmployeeModule { }

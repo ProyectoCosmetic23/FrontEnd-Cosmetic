@@ -1,0 +1,110 @@
+<div class="breadcrumb">
+    <h1>Registrar Empleado</h1>
+    <ul>
+        <li><a href="#">Servicios</a></li>
+        <li>Empleados</li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title mb-3">Formulario de Empleados</div>
+                <form [formGroup]="employeeForm" (ngSubmit)="createEmployee()">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="id_card_employee">Cédula de empleado<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="id_card_employee" placeholder="Cédula de empleado" formControlName="id_card_employee" required>
+                            <div *ngIf="employeeForm.get('id_card_employee').touched && employeeForm.get('id_card_employee').hasError('required')" class="error-message">
+                                El campo Cédula es obligatorio.
+                            </div>
+                            <div *ngIf="employeeForm.get('id_card_employee').hasError('minlength')" class="error-message">
+                                La cédula debe contener minimo 7 caracteres.
+                            </div>
+                            <div *ngIf="employeeForm.get('id_card_employee').hasError('maxlength')" class="error-message">
+                                El campo Cédula no puede superar los 10 caracteres.
+                            </div>
+                            <div *ngIf="employeeForm.get('id_card_employee').hasError('pattern')" class="error-message">
+                                El campo Cédula debe contener solo números.
+                            </div>
+                            <div *ngIf="employeeForm.get('id_card_employee').hasError('cedulaTaken')" class="error-message">La cédula ya está en uso.</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="name_employee">Nombre de empleado<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name_employee" placeholder="Nombre de empleado" formControlName="name_employee" required>
+                            <div *ngIf="employeeForm.get('name_employee').touched && employeeForm.get('name_employee').hasError('required')"class="error-message">
+                                El campo Nombre es obligatorio.
+                            </div>
+                            <div *ngIf="employeeForm.get('name_employee').hasError('invalidName2')"class="error-message">
+                                El campo Nombre solo puede contener un solo numero si es necesario y letras.
+                            </div>
+                            <div *ngIf="employeeForm.get('name_employee').hasError('maxlength')"class="error-message">
+                                El campo Nombre no puede superar los 80 caracteres.
+                            </div>
+                       
+                        </div>
+                        
+                        
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="email">Correo<span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" placeholder="Correo" formControlName="email" required>
+                            <div *ngIf="employeeForm.get('email').touched && employeeForm.get('email').hasError('required')"class="error-message">
+                                El campo Correo es obligatorio.
+                            </div>
+                            <div *ngIf="employeeForm.get('email').hasError('email')"class="error-message">
+                                El campo Correo debe ser un formato de correo electrónico válido.
+                            </div>
+                            <div *ngIf="employeeForm.get('email').hasError('invalidDomain')" class="error-message">El dominio del correo no es válido.</div>
+                            <div *ngIf="employeeForm.get('email').hasError('maxlength')"class="error-message">
+                                El campo Correo no puede superar los 80 caracteres.
+                            </div>
+                            <div *ngIf="employeeForm.get('email').hasError('emailTaken')"class="error-message">El correo electrónico ya está en uso.</div>
+
+                        </div>
+                        
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="address">Dirección<span class="text-danger">*</span></label>
+                            <input class="form-control" id="address" placeholder="Dirección" formControlName="address" required>
+                            <div *ngIf="employeeForm.get('address').touched && employeeForm.get('address').hasError('required')"class="error-message">
+                                El campo Dirección es obligatorio.
+                            </div>
+                            <div *ngIf="employeeForm.get('address').hasError('maxlength')"class="error-message">
+                                El campo Dirección no puede superar los 80 caracteres.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="phone">Teléfono<span class="text-danger">*</span></label>
+                            <input class="form-control" id="phone" placeholder="Teléfono" formControlName="phone" required>
+                            <div *ngIf="employeeForm.get('phone').touched && employeeForm.get('phone').hasError('required')"class="error-message">
+                                El campo Teléfono es obligatorio.
+                            </div>
+                            <div *ngIf="employeeForm.get('phone').hasError('maxlength')"class="error-message">
+                                El campo Teléfono no puede superar los 80 caracteres.
+                            </div>
+                            <div *ngIf="employeeForm.get('phone').hasError('pattern')"class="error-message">
+                                El campo Teléfono debe seguir un formato válido.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="observation">Observación<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="observation" placeholder="Observación" formControlName="observation" required></textarea>
+                            <div *ngIf="employeeForm.get('observation').touched && employeeForm.get('observation').hasError('required')"class="error-message">
+                                El campo Observación es obligatorio.
+                            </div>
+                            <div *ngIf="employeeForm.get('observation').hasError('maxlength')"class="error-message">
+                                El campo Observación no puede superar los 100 caracteres.
+                            </div>
+                        </div>
+                        <div class="form-group text-right" style="text-align: right;">
+                            <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
+                            <btn-loading btnClass="btn btn-primary m-1 custom-button" [loading]="loading">Registrar</btn-loading>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

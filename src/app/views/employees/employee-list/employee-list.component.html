@@ -1,0 +1,128 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Listar Empleados</h1>
+        <ul>
+            <li><a href="#">Servicios</a></li>
+            <li>Empleados</li>
+        </ul>
+        </div>
+    
+        <div class="separator-breadcrumb border-top"></div>
+
+        <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+            <input id="search" placeholder="Buscar Empleados" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+            </div>
+        </div>
+        <div class="col-md-12 mb-3">
+            <button class="btn btn-primary float-right" [routerLink]="['/employees/crearEmpleado']">Crear nuevo Empleado</button>
+        </div>
+        <div class="col-md-12">
+            <div class="card o-hidden">
+                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
+                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"[rows]="filteredEmployees">
+                <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                    <ng-template ngx-datatable-header-template>
+                        Cédula
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.id_card_employee }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="name_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                    <ng-template ngx-datatable-header-template>
+                        Nombre
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.name_employee }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="email" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
+                    <ng-template ngx-datatable-header-template>
+                        Correo
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.email }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <!--
+                <ngx-datatable-column name="address" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
+                    <ng-template ngx-datatable-header-template>
+                        Dirección
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.address }}
+                    </ng-template>
+                </ngx-datatable-column>
+                -->
+                <!--
+                <ngx-datatable-column name="phone" [resizeable]="false" [canAutoResize]="true" [minWidth]="110">
+                    <ng-template ngx-datatable-header-template>
+                        Teléfono
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.phone }}
+                    </ng-template>
+                </ngx-datatable-column>
+                -->
+                <ngx-datatable-column name="state_employee"  [resizeable]="false" [canAutoResize]="true" [minWidth]="20">
+                    <ng-template ngx-datatable-header-template>
+                        Estado
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.state_employee }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <!--
+                <ngx-datatable-column name="observation" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                    <ng-template ngx-datatable-header-template>
+                        Observación
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.observation }}
+                    </ng-template>
+                </ngx-datatable-column>-->
+                <!-- Puedes agregar más columnas según tus necesidades -->
+                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="50">
+                    <ng-template ngx-datatable-header-template>
+                        Acciones
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <button class="btn btn-dark m-1" [routerLink]="['/roles/detail', row.id_role]">
+                            <i class="i-Eye"></i>
+                        </button>
+                        <button class="btn btn-info m-1" [routerLink]="['/roles/edit', row.id_role]">
+                            <i class="i-Pen-4"></i>
+                        </button>
+                        <label class="switch switch-success me-3" (click)="openModal(row.id_employee)">
+                            <input type="checkbox" [checked]="row.state_employee === 'Activo'">
+                            <span class="slider"></span>
+                        </label>
+                    </ng-template>
+                </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #deleteConfirmModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Cambiar Estado del Rol</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea inhabilitar este rol?</strong></p>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-rounded"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+            (click)="modal.close('Ok')">Aceptar</button>
+    </div>
+</ng-template>

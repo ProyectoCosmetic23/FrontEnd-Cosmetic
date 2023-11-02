@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
 import { AuthGaurd } from './shared/services/auth.gaurd';
-import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 
 
 const adminRoutes: Routes = [
@@ -11,8 +11,8 @@ const adminRoutes: Routes = [
       loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
     },
     {
-      path: 'empleados',
-      loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
+      path: 'employees',
+      loadChildren: () => import('./views/employees/employee.module').then(m => m.EmployeeModule)
     },
     {
       path: 'uikits',

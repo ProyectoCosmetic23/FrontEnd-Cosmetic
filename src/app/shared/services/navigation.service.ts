@@ -159,7 +159,7 @@ export class NavigationService {
             icon: 'i-Files',
             sub: [
                 { icon: 'i-Conference', name: 'Usuarios', state: 'por arreglar', type: 'link' },
-                { icon: 'i-Conference', name: 'Empleados', state: '/empleados', type: 'link' },
+                { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
                 { icon: 'i-Money-2', name: 'Comisiones', state: 'por arreglar', type: 'link' },
 
             ]
