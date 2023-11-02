@@ -1,10 +1,14 @@
 <div class="breadcrumb">
-    <h1>Registrar Empleado</h1>
+    <h1 *ngIf="viewMode === 'new'">Registrar Empleado</h1>
+    <h1 *ngIf="viewMode === 'edit'">Editar Empleado</h1>
+    <h1 *ngIf="viewMode === 'print'">Ver Detalle de Empleado</h1>
     <ul>
-        <li><a href="#">Servicios</a></li>
-        <li>Empleados</li>
+      <li><a [routerLink]="['/employees']">Empleados</a></li>
+      <li *ngIf="viewMode === 'new'">Registrar Empleado</li>
+      <li *ngIf="viewMode === 'edit'">Editar Empleado</li>
+      <li *ngIf="viewMode === 'print'">Ver Detalle de Empleado</li>
     </ul>
-</div>
+  </div>
 
 <div class="row">
     <div class="col-md-12">
@@ -100,7 +104,11 @@
                         </div>
                         <div class="form-group text-right" style="text-align: right;">
                             <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
-                            <btn-loading btnClass="btn btn-primary m-1 custom-button" [loading]="loading">Registrar</btn-loading>
+                            <btn-loading *ngIf="viewMode === 'new'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading">Registrar Empleado
+
+                            </btn-loading>
+                            <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">Editar Empleado
+                            </btn-loading>
                         </div>
                     </div>
                 </form>
