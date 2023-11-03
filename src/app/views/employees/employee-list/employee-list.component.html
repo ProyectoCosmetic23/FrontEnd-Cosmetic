@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-12 mb-3">
-            <button class="btn btn-primary float-right" [routerLink]="['/employees/crearEmpleado']">Crear nuevo Empleado</button>
+            <button class="btn btn-primary float-right" [routerLink]="['/employees/new']">Crear nuevo Empleado</button>
         </div>
         <div class="col-md-12">
             <div class="card o-hidden">
@@ -109,14 +109,14 @@
 
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar Estado del Rol</h4>
+        <h4 class="modal-title" id="modal-title">Cambiar Estado Empleado</h4>
         <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
             (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea inhabilitar este rol?</strong></p>
+        <p><strong>¿Está seguro de que desea inhabilitar este Empleado?</strong></p>
 
     </div>
     <div class="modal-footer">
