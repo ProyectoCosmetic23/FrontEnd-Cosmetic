@@ -1,0 +1,21 @@
+.error-message {
+    color: red;
+}
+
+
+.form-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+  }
+  
+  .required {
+    color: red;
+  }
+  
+  .form-group.text-right .btn btn-danger  {
+    margin-right: 10px;
+    color: white; /* Texto en blanco */
+    font-size: 14px; 
+  }
