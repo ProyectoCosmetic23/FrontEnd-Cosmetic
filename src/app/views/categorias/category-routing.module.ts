@@ -13,11 +13,11 @@ const routes: Routes = [
         component: CategoryDetailComponent
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:id_categoria',
         component: CategoryDetailComponent
     },
     {
-        path: 'print/:id',
+        path: 'detail/:id_categoria',
         component: CategoryDetailComponent
     }
 ];

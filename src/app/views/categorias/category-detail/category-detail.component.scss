@@ -19,3 +19,9 @@
     color: white; /* Texto en blanco */
     font-size: 14px; 
   }
+
+  
+.ngx-datatable.scroll-vertical.datatable-body{
+  overflow: hidden;
+  overflow-y: hidden !important;;
+}

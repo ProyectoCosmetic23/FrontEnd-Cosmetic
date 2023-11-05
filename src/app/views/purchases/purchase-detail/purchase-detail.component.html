@@ -1,0 +1,253 @@
+<div class="breadcrumb">
+  <h1 *ngIf="viewMode === 'new-purchase'">Registrar Compra</h1>
+  <h1 *ngIf="viewMode === 'print-purchase'"></h1>
+  <ul>
+    <li><a [routerLink]="['/purchases']">Compras</a></li>
+    <li *ngIf="viewMode === 'new-purchase'">Registrar Compra</li>
+    <li *ngIf="viewMode === 'print-purchase'"> Detalle de Compra</li>
+    
+  </ul>
+</div>
+<div class="separator-breadcrumb border-top"></div>
+<div class="form-container">
+  <br>
+  <br>
+ 
+  
+ 
+  <!--VISTA DE IMPRIMIR --->
+  <div id="print-area" *ngIf="viewMode === 'print-purchase'" class="print-view">
+
+    <div class="d-sm-flex mb-5" >
+    
+      <span class="m-auto"></span>
+      <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3 button-spacing" routerLink="/purchases">Regresar</button>
+
+      <button class="btn btn-primary mb-sm-0 mb-3" (click)="print()">Imprimir Compra</button>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="font-weight-bold"> Información de Compra</h4>
+            <p>#{{invoice_number}}</p>
+        </div>
+        <div class="col-md-6 text-sm-right">
+            <p><strong>Estado: </strong> {{invoice?.state_purchase}}</p>
+            <p><strong>Fecha de compra: </strong> {{invoice?.purchase_date | date}}</p>
+            <p><strong>Fecha de Registro: </strong> {{invoice?.record_date_purchase | date}}</p>
+        </div>
+    </div>
+    <div class="mt-3 mb-4 border-top"></div>
+    <div class="row mb-5">
+        <div class="col-md-6 mb-3 mb-sm-0">
+            <h5 class="font-weight-bold"></h5>
+            <p><strong>Proveedor: </strong>{{invoice?.detailPurchase?.id_provider}}</p>
+            <span style="white-space: pre-line">
+              <strong>Observación: </strong> {{invoice?.detailPurchase?.observation_purchase}}
+            </span>
+        </div>
+       
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover mb-4">
+                <thead class="bg-gray-300">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">precio Compra</th>
+                        <th scope="col">Precio Venta</th>
+                        <th scope="col">Iva</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Sub Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of invoice?.items; let i = index">
+                        <th scope="row">{{i + 1}}</th>
+                        <td>{{item.id_product}}</td>
+                        <td>{{item.product_category}}</td>
+                        <td>{{item.cost_price}}</td>
+                        <td>{{item.selling_price}}</td>
+                        <td>{{item.product_category}}</td>
+                        <td>{{item.vat}}</td>
+                        <td>{{item.product_quantity}}</td>
+                        <td>{{item.cost_price + item.vat * product_quantity}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12">
+            <div class="invoice-summary float-right">
+             
+                <h5 class="font-weight-bold">Total Compra: <span>
+                    {{total_purchase}}
+                </span></h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+   <!-- FIN VISTA DE IMPRIMIR --->
+
+
+<!--VISTA DE CREAR COMPRAS --->
+<div *ngIf="viewMode == 'new-purchase'">
+  <form [formGroup]="categoryForm" (ngSubmit)="createCategory()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="file-upload">
+          <input type="file" id="photo-input" accept="image/*" style="display: none;" />
+          <button class="btn btn-darkml-2" for="photo-input" onclick="document.getElementById('photo-input').click()">
+            <i class="i-Landscape" style="font-size: xx-large;"></i>
+          </button>
+        
+        </div>
+      </div>
+    
+      <div class="col-md-6">
+     
+    </div>
+    
+  
+    <section class="ng-container">
+     
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="numFactura">Numero Factura<span class="required">*</span></label>
+            <input type="text" class="form-control" id="numFactura" placeholder="Numero de factura" style="width: 100%;" />
+            <div class="textoF" id="textoF"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="fechaCompra">Fecha Compra<span class="required">*</span></label>
+            <input type="date" class="form-control" id="fechaCompra" placeholder="Fecha Compra" style="width: 100%;" />
+            <div class="textoc" id="textoc"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="proveedor">Proveedor<span class="required">*</span></label>
+            <input type="text" class="form-control" id="proveedor" placeholder="Digite el Proveedor" style="width: 100%;" />
+            <div class="texto2" id="texto2"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="observaciones">Observaciones</label>
+            <input type="text" class="form-control" id="observaciones" placeholder="Observaciones" style="width: 100%;" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="totalCompra">Total Compra</label>
+            <input type="text" class="form-control" id="totalCompra" placeholder="Digite su precio Compra" style="width: 100%;" />
+            <div class="texto6" id="texto6"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ng-container">
+   
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="producto">Producto</label>
+            <input type="text" class="form-control" id="producto" placeholder="Digite el producto " style="width: 100%;" />
+            <div class="texto3" id="texto3"></div>
+          </div>
+        </div>
+      
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="categoria">Categoria</label>
+            <select class="form-control select2bs4" style="width: 100%;" id="categoria">
+              <option selected="selected">Elija una categoria</option>
+              <option>Belleza</option>
+              <option>Limpieza</option>
+            </select>
+            <div class="texto4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+ 
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="precioCompra">Precio Compra<span class="required">*</span></label>
+            <input type="text" class="form-control" id="precioCompra" placeholder="Digite su precio Compra" style="width: 100%;" />
+            <div class="texto5" id="texto5"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="categoria">Precio Venta<span class="required">*</span></label>
+            <select class="form-control select2bs4" style="width: 100%;" id="categoria">
+              <option selected="selected">Elija una categoria</option>
+              <option>Belleza</option>
+              <option>Limpieza</option>
+            </select>
+            <div class="texto4"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="precioVenta"> Iva<span class="required">*</span></label>
+            <input type="text" class="form-control" id="precioVenta" placeholder="Digite su precio Venta" style="width: 100%;" />
+            <div class="texto7" id="texto7"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="cantidad">Cantidad<span class="required">*</span></label>
+            <input type="text" class="form-control" id="cantidad" placeholder="Digite la cantidad" style="width: 100%;" />
+            <div class="texto8" id="texto8"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <div class="form-group text-left">
+      <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="i-Add "><span>Item</span></i></button>
+      <button type="submit" class="btn btn-outline-secondary custom-button" [disabled]="loading">Registrar Producto</button>
+    </div>
+    <section class="ng-container">
+      <table id="detalleTabla" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoria</th>
+            <th>Precio Compra</th>
+            <th>Precio Venta</th>
+            <th> Iva</th>
+            <th>Cantidad</th>
+            <th>Sub Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="detalleProductos">
+        </tbody>
+      </table>
+    </section>
+    <div class="form-group text-right">
+      <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+      <button type="submit" class="btn btn-primary m-1 custom-button" [disabled]="loading">Registrar</button>
+    </div>
+  </div>
+  </form>
+</div>
+
+<!-- FIN VISTA DE CREAR COMPRAS --->
+

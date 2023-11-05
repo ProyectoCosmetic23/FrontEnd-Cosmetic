@@ -31,6 +31,10 @@ const adminRoutes: Routes = [
       loadChildren: () => import('./views/invoice/invoice.module').then(m => m.InvoiceModule)
     },
     {
+      path: 'purchases',
+      loadChildren: () => import('./views/purchases/purchase.module').then(m => m.PurchaseModule)
+    },
+    {
       path: 'tables',
       loadChildren: () => import('./views/data-tables/data-tables.module').then(m => m.DataTablesModule)
     },

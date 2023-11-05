@@ -1,10 +1,10 @@
-import { InvoiceModule } from './invoice.module';
+import { PurchaseModule } from './invoice.module';
 
-describe('InvoiceModule', () => {
-  let invoiceModule: InvoiceModule;
+describe('PurchaseModule', () => {
+  let invoiceModule: PurchaseModule;
 
   beforeEach(() => {
-    invoiceModule = new InvoiceModule();
+    invoiceModule = new PurchaseModule();
   });
 
   it('should create an instance', () => {

@@ -1,37 +1,39 @@
-import { Component, OnInit,ViewChild  } from '@angular/core';
-import { CategoriesService } from 'src/app/shared/services/category.service';
+import { Component, OnInit,ViewChild, ElementRef} from '@angular/core';
+import { PurchasesService } from 'src/app/shared/services/purchase.service';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+
 // ...
 
 @Component({
-  selector: 'app-category-list',
-  templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.scss']
+  selector: 'app-purchase-list',
+  templateUrl: './purchase-list.component.html',
+  styleUrls: ['./purchase-list.component.scss']
 })
-export class CategoryListComponent implements OnInit {
+export class PurchaseListComponent implements OnInit {
   searchControl: FormControl = new FormControl();
-  listCategories: any[] = [];
-  filteredCategories: any[] = [];
-  categories: any[] = [];
+  listPurchases: any[] = [];
+  filteredPurchases: any[] = [];
+  purchases: any[] = [];
   offset: number = 0;
   pageSize: number = 6;
   currentPage: number = 1;
   modalAbierto = false;
   loading: boolean;
 
+
   constructor(
-    private _categoryService: CategoriesService,
+    private _purchaseService: PurchasesService,
     private modalService: NgbModal,
     private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void{
-    this._categoryService.getAllCategory().subscribe((res: any[]) => {
-      this.listCategories = [...res];
-      this.filteredCategories = res;
+    this._purchaseService.getAllPurchase().subscribe((res: any[]) => {
+      this.listPurchases =[...res];
+      this.filteredPurchases = res;
     });
 
     this.searchControl.valueChanges.pipe(debounceTime(200)).subscribe(value => {
@@ -44,15 +46,15 @@ export class CategoryListComponent implements OnInit {
     if (val) {
         val = val.toLowerCase();
     } else {
-        return this.filteredCategories = [...this.categories];
+        return this.filteredPurchases = [...this.purchases];
     }
 
-    const columns = Object.keys(this.categories[0]);
+    const columns = Object.keys(this.purchases[0]);
     if (!columns.length) {
         return;
     }
 
-    const rows = this.categories.filter(function (d) {
+    const rows = this.purchases.filter(function (d) {
         for (let i = 0; i <= columns.length; i++) {
             const column = columns[i];
             if (d[column] && d[column].toString().toLowerCase().indexOf(val) > -1) {
@@ -60,7 +62,7 @@ export class CategoryListComponent implements OnInit {
             }
         }
     });
-    this.filteredCategories = rows;
+    this.filteredPurchases = rows;
 }
 
 
@@ -77,10 +79,10 @@ export class CategoryListComponent implements OnInit {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     let endIndex = startIndex + this.pageSize;
 
-    const totalPages = Math.ceil(this.listCategories.length / this.pageSize);
+    const totalPages = Math.ceil(this.listPurchases.length / this.pageSize);
 
     if (this.currentPage === totalPages) {
-        const remainingRows = this.listCategories.length % this.pageSize;
+        const remainingRows = this.listPurchases.length % this.pageSize;
         if (remainingRows > 0) {
             endIndex = startIndex + remainingRows;
         }
@@ -90,20 +92,20 @@ export class CategoryListComponent implements OnInit {
     const rowsToAdd = 6 - (endIndex % 6);
     endIndex += rowsToAdd;
 
-    this.filteredCategories = this.listCategories.slice(startIndex, endIndex);
+    this.filteredPurchases = this.listPurchases.slice(startIndex, endIndex);
 
     console.log('load data charged');
   }
 
   sortListCategoryById() {
-    this.listCategories.sort((a, b) => a.id_category - b.id_category);
+    this.listPurchases.sort((a, b) => a.id_purchase - b.id_purchase);
 }
 
 
-  getCategories() {
-    this._categoryService.getAllCategory().subscribe(
+  getPurchases() {
+    this._purchaseService.getAllPurchase().subscribe(
         (data) => {
-            this.listCategories = data;
+            this.listPurchases = data;
             this.sortListCategoryById();
         },
         (error) => {
@@ -116,13 +118,13 @@ export class CategoryListComponent implements OnInit {
   @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 
   openModal(idCategory: number) {
-      this._categoryService.getCategoryById(idCategory).subscribe
+      this._purchaseService.getPurchaseById(idCategory).subscribe
       if (!this.modalAbierto) {
           this.modalAbierto = true;
           this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
               (result) => {
                   if (result === 'Ok') {
-                      this._categoryService.CategoryChangeStatus(idCategory).subscribe(
+                      this._purchaseService.PurchaseChangeStatus(idCategory).subscribe(
                           (data) => {
 
                               this.loading = false;
@@ -154,12 +156,18 @@ export class CategoryListComponent implements OnInit {
       }
   }
 
-  
-print() {
-    if (window) {
-        window.print();
-    }
+
+  toggleState(row: any) {
+    row.state_category = !row.state_category;
+    // Aquí puedes realizar acciones adicionales según el nuevo estado, si es necesario.
   }
 
 
+  
+
 }
+
+
+  
+
+

@@ -134,10 +134,10 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Full-Cart',
             sub: [
-                { icon: 'i-Administrator', name: 'Proveedores', state: '/invoice', type: 'link' },
+                { icon: 'i-Administrator', name: 'Proveedores', state: '/providers', type: 'link' },
                 { icon: 'i-Tag-3', name: 'Categories', state: '/categories', type: 'link' },
-                { icon: 'i-File-Clipboard-Text--Image', name: 'Productos', state: '/chat', type: 'link' },
-                { icon: 'i-Full-Cart', name: 'Compras', state: '/calendar', type: 'link' },
+                { icon: 'i-File-Clipboard-Text--Image', name: 'Products', state: '/products', type: 'link' },
+                { icon: 'i-Full-Cart', name: 'Compras', state: '/purchases', type: 'link' },
             ]
         },
         {
