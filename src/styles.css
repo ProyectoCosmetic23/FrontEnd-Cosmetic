@@ -1,1 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
+.ngx-datatable.scroll-vertical .datatable-body {
+    overflow-y: hidden !important;
+}

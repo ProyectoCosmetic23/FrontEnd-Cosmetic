@@ -1,0 +1,161 @@
+<div class="breadcrumb">
+    <h1 *ngIf="viewMode === 'new'">Registrar Pago</h1>
+    <h1 *ngIf="viewMode === 'print'">Ver Pagos del Cliente</h1>
+    <ul>
+        <li><a [routerLink]="['/pagos']">Pagos</a></li>
+        <li *ngIf="viewMode === 'new'">Registrar Proveedor</li>
+        <li *ngIf="viewMode === 'print'">Ver Pagos del Cliente</li>
+    </ul>
+</div>
+
+
+
+
+<div class="row" *ngIf="viewMode === 'new'"> 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="card-title mb-3">Formulario de Pagos</div>
+                    <form [formGroup]="formBasic" (ngSubmit)="submit()">
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="id_client">Nombre cliente</label>
+                                <select class="form-control" id="id_client" formControlName="id_client">
+                                    <option value="" disabled selected>Elija al cliente</option>
+                                    <option *ngFor="let client of listClients" [value]="client.id_client">{{
+                                        client.name_client }}</option>
+                                </select>
+                            </div>
+    
+    
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="payment_date">Fecha de pago</label>
+                                <input type="text" class="form-control" id="payment_date"
+                                    (change)="handlePayDaySelection($event)" [placeholder]="'Fecha de pago'"
+                                    [readonly]="viewMode === 'print'">
+                            </div>
+    
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="id_sale"># Venta</label>
+                                <select class="form-control" id="id_sale" formControlName="id_sale"(change)="updateTotalSale()">
+                                    <option value="" disabled selected>Elija la venta</option>
+                                    <option *ngFor="let sale of listSales" [value]="sale.id_sale">{{
+                                        sale.id_sale }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="total_payment">Monto pago</label>
+                                <input type="number" class="form-control" id="total_payment"
+                                    (change)="handleTotalPaySelection($event)" [placeholder]="'Monto pago'"
+                                    [readonly]="viewMode === 'print'">
+                            </div>
+    
+    
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="commission_percentage">Total venta</label>
+                                <input class="form-control" id="total_sale" [readonly]="viewMode === 'print'"
+                                  formControlName="total_sale">
+                              </div>
+    
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="total_remaining">Total restante</label>
+                                <input type="number" class="form-control" id="total_remaining"
+                                    (change)="handleTotalRemainSelection($event)" [placeholder]="'Total restante'"
+                                    [readonly]="viewMode === 'print'"
+                                    [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                            </div>
+                            <div class="col-md-12">
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn btn-danger float-right" [routerLink]="['/pagos']">Volver</button>
+                                    <div style="width: 10px;"></div>
+                                    <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary"
+                                        [loading]="loading">Registrar Pago</btn-loading>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="viewMode === 'print'">
+    <div class="breadcrumb">
+        <h1>Ver pagos de {{ clientName }}</h1>
+    </div>
+    
+    <div class="separator-breadcrumb border-top"></div>
+    
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary float-right" [routerLink]="['/pagos/registrar']">Crear nuevo pago</button>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <input id="email" placeholder="Buscar Pagos" type="text" class="form-control" style="width: 50%;">
+            </div>
+        </div>
+    </div>
+    
+    <div class="card o-hidden">
+        <ngx-datatable class="material fullscreen" style="height: 460px" [columnMode]="'force'" [headerHeight]="50"
+            [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="clientPayments" [externalPaging]="true"
+            [count]="clientPayments.length" [limit]="10" [offset]="0">
+        
+            <ngx-datatable-column name="payment_date">
+                <ng-template ngx-datatable-header-template>
+                    Fecha de Pago
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    {{ row.payment_date | date: 'yyyy-MM-dd' }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="total_payment">
+                <ng-template ngx-datatable-header-template>
+                    Total de Pago
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    {{ row.total_payment }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="total_sale">
+                <ng-template ngx-datatable-header-template>
+                    Total Venta
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    {{ row.id_sale }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="id_sale">
+                <ng-template ngx-datatable-header-template>
+                    # Venta
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    {{ row.id_sale }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="total_remaining">
+                <ng-template ngx-datatable-header-template>
+                    Total Restante
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    {{ row.total_remaining }}
+                </ng-template>
+            </ngx-datatable-column>
+            <!-- Agregar las columnas adicionales según tus datos -->
+            <ngx-datatable-column [width]="120">
+                <ng-template ngx-datatable-header-template>
+                    Acciones
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    <!-- Agregar botones de acciones si es necesario -->
+                    <button class="btn btn-dark m-1 me-3" [routerLink]="">
+                        <i class="i-Eye"></i>
+                    </button>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+  </div>
