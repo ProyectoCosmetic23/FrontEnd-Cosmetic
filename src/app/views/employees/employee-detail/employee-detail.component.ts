@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataLayerService } from 'src/app/shared/services/data-layer.service';
-import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder, FormGroup,Validators,FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { EmployeesService } from 'src/app/shared/services/employee.service';
+import { EmployeeFormModel } from '../models/employee.model';
+
 
 @Component({
     selector: 'app-empleado-detail',
@@ -13,9 +13,10 @@ import { EmployeesService } from 'src/app/shared/services/employee.service';
     styleUrls: ['./employee-detail.component.scss']
 })
 export class EmployeeDetailComponent implements OnInit {
-    
+
     employeeForm: FormGroup;
-    loading: boolean=false;
+    employeeFormSub: Subscription;
+    loading: boolean = false;
     formBasic: FormGroup;
     viewMode: 'new' | 'edit' | 'print' = 'new';
     id: string;
@@ -25,159 +26,253 @@ export class EmployeeDetailComponent implements OnInit {
     invoiceFormSub: Subscription;
     subTotal: number;
     saving: boolean;
-
-
+    employeeData: EmployeeFormModel;
 
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private fb: UntypedFormBuilder,
-        private dl: DataLayerService,
         private toastr: ToastrService,
         private employeesService: EmployeesService
-        ) {
-            this.employeeForm = this.formBuilder.group({
-                id_card_employee: ['',[Validators.required,Validators.maxLength(10),Validators.minLength(7),Validators.pattern('^[0-9]+$')],[this.validateCedulaAvailability.bind(this)]],
-                name_employee: ['',[Validators.required,Validators.maxLength(80)],[this.validateNameSimbol]],
-                email: ['',[Validators.required, Validators.email, Validators.maxLength(80)],[this.validateEmail.bind(this)]],
-                address: ['', [Validators.required, Validators.maxLength(80)]],
-                phone: ['',[Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
-                observation: ['', [Validators.required, Validators.maxLength(100)]],
-                    });
+    ) {
+
+    }
+
+
+    ngOnInit() {
+        this.id = this.route.snapshot.params['id_employee'];
+        this.isNew = !this.id;
+        this.setViewMode();
+        this.inicializateForm(Number(this.id));
+    }
+
+    private inicializateForm(id: number): void {
+        this.employeeForm = this.formBuilder.group({
+            id_card_employee: ['', [Validators.required, Validators.maxLength(10), Validators.minLength(7), Validators.pattern('^[0-9]+$')]],
+            name_employee: ['', [Validators.required, Validators.maxLength(80)],[this.validateNameSimbolAndNumber]],
+            email: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
+            address: ['', [Validators.required, Validators.maxLength(80)]],
+            phone: ['', [Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
+            observation: ['', [Validators.required, Validators.maxLength(100)]],
+            state_employee: [],
+            creation_date_employee: []
+        });
+
+        if (this.viewMode == 'print') {
+            this.employeeForm.disable();
         }
 
+        if (this.viewMode == 'edit') {
+            this.cedula.disable();
+        }
 
-        ngOnInit() {
-            this.id = this.route.snapshot.params['id'];
-            this.isNew = !this.id;
-            
-            }
+        if (this.viewMode != 'new') {
+            this.getEmployeeByID(id);
+        }
 
+    }
 
+    private getEmployeeByID(id: number): void {
+        this.loading = true;
+        this.employeesService.getEmployeesById(id).subscribe({
+            next: (response: any) => {
+                this.employeeData = new EmployeeFormModel(response);
+                this.setDataEmployee();
+            },
+            error: (err) => {
+                console.log('err', err);
+                this.loading = false;
+            },
+            complete: () => {
+                this.loading = false;
+            },
+        });
+    }
 
-            createEmployee() {
-                if (this.employeeForm.valid) {
-                    const employeeData = this.employeeForm.value;
-                    this.loading = true;
-                    this.employeesService.createEmployee(employeeData).subscribe(
-                        (response) => {
-                        this.loading = false;
-                        console.log("Éxito al crear empleado: ", response);
-                        this.submit();
-                        },
-                        (error) => {
-                        this.loading = false;
-                        console.error("Error al crear empleado: ", this.toastr.error);
-                        const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el empleado.';
-                        this.toastr.error(errorMessage, 'Error');
-                        }
-                    );
-                    } else {
-                    this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
-                    }
+    private setDataEmployee(): void {
+        if (this.employeeData) {
+            this.cedula.setValue(this.employeeData.id_card_employee)
+            this.employeeForm.setValue(this.employeeData)
+        }
+    }
+
+    createEmployee() {
+        console.log('guardar')
+        if (this.employeeForm.valid) {
+            const employeeData = this.employeeForm.value;
+            this.loading = true;
+            this.employeesService.createEmployee(employeeData).subscribe(
+                (response) => {
+                    this.loading = false;
+                    console.log("Éxito al crear empleado: ", response);
+                    this.submit();
+                },
+                (error) => {
+                    this.loading = false;
+                    console.error("Error al crear empleado: ", this.toastr.error);
+                    const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el empleado.';
+                    this.toastr.error(errorMessage, 'Error');
                 }
-        
+            );
+        } else {
+            this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
+        }
+    }
 
-        validateNameSimbol(control: FormControl) {
-            const value = control.value;
-            const pattern = '^[a-zA-ZáéíóúñÑ ]+(?:\\s[´a-zA-ZáéíóúñÑ ]+)*$';
 
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                const match = value.match(pattern);
-                if (match) {
-                    resolve(null); // Válido
+
+
+    validateNameSimbolAndNumber(control: FormControl) {
+        const nameValue = control.value;
+        const combinedPattern = /^[\wáéíóúñÑ´\s]+$/;
+    
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                if (combinedPattern.test(nameValue)) {
+                    const numberCount = (nameValue.match(/\d/g) || []).length;
+                    if (numberCount <= 1) {
+                        resolve(null); // Válido
+                    } else {
+                        resolve({ invalidName: true }); // No válido
+                    }
                 } else {
-                    resolve({ invalidName2: true }); // No válido
+                    resolve({ invalidName: true }); // No válido
                 }
-                }, 1000); // Simula una operación asincrónica
+            }, 0);
+        });
+    }
+    
+    
+    
+    public checkEmailAvailability(): void {
+        if (this.email && this.email instanceof AbstractControl) {
+            this.validateEmail(this.email).then((result) => {
+                if (result) {
+                    this.email.setErrors(result);
+                }
             });
-                    }
-                    
+        }
+    }
 
-        validateNameWithNumber(control: FormControl) {
-            const value = control.value;
-            const pattern = /[0-9]/g;
-            const match = value.match(pattern);
-            if (match && match.length > 1) {
-                return { invalidName: true };
-            }
-        
-            return null;
+    validateEmail(control: AbstractControl) {
+        const email = control.value.toLowerCase();
+        const validDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'];
+        const domain = email.split('@')[1];
+
+        if (!email) {
+            return Promise.resolve(null); // Correo vacío es válido
         }
 
-
-        validateEmail(control: FormControl) {
-            const email = control.value.toLowerCase();
-            const validDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'];
-            const domain = email.split('@')[1];
-            
-            if (!email) {
-                return Promise.resolve(null); // Correo vacío es válido
-            }
-            
-            if (validDomains.includes(domain)) {
-                return new Promise((resolve) => {
-                    if (!control.value) {
-                        resolve(null);
-                    } else {
-                        this.employeesService.checkEmailAvailability(control.value).subscribe(
-                            (isAvailable) => {
-                                if (isAvailable) {
-                                    resolve(null); // El correo es válido y está disponible
-                                } else {
-                                    resolve({ emailTaken: true }); // El correo no está disponible
-                                }
-                            },
-                            (error) => {
-                                resolve({ emailTaken: true });
-                            }
-                        );
-                    }
-                });
-            } else {
-                return Promise.resolve({ invalidDomain: true }); // No es un correo válido en el dominio permitido
-            }
-        }
-        
-            validateCedulaAvailability(control: FormControl) {
-                return new Promise((resolve) => {
-                    if (!control.value) {
-                        resolve(null);
-                    } else {
-                        this.employeesService.checkCedulaAvailability(control.value).subscribe(
+        if (validDomains.includes(domain)) {
+            return new Promise((resolve) => {
+                if (!control.value) {
+                    resolve(null);
+                } else {
+                    this.employeesService.checkEmailAvailability(control.value).subscribe(
                         (isAvailable) => {
                             if (isAvailable) {
-                            resolve(null);
+                                resolve(null); // El correo es válido y está disponible
                             } else {
-                            resolve({ cedulaTaken: true });
+                                resolve({ emailTaken: true }); // El correo no está disponible
                             }
                         },
                         (error) => {
+                            resolve({ emailTaken: true });
+                        }
+                    );
+                }
+            });
+        } else {
+            return Promise.resolve({ invalidDomain: true }); // No es un correo válido en el dominio permitido
+        }
+    }
+
+    public checkCedulaAvailability(): void {
+        if (this.cedula && this.cedula instanceof AbstractControl) {
+            this.validateCedulaAvailability(this.cedula).then((result) => {
+                if (result) {
+                    this.cedula.setErrors(result);
+                }
+            });
+        }
+    }
+
+    validateCedulaAvailability(control: AbstractControl) {
+        return new Promise((resolve) => {
+            if (!control.value) {
+                resolve(null);
+            } else {
+                this.employeesService.checkCedulaAvailability(control.value).subscribe(
+                    (isAvailable) => {
+                        if (isAvailable) {
+                            resolve(null);
+                        } else {
                             resolve({ cedulaTaken: true });
                         }
-                        );
+                    },
+                    (error) => {
+                        resolve({ cedulaTaken: true });
                     }
-                    });
-                }
-                
-        setViewMode() {
-            const currentRoute = this.router.url;
-            if (currentRoute.includes('/new')) {
-                this.viewMode = 'new';
-            } else if (currentRoute.includes('/edit/')) {
-                this.viewMode = 'edit';
-            } else if (currentRoute.includes('/detail/')) {
-                this.viewMode = 'print';
+                );
             }
-        }
-
-        cancel() {
-
-            this.router.navigateByUrl('/employees');
+        });
     }
+
+    saveEmployeeChanges(id: number, updatedData: any) {
+        this.employeesService.updateEmployee(id, updatedData).subscribe(
+            (response) => {
+                this.loading = false;
+                this.submit();
+            },
+            (error) => {
+                this.loading = false;
+                console.error("Error al crear empleado: ", this.toastr.error);
+                const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el empleado.';
+                this.toastr.error(errorMessage, 'Error');
+            }
+        );
+    }
+
+
+    
+    
+
+    public submitEmployee(): void {
+        if (this.viewMode == 'new') {
+            this.createEmployee();
+        } else if (this.viewMode == 'edit') {
+            this.saveChanges();
+        }
+    }
+
+
+    saveChanges() {
+        console.log('editar')
+
+        if (this.employeeForm.valid) {
+          const id = Number(this.id); // Convierte el ID a número
+          const updatedData = {
+            id_card_employee: this.cedula.value,
+            name_employee: this.employeeForm.get('name_employee').value,
+            email: this.email.value,
+            address: this.employeeForm.get('address').value,
+            phone: this.employeeForm.get('phone').value,
+            observation: this.employeeForm.get('observation').value,
+          };
+          this.saveEmployeeChanges(id, updatedData);
+        }else {
+            this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
+        }
+      }
+      
         
+
+    cancel() {
+
+        this.router.navigateByUrl('/employees');
+    }
+
     submit() {
         if (!this.loading) {
             this.loading = true;
@@ -190,37 +285,37 @@ export class EmployeeDetailComponent implements OnInit {
             }, 3000);
         }
     }
-    
-        createItem(item: any = {}) {
-        return this.fb.group({
-            name: [item.name],
-            unit: [item.unit],
-            unitPrice: [item.unitPrice]
-        });
-    }
-    addItem() {
-        const control = <UntypedFormArray>this.invoiceForm.controls['items'];
-        control.push(this.createItem());
-    }
-    removeItem(i) {
-        const control = <UntypedFormArray>this.invoiceForm.controls['items'];
-        control.removeAt(i);
-    }
 
 
 
-    calculateSubtotal(invoice) {
-        let total = 0;
-        invoice.items.forEach(i => {
-            total += (i.unit * i.unitPrice);
-        });
-        return total;
+
+
+    setViewMode() {
+        const currentRoute = this.router.url;
+        if (currentRoute.includes('/new')) {
+            this.viewMode = 'new';
+        } else if (currentRoute.includes('/edit/')) {
+            this.viewMode = 'edit';
+        } else if (currentRoute.includes('/print/')) {
+            this.viewMode = 'print';
+        }
     }
+
+
 
     print() {
         if (window) {
             window.print();
         }
+    }
+
+
+    get email() {
+        return this.employeeForm.get('email');
+    }
+
+    get cedula() {
+        return this.employeeForm.get('id_card_employee');
     }
 
 }

@@ -10,16 +10,22 @@
         </ul>
     </div>
 
-<div class="row">
+
+    <div class="separator-breadcrumb border-top"></div>
+
+<!-- Contenido común a todas las vistas -->
+<div class="form-container">
+ <!-- Vista de crear empleados -->
+ <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body">
                 <div class="card-title mb-3">Formulario de Empleados</div>
-                <form [formGroup]="employeeForm" (ngSubmit)="createEmployee()">
+                <form [formGroup]="employeeForm" (ngSubmit)="submitEmployee()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
                             <label for="id_card_employee">Cédula de empleado<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="id_card_employee" placeholder="Cédula de empleado" formControlName="id_card_employee" required>
+                            <input type="text" class="form-control" id="id_card_employee" placeholder="Cédula de empleado" formControlName="id_card_employee" (change)="checkCedulaAvailability()">
                             <div *ngIf="employeeForm.get('id_card_employee').touched && employeeForm.get('id_card_employee').hasError('required')" class="error-message">
                                 El campo Cédula es obligatorio.
                             </div>
@@ -40,19 +46,19 @@
                             <div *ngIf="employeeForm.get('name_employee').touched && employeeForm.get('name_employee').hasError('required')"class="error-message">
                                 El campo Nombre es obligatorio.
                             </div>
-                            <div *ngIf="employeeForm.get('name_employee').hasError('invalidName2')"class="error-message">
-                                El campo Nombre solo puede contener un solo numero si es necesario y letras.
+                            <div *ngIf="employeeForm.get('name_employee').hasError('invalidName')"class="error-message">
+                                El campo Nombre no puede tener simbolos y solo puede tener 1  numero.
                             </div>
+                            
                             <div *ngIf="employeeForm.get('name_employee').hasError('maxlength')"class="error-message">
                                 El campo Nombre no puede superar los 80 caracteres.
                             </div>
-                       
                         </div>
                         
                         
                         <div class="col-md-6 form-group mb-3">
                             <label for="email">Correo<span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" placeholder="Correo" formControlName="email" required>
+                            <input type="email" class="form-control" id="email" placeholder="Correo" formControlName="email" (change)="checkEmailAvailability">
                             <div *ngIf="employeeForm.get('email').touched && employeeForm.get('email').hasError('required')"class="error-message">
                                 El campo Correo es obligatorio.
                             </div>
@@ -91,6 +97,11 @@
                                 El campo Teléfono debe seguir un formato válido.
                             </div>
                         </div>
+                        <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+                            <label for="state_employee">Estado<span class="text-danger">*</span></label>
+                            <input class="form-control" id="state_employee" placeholder="state_employee" formControlName="state_employee">
+                        </div>
+
                         
                         <div class="col-md-6 form-group mb-3">
                             <label for="observation">Observación<span class="text-danger">*</span></label>
@@ -102,17 +113,21 @@
                                 El campo Observación no puede superar los 100 caracteres.
                             </div>
                         </div>
+                        <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+                            <label for="creation_date_employee">Fecha de creacion<span class="text-danger">*</span></label>
+                            <input class="form-control" id="creation_date_employee" placeholder="Fecha de Creacion" formControlName="creation_date_employee">
+                        </div>
+                        
                         <div class="form-group text-right" style="text-align: right;">
                             <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
-                            <btn-loading *ngIf="viewMode === 'new'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading">Registrar Empleado
-
+                            <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode == 'new' ? 'Registrar Empleado' : 'Editar Empleado' }} 
                             </btn-loading>
-                            <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">Editar Empleado
-                            </btn-loading>
+                           
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
-</div>
+
+      </div>
+   </div>

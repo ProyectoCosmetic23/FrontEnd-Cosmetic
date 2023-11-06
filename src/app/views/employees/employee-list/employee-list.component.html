@@ -89,7 +89,7 @@
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-dark m-1" [routerLink]="['/employees/detail', row.id_employee]">
+                        <button class="btn btn-dark m-1" [routerLink]="['/employees/print', row.id_employee]">
                             <i class="i-Eye"></i>
                         </button>
                         <button class="btn btn-info m-1" [routerLink]="['/employees/edit', row.id_employee]">

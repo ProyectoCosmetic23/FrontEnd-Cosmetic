@@ -18,6 +18,7 @@ import { ToastrService } from 'ngx-toastr';
         pageSize: number = 10;
         currentPage: number = 1;
         modalAbierto = false;
+     
 
         constructor(
             private _employeeService: EmployeesService,
@@ -26,7 +27,6 @@ import { ToastrService } from 'ngx-toastr';
 
         ngOnInit(): void {
             this.getEmployees();
-
             this.searchControl.valueChanges
             .pipe(debounceTime(200))
             .subscribe(value => {
