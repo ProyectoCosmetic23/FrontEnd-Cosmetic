@@ -1,4 +1,63 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos para la tabla de lista de datos */
+
 .ngx-datatable.scroll-vertical .datatable-body {
+    overflow: hidden;
     overflow-y: hidden !important;
+}
+
+.disabled-hover {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.empty-row {
+    pointer-events: none;
+    background-color: transparent;
+}
+
+/* Estilos para la tabla de detalle */
+
+.table-border {
+    border: 1px solid #e0e0e0;
+    /* Color del borde y ancho personalizados */
+    border-radius: 5px;
+    padding: 10px;
+    /* Espacio interno para mejorar la apariencia */
+}
+
+/* Estilo para el primer th */
+table th:first-child {
+    border-top-left-radius: 5px;
+    /* Redondea la esquina superior izquierda */
+    
+}
+
+/* Estilo para el último th */
+table th:last-child {
+    border-top-right-radius: 5px;
+    /* Redondea la esquina superior derecha */
+
+}
+
+.table-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: -25px !important;
+    margin-bottom: 2%;
+    background-color: #dee2e6;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.total {
+    float: right;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 4%;
+}
+
+.button_container {
+    display: flex;
+    justify-content: flex-end;
 }

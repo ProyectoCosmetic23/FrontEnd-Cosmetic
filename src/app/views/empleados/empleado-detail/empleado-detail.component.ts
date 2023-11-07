@@ -33,9 +33,11 @@ export class EmpleadoDetailComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private dl: DataLayerService,
         private toastr: ToastrService
-    ) {  this.formBasic = this.formBuilder.group({
-    
-      });}
+    ) {
+        this.formBasic = this.formBuilder.group({
+
+        });
+    }
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id'];
@@ -54,10 +56,10 @@ export class EmpleadoDetailComponent implements OnInit {
     submit() {
         this.loading = true;
         setTimeout(() => {
-          this.loading = false;
-          this.toastr.success('Profile updated.', 'Success!', {progressBar: true});
+            this.loading = false;
+            this.toastr.success('Profile updated.', 'Success!', { progressBar: true });
         }, 3000);
-      }
+    }
     buildInvoiceForm(i: any = {}) {
         this.invoiceForm = this.fb.group({
             id: [i.id],
@@ -116,8 +118,8 @@ export class EmpleadoDetailComponent implements OnInit {
                 this.viewMode = 'print';
                 this.saving = false;
                 this.toastr.success('Invoice Saved!', 'Success!', { timeOut: 3000 });
-                if(this.isNew) {
-                    this.router.navigateByUrl('/invoice/edit/'+savedInvoice.id);
+                if (this.isNew) {
+                    this.router.navigateByUrl('/invoice/edit/' + savedInvoice.id);
                 }
             });
     }
