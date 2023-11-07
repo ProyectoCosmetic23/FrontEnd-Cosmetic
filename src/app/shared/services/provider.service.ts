@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ProvidersService {
 
-  private baseUrl = 'http://localhost:8080/api/proveedores';
+  private baseUrl = 'http://localhost:8080/api/providers';
 
   constructor(private http: HttpClient) { }
 
@@ -23,7 +23,7 @@ export class ProvidersService {
   }
 
   updateProviderStatus(providerId: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/estado/${providerId}`, null);
+    return this.http.put(`${this.baseUrl}/state/${providerId}`, null);
   }
 
   updateProvider(providerId: any, updatedProviderData: any):

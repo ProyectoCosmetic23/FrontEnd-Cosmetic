@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class PaymentsService {
 
-  private baseUrl = 'http://localhost:8080/api/pagos';
-  private url2 = 'http://localhost:8080/api/clientes';
+  private baseUrl = 'http://localhost:8080/api/payments';
+  private url2 = 'http://localhost:8080/api/clients';
   private url3 = 'http://localhost:8080/api/sales';
 
   constructor(private http: HttpClient) { }
@@ -26,10 +26,10 @@ export class PaymentsService {
     return this.http.get(`${this.url3}/${saleId}`);
   }
   getPayClient(clientID: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/clientes/${clientID}`);
+    return this.http.get(`${this.baseUrl}/clients/${clientID}`);
   }
   getPayClientSale(clientID: number, saleID: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/clientes/${clientID}/ventas/${saleID}`);
+    return this.http.get(`${this.baseUrl}/clients/${clientID}/sales/${saleID}`);
   }
   getAllClients(): Observable<any> {
     return this.http.get(this.url2);
