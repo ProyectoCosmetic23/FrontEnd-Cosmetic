@@ -7,11 +7,15 @@ import { AuthGaurd } from './shared/services/auth.gaurd';
 
 const adminRoutes: Routes = [
   {
+    path: 'dashboard',
+    loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  {
     path: 'proveedores',
     loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
   },
   {
-    path: 'comisiones',
+    path: 'comissions',
     loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
   },
   {

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs-compat';
 })
 export class EmpleadosService {
 
-  url = 'http://localhost:8080/api/empleados';
+  url = 'http://localhost:8080/api/employees';
   constructor(
     private http: HttpClient
   ) { }
