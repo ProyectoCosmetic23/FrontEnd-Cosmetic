@@ -19,6 +19,18 @@ const adminRoutes: Routes = [
       loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
     },
     {
+      path: 'comisiones',
+      loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
+    },
+    {
+      path: 'detalleComs',
+      loadChildren: () => import('./views/comissionsDetail/comissionDetail.module').then(m => m.ComissionDetailModule)
+    },
+    {
+     path: 'pagos',
+      loadChildren: () => import('./views/payments/payment.module').then(m => m.PaymentModule) 
+    },
+    {
       path: 'uikits',
       loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
     },
@@ -38,7 +50,7 @@ const adminRoutes: Routes = [
     {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-    }
+    }  
   ];
 
 const routes: Routes = [

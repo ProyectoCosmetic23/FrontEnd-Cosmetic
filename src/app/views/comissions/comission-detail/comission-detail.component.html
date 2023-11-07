@@ -1,0 +1,88 @@
+<div class="breadcrumb">
+    <h1 *ngIf="viewMode === 'new'">Registrar Comision</h1>
+    <h1 *ngIf="viewMode === 'print'">Ver Detalle de la Comision</h1>
+    <ul>
+        <li><a [routerLink]="['/comisiones']">Comisiones</a></li>
+        <li *ngIf="viewMode === 'new'">Registrar Comision</li>
+        <li *ngIf="viewMode === 'print'">Ver Detalle de la Comision</li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title mb-3">Formulario de Comisiones</div>
+                <form [formGroup]="formBasic" (ngSubmit)="submit()">
+                    <div class="row">
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="id_employee">Empleado</label>
+                            <select class="form-control" id="id_employee" formControlName="id_employee">
+                                <option value="" disabled selected>Elija al empleado</option>
+                                <option *ngFor="let employee of listEmployees" [value]="employee.id_employee">{{
+                                    employee.name_employee }}</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="total_commission">Total comisión</label>
+                            <input type="text" class="form-control" id="total_commission"
+                                [placeholder]="comission?.total_commission || 'Total Comisión'"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="id_comission_detail">Mes comisión</label>
+                            <div *ngIf="viewMode === 'new'">
+                              <select class="form-control" id="id_comission_detail" formControlName="id_commission_detail"
+                                (change)="updateCommissionPercentage()">
+                                <option value="" disabled selected>Elija el mes de la comisión</option>
+                                <option *ngFor="let detail of listComisionDetail" [value]="detail.id_commission_detail">
+                                  {{ detail.month_commission | date: 'yyyy-MM' }}</option>
+                              </select>
+                            </div>
+                            <div *ngIf="viewMode === 'print'">
+                              <input type="text" class="form-control" [readonly]="true" [ngClass]="{'placeholder-black': viewMode === 'print'}"
+                                [value]="comission?.month_commission">
+                            </div>
+                          </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="commission_percentage">Porcentaje de comisión</label>
+                            <input class="form-control" id="commission_percentage" [readonly]="viewMode === 'print'"
+                              formControlName="commission_percentage">
+                          </div>
+
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="total_sales">Total ventas</label>
+                            <input class="form-control" id="total_sales" [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        </div>
+
+
+
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-danger float-right"
+                                    [routerLink]="['/comisiones']">Volver</button>
+                                <div style="width: 10px;"></div>
+                                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary"
+                                    [loading]="loading">Registrar
+                                    Comisión</btn-loading>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--'"
+[placeholder]="employe?.name_employee || 'Empleado'"
+[placeholder]="comission?.total_sales || 'Total ventas'"
+[placeholder]="comissionDetail?.commission_percentage || 'Porcentaje de comisión'"
+ -->

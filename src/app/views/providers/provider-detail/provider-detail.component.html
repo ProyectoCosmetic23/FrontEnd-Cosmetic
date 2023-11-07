@@ -15,12 +15,12 @@
         <div class="card mb-4">
             <div class="card-body">
                 <div class="card-title mb-3">Formulario de Proveedor</div>
-                <form [formGroup]="formBasic" (ngSubmit)="createProvider()">
+                <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
                             <label for="nit_cedula">Cédula o NIT del proveedor</label>
 
-                            <input type="numer" class="form-control" id="nit_cedula" (change)="handleNitSelection($event)"
+                            <input type="number" class="form-control" id="nit_cedula" (change)="handleNitSelection($event)"
                               [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'" 
                               [readonly]="viewMode === 'print' || viewMode === 'edit'"
                               [ngClass]="{'placeholder-black': viewMode === 'print'}">  

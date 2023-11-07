@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { UntypedFormControl } from '@angular/forms';
+import { PaginationControlsComponent } from 'ngx-pagination';
 import { debounceTime } from 'rxjs/operators';
 
 
@@ -21,6 +22,16 @@ export class ProviderListComponent implements OnInit {
     searchControl: UntypedFormControl = new UntypedFormControl();
     providers;
     filteredProviders;
+    paginationId: string = 'providers-pagination';
+
+    currentPage: number = 1;
+    itemsPerPage: number = 6;
+
+
+    onPageChange(event: any) {
+        this.currentPage = event.offset / this.itemsPerPage + 1;
+        this.updateListProviders();
+    }
 
     constructor(
         private _providersService: ProvidersService,
@@ -41,6 +52,29 @@ export class ProviderListComponent implements OnInit {
             .subscribe(value => {
                 this.filerData(value);
             });
+    }
+
+    
+    updateListProviders() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        let endIndex = startIndex + this.itemsPerPage;
+        const totalPages = Math.ceil(this.listProviders.length / this.itemsPerPage);
+
+        if (this.currentPage === totalPages) {
+            const remainingRows = this.listProviders.length%this.itemsPerPage
+            if (remainingRows > 0) {
+                endIndex = startIndex + remainingRows
+            }
+        }
+
+        const rowsToAdd = 6 -(endIndex % 6)
+        endIndex += rowsToAdd
+        this.filteredProviders = this.listProviders.slice(startIndex, endIndex)
+    }
+
+    pageChanged(event: any) {
+        this.currentPage = event.page;
+        this.updateListProviders();
     }
 
     filerData(val) {

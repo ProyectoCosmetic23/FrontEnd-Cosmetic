@@ -150,6 +150,7 @@ export class NavigationService {
                 { icon: 'i-Money1', name: 'Ventas', state: '/categorias', type: 'link' },
                 { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/chat', type: 'link' },
                 { icon: 'i-Full-Cart', name: 'Clientes', state: '/calendar', type: 'link' },
+                { icon: 'i-Financial', name: 'Pagos', state: '/pagos', type: 'link' },
             ]
         },
         {
@@ -160,7 +161,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Conference', name: 'Usuarios', state: 'por arreglar', type: 'link' },
                 { icon: 'i-Conference', name: 'Empleados', state: '/empleados', type: 'link' },
-                { icon: 'i-Money-2', name: 'Comisiones', state: 'por arreglar', type: 'link' },
+                { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
 
             ]
         },

@@ -1,8 +1,8 @@
 <div class="breadcrumb">
     <h1>CosmeTic</h1>
     <ul>
-        <li><a href="">Compras</a></li>
-        <li>Proveedores</li>
+        <li><a href="">Servicios</a></li>
+        <li>Comisiones</li>
     </ul>
 </div>
 
@@ -11,11 +11,19 @@
 <div class="row mb-3">
     <div class="col-md-12 mb-3">
         <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-primary float-right" [routerLink]="['/proveedores/registrar']">Crear nuevo proveedor</button>
+            <div class="col-md-6"> 
+                <div class="row">
+                    <div class="col-md-3">
+                        <button class="btn btn-primary float-right" [routerLink]="['/comisiones/registrar']">Crear nueva comisión</button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary float-right" [routerLink]="['/detalleComs/registrar']">Crear nuevo detalle de comisión</button>
+                    </div>
+                </div>
             </div>
+           
             <div class="col-md-6 d-flex justify-content-end">
-                <input _ngcontent-vet-c167="" id="email" placeholder="Buscar Proveedires" type="text" class="form-control  ng-valid ng-touched ng-dirty" ng-reflect-form="[object Object]" style="width: 50%;">
+                <input _ngcontent-vet-c167="" id="email" placeholder="Buscar Comisiones" type="text" class="form-control  ng-valid ng-touched ng-dirty" ng-reflect-form="[object Object]" style="width: 50%;">
             </div>
         </div>
     </div>
@@ -36,66 +44,51 @@
                         [footerHeight]="50"
                         [rowHeight]="60"
                         [scrollbarV]="true"
-                        [rows]="listProviders"
+                        [rows]="listComissions"
                         [externalPaging]="true"
-                        [count]="listProviders.length"
+                        [count]="listComissions.length"
                         [limit]="itemsPerPage"
                         [offset]="(currentPage - 1) * itemsPerPage"
                         (page)="onPageChange($event)">
-                        <ngx-datatable-column name="nit_cedula">
+                        <ngx-datatable-column name="id_employee">
                             <ng-template ngx-datatable-header-template>
-                                Cédula-NIT
+                                Empleado
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.nit_cedula }}
+                                {{ employees[row.id_employee] }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="name_provider">
+                        <ngx-datatable-column name="total_commission">
                             <ng-template ngx-datatable-header-template>
-                                Nombre proveedor
+                                Total Comisión
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.name_provider }}
+                                {{ row.total_commission }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="email_provider">
+                        <ngx-datatable-column name="total_sales">
                             <ng-template ngx-datatable-header-template>
-                                Correo
+                                Total Ventas
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.email_provider }}
+                                {{ row.total_sales }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="address_provider">
+                        <ngx-datatable-column name="month_commission">
                             <ng-template ngx-datatable-header-template>
-                                Dirección
+                                Mes Comisión
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.address_provider }}
+                                {{ row.month_commission }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="phone_provider">
+                        
+                        <ngx-datatable-column name="commission_percentage">
                             <ng-template ngx-datatable-header-template>
-                                Teléfono
+                                Porcentaje Comisión
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.phone_provider }}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="name_contact">
-                            <ng-template ngx-datatable-header-template>
-                                Nombre contacto
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.name_contact }}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="state_provider">
-                            <ng-template ngx-datatable-header-template>
-                                Estado
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.state_provider }}
+                                {{ row.commission_percentage }}
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column [width]="120">
@@ -103,16 +96,9 @@
                                 Acciones
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button class="btn btn-dark m-1 me-3" [routerLink]="['/proveedores/detalle', row.id_provider]">
+                                <button class="btn btn-dark m-1 me-3" [routerLink]="['/comisiones/detalle', row.id_commission]">
                                     <i class="i-Eye"></i> 
                                 </button>
-                                <button class="btn btn-info m-1 me-3" [routerLink]="['/proveedores/editar', row.id_provider]">
-                                    <i class="i-Pen-4"></i> 
-                                </button>
-                                <label class="switch switch-success me-3" (click)="openModal(row.id_provider)">
-                                    <input type="checkbox" [checked]="row.state_provider === 'Activo' || row.state_provider === 'Active'">
-                                    <span class="slider"></span>
-                                </label>
                             </ng-template>
                         </ngx-datatable-column>
                     </ngx-datatable>

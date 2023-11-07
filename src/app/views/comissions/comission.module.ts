@@ -5,9 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { ProvidersDetailComponent } from './provider-detail/provider-detail.component';
-import { ProviderListComponent } from './provider-list/provider-list.component';
-import { ProviderRoutingModule } from './provider-routing.module';
+import { ComissionsDetailComponent } from './comission-detail/comission-detail.component';
+import { ComissionListComponent } from './comission-list/comission-list.component';
+import { ComissionRoutingModule } from './comission-routing.module';
 
 // Importa NgxPaginationModule
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -20,9 +20,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ReactiveFormsModule,
     SharedComponentsModule,
     NgbModule,
-    ProviderRoutingModule,
+    ComissionRoutingModule,
     NgxPaginationModule, // Agrega esta línea
   ],
-  declarations: [ProvidersDetailComponent, ProviderListComponent]
+  declarations: [ComissionsDetailComponent, ComissionListComponent]
 })
-export class ProviderModule { }
+export class ComissionModule { }

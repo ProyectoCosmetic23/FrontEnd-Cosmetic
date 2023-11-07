@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validator } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
-import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+
 
 interface Provider {
   name_provider: string;
@@ -69,9 +68,12 @@ export class ProvidersDetailComponent implements OnInit {
     this.buildProvidersForm(this.provider);
     this.setViewMode();
     this.getProvider();
+    if (!this.isNew) {
+      this.getProvider();
+    }
   }
 
-
+  updatedFields: any = {};
 
   buildProvidersForm(i: any = {}) {
     this.formBasic = this.formBuilder.group({
@@ -107,11 +109,6 @@ export class ProvidersDetailComponent implements OnInit {
 
     const providerId = parseInt(this.id, 10); // Convierte this.id a un número
 
-    if (isNaN(providerId)) {
-      console.error('ID no válido');
-      return;
-    }
-
     this._providersService.getProviderById(providerId).subscribe(
       (data) => {
         this.provider = data;
@@ -127,24 +124,30 @@ export class ProvidersDetailComponent implements OnInit {
   }
   handleNameProviderSelection(event: any) {
     this.new_provider.name_provider = event.target.value;
+    this.updatedFields.name_provider = event.target.value;
   }
   handleNameContactSelection(event: any) {
     this.new_provider.name_contact = event.target.value;
+    this.updatedFields.name_contact = event.target.value;
   }
   handleNitSelection(event: any) {
     this.new_provider.nit_cedula = event.target.value;
   }
   handleMailSelection(event: any) {
     this.new_provider.email_provider = event.target.value;
+    this.updatedFields.email_provider = event.target.value;
   }
   handleAddressSelection(event: any) {
     this.new_provider.address_provider = event.target.value;
+    this.updatedFields.address_provider = event.target.value;
   }
   handleObservationSelection(event: any) {
     this.new_provider.observation_provider = event.target.value;
+    this.updatedFields.observation_provider = event.target.value;
   }
   handlePhoneSelection(event: any) {
     this.new_provider.phone_provider = event.target.value;
+    this.updatedFields.phone_provider = event.target.value;
   }
   
 
@@ -155,9 +158,9 @@ export class ProvidersDetailComponent implements OnInit {
     if (currentRoute.includes('/registrar')) {
       console.log(this.new_provider);
       
-      console.log(this.new_provider);
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
+          console.log(data);
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
@@ -175,5 +178,37 @@ export class ProvidersDetailComponent implements OnInit {
       );
     }
     this.loading = true;
+  }
+
+  updateProvider() {
+    const currentRoute = this.router.url;
+    if (currentRoute.includes('/editar')) {
+      this._providersService.updateProvider(this.id, this.updatedFields).subscribe(
+        (data) => {
+          console.log(data);
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.toastr.success('Proveedor actualizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+            setTimeout(() => {
+              this.router.navigate(['/proveedores']);
+            }, 3000);
+          }, 3000);
+        },
+        (error) => {
+          this.loading = false;
+          this.toastr.error('Fallo al actualizar el proveedor.', 'Error', { progressBar: true });
+          console.error('Error al actualizar el proveedor:', error);
+        }
+      );
+    }
+  }
+
+  submit() {
+    if (this.viewMode === 'new') {
+      this.createProvider(); // Lógica de creación
+    } else if (this.viewMode === 'edit') {
+      this.updateProvider(); // Lógica de edición
+    }
   }
 }
