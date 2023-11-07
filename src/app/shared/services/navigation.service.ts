@@ -146,8 +146,8 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Cash-register-2',
             sub: [
-                { icon: 'i-Jeep', name: 'Pedidos', state: '/invoice', type: 'link' },
-                { icon: 'i-Money1', name: 'Ventas', state: '/categorias', type: 'link' },
+                { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
+                { icon: 'i-Money1', name: 'Ventas', state: '/sales', type: 'link' },
                 { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/chat', type: 'link' },
                 { icon: 'i-Full-Cart', name: 'Clientes', state: '/calendar', type: 'link' },
             ]
@@ -170,7 +170,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Gear',
             sub: [
-                { icon: 'i-Error-404-Window', name: 'Roles', state: '/roles', type: 'link' },
+                { icon: 'i-Key', name: 'Roles', state: '/roles', type: 'link' },
                 { icon: 'i-Error-404-Window', name: 'Usuarios', state: '/others/404', type: 'link' },
             ]
         },

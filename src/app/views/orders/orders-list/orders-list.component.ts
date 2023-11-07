@@ -1,45 +1,45 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RolesService } from 'src/app/shared/services/roles.service';
+import { OrdersService } from 'src/app/shared/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { UntypedFormControl } from '@angular/forms';
 
 @Component({
-    selector: 'app-roles-list',
-    templateUrl: './roles-list.component.html',
-    styleUrls: ['./roles-list.component.scss']
+    selector: 'app-orders-list',
+    templateUrl: './orders-list.component.html',
+    styleUrls: ['./orders-list.component.scss']
 })
-export class RolesListComponent implements OnInit {
+export class OrdersListComponent implements OnInit {
     loading: boolean;
-    listRoles: any[] = [];
+    listOrders: any[] = [];
     modalAbierto = false;
     searchControl: UntypedFormControl = new UntypedFormControl();
-    filteredRoles: any[] = [];
-    currentPage = 1; // Propiedad para rastrear la página actual
-    itemsPerPage = 6; // El número de filas por página
+    filteredOrders: any[] = [];
+    currentPage = 1;
+    itemsPerPage = 6;
     countLabel: number;
 
     constructor(
-        private _rolesService: RolesService,
+        private _ordersService: OrdersService,
         private modalService: NgbModal,
         private toastr: ToastrService
     ) { }
 
     ngOnInit(): void {
-        this.getRoles();
+        this.getOrders();
     }
 
-    getRoles() {
-        this._rolesService.getAllRoles().subscribe(
+    getOrders() {
+        this._ordersService.getAllOrders().subscribe(
             (data) => {
-                this.listRoles = data;
-                console.log(this.listRoles);
-                this.sortListRolesById();
-                this.adjustListRoles();
+                this.listOrders = data;
+                console.log(this.listOrders);
+                this.sortListOrdersById();
+                this.adjustListOrders();
             },
             (error) => {
-                console.error('Error al obtener roles:', error);
+                console.error('Error al obtener pedidos:', error);
             }
         );
     }
@@ -47,28 +47,27 @@ export class RolesListComponent implements OnInit {
     @ViewChild(DatatableComponent)
     table: DatatableComponent;
 
-    // Luego, puedes actualizar el valor visual de count según tus necesidades
     actualizarCountLabel() {
-        this.countLabel = this.listRoles.length;
+        this.countLabel = this.listOrders.length;
     }
 
-    adjustListRoles() {
-        const totalRows = this.listRoles.length;
+    adjustListOrders() {
+        const totalRows = this.listOrders.length;
         const remainingRows = 6 - (totalRows % 6);
 
         for (let i = 0; i < remainingRows; i++) {
-            this.listRoles.push({}); // Agrega filas vacías
+            this.listOrders.push({}); // Agrega filas vacías
         }
 
         this.loadData();
     }
 
-    sortListRolesById() {
-        this.listRoles.sort((a, b) => {
-            if (a.id_role < b.id_role) {
+    sortListOrdersById() {
+        this.listOrders.sort((a, b) => {
+            if (a.order_number < b.order_number) {
                 return -1;
             }
-            if (a.id_role > b.id_role) {
+            if (a.order_number > b.order_number) {
                 return 1;
             }
             return 0;
@@ -79,20 +78,19 @@ export class RolesListComponent implements OnInit {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         let endIndex = startIndex + this.itemsPerPage;
 
-        const totalPages = Math.ceil(this.listRoles.length / this.itemsPerPage);
+        const totalPages = Math.ceil(this.listOrders.length / this.itemsPerPage);
 
         if (this.currentPage === totalPages) {
-            const remainingRows = this.listRoles.length % this.itemsPerPage;
+            const remainingRows = this.listOrders.length % this.itemsPerPage;
             if (remainingRows > 0) {
                 endIndex = startIndex + remainingRows;
             }
         }
 
-        // Ajusta endIndex para que sea el próximo número divisible por 6
         const rowsToAdd = 6 - (endIndex % 6);
         endIndex += rowsToAdd;
 
-        this.filteredRoles = this.listRoles.slice(startIndex, endIndex);
+        this.filteredOrders = this.listOrders.slice(startIndex, endIndex);
 
         console.log('load data charged');
     }
@@ -106,14 +104,14 @@ export class RolesListComponent implements OnInit {
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 
     openModal(idRole: number) {
-        this._rolesService.getRoleById(idRole).subscribe(
+        this._ordersService.getOrderById(idRole).subscribe(
             (data) => {
                 if (!this.modalAbierto) {
                     this.modalAbierto = true;
                     this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
                         (result) => {
                             if (result === 'Ok') {
-                                this._rolesService.updateRoleStatus(idRole).subscribe(
+                                this._ordersService.updateOrderStatus(idRole).subscribe(
                                     (data) => {
                                         this.loading = false;
                                         this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
@@ -148,7 +146,7 @@ export class RolesListComponent implements OnInit {
                 }
             },
             (error) => {
-                console.error('Error al obtener el rol:', error);
+                console.error('Error al obtener el pedido:', error);
             }
         );
     }

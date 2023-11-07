@@ -9,8 +9,10 @@
                 </div>
                 <div class="d-sm-flex mb-5" *ngIf="viewMode !== 'edit'">
                     <span class="m-auto"></span>
-                    <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3" routerLink="/invoice">Back To Invoices</button>
-                    <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3" (click)="viewMode = 'edit'">Edit Invoice</button>
+                    <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3" routerLink="/invoice">Back To
+                        Invoices</button>
+                    <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3" (click)="viewMode = 'edit'">Edit
+                        Invoice</button>
                     <button class="btn btn-primary mb-sm-0 mb-3" (click)="print()">Print Invoice</button>
                 </div>
                 <!---===== Print Area =======-->
@@ -70,11 +72,11 @@
                             <div class="invoice-summary float-right">
                                 <p>Sub total: <span>{{invoice.currency}}{{subTotal}}</span></p>
                                 <p>Vat: <span>
-                                    {{invoice.currency}}{{(invoice.vat/100 * subTotal).toFixed(2)}}
-                                </span></p>
+                                        {{invoice.currency}}{{(invoice.vat/100 * subTotal).toFixed(2)}}
+                                    </span></p>
                                 <h5 class="font-weight-bold">Grand Total: <span>
-                                    {{invoice.currency}}{{(invoice.vat/100 * subTotal + subTotal)}}
-                                </span></h5>
+                                        {{invoice.currency}}{{(invoice.vat/100 * subTotal + subTotal)}}
+                                    </span></h5>
                             </div>
                         </div>
                     </div>
@@ -97,17 +99,20 @@
                                 <label class="d-block text-12 text-muted">Order Status</label>
                                 <div class="pr-0 mb-4">
                                     <label class="radio radio-reverse radio-danger">
-                                        <input type="radio" name="orderStatus" value="Pending" formControlName="orderStatus">
+                                        <input type="radio" name="orderStatus" value="Pending"
+                                            formControlName="orderStatus">
                                         <span>Pending</span>
                                         <span class="checkmark"></span>
                                     </label>
                                     <label class="radio radio-reverse radio-warning">
-                                        <input type="radio" name="orderStatus" value="Processing" formControlName="orderStatus">
+                                        <input type="radio" name="orderStatus" value="Processing"
+                                            formControlName="orderStatus">
                                         <span>Processing</span>
                                         <span class="checkmark"></span>
                                     </label>
                                     <label class="radio radio-reverse radio-success">
-                                        <input type="radio" name="orderStatus" value="Delivered" formControlName="orderStatus">
+                                        <input type="radio" name="orderStatus" value="Delivered"
+                                            formControlName="orderStatus">
                                         <span>Delivered</span>
                                         <span class="checkmark"></span>
                                     </label>
@@ -117,9 +122,11 @@
                                     <label for="picker1">Order Date</label>
                                     <div class="input-group">
                                         <input formControlName="orderDate" id="picker1" class="form-control text-right"
-                                            placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #orderDatePicker="ngbDatepicker">
+                                            placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                                            #orderDatePicker="ngbDatepicker">
                                         <div class="input-group-append">
-                                            <button class="btn btn-secondary" (click)="orderDatePicker.toggle()" type="button">
+                                            <button class="btn btn-secondary" (click)="orderDatePicker.toggle()"
+                                                type="button">
                                                 <i class="icon-regular i-Calendar-4"></i>
                                             </button>
                                         </div>
@@ -137,15 +144,16 @@
                                         placeholder="Bill From">
                                 </div>
                                 <div class="col-md-10 form-group mb-3 pl-0">
-                                    <textarea formControlName="address" class="form-control" id="" placeholder="Bill From Address"></textarea>
+                                    <textarea formControlName="address" class="form-control" id=""
+                                        placeholder="Bill From Address"></textarea>
                                 </div>
                             </div>
 
                             <div class="col-md-6 text-right" [formGroup]="invoiceForm.controls['billTo']">
                                 <h5 class="font-weight-bold">Bill To</h5>
                                 <div class="col-md-10 offset-md-2 form-group mb-3 pr-0">
-                                    <input formControlName="name" type="text" class="form-control text-right" id="billFrom"
-                                        placeholder="Bill From">
+                                    <input formControlName="name" type="text" class="form-control text-right"
+                                        id="billFrom" placeholder="Bill From">
                                 </div>
                                 <div class="col-md-10 offset-md-2 form-group mb-3 pr-0">
                                     <textarea formControlName="address" class="form-control text-right" id=""
@@ -187,7 +195,8 @@
                                                 * invoiceForm.controls['items'].controls[i].controls['unit'].value}}
                                             </td>
                                             <td>
-                                                <button class="btn btn-outline-secondary float-right" (click)="removeItem(i)">Delete</button>
+                                                <button class="btn btn-outline-secondary float-right"
+                                                    (click)="removeItem(i)">Delete</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -198,7 +207,8 @@
                             <div class="col-md-12">
 
                                 <div class="invoice-summary invoice-summary-input float-right">
-                                    <p>Sub total: <span>{{invoiceForm.controls['currency'].value}}{{subTotal}}</span></p>
+                                    <p>Sub total: <span>{{invoiceForm.controls['currency'].value}}{{subTotal}}</span>
+                                    </p>
                                     <p class="d-flex align-items-center">Vat(%):<span>
                                             <input type="text" class="form-control small-input" formControlName="vat">
                                             {{invoiceForm.controls['currency'].value}}
@@ -206,7 +216,8 @@
                                         </span></p>
                                     <h5 class="font-weight-bold d-flex align-items-center">Grand Total:
                                         <span>
-                                            <input type="text" class="form-control small-input" formControlName="currency">
+                                            <input type="text" class="form-control small-input"
+                                                formControlName="currency">
                                             {{invoiceForm.controls['currency'].value}}
                                             {{(invoiceForm.controls['vat'].value/100 * subTotal + subTotal)}}
                                         </span>

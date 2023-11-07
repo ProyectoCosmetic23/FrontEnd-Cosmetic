@@ -2,26 +2,40 @@
     <h1>Roles</h1>
     <ul>
         <li>Configuraciones</li>
-        <li><a [routerLink]="['/roles']">Roles</a></li>
+        <li>Roles</li>
     </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
 
 <div class="row mb-3">
-    <div class="col-md-12 mb-3">
-        <button class="btn btn-primary float-right" [routerLink]="['/roles/new']">Crear nuevo Rol</button>
+    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button class="btn btn-primary" [routerLink]="['/roles/new']">Crear nuevo Rol</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <input id="role" placeholder="Buscar Rol" [formControl]="searchControl" class="form-control"
+                    type="role">
+            </div>
+        </div>
     </div>
     <div class="col-md-12">
         <div class="card o-hidden">
-            <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
-                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="listRoles">
+            <ngx-datatable class="material fullscreen" style="height: 460px;" [columnMode]="'force'" [headerHeight]="50"
+                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="listRoles" [externalPaging]="true"
+                [count]="listRoles.length" [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
+                (page)="onPageChange($event)">
                 <ngx-datatable-column name="name_role" [resizeable]="false" [canAutoResize]="true" [minWidth]="450">
                     <ng-template ngx-datatable-header-template>
                         Nombre del Rol
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
-                        {{ rowIndex + 1 }}. {{ row.name_role }}
+                        <ng-container *ngIf="row && row.id_role">
+                            {{ rowIndex + 1 }}. {{ row.name_role }}
+                        </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="state_role" [resizeable]="false" [canAutoResize]="true" [minWidth]="450">
@@ -29,7 +43,9 @@
                         Estado del Rol
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.state_role }}
+                        <ng-container *ngIf="row && row.id_role">
+                            {{ row.state_role }}
+                        </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="450">
@@ -37,23 +53,24 @@
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-dark m-1" [routerLink]="['/roles/detail', row.id_role]">
-                            <i class="i-Eye"></i>
-                        </button>
-                        <button class="btn btn-info m-1" [routerLink]="['/roles/edit', row.id_role]">
-                            <i class="i-Pen-4"></i>
-                        </button>
-                        <label class="switch switch-success me-3" (click)="openModal(row.id_role)">
-                            <input type="checkbox" [checked]="row.state_role === 'Activo'">
-                            <span class="slider"></span>
-                        </label>
+                        <ng-container *ngIf="row && row.id_role">
+                            <button class="btn btn-dark m-1" [routerLink]="['/roles/detail', row.id_role]">
+                                <i class="i-Eye"></i>
+                            </button>
+                            <button class="btn btn-info m-1" [routerLink]="['/roles/edit', row.id_role]">
+                                <i class="i-Pen-4"></i>
+                            </button>
+                            <label class="switch switch-success me-3" (click)="openModal(row.id_role)">
+                                <input type="checkbox" [checked]="row.state_role === 'Activo'">
+                                <span class="slider"></span>
+                            </label>
+                        </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
         </div>
     </div>
 </div>
-
 
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header">

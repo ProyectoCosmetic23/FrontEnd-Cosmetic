@@ -51,13 +51,15 @@ export class RolesDetailComponent implements OnInit {
 
         });
     }
+    
     ngOnInit() {
-        this.id = this.route.snapshot.params['id'];
+        this.id = this.route.snapshot.params['id_role'];
         this.isNew = !this.id;
         this.buildRolesForm(this.roles);
         this.setViewMode();
         this.getRole();
     }
+
     buildRolesForm(i: any = {}) {
         this.rolesForm = this.fb.group({
             id: [i.id],
@@ -65,6 +67,7 @@ export class RolesDetailComponent implements OnInit {
             modulosRol: [i.nombre_rol]
         })
     }
+
     setViewMode() {
         const currentRoute = this.router.url;
         if (currentRoute.includes('/new')) {
@@ -75,19 +78,24 @@ export class RolesDetailComponent implements OnInit {
             this.viewMode = 'print';
         }
     }
+
     getRole() {
-        this.id = this.route.snapshot.params['id_role'];
-        console.log(this.id);
-        this._rolesService.getRoleById(this.id).subscribe(
-            (data) => {
-                this.role = data;
-                console.log(this.role);
-            },
-            (error) => {
-                console.error('Error al obtener rol:', error);
-            }
-        );
+        const currentRoute = this.router.url;
+        if (currentRoute.includes('/edit/') || currentRoute.includes('/detail/')) {
+            this.id = this.route.snapshot.params['id_role'];
+            console.log(this.id);
+            this._rolesService.getRoleById(this.id).subscribe(
+                (data) => {
+                    this.role = data;
+                    console.log(this.role);
+                },
+                (error) => {
+                    console.error('Error al obtener rol:', error);
+                }
+            );
+        }
     }
+
     handleModuleSelection(module: string) {
         if (this.selected_modules.includes(module)) {
             this.selected_modules = this.selected_modules.filter((item) => item !== module);
