@@ -173,15 +173,6 @@ export class ProvidersDetailComponent implements OnInit {
           console.error('Error al crear el proveedor:', error);
         }
       );
-    }, 3000);
-    }
-  }
-  toggleProviderState(provider: Provider) {
-    // Cambiar el estado del proveedor
-    if (provider.state_provider === 'Activo') {
-      provider.state_provider = 'Inactivo';
-    } else {
-      provider.state_provider = 'Activo';
     }
     this.loading = true;
   }
