@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { EmpleadoDetailComponent } from './empleado-detail/empleado-detail.component';
-import { EmpleadoListComponent } from './empleado-list/empleado-list.component';
-import { EmpleadoRoutingModule } from './empleado-routing.module';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { ProductListComponent } from './product-list/product-list.component';
+import { ProductRoutingModule } from './product-routing.module';
 
 @NgModule({
   imports: [
@@ -17,8 +16,9 @@ import { EmpleadoRoutingModule } from './empleado-routing.module';
     ReactiveFormsModule,
     SharedComponentsModule,
     NgbModule,
-    EmpleadoRoutingModule
+    ProductRoutingModule
   ],
-  declarations: [EmpleadoDetailComponent, EmpleadoListComponent]
+  declarations: [ProductDetailComponent,ProductListComponent],
+  providers: [DatePipe]
 })
-export class EmpleadoModule { }
+export class ProductModule { }

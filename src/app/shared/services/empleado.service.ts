@@ -1,4 +1,4 @@
-  import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 
@@ -7,12 +7,12 @@ import { Observable } from 'rxjs-compat';
 })
 export class EmpleadosService {
 
-  url ='http://localhost:8080/api/empleados';
+  url = 'http://localhost:8080/api/empleados';
   constructor(
     private http: HttpClient
   ) { }
 
-  getAllEmployes():Observable<any>{
+  getAllEmployes(): Observable<any> {
     return this.http.get(this.url);
   }
 }

@@ -1,15 +1,11 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
 import { AuthGaurd } from './shared/services/auth.gaurd';
-import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 
 
 const adminRoutes: Routes = [
-  {
-    path: 'empleados',
-    loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
-  },
   {
     path: 'proveedores',
     loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
@@ -27,18 +23,22 @@ const adminRoutes: Routes = [
     loadChildren: () => import('./views/payments/payment.module').then(m => m.PaymentModule)
   },
   {
-    path: 'empleados',
-    loadChildren: () => import('./views/empleados/empleado.module').then(m => m.EmpleadoModule)
-  },
-  {
     path: 'roles',
     loadChildren: () => import('./views/roles/roles.module').then(m => m.RolesModule)
   },
   {
     path: 'orders',
     loadChildren: () => import('./views/orders/orders.module').then(m => m.OrdersModule)
+  },
+  {
+    path: 'employees',
+    loadChildren: () => import('./views/employees/employee.module').then(m => m.EmployeeModule)
+  },
+  {
+    path: 'products',
+    loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
   }
-];
+  ];
 
 const routes: Routes = [
   {

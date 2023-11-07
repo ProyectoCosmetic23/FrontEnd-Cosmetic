@@ -136,7 +136,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Administrator', name: 'Proveedores', state: '/proveedores', type: 'link' },
                 { icon: 'i-Tag-3', name: 'Categorias', state: '/categorias', type: 'link' },
-                { icon: 'i-File-Clipboard-Text--Image', name: 'Productos', state: '/chat', type: 'link' },
+                { icon: 'i-File-Clipboard-Text--Image', name: 'Productos', state: '/products', type: 'link' },
                 { icon: 'i-Full-Cart', name: 'Compras', state: '/calendar', type: 'link' },
             ]
         },
@@ -160,8 +160,8 @@ export class NavigationService {
             icon: 'i-Files',
             sub: [
                 { icon: 'i-Conference', name: 'Usuarios', state: 'por arreglar', type: 'link' },
-                { icon: 'i-Conference', name: 'Empleados', state: '/empleados', type: 'link' },
-                { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
+                { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
+                { icon: 'i-Money-2', name: 'Comisiones', state: 'por arreglar', type: 'link' },
 
             ]
         },
