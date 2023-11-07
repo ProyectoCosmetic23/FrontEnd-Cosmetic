@@ -15,6 +15,11 @@ const adminRoutes: Routes = [
       loadChildren: () => import('./views/employees/employee.module').then(m => m.EmployeeModule)
     },
     {
+      path: 'products',
+      loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
+    },
+  
+    {
       path: 'uikits',
       loadChildren: () => import('./views/ui-kits/ui-kits.module').then(m => m.UiKitsModule)
     },

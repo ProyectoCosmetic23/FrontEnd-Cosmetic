@@ -98,7 +98,6 @@ export class EmployeeDetailComponent implements OnInit {
     }
 
     createEmployee() {
-        console.log('guardar')
         if (this.employeeForm.valid) {
             const employeeData = this.employeeForm.value;
             this.loading = true;
