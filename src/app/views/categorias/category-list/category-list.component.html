@@ -1,100 +1,84 @@
-
 <div class="breadcrumb">
     <h1>Categorías de Productos</h1>
     <ul>
-        <li>Compras</li>
+        <li><a [routerLink]="['/purchases']">Compras</a></li>
         <li><a [routerLink]="['/categories']">Categorías</a></li>
     </ul>
 </div>
 
-
 <div class="separator-breadcrumb border-top"></div>
 
-
 <div class="row mb-3">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <button class="btn btn-primary" [routerLink]="['/categories/new']">Crear Categoría </button>
-                </div>
-              
+    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button class="btn btn-primary" [routerLink]="['/categories/new']">Crear Categoría</button>
             </div>
-            <div class="col-md-6 text-end">
-                <div class="form-group">
-                    <input id="id_provider" placeholder="Buscar Category" [formControl]="searchControl" class="form-control" type="text">
-                </div>
+        
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <input id="category" placeholder="Buscar Categoría" [formControl]="searchControl" class="form-control"
+                    type="category">
             </div>
         </div>
     </div>
+
     <div class="col-md-12">
         <div class="card o-hidden">
-            <ngx-datatable
-            class="material fullscreen"
-            style="height: 460px;"
+            <ngx-datatable class="material fullscreen" 
+            style="height: 460px;" 
             [columnMode]="'force'"
-            [headerHeight]="50"
-            [footerHeight]="50"
-            [rowHeight]="'auto'"
-            [rowHeight]="60"
-            [scrollbarV]="true"
-            [scrollbarH]="true"
-            [rows]="listCategories"
-            [externalPaging]="true"
-            [count]="listCategories.length"
-            [limit]="pageSize"
-            [offset]="(currentPage - 1) * pageSize"
-            (page)="onPageChange($event)"
-        
-          > <!-- Define la cantidad de registros por página -->
-              
-                <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="200" >
+             [headerHeight]="50"
+                [footerHeight]="50"
+                 [rowHeight]="60" 
+                 [scrollbarV]="true" 
+                 [rows]="listCategories" 
+                 [externalPaging]="true"
+                [count]="listCategories.length"
+                 [limit]="itemsPerPage" 
+                 [offset]="(currentPage - 1) * itemsPerPage"
+                (page)="onPageChange($event)">
+                <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="450">
                     <ng-template ngx-datatable-header-template>
-                        Nombre
+                        Nombre 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
-                       <ng-container *ngIf="row && row.id_category">
-                       {{ rowIndex + 1 }}. {{ row.name_category }}
-                       </ng-container> 
+                        <ng-container *ngIf="row && row.id_category">
+                            {{ rowIndex + 1 }}. {{ row.name_category }}
+                        </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
-
-                <ngx-datatable-column name="creation_date_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="200" >
-                    <ng-template ngx-datatable-header-template let-value="value" let-row="row">
-                        Fecha Creación
+                <ngx-datatable-column name="state_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="350">
+                    <ng-template ngx-datatable-header-template>
+                        Estado 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.creation_date_category | date: 'dd/MM/yyyy' }}
+                        <ng-container *ngIf="row && row.id_category">
+                            {{ row.state_category }}
+                        </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
-                  
-                <ngx-datatable-column name="state_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
-                    <ng-template ngx-datatable-header-template let-value="value" let-row="row">
-                        Estado
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.state_category }}
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los categories -->
-                <ngx-datatable-column [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
-                    <ng-template ngx-datatable-header-template let-value="value" let-row="row">
+                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="350">
+                    <ng-template ngx-datatable-header-template>
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
-                            <i class="i-Eye"></i>
-                        </button>
-                        <button class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]">
-                            <i class="i-Pen-4"></i>
-                        </button>
-                        <label class="switch" [ngClass]="row.state_category === 'Activo' ? 'switch-success me-3' : 'switch switch-danger me-3'" (click)="openModal(row.id_category)">
-                            <input type="checkbox" [checked]="row.state_category === 'Activo'">
-                            <span class="slider"></span>
-                          </label>
-                          
-                          
+                        <ng-container *ngIf="row && row.id_category">
+                            <button class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
+                                <i class="i-Eye"></i>
+                            </button>
+                            <button class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]">
+                                <i class="i-Pen-4"></i>
+                            </button>
+                            <label class="switch switch-success me-3" (click)="openModal(row.id_category)">
+                                <input type="checkbox" [checked]="row.state_category === 'Activo'" [ngClass]="{'switch-success me-3': row.state_category === 'Activo', 'switch-danger me-3': row.state_category === 'Inactivo'}">
+                                <span class="slider"></span>
+                            </label>
+                            
+                            
+                            
+                        </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
@@ -104,14 +88,14 @@
 
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar Estado del Categoría</h4>
+        <h4 class="modal-title" id="modal-title">Cambiar Estado de la Categoría</h4>
         <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
             (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea inhabilitar este rol?</strong></p>
+        <p><strong>¿Está seguro de que desea cambiar el estado de  esta categoría?</strong></p>
 
     </div>
     <div class="modal-footer">

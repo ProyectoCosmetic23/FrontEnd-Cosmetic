@@ -1,27 +1,30 @@
 .error-message {
-    color: red;
+  color: red;
 }
 
-
 .form-container {
-    border: 1px solid #ccc;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-  }
-  
-  .required {
-    color: red;
-  }
-  
-  .form-group.text-right .btn btn-danger  {
-    margin-right: 10px;
-    color: white; /* Texto en blanco */
-    font-size: 14px; 
-  }
+  border: 1px solid hwb(0 100% 0%) / 0.5510, 0%, 80%;
+  padding: 20px;
+  background-color: transparent; /* Cambiado a transparente */
+  border-radius: 5px;
+}
 
-  
-.ngx-datatable.scroll-vertical.datatable-body{
+.required {
+  color: red;
+}
+
+.form-group.text-right .btn.btn-danger {
+  margin-right: 10px;
+  color: white; /* Texto en blanco */
+  font-size: 14px;
+}
+
+.ngx-datatable.scroll-vertical.datatable-body {
   overflow: hidden;
-  overflow-y: hidden !important;;
+  overflow-y: hidden !important;
+}
+
+/* Estilo para quitar el fondo gris de los inputs */
+.form-control {
+  background-color: transparent;
 }

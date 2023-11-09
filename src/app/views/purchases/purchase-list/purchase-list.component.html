@@ -47,27 +47,31 @@
         
           > <!-- Define la cantidad de registros por página -->
               
+
+
+          <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" [minWidth]="100" >
+            <ng-template ngx-datatable-header-template>
+              # Factura
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+               <ng-container *ngIf="row && row.id_purchase">
+               {{ rowIndex + 1 }}. {{ row.invoice_number }}
+               </ng-container> 
+            </ng-template>
+        </ngx-datatable-column>
+          
                 <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" [minWidth]="200" >
                     <ng-template ngx-datatable-header-template>
                         Proveedor
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
                        <ng-container *ngIf="row && row.id_purchase">
-                       {{ rowIndex + 1 }}. {{ row.id_provider }}
+                       {{ row.id_provider }}
                        </ng-container> 
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
-                    <ng-template ngx-datatable-header-template let-value="value" let-row="row">
-                        Total
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.invoice_number }}
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" [minWidth]="200" >
+                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" [minWidth]="100" >
                     <ng-template ngx-datatable-header-template let-value="value" let-row="row">
                         Fecha 
                     </ng-template>
@@ -76,25 +80,18 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="record_date_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="200" >
-                    <ng-template ngx-datatable-header-template let-value="value" let-row="row">
-                        Fecha Registro
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.record_date_purchase| date: 'dd/MM/yyyy' }}
-                    </ng-template>
-                </ngx-datatable-column>
+             
 
                 <ngx-datatable-column name="tota_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
                     <ng-template ngx-datatable-header-template let-value="value" let-row="row">
-                        Total
+                        Total Factura
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         {{ row.total_purchase }}
                     </ng-template>
                 </ngx-datatable-column>
                   
-                <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template let-value="value" let-row="row">
                         Estado
                     </ng-template>
@@ -109,15 +106,13 @@
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-info m-1" [routerLink]="['/purchases/detail', row.id_purchase]">
+                        <button class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]">
                             <i class="i-Eye"></i>
                         </button>
                         <button class="btn btn-danger m-1" (click)="openModal(row.id_purchase)">
                             <i class="i-Close"></i>
                         </button>
-                        <button class="btn btn-dark m-1" (click)="openImageModal(row.photo_purchase)">
-                            <i class="i-Landscape"></i>
-                        </button>
+                    
 
 
     

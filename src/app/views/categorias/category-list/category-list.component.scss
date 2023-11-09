@@ -1,8 +1,13 @@
-.ngx-datatable.scroll-vertical .datatable-body {
+.datatable-scroll {
+  overflow: hidden !important; /* Oculta la barra de desplazamiento */
+}
+
+
+.datatable.scroll-vertical .datatable-body {
     overflow-x: hidden;
 }
 
-.ngx-datatable.scroll-horz .datatable-body {
+.datatable.scroll-horz .datatable-body {
     overflow-y: hidden;
 }
 
@@ -41,4 +46,4 @@
   .red-switch {
     background-color: red;
   }
-  
+

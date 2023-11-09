@@ -94,27 +94,17 @@
 
 <!--VISTA DE CREAR COMPRAS --->
 <div *ngIf="viewMode == 'new-purchase'">
-  <form [formGroup]="categoryForm" (ngSubmit)="createCategory()">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="file-upload">
-          <input type="file" id="photo-input" accept="image/*" style="display: none;" />
-          <button class="btn btn-darkml-2" for="photo-input" onclick="document.getElementById('photo-input').click()">
-            <i class="i-Landscape" style="font-size: xx-large;"></i>
-          </button>
-        
-        </div>
-      </div>
-    
-      <div class="col-md-6">
-     
-    </div>
-    
-  
+  <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
     <section class="ng-container">
-     
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="fechaCompra">Fecha Compra<span class="required">*</span></label>
+            <input type="date" class="form-control" id="fechaCompra" placeholder="Fecha Compra" style="width: 100%;" />
+            <div class="textoc" id="textoc"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
           <div class="form-group">
             <label for="numFactura">Numero Factura<span class="required">*</span></label>
             <input type="text" class="form-control" id="numFactura" placeholder="Numero de factura" style="width: 100%;" />
@@ -123,129 +113,190 @@
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label for="fechaCompra">Fecha Compra<span class="required">*</span></label>
-            <input type="date" class="form-control" id="fechaCompra" placeholder="Fecha Compra" style="width: 100%;" />
-            <div class="textoc" id="textoc"></div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="proveedor">Proveedor<span class="required">*</span></label>
-            <input type="text" class="form-control" id="proveedor" placeholder="Digite el Proveedor" style="width: 100%;" />
-            <div class="texto2" id="texto2"></div>
-          </div>
-        </div>
-
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="observaciones">Observaciones</label>
+            <label for="observaciones">Proveedor<span class="required">*</span></label>
             <input type="text" class="form-control" id="observaciones" placeholder="Observaciones" style="width: 100%;" />
           </div>
         </div>
-        <div class="col-md-6">
+      </div>
+    
+      <div class="row">
+
+        <div class="col-md-3">
           <div class="form-group">
-            <label for="totalCompra">Total Compra</label>
-            <input type="text" class="form-control" id="totalCompra" placeholder="Digite su precio Compra" style="width: 100%;" />
-            <div class="texto6" id="texto6"></div>
+            <label for="categoria">Categoria<span class="required">*</span></label>
+            <select class="form-control select2bs4" style="width: 100%;" id="categoria">
+              <option selected="selected">Elija una categoria</option>
+              <option>Belleza</option>
+              <option>Limpieza</option>
+            </select>
+            <div class="texto4"></div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="ng-container">
-   
-      <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div class="form-group">
-            <label for="producto">Producto</label>
-            <input type="text" class="form-control" id="producto" placeholder="Digite el producto " style="width: 100%;" />
+            <label for="producto">Producto<span class="required">*</span></label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="producto" placeholder="Digite el producto" style="width: 100%;" />
+             
+            </div>
             <div class="texto3" id="texto3"></div>
           </div>
         </div>
-      
-        <div class="col-md-6">
+
+        <div class="col-md-2">
           <div class="form-group">
-            <label for="categoria">Categoria</label>
-            <select class="form-control select2bs4" style="width: 100%;" id="categoria">
-              <option selected="selected">Elija una categoria</option>
-              <option>Belleza</option>
-              <option>Limpieza</option>
-            </select>
-            <div class="texto4"></div>
+            <label for="producto"></label>
+            <div class="input-group">
+             
+              <div class="button_container">
+                <button class="btn btn-success float-right" [routerLink]="['/products']">Producto Nuevo</button>
+              </div>
+            </div>
+            <div class="texto3" id="texto3"></div>
           </div>
         </div>
-      </div>
 
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="producto"></label>
+            <div class="input-group">
+             
+              <div class="button_container">
+                <button class="btn btn-warning" (click)="addProduct()"><i class="i-Add"></i> Agregar Item</button>
+              </div>
+            </div>
+            <div class="texto3" id="texto3"></div>
+          </div>
+        </div>
+
+
+      </div>
+      
+    
       <div class="row">
- 
-        <div class="col-md-6">
+
+        <div class="col-md-3">
           <div class="form-group">
             <label for="precioCompra">Precio Compra<span class="required">*</span></label>
-            <input type="text" class="form-control" id="precioCompra" placeholder="Digite su precio Compra" style="width: 100%;" />
+            <input type="text" class="form-control" id="precioCompra" placeholder="Precio Compra" style="width: 100%;" />
             <div class="texto5" id="texto5"></div>
           </div>
         </div>
-        <div class="col-md-6">
+
+      <div class="col-md-3">
           <div class="form-group">
-            <label for="categoria">Precio Venta<span class="required">*</span></label>
-            <select class="form-control select2bs4" style="width: 100%;" id="categoria">
-              <option selected="selected">Elija una categoria</option>
-              <option>Belleza</option>
-              <option>Limpieza</option>
-            </select>
-            <div class="texto4"></div>
+            <label for="precioCompra">Precio Venta<span class="required">*</span></label>
+            <input type="text" class="form-control" id="precioCompra" placeholder=" Precio Venta" style="width: 100%;" />
+            <div class="texto5" id="texto5"></div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
+        
+        <div class="col-md-3">
           <div class="form-group">
             <label for="precioVenta"> Iva<span class="required">*</span></label>
-            <input type="text" class="form-control" id="precioVenta" placeholder="Digite su precio Venta" style="width: 100%;" />
+            <input type="text" class="form-control" id="precioVenta" placeholder="Iva" style="width: 100%;" />
             <div class="texto7" id="texto7"></div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div class="form-group">
             <label for="cantidad">Cantidad<span class="required">*</span></label>
-            <input type="text" class="form-control" id="cantidad" placeholder="Digite la cantidad" style="width: 100%;" />
+            <input type="text" class="form-control" id="cantidad" placeholder="Cantidad" style="width: 100%;" />
             <div class="texto8" id="texto8"></div>
           </div>
         </div>
       </div>
-
     </section>
-    <div class="form-group text-left">
-      <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="i-Add "><span>Item</span></i></button>
-      <button type="submit" class="btn btn-outline-secondary custom-button" [disabled]="loading">Registrar Producto</button>
-    </div>
+    
+ 
     <section class="ng-container">
-      <table id="detalleTabla" class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Categoria</th>
-            <th>Precio Compra</th>
-            <th>Precio Venta</th>
-            <th> Iva</th>
-            <th>Cantidad</th>
-            <th>Sub Total</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="detalleProductos">
-        </tbody>
-      </table>
+      <div class="col-md-12 mt-4 table-border">
+        <table class="table table-hover mb-4">
+          <thead class="bg-gray-300">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nombre del Producto</th>
+              <th scope="col">Precio Unitario</th>
+              <th scope="col">Unidades</th>
+              <th scope="col">Subtotal</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="products">
+            <ng-container *ngIf="viewMode === 'new'; else detailView">
+              <tr *ngFor="let product of productsFormArray.controls; let i = index" [formGroupName]="i">
+                <th scope="row">{{i + 1}}</th>
+                <td>
+                  <select class="form-control" id="id_product" formControlName="id_product"
+                    (change)="handleProductSelection($event, i)">
+                    <option *ngFor="let product of listProducts" [value]="product.id_product">{{ product.name_product }}</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" name="unitPrice" id="unitPrice" class="form-control" formControlName="unitPrice"
+                    [readonly]="true" *ngIf="viewMode === 'new'">
+                </td>
+                <td>
+                  <input type="number" class="form-control" formControlName="unit" (change)="handleProductSelection($event, i)">
+                </td>
+                <td>
+                  <input type="number" class="form-control" formControlName="subtotal" [readonly]="true">
+                </td>
+                <td>
+                  <button class="btn btn-danger" (click)="removeProduct(i)">
+                    <i class="i-Remove-Cart"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #detailView>
+              <tr *ngFor="let product of order_detail_products; let i = index">
+                <th scope="row">{{i + 1}}</th>
+                <td>{{ product.id_product }}</td>
+                <td>{{ product.product_price }}</td>
+                <td>{{ product.product_quantity}}</td>
+                <td>{{ product.product_quantity }}</td>
+                <td></td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+        <div class="table-footer">
+              
+<div class="col-md-8"></div>
+
+</div>
+
+  <br>
+<div class="col-md-8">
+  <div class="total"><strong>Total Compra:</strong> {{ viewMode === 'new' ? calculateTotal() : orderTotal }}</div>
+</div>
+</div>
+<div class="row mt-4"> <!-- Añadido un espacio superior -->
+<div class="col-md-6 form-group mb-3">
+<label for="observation">Observación</label>
+<textarea class="form-control" id="observation_category" placeholder="Observación" formControlName="observation_category"></textarea>
+<div *ngIf="categoryForm.get('observation_category').hasError('maxlength')" class="error-message">
+  El campo Observación no puede superar los 100 caracteres.
+
+  El campo Observación no puede super
+
+  El campo Observación
+</div>
+</div>
+</div>
     </section>
-    <div class="form-group text-right">
-      <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
-      <button type="submit" class="btn btn-primary m-1 custom-button" [disabled]="loading">Registrar</button>
+    
+    <div class="col-md-12" style="margin-top: 20px;">
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-danger float-right" [routerLink]="['/orders']">Volver</button>
+        <div *ngIf="viewMode === 'new-purchase'" style="width: 10px;"></div>
+        <btn-loading  btnClass="btn-primary" [loading]="loading">Crear
+          Pedido</btn-loading>
+      </div>
     </div>
-  </div>
+ 
   </form>
 </div>
 

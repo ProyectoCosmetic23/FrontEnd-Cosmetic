@@ -5,17 +5,9 @@ import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { CategoriesService } from 'src/app/shared/services/category.service';
 import { Utils } from 'src/app/shared/utils';
+import { CategoryFormMode } from '../models/category.model';
 
 
-
-
-interface CategoryInterface {
-  name_category: string;
-  observation_category: string;
-  state_category: string;
-  creation_date: string;
-
-}
 
 
 @Component({
@@ -34,202 +26,231 @@ export class CategoryDetailComponent implements OnInit {
   categories: any = {};
   isNew: boolean;
   id: string;
-  category: CategoryInterface = {
-    name_category: '',
-    observation_category: '',
-    state_category: 'Activo',
-    creation_date: ''
-  };
-
-
-
+  categoryData: CategoryFormMode;
   constructor(
     private formBuilder: FormBuilder,
-    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+
   ) {
 
-    this.categoryForm = this.formBuilder.group({
-      name_category: [
-            '',
-            [
-              Validators.required,
-              Validators.maxLength(80),
-              Validators.pattern('^[a-zA-ZáéíóúñÑ ]+$'),
-            ],
-            (control) => this.validateCategoryExist(control)
-          ],
-          
-          
-          observation_category: ['', Validators.maxLength(100)]
-        });
-  
-    // this.categoryForm = this.fb.group({
-    //   name_category: [
-    //     '',
-    //     [
-    //       Validators.required,
-    //       Validators.maxLength(80),
-    //       Validators.pattern('^[a-zA-ZáéíóúñÑ ]+$'),
-    //     ],
-    //     (control) => this.validateCategoryExist(control)
-    //   ],
-      
-      
-    //   observation_category: ['', Validators.maxLength(100)]
-    // });
+
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.params['id'];
-        this.isNew = !this.id;
-        this.buildCategoryForm(this.categories);
-        this.setViewMode();
-        this.getCategory();
-  }
-    
-  
-buildCategoryForm(i: any = {}) {
-  this.categoryForm = this.fb.group({
-    id: [i.id_category],
-    dateCategoryCreation: [i.creation_date_category ? Utils.dateToNgbDate(i.creation_date_category) : {}],
-    editCategory: this.fb.group({
-      name_category: [i.editCategory ? i.editCategory.name_category : ''],
-      observation_category: [i.editCategory ? i.editCategory.observation_category : ''],
-      state_category: [i.editCategory ? i.editCategory.state_category : ''],
-      creation_date_category: ['']
-    }),
-  });
-
-  // Escucha los cambios de valor y calcula el total si es necesario.
-  if (this.categoryFormSub) {
-    this.categoryFormSub.unsubscribe();
-  }
+    this.id = this.route.snapshot.params['id_category'];
+    console.log(this.id);
+    this.isNew = !this.id;
+    this.setViewMode();
+    this.inicializateForm(Number(this.id));
 }
 
-setViewMode() {
-  const currentRoute = this.router.url;
-  if (currentRoute.includes('/new')) {
-    this.viewMode = 'new'; // Corrige la ortografía de 'new-category'
-  } else if (currentRoute.includes('/edit/')) {
-    this.viewMode = 'edit'; // Corrige la ortografía de 'edit-category'
-
-  } else if (currentRoute.includes('/detail/')) {
-    this.viewMode = 'print';
-  }
-}
-
-getCategory() {
-  this.id = this.route.snapshot.params['id_category'];
-  console.log(this.id);
-  this.categoriesService.getCategoryById(this.id).subscribe(
-      (data) => {
-          this.categories = data;
-          console.log(this.category);
-          
-      },
-      (error) => {
-          console.error('Error al obtener Categoria:', error);
-      }
-  );
-}
-
-  validateCategoryExist(control: FormControl) {
-    return new Promise((resolve) => {
-      if (!control.value) {
-        resolve(true);
-      } else {
-        this.categoriesService.getValidateCategoryExist(control.value).subscribe(
-          (isAvailable) => {
-            this.categoryExists = isAvailable;
-            resolve(this.categoryExists ? { categoryTaken: true } : null);
-          },
-          (error) => {
-            
-            this.categoryExists = true;
-            resolve({ categoryTaken: true });
-          }
-        );
-      }
+private inicializateForm(id: number): void {
+    this.categoryForm = this.formBuilder.group({
+        id_category: [''],
+        name_category:['',[ Validators.required, Validators.maxLength(80),Validators.pattern('^[a-zA-ZáéíóúñÑ ]+$'),], (control) => this.validateCategoryExist(control)],
+        observation_category: ['', [Validators.required,Validators.maxLength(100)]],
+        state_category: [],
+        creation_date_category: []
     });
-  }
-  
- 
 
-  createCategory() {
-    this.categoryForm.markAllAsTouched();
-    if (this.categoryForm.valid) {
+    if (this.viewMode == 'print') {
+        this.categoryForm.disable();
+    }
+
+    if (this.viewMode == 'edit') {
+        this.stateCategory.disable();
+        this.dateCategory.disable();
+    }
+
+    if (this.viewMode != 'new') {
+        this.getCategoryById(id);
+    }
+
+}
+
+
+private getCategoryById(id: number): void {
+  this.loading = true;
+  this.categoriesService.getCategoryById(id).subscribe({
+      next: (response: any) => {
+          this.categoryData = new CategoryFormMode(response);
+          this.setDataCategory();
+      },
+      error: (err) => {
+          console.log('err', err);
+          this.loading = false;
+      },
+      complete: () => {
+          this.loading = false;
+      },
+  });
+}
+
+private setDataCategory(): void {
+  if (this.categoryData) {
+      this.idCategory.setValue(this.categoryData.id_category)
+      this.categoryForm.setValue(this.categoryData)
+      this.dateCategory.setValue(Utils.ngbDateToDate(this.categoryForm.value.creation_date_category));
+ 
+  }
+}
+
+createCategory() {
+  if (this.categoryForm.valid) {
       const categoryData = this.categoryForm.value;
       this.loading = true;
-  
       this.categoriesService.createCategory(categoryData).subscribe(
-        () => {
-          this.loading = false;
-          this.submit();
+          (response) => {
+              this.loading = false;
+              console.log("Éxito al crear caetgoría: ", response);
+              this.submit();
+          },
+          (error) => {
+              this.loading = false;
+              console.error("Error al crear caetgoría: ", this.toastr.error);
+              const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el caetgoría.';
+              this.toastr.error(errorMessage, 'Error');
+          }
+      );
+  } else {
+      this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
+  }
+}
+
+
+validateCategoryExist(control: FormControl) {
+  return new Promise((resolve) => {
+    if (!control.value) {
+      resolve(true);
+    } else {
+      this.categoriesService.getValidateCategoryExist(control.value).subscribe(
+        (isAvailable) => {
+          this.categoryExists = isAvailable;
+          resolve(this.categoryExists ? { categoryTaken: true } : null);
         },
         (error) => {
-          this.loading = false;
-          this.toastr.error('Ocurrió un error al crear la categoría.', 'Error');
+          
+          this.categoryExists = true;
+          resolve({ categoryTaken: true });
         }
       );
-    } else {
-      this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
     }
+  });
+}
+
+
+
+  saveCategoryChanges(id: number, updatedData: any) {
+    this.categoriesService.updateCategory(id, updatedData).subscribe(
+        (response) => {
+            this.loading = false;
+            this.submit();
+        },
+        (error) => {
+            this.loading = false;
+            console.error("Error al crear caetgoría: ", this.toastr.error);
+            const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el caetgoría.';
+            this.toastr.error(errorMessage, 'Error');
+        }
+    );
   }
-  
+
+
+public submitCategory(): void {
+  if (this.viewMode == 'new') {
+      this.createCategory();
+  } else if (this.viewMode == 'edit') {
+      this.saveChanges();
+  }
+}
+
+
+saveChanges() {
+  console.log('editar');
+
+  if (this.categoryForm.valid) {
+    const id = Number(this.id); // Convierte el ID a número
+    const updatedData = {
+      id_category: this.idCategory.value,
+      name_category: this.categoryForm.get('name_category').value,
+      observation_category: this.categoryForm.get('observation_category').value,
+    };
+    this.saveCategoryChanges(id, updatedData);
+  } else {
+    this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
+  }
+}
+
+
+
 
   cancel() {
 
-      this.router.navigateByUrl('/categories');
-}
+    this.router.navigateByUrl('/categories');
+  }
 
 
-        
-submit() {
+      
+  submit() {
   if (!this.loading) {
-      this.loading = true;
-      setTimeout(() => {
-          this.loading = false;
-          this.toastr.success('Categoría registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
-          setTimeout(() => {
-              this.router.navigateByUrl('/categories');
-          }, 3000);
-      }, 3000);
+    this.loading = true;
+    setTimeout(() => {
+        this.loading = false;
+        this.toastr.success('Categoría registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+        setTimeout(() => {
+            this.router.navigateByUrl('/categories');
+        }, 3000);
+    }, 3000);
   }
-}
-
-
-
-
-
-
-
-
-saveCategory() {
-  this.saving = true;
-  this.categories = this.categoryForm.value;
-  this.categories.orderDate = Utils.ngbDateToDate(this.categoryForm.value.orderDate);
-  this.categoriesService.saveCategory(this.categoryForm.value)
-      .subscribe((savedCategory: any) => {
-          this.viewMode = 'print';
-          this.saving = false;
-          this.toastr.success('Categoria Actualizada Correctamente', 'Éxito!', { timeOut: 3000 });
-          if(this.isNew) {
-              this.router.navigateByUrl('/categories/edit/'+savedCategory.id);
-          }
-      });
-}
-
-
-
-print() {
-  if (window) {
-      window.print();
   }
+
+
+
+
+    setViewMode() {
+      const currentRoute = this.router.url;
+      if (currentRoute.includes('/new')) {
+        this.viewMode = 'new'; // Corrige la ortografía de 'new-category'
+      } else if (currentRoute.includes('/edit/')) {
+        this.viewMode = 'edit'; // Corrige la ortografía de 'edit-category'
+
+      } else if (currentRoute.includes('/detail/')) {
+        this.viewMode = 'print';
+      }
+    }
+
+
+
+
+
+
+
+  print() {
+    if (window) {
+        window.print();
+    }
+  }
+
+  get idCategory() {
+    return this.categoryForm.get('id_category');
+  }
+
+  get stateCategory() {
+    return this.categoryForm.get('state_category');
+  }
+
+ get dateCategory() {
+  return this.categoryForm.get('creation_date_category');
 }
 
 
+
+
+
+
+
 }
+

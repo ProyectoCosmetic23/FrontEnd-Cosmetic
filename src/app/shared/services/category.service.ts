@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs-compat';
-import { Utils } from 'src/app/shared/utils';
+import { HttpClient,HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { Utils } from 'src/app/shared/utils';
 export class CategoriesService {
 
   //Url de la api
-  url ='http://localhost:8080/api/categories';
+  url ='https://api-cosmetic-w32d.onrender.com/api/categories';
   constructor(
     private http: HttpClient
   ) { }
@@ -34,30 +34,38 @@ export class CategoriesService {
 
 
 
-  getCategoryById(id: any): Observable<any> {
-    return this.http.get(this.url + '/' + id);
-  }
 
-
-
-  //Ruta para cambiar el estado de una categoria
-  CategoryChangeStatus(id: any):Observable<any>{
-    return this.http.put(this.url + '/change-status' + id, {});
-
-
-  }
-
-  saveCategory(category) {
-    if(category.id_category) {
-        return this.http.put<any[]>('/api/categories/'+category.id_category, category);
-    } else {
-        category.id = Utils.genId();
-        return this.http.post<any[]>('/api/categories/', category);
+  getCategoryById(id: number): Observable<any> {
+    if (isNaN(id) || id <= 0) {
+      // Aquí puedes manejar el caso en el que 'id' no sea un número válido o sea negativo.
+      return throwError('ID de categoría no válido');
     }
-}
+  
+    return this.http.get<any>(`${this.url}/${id}`);
+  }
+  
+
+
+  CategoryChangeStatus(id: any): Observable<any> {
+    return this.http.put(this.url + '/change-status' + id, {});
+  }
+
+
 
 
   categoryPut(id: any):Observable<any>{
     return this.http.put(this.url + '/' + id, {});
   }
+
+
+  updateCategory(id: number, updatedData: any): Observable<any> {
+    return this.http.put(`${this.url}/${id}`, updatedData).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud:', error);
+        return throwError('Ocurrió un error al actualizar la categoría. Por favor, inténtalo de nuevo.');
+      })
+    );
+  }
+  
+
 }

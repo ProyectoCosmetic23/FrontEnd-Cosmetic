@@ -13,11 +13,11 @@ const routes: Routes = [
         component: CategoryDetailComponent
     },
     {
-        path: 'edit/:id_categoria',
+        path: 'edit/:id_category',
         component: CategoryDetailComponent
     },
     {
-        path: 'detail/:id_categoria',
+        path: 'detail/:id_category',
         component: CategoryDetailComponent
     }
 ];

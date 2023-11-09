@@ -1,12 +1,12 @@
 <div class="breadcrumb">
   <h1 *ngIf="viewMode === 'new'">Registrar Categoría</h1>
   <h1 *ngIf="viewMode === 'edit'">Editar Categoría</h1>
-  <h1 *ngIf="viewMode === 'print'">Detalle Categoría</h1>
+  <h1 *ngIf="viewMode === 'print'">Ver Detalle de Categoría</h1>
   <ul>
     <li><a [routerLink]="['/categories']">Categorías</a></li>
     <li *ngIf="viewMode === 'new'">Registrar Categoría</li>
     <li *ngIf="viewMode === 'edit'">Editar Categoría</li>
-    <li *ngIf="viewMode === 'print'">Detalle de Categoría</li>
+    <li *ngIf="viewMode === 'print'">Ver Detalle de Categoría</li>
   </ul>
 </div>
 
@@ -14,130 +14,58 @@
 
 <!-- Contenido común a todas las vistas -->
 <div class="form-container">
+  <!-- Vista de crear empleados -->
+  <div class="row">
+    <div class="col-md-8"> <!-- Cambiado a 8 columnas -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="card-title mb-3">Formulario de Categorías</div>
+          <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
+            
+              <div class="col-md-6 form-group mb-3">
+                <label for="name_category">Nombre de Categoría<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name_category" placeholder="Nombre de empleado" formControlName="name_category" required>
+                <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
+                  El campo Nombre es obligatorio.
+              </div>
+              <div *ngIf="categoryForm.get('name_category').hasError('pattern')"class="error-message">
+                  El campo Nombre no puede tener tener numeros ni simbolos.
+              </div>
+              
+              <div *ngIf="categoryForm.get('name_category').hasError('maxlength')"class="error-message">
+                  El campo Nombre no puede superar los 80 caracteres.
+              </div>
 
-  <!-- Vista de imprimir -->
-  <div id="print-area" *ngIf="viewMode === 'print'" class="print-view">
-    <div class="form-container">
-      <div class="d-sm-flex mb-5" >
-        <h2 class="print-title">Detalles de la Categoría</h2>
-        <span class="m-auto"></span>
-        <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3 button-spacing" routerLink="/categories">Regresar</button>
-        <button class="btn btn-primary mb-sm-0 mb-3" (click)="print()">Imprimir Categoría</button>
-      </div>
-       <div class="row">
-        <div class="col-md-6 print-field">
-          <label for="name_category">Nombre de categoría:</label>
-          <p>{{ category?.editCategory?.name_category }}</p>
+              <div *ngIf="viewMode === 'new'">
+                <div *ngIf="categoryExists" class="error-message">El nombre de categoría ya existe.</div>
+              </div>
+              
+              </div>
+
+              <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+                <label for="state_category">Estado<span class="text-danger">*</span></label>
+                <input class="form-control" id="state_category" placeholder="Fecha de Creacion" formControlName="state_category">
+                <!-- Resto del código para el campo de estado -->
+              </div>
+
+              <div class="col-md-6 form-group mb-3">
+                <label for="observation">Observación</label>
+                <textarea class="form-control" id="observation_category" placeholder="Observación" formControlName="observation_category"></textarea>
+                <div *ngIf="categoryForm.get('observation_category').hasError('maxlength')"class="error-message">
+                  El campo Observación no puede superar los 100 caracteres.
+              </div>
+              </div>
+
+              <div class="form-group text-right" style="text-align: right;">
+                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading">
+                  {{viewMode == 'new' ? 'Registrar Categoría' : 'Editar Categoría'}}
+                </btn-loading>
+              </div>
+            
+          </form>
         </div>
-        <div class="col-md-6 print-field">
-          <label for="observation_category">Observación:</label>
-          <p>{{ category?.editCategory?.observation_category }}</p>
-        </div>
-        <div class="col-md-6 print-field">
-          <label for="state_category">Estado de Categoría:</label>
-          <p>{{ category?.editCategory?.state_category }}</p>
-        </div>
-        <div class="col-md-6 print-field">
-          <label for="creation_date_category">Fecha de Creación:</label>
-          <p>{{ category?.editCategory?.creation_date_category | date: 'dd/MM/yyyy' }}</p>
-        </div>
-      </div> 
       </div>
     </div>
-      <!-- Fin de vista de imprimir -->
-
-
-  <!-- Vista de crear categorías -->
-  <div *ngIf="viewMode === 'new'">
-    <form [formGroup]="categoryForm" (ngSubmit)="createCategory()">
-      <div class="row">
-
-        <div class="col-md-6 form-group mb-3">
-          <label for="name_category">Nombre de categoría<span class="required">*</span></label>
-          <input type="text" class="form-control" id="name_category" name="name_category" formControlName="name_category" placeholder="Nombre de categoría">
-          
-          <div *ngIf=" categoryForm.get('name_category').hasError('required')" class="error-message">
-            El campo es requerido
-          </div>
-          <div *ngIf=" categoryForm.get('name_category').hasError('maxLength(80)')" class="error-message">
-            El solo acepta 80 caracteres.
-          </div>
-          
-          <div *ngIf=" categoryForm.get('name_category').hasError('pattern')" class="error-message">
-            El campo solo acepta letras.
-          </div>
-  
-          <div *ngIf="categoryExists" class="text danger">El nombre de categoría ya existe.</div>
-        </div>
-        <div class="col-md-6 form-group mb-3">
-          <label for="observation_category">Observación</label>
-          <textarea class="form-control" id="observation_category" formControlName="observation_category" placeholder="Observación"></textarea>
-  
-          <div *ngIf="categoryForm.get('observation_category').hasError('maxLength')" class="error-message">
-            La Observación solo acepta 100 caracteres.
-          </div>
-        </div>
-      </div>
-  
-      <div class="form-group text-right">
-        <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
-        <button type="submit" class="btn btn-primary m-1 custom-button" [disabled]="loading">Registrar</button>
-      </div>
-    </form>
   </div>
-  
-  <!-- Vista de editar categorías -->
-  <div *ngIf="viewMode === 'edit'">
-    <form [formGroup]="categoryForm">
-      <div class="row">
-        <div class="col-md-6 form-group mb-3" [formGroup]="category.controls['editCategory']">
-          <label for="name_category">Nombre de categoría<span class="required">*</span></label>
-          <input type="text" class="form-control" name="name_category" formControlName="name_category" placeholder="Nombre de categoría">
-          <div *ngIf=" categoryForm.get('name_category').hasError('required')" class="error-message">
-            El campo es requerido
-          </div>
-          <div *ngIf=" categoryForm.get('name_category').hasError('maxLength(80)')" class="error-message">
-            Solo se aceptan 80 caracteres.
-          </div>
-          <div *ngIf=" categoryForm.get('name_category').hasError('pattern')" class="error-message">
-            El campo solo acepta letras.
-          </div>
-          <div *ngIf="categoryExists" class="error-message">El nombre de categoría ya existe.</div>
-        </div>
-  
-        <div class="col-md-6 form-group mb-3" [formGroup]="category.controls['editCategory']">
-          <label for="observation_category">Observación</label>
-          <textarea class="form-control" formControlName="observation_category"></textarea>
-          <div *ngIf="categoryForm.get('observation_category').hasError('maxLength')" class="error-message">
-            La Observación solo acepta 100 caracteres.
-          </div>
-        </div>
-  
-        <div class="col-md-6 form-group mb-3" [formGroup]="category.controls['editCategory']">
-          <label for="state_category">Estado de Categoría<span class="required">*</span></label>
-          <select class="form-control" name="state_category" formControlName="state_category">
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-          </select>
-        </div>
-  
-        <div class="col-md-6 form-group mb-3">
-          <label for="picker1">Fecha de Creación</label>
-          <div class="input-group">
-            <input type="text" class="form-control" formControlName="creation_date_category" [disabled]="true" placeholder="Año-Mes-Día" ngbDatepicker #orderDatePicker="ngbDatepicker">
-            <div class="input-group-append">
-              <button class="btn btn-secondary" (click)="orderDatePicker.toggle()" type="button">
-                <i class="icon-regular i-Calendar-4"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-  
-        <div class="form-group text-right">
-          <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
-          <button type="submit" class="btn btn-primary m-1 custom-button" [disabled]="loading">Registrar</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
+</div>

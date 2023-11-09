@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule,DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms'; // Importa solo ReactiveFormsModule
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -9,6 +9,7 @@ import { CategoryListComponent } from './category-list/category-list.component';
 import { CategoryRoutingModule } from './category-routing.module';
 
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -16,9 +17,11 @@ import { CategoryRoutingModule } from './category-routing.module';
     ReactiveFormsModule, // Solo importa ReactiveFormsModule
     SharedComponentsModule,
     NgbModule,
-    CategoryRoutingModule,
+    CategoryRoutingModule
+
     
   ],
-  declarations: [CategoryDetailComponent, CategoryListComponent]
+  declarations: [CategoryDetailComponent, CategoryListComponent],
+  providers: [DatePipe]
 })
 export class CategoryModule { }
