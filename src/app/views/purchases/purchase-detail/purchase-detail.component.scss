@@ -1,0 +1,72 @@
+.error-message {
+    color: red;
+}
+
+
+
+  
+  .required {
+    color: red;
+  }
+  
+
+
+  .form-group.text-right .btn btn-danger  {
+    margin-right: 10px;
+    color: white; /* Texto en blanco */
+    font-size: 14px; 
+  }
+//ESTILO DE FORMULARIOS 
+.form-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+// .form-group label {
+//   font-weight: bold;
+// }
+
+.form-control {
+  width: 100%;
+}
+
+//ESTILO DE SECCIONES
+.section {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+//ESTILOS PARA LA TABLA DETALLES
+.table {
+  width: 100%;
+}
+
+//ESTILOS PARA LOS BOTONES
+.btn {
+  margin-right: 10px;
+}
+
+//ESTILOS PARA MENSAJES DE ERROR
+.error-message {
+  color: #f00;
+  font-size: 14px;
+}
+
+//QUIETARLE EL SCROLL A LA TABLA DE COMPRAS
+.ngx-datatable.scroll-vertical.datatable-body{
+  overflow: hidden;
+  overflow-y: hidden !important;;
+}
+
+//ALINEAR TOTAL CON EL CAMPO PROVEEDOR
+.total-group {
+  display: flex;
+  align-items: center;
+}

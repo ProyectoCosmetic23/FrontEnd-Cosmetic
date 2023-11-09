@@ -41,7 +41,16 @@ const adminRoutes: Routes = [
   {
     path: 'products',
     loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
-  }
+  },
+  {
+    path: 'purchases',
+    loadChildren: () => import('./views/purchases/purchase.module').then(m => m.PurchaseModule)
+  },
+  {
+    path: 'categories',
+    loadChildren: () => import('./views/categorias/category.module').then(m => m.CategoryModule)
+  },
+
   ];
 
 const routes: Routes = [
