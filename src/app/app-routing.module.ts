@@ -15,7 +15,7 @@ const adminRoutes: Routes = [
     loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
   },
   {
-    path: 'comissions',
+    path: 'comisiones',
     loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
   },
   {

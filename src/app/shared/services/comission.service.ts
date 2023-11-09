@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class ComissionsService {
 
-  private baseUrl = 'http://localhost:8080/api/comisiones';
-  private url2 = 'http://localhost:8080/api/detalleComs';
+  private baseUrl = 'http://localhost:8080/api/commissions';
+  private url2 = 'http://localhost:8080/api/detailComs';
   private url3 = 'http://localhost:8080/api/employees';
   private url4 = 'http://localhost:8080/api/sales';
 
@@ -38,10 +38,10 @@ export class ComissionsService {
   }
 
   getComsEmploy(employeID: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/empleado/${employeID}`);
+    return this.http.get(`${this.baseUrl}/employee/${employeID}`);
   }
 
   getComissionDetailById(idComissionDetail: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/detalle/${idComissionDetail}`);
+    return this.http.get(`${this.baseUrl}/detail/${idComissionDetail}`);
   }
 }

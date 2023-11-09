@@ -14,6 +14,7 @@ export class ProvidersService {
   createProvider(providerData: any): Observable<any> {
     return this.http.post(this.baseUrl, providerData);
   }
+  
   getAllProviders(): Observable<any> {
     return this.http.get(this.baseUrl);
   }
