@@ -69,9 +69,9 @@ export class NavigationService {
             icon: 'i-Full-Cart',
             sub: [
                 { icon: 'i-Administrator', name: 'Proveedores', state: '/proveedores', type: 'link' },
-                { icon: 'i-Tag-3', name: 'Categorias', state: '/categorias', type: 'link' },
+                { icon: 'i-Tag-3', name: 'Categorias', state: '/categories', type: 'link' },
                 { icon: 'i-File-Clipboard-Text--Image', name: 'Productos', state: '/products', type: 'link' },
-                { icon: 'i-Full-Cart', name: 'Compras', state: '/calendar', type: 'link' },
+                { icon: 'i-Full-Cart', name: 'Compras', state: '/purchases', type: 'link' },
             ]
         },
         {
