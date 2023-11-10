@@ -11,44 +11,39 @@
 <div class="row mb-3">
     <div class="col-md-12 mb-3">
         <div class="row">
-            <div class="col-md-6"> 
+            <div class="col-md-6">
                 <div class="row">
-                    <div class="col-md-5">
-                        <button class="btn btn-primary float-right" [routerLink]="['/comisiones/registrar']">Crear nueva comisión</button>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary float-right" [routerLink]="['/comisiones/registrar']">Crear nueva
+                            comisión</button>
                     </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-primary float-right" [routerLink]="['/detalleComs/registrar']">Crear nuevo detalle de comisión</button>
+                    <div class="col-md-5">
+                        <button class="btn btn-primary float-right" [routerLink]="['/detalleComs/registrar']">Crear
+                            nuevo detalle de comisión</button>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" [(ngModel)]="selectedMonth"  (change)="filterByMonth()">
+                            <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+                        </select>
                     </div>
                 </div>
             </div>
-           
+
             <div class="col-md-6 d-flex justify-content-end">
-                <input _ngcontent-vet-c167="" id="email" placeholder="Buscar Comisiones" type="text" class="form-control  ng-valid ng-touched ng-dirty" ng-reflect-form="[object Object]" style="width: 50%;">
+                <input _ngcontent-vet-c167="" id="email" placeholder="Buscar Comisiones" type="text"
+                    class="form-control  ng-valid ng-touched ng-dirty" ng-reflect-form="[object Object]"
+                    style="width: 50%;">
             </div>
         </div>
     </div>
-    
-    
-    
-    
-    
     <div class="col-md-12">
         <div class="card o-hidden">
             <div class="col-md-12">
                 <div class="card o-hidden">
-                    <ngx-datatable
-                        class="material fullscreen"
-                        style="height: 460px;"
-                        [columnMode]="'force'"
-                        [headerHeight]="50"
-                        [footerHeight]="50"
-                        [rowHeight]="60"
-                        [scrollbarV]="true"
-                        [rows]="listComissions"
-                        [externalPaging]="true"
-                        [count]="listComissions.length"
-                        [limit]="itemsPerPage"
-                        [offset]="(currentPage - 1) * itemsPerPage"
+                    <ngx-datatable class="material fullscreen" style="height: 460px;" [columnMode]="'force'"
+                        [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"
+                        [rows]="listComissions" [externalPaging]="true" [count]="listComissions.length"
+                        [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
                         (page)="onPageChange($event)">
                         <ngx-datatable-column name="id_employee">
                             <ng-template ngx-datatable-header-template>
@@ -82,7 +77,7 @@
                                 {{ row.month_commission }}
                             </ng-template>
                         </ngx-datatable-column>
-                        
+
                         <ngx-datatable-column name="commission_percentage">
                             <ng-template ngx-datatable-header-template>
                                 Porcentaje Comisión
@@ -96,8 +91,9 @@
                                 Acciones
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button class="btn btn-dark m-1 me-3" [routerLink]="['/comisiones/detalle', row.id_commission]">
-                                    <i class="i-Eye"></i> 
+                                <button class="btn btn-dark m-1 me-3"
+                                    [routerLink]="['/comisiones/detalle', row.id_commission]">
+                                    <i class="i-Eye"></i>
                                 </button>
                             </ng-template>
                         </ngx-datatable-column>
@@ -109,11 +105,7 @@
 </div>
 
 <!-- Agrega los controles de paginación justo debajo de la tabla -->
-<pagination-template
-    (pageChange)="pageChanged($event)"
-    [id]="paginationId"
-    
-></pagination-template>
+<pagination-template (pageChange)="pageChanged($event)" [id]="paginationId"></pagination-template>
 
 <ng-template #changeStateModal let-modal>
     <div class="modal-header">
