@@ -15,7 +15,7 @@ const adminRoutes: Routes = [
     loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
   },
   {
-    path: 'comisiones',
+    path: 'comissions',
     loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
   },
   {
@@ -45,6 +45,10 @@ const adminRoutes: Routes = [
   {
     path: 'clients',
     loadChildren: () => import('./views/clients/client.module').then(m => m.ClientModule)
+  },
+  {
+    path: 'users',
+    loadChildren: () => import('./views/users/user.module').then(m => m.UserModule)
   }
   ];
 

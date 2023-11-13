@@ -1,0 +1,187 @@
+<div class="breadcrumb">
+  <h1 *ngIf="viewMode === 'new'">Registrar usuario</h1>
+  <h1 *ngIf="viewMode === 'edit'">Editar usuario</h1>
+  <h1 *ngIf="viewMode === 'print'">Ver detalle de usuario</h1>
+  <ul>
+    <li><a [routerLink]="['/users']">Usuarios</a></li>
+    <li *ngIf="viewMode === 'new'">Registrar usuario</li>
+    <li *ngIf="viewMode === 'edit'">Editar usuario</li>
+    <li *ngIf="viewMode === 'print'">Ver detalle de usuario</li>
+  </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<!-- Contenido común a todas las vistas -->
+<div class="form-container">
+  <!-- Vista de crear usuarios -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="card-title mb-3">Formulario de usuarios</div>
+          <form [formGroup]="userForm" (ngSubmit)="submitUser()">
+            <div class="row">
+
+              <div class="col-md-6 form-group mb-3">
+                <label for="id_role">ID de rol</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="id_role"
+                  formControlName="id_role"
+                />
+              </div>
+              <div class="col-md-6 form-group mb-3">
+                <label for="id_employee">Id empleado</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="id_employee"
+                  formControlName="id_employee"
+                />
+              </div>
+
+              <div class="col-md-6 form-group mb-3">
+                <label for="username"
+                  >Nombre de usuario<span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  formControlName="username"
+                  required
+                />
+                <div
+                  *ngIf="
+                    userForm.get('username').touched &&
+                    userForm.get('username').hasError('required')
+                  "
+                  class="error-message"
+                >
+                  El campo nombre es obligatorio.
+                </div>
+                <div
+                  *ngIf="userForm.get('username').hasError('invalidName')"
+                  class="error-message"
+                >
+                  El campo nombre no puede tener simbolos y solo puede tener 1
+                  numero.
+                </div>
+
+                <div
+                  *ngIf="userForm.get('username').hasError('maxlength')"
+                  class="error-message"
+                >
+                  El campo nombre no puede superar los 80 caracteres.
+                </div>
+              </div>
+
+              <div class="col-md-6 form-group mb-3">
+                <label for="email"
+                  >Correo<span class="text-danger">*</span></label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  formControlName="email"
+                  (change)="(checkEmailAvailability)"
+                />
+                <div
+                  *ngIf="
+                    userForm.get('email').touched &&
+                    userForm.get('email').hasError('required')
+                  "
+                  class="error-message"
+                >
+                  El campo correo es obligatorio.
+                </div>
+                <div
+                  *ngIf="userForm.get('email').hasError('email')"
+                  class="error-message"
+                >
+                  El campo correo debe ser un formato de correo electrónico
+                  válido.
+                </div>
+                <div
+                  *ngIf="userForm.get('email').hasError('invalidDomain')"
+                  class="error-message"
+                >
+                  El dominio del correo no es válido.
+                </div>
+                <div
+                  *ngIf="userForm.get('email').hasError('maxlength')"
+                  class="error-message"
+                >
+                  El campo correo no puede superar los 80 caracteres.
+                </div>
+                <div
+                  *ngIf="userForm.get('email').hasError('emailTaken')"
+                  class="error-message"
+                >
+                  El correo electrónico ya está en uso.
+                </div>
+              </div>
+
+              <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+                <label for="state_user"
+                  >Estado<span class="text-danger">*</span></label
+                >
+                <input
+                  class="form-control"
+                  id="state_user"
+                  formControlName="state_user"
+                />
+              </div>
+
+              <div class="col-md-6 form-group mb-3">
+                <label for="password">Contraseña</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="password"
+                  formControlName="password"
+                />
+              </div>
+
+              <div class="col-md-6 form-group mb-3">
+                <label for="observation_user"
+                  >Observación<span class="text-danger">*</span></label
+                >
+                <textarea
+                  class="form-control"
+                  id="observation_user"
+                  formControlName="observation_user"
+                  required
+                ></textarea>
+                <div
+                  *ngIf="
+                    userForm.get('observation_user').touched &&
+                    userForm.get('observation_user').hasError('required')
+                  "
+                  class="error-message"
+                >
+                  El campo observación es obligatorio.
+                </div>
+                <div
+                  *ngIf="userForm.get('observation_user').hasError('maxlength')"
+                  class="error-message"
+                >
+                  El campo observación no puede superar los 100 caracteres.
+                </div>
+              </div>
+
+              <div class="form-group text-right" style="text-align: right">
+                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" > {{viewMode == 'new' ? 'Registrar usuario' : 'Editar usuario' }} 
+                </btn-loading>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

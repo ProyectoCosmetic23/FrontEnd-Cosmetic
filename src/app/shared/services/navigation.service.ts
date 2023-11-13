@@ -58,75 +58,9 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Bar-Chart',
             sub: [
-                { icon: 'i-Clock-3', name: 'Version 1', state: '/dashboard/v1', type: 'link' },
+                { icon: 'i-Clock-3', name: 'Indicadores de Rendimiento', state: '/dashboard/v1', type: 'link' },
 
             ]
-        },
-        {
-            name: 'UI kits',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-            type: 'dropDown',
-            icon: 'i-Library',
-            sub: [
-                { icon: 'i-Bell', name: 'Alerts', state: '/uikits/alerts', type: 'link' },
-                {
-                    icon: 'i-Arrow-Right-in-Circle',
-                    name: 'Buttons',
-                    type: 'dropDown',
-                    sub: [
-                        { name: 'Bootstrap Buttons', state: '/uikits/buttons', type: 'link' },
-                    ]
-                },
-                { icon: 'i-Duplicate-Window', name: 'Modals', state: '/uikits/modals', type: 'link' },
-                { icon: 'i-Loading-3', name: 'Loaders', state: '/uikits/loaders', type: 'link' },
-            ]
-        },
-        {
-            name: 'Apps',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-Computer-Secure',
-            sub: [
-                { icon: 'i-Add-File', name: 'Invoice Builder', state: '/invoice', type: 'link' },
-            ]
-        },
-        {
-            name: 'Forms',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-File-Clipboard-File--Text',
-            sub: [
-                { icon: 'i-File-Clipboard-Text--Image', name: 'Basic components', state: '/forms/basic', type: 'link' },
-                { icon: 'i-Split-Vertical', name: 'Form layouts', state: '/forms/layouts', type: 'link' },
-                { icon: 'i-Crop-2', name: 'Image Cropper', state: '/forms/img-cropper', type: 'link' },
-            ]
-        },
-        {
-            name: 'Data Tables',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-File-Horizontal-Text',
-            sub: [
-                { icon: 'i-Filter-2', name: 'Filter', state: '/tables/filter', type: 'link' },
-            ]
-        },
-        {
-            name: 'Sessions',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-Administrator',
-            sub: [
-                { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
-                { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
-            ]
-        },
-        {
-            name: 'Icons',
-            description: '600+ premium icons',
-            type: 'link',
-            icon: 'i-Cloud-Sun',
-            state: '/icons/iconsmind'
         },
         {
             name: 'Compras',
@@ -159,9 +93,9 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Files',
             sub: [
-                { icon: 'i-Conference', name: 'Usuarios', state: 'por arreglar', type: 'link' },
+                { icon: 'i-Conference', name: 'Usuarios', state: 'users', type: 'link' },
                 { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
-                { icon: 'i-Money-2', name: 'Comisiones', state: 'por arreglar', type: 'link' },
+                { icon: 'i-Money-2', name: 'Comisiones', state: '/comissions', type: 'link' },
 
             ]
         },
@@ -172,11 +106,9 @@ export class NavigationService {
             icon: 'i-Gear',
             sub: [
                 { icon: 'i-Key', name: 'Roles', state: '/roles', type: 'link' },
-                { icon: 'i-Error-404-Window', name: 'Usuarios', state: '/others/404', type: 'link' },
+                { icon: 'i-Conference', name: 'Usuarios', state: '/users', type: 'link' },
             ]
         },
-
-
     ];
 
 

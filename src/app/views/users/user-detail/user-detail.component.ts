@@ -3,19 +3,19 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, UntypedFormBuilde
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { ClientsService } from 'src/app/shared/services/client.service';
-import { ClientFormModel } from '../models/client.model';
+import { UsersService } from 'src/app/shared/services/user.service';
+import { UserFormModel } from '../models/user-model';
 
 
 @Component({
-    selector: 'app-cliente-detail',
-    templateUrl: './client-detail.component.html',
-    styleUrls: ['./client-detail.component.scss']
+    selector: 'app-user-detail',
+    templateUrl: './user-detail.component.html',
+    styleUrls: ['./user-detail.component.scss']
 })
-export class ClientDetailComponent implements OnInit {
+export class UserDetailComponent implements OnInit {
 
-    clientForm: FormGroup;
-    clientFormSub: Subscription;
+    userForm: FormGroup;
+    userFormSub: Subscription;
     loading: boolean = false;
     formBasic: FormGroup;
     viewMode: 'new' | 'edit' | 'print' = 'new';
@@ -26,7 +26,7 @@ export class ClientDetailComponent implements OnInit {
     invoiceFormSub: Subscription;
     subTotal: number;
     saving: boolean;
-    clientData: ClientFormModel;
+    userData: UserFormModel;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -34,50 +34,56 @@ export class ClientDetailComponent implements OnInit {
         private router: Router,
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
-        private clientsService: ClientsService
+        private usersService: UsersService
     ) {
 
     }
 
 
     ngOnInit() {
-        this.id = this.route.snapshot.params['id_client'];
+        this.id = this.route.snapshot.params['id_user'];
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
     }
 
     private inicializateForm(id: number): void {
-        this.clientForm = this.formBuilder.group({
-            nit_or_id_client: ['', [Validators.required, Validators.maxLength(10), Validators.minLength(7), Validators.pattern('^[0-9]+$')]],
-            name_client: ['', [Validators.required, Validators.maxLength(80)], [this.validateNameSimbolAndNumber]],
-            last_name_client: ['', [Validators.required, Validators.maxLength(80)], [this.validateNameSimbolAndNumber]],
-            email_client: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
-            address_client: ['', [Validators.required, Validators.maxLength(80)]],
-            phone_client: ['', [Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
-            state_client: []
+        this.userForm = this.formBuilder.group({
+
+
+            id_user: [],
+            id_role: [],
+            id_employee: [],
+            username: ['', [Validators.required, Validators.maxLength(80)], [this.validateNameSimbolAndNumber]],
+            email: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
+            observation_user: ['', [Validators.required, Validators.maxLength(100)]],
+            state_user: [],
+            creation_date_user: [],
+            password: [],
         });
 
         if (this.viewMode == 'print') {
-            this.clientForm.disable();
+            this.userForm.disable();
         }
 
         if (this.viewMode == 'edit') {
-            this.nit_or_id_client.disable();
+            this.id_user.disable();
+            this.id_role.disable();
+            this.id_employee.disable();
         }
 
         if (this.viewMode != 'new') {
-            this.getClientByID(id);
+            this.getUserByID(id);
         }
 
     }
 
-    private getClientByID(id: number): void {
+    private getUserByID(id: number): void {
         this.loading = true;
-        this.clientsService.getClientsById(id).subscribe({
+        this.usersService.getUsersById(id).subscribe({
             next: (response: any) => {
-                this.clientData = new ClientFormModel(response);
-                this.setDataClient();
+                this.userData = new UserFormModel(response);
+                this.setDataUser();
             },
             error: (err) => {
                 console.log('err', err);
@@ -89,34 +95,35 @@ export class ClientDetailComponent implements OnInit {
         });
     }
 
-    // private setDataClient(): void {
-    //     if (this.clientData) {
-    //         this.clientForm.setValue(this.clientData)
-    //         console.log(this.clientForm)
-    //     }
-    // }
+    private setDataUser(): void {
+        if (this.userData) {
+            this.id_user.setValue(this.userData.id_user),
+                this.id_role.setValue(this.userData.id_role),
+                this.id_employee.setValue(this.userData.id_employee),
+                this.username.setValue(this.userData.username),
+                this.email.setValue(this.userData.email),
+                this.password.setValue(this.userData.password),
+                this.state_user.setValue(this.userData.state_user),
+                this.observation_user.setValue(this.userData.observation_user),
 
-        private setDataClient(): void {
-        if (this.clientData) {
-            this.nit_or_id_client.setValue(this.clientData.nit_or_id_client)
-            this.clientForm.setValue(this.clientData)
+                this.userForm.setValue(this.userData)
         }
     }
 
-    createClient() {
-        if (this.clientForm.valid) {
-            const clientData = this.clientForm.value;
+    createUser() {
+        if (this.userForm.valid) {
+            const userData = this.userForm.value;
             this.loading = true;
-            this.clientsService.createClient(clientData).subscribe(
+            this.usersService.createUser(userData).subscribe(
                 (response) => {
                     this.loading = false;
-                    console.log("Éxito al crear cliente: ", response);
+                    console.log("Éxito al crear usuario: ", response);
                     this.submit();
                 },
                 (error) => {
                     this.loading = false;
-                    console.error("Error al crear cliente: ", this.toastr.error);
-                    const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el cliente.';
+                    console.error("Error al crear el usuario: ", this.toastr.error);
+                    const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el usuario.';
                     this.toastr.error(errorMessage, 'Error');
                 }
             );
@@ -151,10 +158,10 @@ export class ClientDetailComponent implements OnInit {
 
 
     public checkEmailAvailability(): void {
-        if (this.email_client && this.email_client instanceof AbstractControl) {
-            this.validateEmail(this.email_client).then((result) => {
+        if (this.email && this.email instanceof AbstractControl) {
+            this.validateEmail(this.email).then((result) => {
                 if (result) {
-                    this.email_client.setErrors(result);
+                    this.email.setErrors(result);
                 }
             });
         }
@@ -174,7 +181,7 @@ export class ClientDetailComponent implements OnInit {
                 if (!control.value) {
                     resolve(null);
                 } else {
-                    this.clientsService.checkEmailAvailability(control.value).subscribe(
+                    this.usersService.checkEmailAvailability(control.value).subscribe(
                         (isAvailable) => {
                             if (isAvailable) {
                                 resolve(null); // El correo es válido y está disponible
@@ -193,79 +200,61 @@ export class ClientDetailComponent implements OnInit {
         }
     }
 
-    public checkCedulaAvailability(): void {
-        if (this.nit_or_id_client && this.nit_or_id_client instanceof AbstractControl) {
-            this.validateCedulaAvailability(this.nit_or_id_client).then((result) => {
-                if (result) {
-                    this.nit_or_id_client.setErrors(result);
-                }
-            });
-        }
-    }
 
-    validateCedulaAvailability(control: AbstractControl) {
-        return new Promise((resolve) => {
-            if (!control.value) {
-                resolve(null);
-            } else {
-                this.clientsService.checkCedulaAvailability(control.value).subscribe(
-                    (isAvailable) => {
-                        if (isAvailable) {
-                            resolve(null);
-                        } else {
-                            resolve({ cedulaTaken: true });
-                        }
-                    },
-                    (error) => {
-                        resolve({ cedulaTaken: true });
-                    }
-                );
-            }
-        });
-    }
 
-    saveClientsChanges(id: number, updatedData: any) {
-        this.clientsService.updateClient(id, updatedData).subscribe(
+
+    saveUserChanges(id: number, updatedData: any) {
+        this.usersService.updateUser(id, updatedData).subscribe(
             (response) => {
                 this.loading = false;
                 this.submit();
             },
             (error) => {
                 this.loading = false;
-                console.error("Error al crear cliente: ", this.toastr.error);
-                const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el cliente.';
+                console.error("Error al crear usuario: ", this.toastr.error);
+                const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el usuario.';
                 this.toastr.error(errorMessage, 'Error');
             }
         );
     }
 
-    public submitClient(): void {
+
+
+
+
+    public submitUser(): void {
         if (this.viewMode == 'new') {
-            this.createClient();
+            this.createUser();
         } else if (this.viewMode == 'edit') {
             this.saveChanges();
         }
     }
 
+
     saveChanges() {
         console.log('editar')
-        if (this.clientForm.valid) {
+
+        if (this.userForm.valid) {
             const id = Number(this.id); // Convierte el ID a número
             const updatedData = {
-                nit_or_id_client: this.nit_or_id_client.value,
-                name_client: this.clientForm.get('name_client').value,
-                email_client: this.email_client.value,
-                address_client: this.clientForm.get('address_client').value,
-                phone_client: this.clientForm.get('phone_client').value,
+
+                username: this.userForm.get('username').value,
+                password: this.userForm.get('password').value,
+                email: this.email.value,
+                observation_user: this.userForm.get('observation_user').value,
             };
-            this.saveClientsChanges(id, updatedData);
+            this.saveUserChanges(id, updatedData);
         } else {
             this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
         }
     }
 
+
+
+
     cancel() {
-        this.router.navigateByUrl('/clients');
+
+        this.router.navigateByUrl('/users');
     }
 
     submit() {
@@ -273,9 +262,9 @@ export class ClientDetailComponent implements OnInit {
             this.loading = true;
             setTimeout(() => {
                 this.loading = false;
-                this.toastr.success('Cliente registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+                this.toastr.success('Usuario registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
                 setTimeout(() => {
-                    this.router.navigateByUrl('/clients');
+                    this.router.navigateByUrl('/users');
                 }, 3000);
             }, 3000);
         }
@@ -305,32 +294,37 @@ export class ClientDetailComponent implements OnInit {
     }
 
 
-
-    get nit_or_id_client () {
-        return this.clientForm.get('nit_or_id_client');
+    get email() {
+        return this.userForm.get('email');
     }
 
-    get nombre() {
-        return this.clientForm.get('name_client');
+    get id_user() {
+        return this.userForm.get('id_user');
     }
 
-    get email_client() {
-        return this.clientForm.get('email_client');
+    get id_role() {
+        return this.userForm.get('id_role');
+    }
+    get id_employee() {
+        return this.userForm.get('id_employee');
+    }
+    get username() {
+        return this.userForm.get('username');
+    }
+    get state_user() {
+        return this.userForm.get('state_user');
+    }
+    get creation_date_user() {
+        return this.userForm.get('creation_date_user');
+    }
+    get observation_user() {
+        return this.userForm.get('observation_user');
     }
 
-    get last_name_client () {
-        return this.clientForm.get('last_name_client');
+    get password() {
+        return this.userForm.get('password');
     }
 
-    get phone_client () {
-        return this.clientForm.get('phone_client');
-    }
 
-    get address_client () {
-        return this.clientForm.get('address_client');
-    }
 
-    get state_client () {
-        return this.clientForm.get('state_client');
-    }
 }

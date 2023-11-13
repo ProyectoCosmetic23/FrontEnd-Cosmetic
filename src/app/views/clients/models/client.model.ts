@@ -6,8 +6,7 @@ export class ClientFormModel {
     phone_client: string;
     address_client: string;
     state_client: string;
-
-
+    
 
     constructor(response) {
         this.nit_or_id_client = response.nit_or_id_client;
@@ -17,6 +16,5 @@ export class ClientFormModel {
         this.phone_client = response.phone_client;
         this.address_client = response.address_client;
         this.state_client = response.state_client;
-
     }
 }

@@ -1,6 +1,6 @@
 <div class="">
     <div class="breadcrumb">
-        <h1>Lista clientes</h1>
+        <h1>Clientes</h1>
         <ul>
             <li><a href="#">Ventas</a></li>
             <li>Clientes</li>
@@ -8,16 +8,22 @@
         </div>
     
         <div class="separator-breadcrumb border-top"></div>
-
-        <div class="row mb-3">
-        <div class="col-md-4">
-            <div class="form-group">
-            <input id="search" placeholder="Buscar Cliente" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+        <div class="col-md-12 mb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary float-right" [routerLink]="['/clients/new']">Crear nuevo Cliente</button>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <input _ngcontent-vet-c167="" id="search" placeholder="Buscar cliente" type="text"
+                        class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
+                        style="width: 50%;">
+                </div>
             </div>
         </div>
-        <div class="col-md-12 mb-3">
-            <button class="btn btn-primary float-right" [routerLink]="['/clients/new']">Crear nuevo Cliente</button>
-        </div>
+        
+
+        <div class="row mb-3">
+        
         <div class="col-md-12">
             <div class="card o-hidden">
                 <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
@@ -32,10 +38,10 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="name_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
                     <ng-template ngx-datatable-header-template>
-                        Nombre
+                        Nombres
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.name_client}}
+                        {{ row.name_client}} {{ row.last_name_client}}
                     </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="email_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
@@ -82,19 +88,16 @@
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-title">Cambiar estado cliente</h4>
-        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
-            (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
+
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea inhabilitar este cliente?</strong></p>
+        <p><strong>¿Está seguro de cambiar el estado del cliente?</strong></p>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn-rounded"
+        <button type="button" class="btn btn-danger ml-2"
             (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+        <button type="button" ngbAutofocus class="btn btn-primary -m1 custom-button"
             (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>

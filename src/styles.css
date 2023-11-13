@@ -59,3 +59,7 @@ table th:last-child {
     display: flex;
     justify-content: flex-end;
 }
+.form-control {
+    background-color: white !important;
+}
+

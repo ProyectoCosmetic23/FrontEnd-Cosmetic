@@ -1,34 +1,32 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UntypedFormControl } from '@angular/forms';
-import { ClientsService } from 'src/app/shared/services/client.service';
+import { UsersService } from 'src/app/shared/services/user.service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
-
-
 @Component({
-    selector: 'app-client-list',
-    templateUrl: './client-list-component.html',
-    styleUrls: ['./client-list-component.scss']
+    selector: 'app-user-list',
+    templateUrl: './user-list.component.html',
+    styleUrls: ['./user-list.component.scss']
 })
-export class ClientListComponent implements OnInit {
+export class UserListComponent implements OnInit {
     loading: boolean;
     searchControl: UntypedFormControl = new UntypedFormControl();
-    listClients: any[];
-    filteredClients: any[];
+    listUsers: any[];
+    filteredUsers: any[];
     pageSize: number = 10;
     currentPage: number = 1;
     modalAbierto = false;
 
 
     constructor(
-        private _clientService: ClientsService,
+        private _userService: UsersService,
         private modalService: NgbModal,
         private toastr: ToastrService,) { }
 
     ngOnInit(): void {
-        this.getClients();
+        this.getUsers();
         this.searchControl.valueChanges
             .pipe(debounceTime(200))
             .subscribe(value => {
@@ -38,10 +36,10 @@ export class ClientListComponent implements OnInit {
 
 
 
-    getClients() {
-        this._clientService.getAllClients().subscribe(data => {
-            this.listClients = data.sort((a, b) => a.id_client - b.id_client);
-            this.filteredClients = [...this.listClients];
+    getUsers() {
+        this._userService.getAllUsers().subscribe(data => {
+            this.listUsers = data.sort((a, b) => a.id_user - b.id_user);
+            this.filteredUsers = [...this.listUsers];
         }, error => {
             console.log(error);
         });
@@ -51,17 +49,16 @@ export class ClientListComponent implements OnInit {
         if (value) {
             value = value.toLowerCase();
         } else {
-            this.filteredClients = [...this.listClients];
+            this.filteredUsers = [...this.listUsers];
             return;
         }
 
-        this.filteredClients = this.listClients.filter(client => {
-            const cedulaMatch = client.nit_or_id_client.toLowerCase().includes(value);
-            const nombreMatch = client.name_client.toLowerCase().includes(value);
-            const correoMatch = client.email_client.toLowerCase().includes(value);
-            const estadoMatch = client.state_client.toLowerCase().includes(value);
+        this.filteredUsers = this.listUsers.filter(user => {
+            const nombreMatch = user.username.toLowerCase().includes(value);
+            const correoMatch = user.email.toLowerCase().includes(value);
+            const estadoMatch = user.state_user.toLowerCase().includes(value);
 
-            return cedulaMatch || nombreMatch || correoMatch || estadoMatch;
+            return   nombreMatch || correoMatch || estadoMatch;
         });
 
         this.currentPage = 1;
@@ -69,19 +66,20 @@ export class ClientListComponent implements OnInit {
 
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 
-    openModal(idClient: number) {
+    openModal(idUser: number) {
         if (!this.modalAbierto) {
             this.modalAbierto = true;
             this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
                 (result) => {
                     if (result === 'Ok') {
-                        this._clientService.clientChangeStatus(idClient).subscribe(
+                        this._userService.userChangeStatus(idUser).subscribe(
                             (data) => {
-                                this.loading = false;
+                                // this.loading = false;
                                 // this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                                // console.log(data);
+                                console.log(data);
 
                                 setTimeout(() => {
+                                    
                                     location.reload();
                                 });
                             },
