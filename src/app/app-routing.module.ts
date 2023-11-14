@@ -1,89 +1,124 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
-import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
-import { AuthGaurd } from './shared/services/auth.gaurd';
-
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AdminLayoutSidebarCompactComponent } from "./shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component";
+import { AuthLayoutComponent } from "./shared/components/layouts/auth-layout/auth-layout.component";
+import { AuthGaurd } from "./shared/services/auth.gaurd";
 
 const adminRoutes: Routes = [
   {
-    path: 'dashboard',
-    loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+    path: "dashboard",
+    loadChildren: () =>
+      import("./views/dashboard/dashboard.module").then(
+        (m) => m.DashboardModule
+      ),
   },
   {
-    path: 'proveedores',
-    loadChildren: () => import('./views/providers/provider.module').then(m => m.ProviderModule)
+    path: "proveedores",
+    loadChildren: () =>
+      import("./views/providers/provider.module").then((m) => m.ProviderModule),
   },
   {
-    path: 'comissions',
-    loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
+    path: "comissions",
+    loadChildren: () =>
+      import("./views/comissions/comission.module").then(
+        (m) => m.ComissionModule
+      ),
   },
   {
-    path: 'detalleComs',
-    loadChildren: () => import('./views/comissionsDetail/comissionDetail.module').then(m => m.ComissionDetailModule)
+    path: "detalleComs",
+    loadChildren: () =>
+      import("./views/comissionsDetail/comissionDetail.module").then(
+        (m) => m.ComissionDetailModule
+      ),
   },
   {
-    path: 'pagos',
-    loadChildren: () => import('./views/payments/payment.module').then(m => m.PaymentModule)
+    path: "pagos",
+    loadChildren: () =>
+      import("./views/payments/payment.module").then((m) => m.PaymentModule),
   },
   {
-    path: 'roles',
-    loadChildren: () => import('./views/roles/roles.module').then(m => m.RolesModule)
+    path: "roles",
+    loadChildren: () =>
+      import("./views/roles/roles.module").then((m) => m.RolesModule),
   },
   {
-    path: 'orders',
-    loadChildren: () => import('./views/orders/orders.module').then(m => m.OrdersModule)
+    path: "orders",
+    loadChildren: () =>
+      import("./views/orders/orders.module").then((m) => m.OrdersModule),
   },
   {
-    path: 'employees',
-    loadChildren: () => import('./views/employees/employee.module').then(m => m.EmployeeModule)
+    path: "employees",
+    loadChildren: () =>
+      import("./views/employees/employee.module").then((m) => m.EmployeeModule),
   },
   {
-    path: 'products',
-    loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
+    path: "products",
+    loadChildren: () =>
+      import("./views/products/product.module").then((m) => m.ProductModule),
   },
   {
-    path: 'purchases',
-    loadChildren: () => import('./views/purchases/purchase.module').then(m => m.PurchaseModule)
+    path: "purchases",
+    loadChildren: () =>
+      import("./views/purchases/purchase.module").then((m) => m.PurchaseModule),
   },
   {
-    path: 'categories',
-    loadChildren: () => import('./views/categorias/category.module').then(m => m.CategoryModule)
+    path: "categories",
+    loadChildren: () =>
+      import("./views/categorias/category.module").then(
+        (m) => m.CategoryModule
+      ),
   },
-
-  ];
+  {
+    path: "clients",
+    loadChildren: () =>
+      import("./views/clients/client.module").then((m) => m.ClientModule),
+  },
+  {
+    path: "users",
+    loadChildren: () =>
+      import("./views/users/user.module").then((m) => m.UserModule),
+  },
+];
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'dashboard/v1',
-    pathMatch: 'full'
+    path: "",
+    redirectTo: "dashboard/v1",
+    pathMatch: "full",
   },
   {
-    path: '',
+    path: "",
     component: AuthLayoutComponent,
     children: [
       {
-        path: 'sessions',
-        loadChildren: () => import('./views/sessions/sessions.module').then(m => m.SessionsModule)
-      }
-    ]
+        path: "sessions",
+        loadChildren: () =>
+          import("./views/sessions/sessions.module").then(
+            (m) => m.SessionsModule
+          ),
+      },
+    ],
   },
 
   {
-    path: '',
+    path: "",
     component: AdminLayoutSidebarCompactComponent,
     canActivate: [AuthGaurd],
-    children: adminRoutes
+    children: adminRoutes,
   },
   {
-    path: '**',
-    redirectTo: 'others/404'
-  }
+    path: "**",
+    redirectTo: "others/404",
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      relativeLinkResolution: "legacy",
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
