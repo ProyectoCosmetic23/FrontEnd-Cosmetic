@@ -7,14 +7,13 @@ export interface Detail {
     selling_price: number;
     vat: number;
     product_quantity: number;
-    name_category: string;
-    name_product: string;
+
 }
 
 // Usa la interfaz Products en la clase PurchaseFormMode
 export class PurchaseFormMode {
-    id_provider: string;
     id_purchase: string;
+    id_provider: string;
     invoice_number: string;
     purchase_date: Date;
     record_date_purchase: Date;

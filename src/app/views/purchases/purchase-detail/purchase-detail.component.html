@@ -20,12 +20,13 @@
               <!--==== Edit Area =====-->
               <div *ngIf="viewMode === 'new'">
                   <form [formGroup]="purchaseForm">
+
                       <div class="row">
 
                         <div class="col-md-3">
                           <div class="form-group">
                             <label for="invoice_number">Numero Factura<span class="required">*</span></label>
-                            <input type="number" class="form-control" id="invoice_number" name="invoice_number" style="width: 100%;" />
+                            <input type="number" class="form-control" id="invoice_number" name="invoice_number" formControlName="invoice_number" style="width: 100%;" />
                             <div class="textoF" id="textoF"></div>
                           </div>
                         </div>
@@ -52,7 +53,10 @@
                             </button>
                           </div>
                         </div>
-
+                        <div class="col-md-6 form-group mb-3">
+                          <label for="observation_purchase">Observación</label>
+                          <textarea class="form-control" id="observation_category" formControlName="observation_purchase" placeholder="opcional"></textarea>
+                        </div>
 
                 
                           </div>
@@ -170,8 +174,7 @@
                           <td>{{ item.selling_price | currency:'':'symbol':'1.0-0' }}</td>
                           <td>{{ item.vat | currency:'':'symbol':'1.0-0' }}</td>
                           <td>{{ item.product_quantity }}</td>
-                          <td>{{ ((item.cost_price + item.vat) * item.product_quantity) | currency:'':'symbol':'1.0-0' }}</td>
-
+                          <td>{{((item.cost_price + item.vat) * item.product_quantity) | currency:'':'symbol':'1.0-0' }}</td>
                           <td>
                             <button class="btn btn-danger" (click)="removePurchaseDetail(i)">
                               <i class="i-Remove-Cart"></i>
@@ -180,25 +183,22 @@
                         </tr>
                       </tbody>
                     </table>
-                      <div class="table-footer">
-                        <div class="col-md-8"></div>
-                        
-                        <div class="col-md-8">
-                        </div>
+                    <div class="table-footer">
+                      <div class="col-md-8"></div>
+                      <div class="col-md-8">
+                        <div class="total" >Total: {{ viewMode === 'new' ? calculateTotal() : total_purchase  | currency:'':'symbol':'1.0-0' }} </div>
                       </div>
+                    </div>
                   </div>
                   <div class="col-md-12" style="margin-top: 20px;">
                     <div class="d-flex justify-content-end">
                       <button class="btn btn-danger float-right" [routerLink]="['/purchases']">Volver</button>
                       <div *ngIf="viewMode === 'new'" style="width: 10px;"></div>
-                      <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">Crear
+                      <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" (click)="createPurchase()" [disabled]="loading">Crear
                         Compra</btn-loading>
                     </div>
                   </div>
-                  <div class="col-md-6 form-group mb-3">
-                    <label for="observation_purchase">Observación</label>
-                    <textarea class="form-control" id="observation_category" formControlName="observation_purchase"></textarea>
-                  </div>
+                  
                           
               </div>
             

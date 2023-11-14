@@ -68,59 +68,22 @@ export class PurchaseDetailComponent implements OnInit {
         selling_price: [],
         vat: [],
         product_quantity: []
-      })// Assuming purchase_detail is an array
+      }),
+     
     });
-  
-  
-    if (!this.isNew) {
-      this.getPurchaseById(id);
-    }
-  }
-  
-  private isPrintOrEditView(): boolean {
-    return this.viewMode === 'print' ;
 
+    if (this.viewMode == 'print') {
+      this.purchaseForm.disable();
+  }
+
+
+
+  if (this.viewMode != 'new') {
+      this.getPurchaseById(id);
+  }
     
   }
-  
 
-  private getPurchaseById(id: number): void {
-    this.loading = true;
-    this.purchaseService.getPurchaseById(id).subscribe({
-      next: (response: any) => {
-        this.purchaseData = new PurchaseFormMode(response);
-        this.setDataPurchase();
-      },
-      error: (err) => {
-        console.log('err', err);
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
-  }
-  private setDataPurchase(): void {
-    if (this.purchaseData) {
-      this.idPurchase.setValue(this.purchaseData.id_purchase);
-  
-      this.purchaseForm.patchValue({
-        invoice_number: this.purchaseData.invoice_number,
-        id_provider: this.purchaseData.id_provider,
-        purchase_date: this.purchaseData.purchase_date,
-        state_purchase: this.purchaseData.state_purchase,
-        observation_purchase: this.purchaseData.observation_purchase,
-      });
-  
-      const purchaseDetailArray = this.purchaseForm.get('purchase_detail') as FormArray;
-      purchaseDetailArray.clear(); // Limpiar el FormArray antes de agregar detalles
-  
-      this.purchaseData.purchase_detail.forEach((detail) => {
-        purchaseDetailArray.push(this.createDetailFormGroup(detail));
-      });
-    }
-  }
-  
   private createDetailFormGroup(detail: Detail): FormGroup {
     return this.formBuilder.group({
       id_product: [detail.id_product],
@@ -128,9 +91,38 @@ export class PurchaseDetailComponent implements OnInit {
       cost_price: [detail.cost_price],
       selling_price: [detail.selling_price],
       vat: [detail.vat],
-      product_quantity: [detail.product_quantity]
+      product_quantity: [detail.product_quantity],
     });
   }
+  
+
+  private setDataPurchase(): void {
+    if (this.purchaseData) {
+      this.idPurchase.setValue(this.purchaseData.id_purchase)
+      this.purchaseForm.setValue(this.purchaseData)
+      this.datePurchase.setValue(Utils.ngbDateToDate(this.purchaseForm.value.purchase_date));
+ 
+  }
+  
+    }
+  
+    private getPurchaseById(id: number): void {
+      this.loading = true;
+      this.purchaseService.getPurchaseById(id).subscribe({
+        next: (response: any) => {
+          this.purchaseData = new PurchaseFormMode(response);
+          this.setDataPurchase();
+        },
+        error: (err) => {
+          console.log('err', err);
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
+    }
+  
 
   get idPurchase() {
     return this.purchaseForm.get('id_purchase');
@@ -151,14 +143,16 @@ export class PurchaseDetailComponent implements OnInit {
   }
 
   createPurchase() {
+          
     if (this.purchaseForm.valid) {
-      const purchaseData: PurchaseFormMode = this.purchaseForm.value;
+      const purchaseData  = this.purchaseForm.value;
       this.loading = true;
-
+      
       this.purchaseService.createPurchase(purchaseData).subscribe(
         (response) => {
           this.loading = false;
           console.log("Éxito al crear la compra: ", response);
+          this.submit();
           this.toastr.success('Compra registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
           // Lógica adicional después de crear la compra, si es necesario
         },
@@ -173,20 +167,39 @@ export class PurchaseDetailComponent implements OnInit {
       this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
     }
   }
-  addPurchaseDetail(): void {
-    const purchaseDetail = this.purchaseForm.get('purchase_detail') as FormArray;
-    const newProduct = purchaseDetail.value;
-  
-    this.purchaseDetailArray.push(newProduct);
-  
-    // Clear the form after adding the new detail
-    this.purchaseForm.reset();
-  }
-  
-  removePurchaseDetail(index: number): void {
-    (this.purchaseForm.get('purchase_detail') as FormArray).removeAt(index);
+
+  public submitPurchase(): void {
+    if (this.viewMode == 'new') {
+        this.createPurchase();
+    }
   }
 
+  addPurchaseDetail(): void {
+    const purchaseDetail = this.purchaseForm.get('purchase_detail') as FormArray;
+    const newProductFormGroup = this.createDetailFormGroup(purchaseDetail.value);
+    this.purchaseDetailArray.push(newProductFormGroup.value);
+    
+    // Clear the form after adding the new detail
+    purchaseDetail.reset();  // Use reset() instead of reset()
+  }
+  
+
+  removePurchaseDetail(index: number): void {
+    const purchaseDetail = this.purchaseForm.get('purchase_detail') as FormArray;
+    const removedProduct = purchaseDetail.removeAt(index);
+    // Remove the product from the local array
+    this.purchaseDetailArray.splice(index, 1);
+  }
+
+
+  calculateTotal(): number {
+    return this.purchaseDetailArray.reduce((total, item) => {
+      const subTotal = (item.cost_price + item.vat) * item.product_quantity;
+      return total + subTotal;
+    }, 0);
+  }
+  
+  
   submit() {
     if (!this.loading) {
       this.loading = true;
@@ -259,7 +272,7 @@ export class PurchaseDetailComponent implements OnInit {
     const selectedCategory = this.listCategories.find(category => category.id_category == selectedCategoryId);
     if (selectedCategory) {
       this.purchaseDetailArray[i].id_category = selectedCategory.id_category; // Store the category ID
-      this.purchaseDetailArray[i].name_category = selectedCategory.name_category; // Store the category name
+      //this.purchaseDetailArray[i].name_category = selectedCategory.name_category; // Store the category name
     } else {
       console.log('Categoría no encontrada.');
     }
