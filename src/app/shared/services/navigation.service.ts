@@ -95,7 +95,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Conference', name: 'Usuarios', state: 'users', type: 'link' },
                 { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
-                { icon: 'i-Money-2', name: 'Comisiones', state: '/comissions', type: 'link' },
+                { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
 
             ]
         },

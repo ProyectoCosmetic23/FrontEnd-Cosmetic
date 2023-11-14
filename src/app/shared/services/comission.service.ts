@@ -7,12 +7,17 @@ import { Observable } from 'rxjs';
 })
 export class ComissionsService {
 
-  private baseUrl = 'http://localhost:8080/api/comisiones';
-  private url2 = 'http://localhost:8080/api/detalleComs';
-  private url3 = 'http://localhost:8080/api/employees';
-  private url4 = 'http://localhost:8080/api/sales';
+  private baseUrl = 'https://api-cosmetic-w32d.onrender.com/commissions';
+  private url2 = 'https://api-cosmetic-w32d.onrender.com/detailComs';
+  private url3 = 'https://api-cosmetic-w32d.onrender.com/api/employees';
+  private url4 = 'https://api-cosmetic-w32d.onrender.com/api/sales';
 
   constructor(private http: HttpClient) { }
+
+  getSalesByEmployeeAndMonth(idEmployee: number, month: string): Observable<any> {
+    const url = `${this.baseUrl}/sales/${idEmployee}/${month}`;
+    return this.http.get(url);
+  }
 
   getAllEmployees(): Observable<any> {
     return this.http.get(this.url3);
@@ -38,10 +43,10 @@ export class ComissionsService {
   }
 
   getComsEmploy(employeID: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/empleado/${employeID}`);
+    return this.http.get(`${this.baseUrl}/employee/${employeID}`);
   }
 
   getComissionDetailById(idComissionDetail: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/detalle/${idComissionDetail}`);
+    return this.http.get(`${this.baseUrl}/detail/${idComissionDetail}`);
   }
 }

@@ -18,11 +18,8 @@ const adminRoutes: Routes = [
       import("./views/providers/provider.module").then((m) => m.ProviderModule),
   },
   {
-    path: "comissions",
-    loadChildren: () =>
-      import("./views/comissions/comission.module").then(
-        (m) => m.ComissionModule
-      ),
+    path: 'comisiones',
+    loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
   },
   {
     path: "detalleComs",

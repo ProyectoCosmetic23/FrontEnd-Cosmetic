@@ -7,13 +7,14 @@ import { Observable } from 'rxjs';
 })
 export class ProvidersService {
 
-  private baseUrl = 'http://localhost:8080/api/providers';
+  private baseUrl = 'https://api-cosmetic-w32d.onrender.com/api/providers';
 
   constructor(private http: HttpClient) { }
 
   createProvider(providerData: any): Observable<any> {
     return this.http.post(this.baseUrl, providerData);
   }
+  
   getAllProviders(): Observable<any> {
     return this.http.get(this.baseUrl);
   }

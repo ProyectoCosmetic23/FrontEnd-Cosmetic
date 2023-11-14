@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 })
 export class ComissionsDetailService {
 
-  private baseUrl = 'http://localhost:8080/api/detalleComs';
-  private url2 = 'http://localhost:8080/api/comisiones';
+  private baseUrl = 'https://api-cosmetic-w32d.onrender.com/api/detailComs';
+  private url2 = 'https://api-cosmetic-w32d.onrender.com/api/commissions';
 
   constructor(private http: HttpClient) { }
 
   createDetailCom(detailData: any): Observable<any> {
-    return this.http.post(`${this.url2}/detalleComs`, detailData);
+    return this.http.post(`${this.url2}/detailComs`, detailData);
   }
   getAllDetails(): Observable<any> {
     return this.http.get(this.baseUrl);

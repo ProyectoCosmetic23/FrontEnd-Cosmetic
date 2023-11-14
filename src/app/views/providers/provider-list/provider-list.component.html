@@ -42,14 +42,14 @@
                         [limit]="itemsPerPage"
                         [offset]="(currentPage - 1) * itemsPerPage"
                         (page)="onPageChange($event)">
-                        <ngx-datatable-column name="nit_cedula">
+                        <!-- <ngx-datatable-column name="nit_cedula">
                             <ng-template ngx-datatable-header-template>
                                 Cédula-NIT
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.nit_cedula }}
                             </ng-template>
-                        </ngx-datatable-column>
+                        </ngx-datatable-column> -->
                         <ngx-datatable-column name="name_provider">
                             <ng-template ngx-datatable-header-template>
                                 Nombre proveedor
@@ -58,22 +58,22 @@
                                 {{ row.name_provider }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="email_provider">
+                        <!-- <ngx-datatable-column name="email_provider">
                             <ng-template ngx-datatable-header-template>
                                 Correo
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.email_provider }}
                             </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="address_provider">
+                        </ngx-datatable-column> -->
+                        <!-- <ngx-datatable-column name="address_provider">
                             <ng-template ngx-datatable-header-template>
                                 Dirección
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.address_provider }}
                             </ng-template>
-                        </ngx-datatable-column>
+                        </ngx-datatable-column> -->
                         <ngx-datatable-column name="phone_provider">
                             <ng-template ngx-datatable-header-template>
                                 Teléfono
