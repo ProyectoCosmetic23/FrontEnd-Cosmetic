@@ -14,6 +14,11 @@ export class ComissionsService {
 
   constructor(private http: HttpClient) { }
 
+  getSalesByEmployeeAndMonth(idEmployee: number, month: string): Observable<any> {
+    const url = `${this.baseUrl}/sales/${idEmployee}/${month}`;
+    return this.http.get(url);
+  }
+
   getAllEmployees(): Observable<any> {
     return this.http.get(this.url3);
   }
