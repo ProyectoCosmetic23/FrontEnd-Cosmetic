@@ -7,7 +7,7 @@ import { Observable } from 'rxjs-compat';
 })
 export class OrdersService {
 
-  url = 'http://localhost:8080/api/orders';
+  url = 'https://api-cosmetic-w32d.onrender.com/api/orders';
   constructor(
     private http: HttpClient
   ) { }
@@ -17,15 +17,15 @@ export class OrdersService {
   }
 
   getAllClients(): Observable<any> {
-    return this.http.get('http://localhost:8080/api/clients');
+    return this.http.get('https://api-cosmetic-w32d.onrender.com/api/clients');
   }
 
   getAllEmployees(): Observable<any> {
-    return this.http.get('http://localhost:8080/api/employees');
+    return this.http.get('https://api-cosmetic-w32d.onrender.com/api/employees');
   }
 
   getAllProducts(): Observable<any> {
-   return this.http.get('http://localhost:8080/api/productcs');
+   return this.http.get('https://api-cosmetic-w32d.onrender.com/api/productcs');
   }
 
   getOrderById(id: any): Observable<any> {

@@ -1,31 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { OrdersService } from 'src/app/shared/services/orders.service';
-import { ToastrService } from 'ngx-toastr';
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { OrdersService } from "src/app/shared/services/orders.service";
 
 @Component({
-  selector: 'app-orders-detail',
-  templateUrl: './orders-detail.component.html',
-  styleUrls: ['./orders-detail.component.scss'],
+  selector: "app-orders-detail",
+  templateUrl: "./orders-detail.component.html",
+  styleUrls: ["./orders-detail.component.scss"],
 })
 export class OrdersDetailComponent implements OnInit {
+  // Propiedades booleanas
   loading: boolean;
   loadingData: boolean;
-  formBasic: FormGroup;
-  viewMode: 'new' | 'detail' = 'new';
-  id: string;
   isNew: boolean;
+
+  // Propiedades de formulario
+  formBasic: FormGroup;
+  productsFormArray: FormArray;
+
+  // Propiedades para el modo de vista
+  viewMode: "new" | "detail" = "new";
+
+  // Otras propiedades
+  id: string;
   orders: any = {};
   order: any = {};
   listClients: any[] = [];
   listEmployees: any[] = [];
   listProducts: any[] = [];
-  productsFormArray: FormArray;
+  order_detail_products: any[] = [];
+  numberOfProducts: number = 0;
   selected_employee: string;
   selected_client: string;
   selected_payment_type: string;
-  order_detail_products: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,29 +46,37 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.params['id_order'];
+    const productGroup = this.createProductGroup();
+    this.productsFormArray.push(productGroup);
+    this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
     this.setViewMode();
     this.getClients();
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    this.formBasic = this.formBuilder.group({})
-    this.formBasic.addControl('products', this.productsFormArray);
+    this.formBasic = this.formBuilder.group({});
+    this.formBasic.addControl("products", this.productsFormArray);
   }
 
+  // -------------- INICIO: Método para definir el tipo de vista -------------- //
+
+  // Método que determina el modo de vista (nuevo o detalle) según la ruta actual
   setViewMode() {
     const currentRoute = this.router.url;
-    if (currentRoute.includes('/new')) {
-      this.viewMode = 'new';
-    } else if (currentRoute.includes('/detail/')) {
-      this.viewMode = 'detail';
+    if (currentRoute.includes("/new")) {
+      this.viewMode = "new";
+    } else if (currentRoute.includes("/detail/")) {
+      this.viewMode = "detail";
     }
   }
 
+  // -------------- INICIO: Métodos para obtener datos -------------- //
+
+  // Método para obtener un pedido y sus detalles
   getOrder() {
     const currentRoute = this.router.url;
-    if (currentRoute.includes('/detail/')) {
+    if (currentRoute.includes("/detail/")) {
       // Antes de cargar los datos, establece loadingData en true
       this.loadingData = true;
       this._ordersService.getOrderById(this.id).subscribe(
@@ -78,36 +94,45 @@ export class OrdersDetailComponent implements OnInit {
           this.loadingData = false;
         },
         (error) => {
-          console.error('Error al obtener el pedido:', error);
+          console.error("Error al obtener el pedido:", error);
           this.loadingData = false; // En caso de error, asegúrate de desactivar la pantalla de carga
         }
       );
     }
   }
 
+  // Método para encontrar información relacionada con el pedido (cliente, empleado, productos)
   findOrderData(clientId: number, employeeId: number, products: any) {
     console.log(clientId + " " + employeeId + " " + products);
 
     // Busca el nombre del cliente
-    const client = this.listClients.find(client => client.id_client === clientId);
+    const client = this.listClients.find(
+      (client) => client.id_client === clientId
+    );
     if (client) {
       this.selected_client = client.name_client;
     }
 
     // Busca el nombre del empleado
-    const employee = this.listEmployees.find(employee => employee.id_employee === employeeId);
+    const employee = this.listEmployees.find(
+      (employee) => employee.id_employee === employeeId
+    );
     if (employee) {
       this.selected_employee = employee.name_employee;
     }
 
-
+    // Asigna el detalle de productos del pedido
     if (products.order_detail) {
       this.order_detail_products = products.order_detail;
     } else {
       this.order_detail_products = products;
     }
 
-    if (this.selected_employee === undefined || this.selected_client === undefined) {
+    // Si falta información esencial, recarga la página
+    if (
+      this.selected_employee === undefined ||
+      this.selected_client === undefined
+    ) {
       this.loadingData = true;
       location.reload();
     }
@@ -117,6 +142,7 @@ export class OrdersDetailComponent implements OnInit {
     console.log(this.order_detail_products);
   }
 
+  // Método para obtener todos los clientes
   getClients() {
     this._ordersService.getAllClients().subscribe(
       (data) => {
@@ -124,11 +150,12 @@ export class OrdersDetailComponent implements OnInit {
         console.log(this.listClients);
       },
       (error) => {
-        console.error('Error al obtener Clientes:', error);
+        console.error("Error al obtener Clientes:", error);
       }
     );
   }
 
+  // Método para obtener todos los empleados
   getEmployees() {
     this._ordersService.getAllEmployees().subscribe(
       (data) => {
@@ -136,11 +163,12 @@ export class OrdersDetailComponent implements OnInit {
         console.log(this.listEmployees);
       },
       (error) => {
-        console.error('Error al obtener Empleados:', error);
+        console.error("Error al obtener Empleados:", error);
       }
     );
   }
 
+  // Método para obtener todos los productos
   getProducts() {
     this._ordersService.getAllProducts().subscribe(
       (data) => {
@@ -148,45 +176,55 @@ export class OrdersDetailComponent implements OnInit {
         console.log(this.listProducts);
       },
       (error) => {
-        console.error('Error al obtener Productos:', error);
+        console.error("Error al obtener Productos:", error);
       }
     );
   }
 
+  // Método para obtener el precio unitario de un producto por su ID
   getProductPrice(idProduct: number): number | undefined {
     const product = this.listProducts.find((p) => p.id_product === idProduct);
     return product ? product.unitPrice : undefined;
   }
 
-  // Función para crear un FormGroup para un producto
+  // -------------- INICIO: Funciones para manipular Productos -------------- //
+
+  // Método para crear un FormGroup para un producto
   createProductGroup(): FormGroup {
     return this.formBuilder.group({
-      id_product: [''],
-      unitPrice: [''],
-      unit: [''],
-      subtotal: [''],
+      id_product: [""],
+      unitPrice: [""],
+      unit: [""],
+      subtotal: [""],
     });
   }
 
+  // Método para manejar la selección de un producto
   handleProductSelection(event: any, i: number) {
-    const selectedProductId = this.productsFormArray.at(i).get('id_product').value;
+    const selectedProductId = this.productsFormArray
+      .at(i)
+      .get("id_product").value;
 
-    const selectedProduct = this.listProducts.find(product => product.id_product == selectedProductId);
+    const selectedProduct = this.listProducts.find(
+      (product) => product.id_product == selectedProductId
+    );
     if (selectedProduct) {
-
-      this.productsFormArray.at(i).get('unitPrice').setValue(selectedProduct.selling_price);
+      this.productsFormArray
+        .at(i)
+        .get("unitPrice")
+        .setValue(selectedProduct.selling_price);
 
       // Obtén el valor del campo "unit"
-      const unitValue = this.productsFormArray.at(i).get('unit').value;
-        
+      const unitValue = this.productsFormArray.at(i).get("unit").value;
+
       // Calcula el subtotal en función de la cantidad y el precio unitario
       const subtotal = selectedProduct.selling_price * unitValue;
-      
+
       // Asigna el subtotal al campo "subtotal" del formulario
-      this.productsFormArray.at(i).get('subtotal').setValue(subtotal);
+      this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
     } else {
-      console.log('Producto no encontrado.');
-      this.productsFormArray.at(i).get('unitPrice').setValue(null);
+      console.log("Producto no encontrado.");
+      this.productsFormArray.at(i).get("unitPrice").setValue(null);
     }
   }
 
@@ -194,23 +232,30 @@ export class OrdersDetailComponent implements OnInit {
   addProduct() {
     const productGroup = this.createProductGroup();
     this.productsFormArray.push(productGroup);
+    this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
+    console.log(this.numberOfProducts);
   }
 
   // Función para eliminar un producto del FormArray
   removeProduct(index: number) {
     this.productsFormArray.removeAt(index);
+    this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
+    console.log(this.numberOfProducts);
   }
 
   calculateTotal() {
     let total = 0;
     for (let i = 0; i < this.productsFormArray.length; i++) {
-      const subtotal = this.productsFormArray.at(i).get('subtotal').value;
+      const subtotal = this.productsFormArray.at(i).get("subtotal").value;
       if (subtotal) {
         total += subtotal;
       }
     }
+    console.log(this.productsFormArray);
     return total;
   }
+
+  // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
   createOrder() {
     // Implementa la lógica para crear un pedido

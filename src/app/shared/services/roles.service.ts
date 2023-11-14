@@ -7,7 +7,7 @@ import { Observable } from 'rxjs-compat';
 })
 export class RolesService {
 
-  url = 'http://localhost:8080/api/roles';
+  url = 'https://api-cosmetic-w32d.onrender.com/api/roles';
   constructor(
     private http: HttpClient
   ) { }
@@ -22,6 +22,10 @@ export class RolesService {
 
   createRole(roleData: any): Observable<any> {
     return this.http.post(this.url + '/', roleData);
+  }
+
+  editRole(id: any, roleData: any): Observable<any> {
+    return this.http.put(this.url + '/update/' + id, roleData);
   }
 
   updateRoleStatus(id: any): Observable<any> {
