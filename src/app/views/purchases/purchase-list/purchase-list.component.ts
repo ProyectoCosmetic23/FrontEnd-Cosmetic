@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { ProvidersService } from 'src/app/shared/services/provider.service';
 
 // ...
 
@@ -22,10 +23,12 @@ export class PurchaseListComponent implements OnInit {
   currentPage: number = 1;
   modalAbierto = false;
   loading: boolean;
+  providers:  any = {};
 
 
   constructor(
     private _purchaseService: PurchasesService,
+    private providersService: ProvidersService,
     private modalService: NgbModal,
     private toastr: ToastrService,
   ) {}
@@ -33,6 +36,12 @@ export class PurchaseListComponent implements OnInit {
   ngOnInit(): void{
     this._purchaseService.getAllPurchase().subscribe((res: any[]) => {
       this.listPurchases =[...res];
+      this.providersService.getAllProviders().subscribe((providers: any[]) => {
+        // Mapear los datos de provideres en un objeto para búsquedas rápidas
+        providers.forEach(provider => {
+            this.providers[provider.id_provider] = provider.name_provider;
+        });
+    });
       this.filteredPurchases = res;
     });
 

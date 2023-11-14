@@ -1,304 +1,209 @@
-<div class="breadcrumb">
-  <h1 *ngIf="viewMode === 'new-purchase'">Registrar Compra</h1>
-  <h1 *ngIf="viewMode === 'print-purchase'"></h1>
-  <ul>
-    <li><a [routerLink]="['/purchases']">Compras</a></li>
-    <li *ngIf="viewMode === 'new-purchase'">Registrar Compra</li>
-    <li *ngIf="viewMode === 'print-purchase'"> Detalle de Compra</li>
-    
-  </ul>
-</div>
-<div class="separator-breadcrumb border-top"></div>
-<div class="form-container">
-  <br>
-  <br>
- 
-  
- 
-  <!--VISTA DE IMPRIMIR --->
-  <div id="print-area" *ngIf="viewMode === 'print-purchase'" class="print-view">
+<div class="row" *ngIf="!loading">
+  <div class="breadcrumb">
+    <h1 *ngIf="viewMode === 'new'">Registrar Compra</h1>
+    <h1 *ngIf="viewMode === 'print-purchase'"></h1>
+    <ul>
+      <li><a [routerLink]="['/purchases']">Compras</a></li>
+      <li *ngIf="viewMode === 'new'">Registrar Compra</li>
+      <li *ngIf="viewMode === 'print-purchase'"> Detalle de Compra</li>
+    </ul>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="card-title mb-3">Formulario de Compra</div>
 
-    <div class="d-sm-flex mb-5" >
-    
-      <span class="m-auto"></span>
-      <button class="btn btn-outline-secondary me-3 mb-sm-0 mb-3 button-spacing" routerLink="/purchases">Regresar</button>
-
-      <button class="btn btn-primary mb-sm-0 mb-3" (click)="print()">Imprimir Compra</button>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <h4 class="font-weight-bold"> Información de Compra</h4>
-            <p>#{{invoice_number}}</p>
-        </div>
-        <div class="col-md-6 text-sm-right">
-            <p><strong>Estado: </strong> {{invoice?.state_purchase}}</p>
-            <p><strong>Fecha de compra: </strong> {{invoice?.purchase_date | date}}</p>
-            <p><strong>Fecha de Registro: </strong> {{invoice?.record_date_purchase | date}}</p>
-        </div>
-    </div>
-    <div class="mt-3 mb-4 border-top"></div>
-    <div class="row mb-5">
-        <div class="col-md-6 mb-3 mb-sm-0">
-            <h5 class="font-weight-bold"></h5>
-            <p><strong>Proveedor: </strong>{{invoice?.detailPurchase?.id_provider}}</p>
-            <span style="white-space: pre-line">
-              <strong>Observación: </strong> {{invoice?.detailPurchase?.observation_purchase}}
-            </span>
-        </div>
-       
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-hover mb-4">
-                <thead class="bg-gray-300">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">precio Compra</th>
-                        <th scope="col">Precio Venta</th>
-                        <th scope="col">Iva</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Sub Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of invoice?.items; let i = index">
-                        <th scope="row">{{i + 1}}</th>
-                        <td>{{item.id_product}}</td>
-                        <td>{{item.product_category}}</td>
-                        <td>{{item.cost_price}}</td>
-                        <td>{{item.selling_price}}</td>
-                        <td>{{item.product_category}}</td>
-                        <td>{{item.vat}}</td>
-                        <td>{{item.product_quantity}}</td>
-                        <td>{{item.cost_price + item.vat * product_quantity}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-md-12">
-            <div class="invoice-summary float-right">
-             
-                <h5 class="font-weight-bold">Total Compra: <span>
-                    {{total_purchase}}
-                </span></h5>
-            </div>
-        </div>
-    </div>
-</div>
-
-   <!-- FIN VISTA DE IMPRIMIR --->
-
-
-<!--VISTA DE CREAR COMPRAS --->
-<div *ngIf="viewMode == 'new-purchase'">
-  <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
-    <section class="ng-container">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="fechaCompra">Fecha Compra<span class="required">*</span></label>
-            <input type="date" class="form-control" id="fechaCompra" placeholder="Fecha Compra" style="width: 100%;" />
-            <div class="textoc" id="textoc"></div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="numFactura">Numero Factura<span class="required">*</span></label>
-            <input type="text" class="form-control" id="numFactura" placeholder="Numero de factura" style="width: 100%;" />
-            <div class="textoF" id="textoF"></div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="observaciones">Proveedor<span class="required">*</span></label>
-            <input type="text" class="form-control" id="observaciones" placeholder="Observaciones" style="width: 100%;" />
-          </div>
-        </div>
-      </div>
-    
-      <div class="row">
-
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="categoria">Categoria<span class="required">*</span></label>
-            <select class="form-control select2bs4" style="width: 100%;" id="categoria">
-              <option selected="selected">Elija una categoria</option>
-              <option>Belleza</option>
-              <option>Limpieza</option>
-            </select>
-            <div class="texto4"></div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="producto">Producto<span class="required">*</span></label>
-            <div class="input-group">
-              <input type="text" class="form-control" id="producto" placeholder="Digite el producto" style="width: 100%;" />
-             
-            </div>
-            <div class="texto3" id="texto3"></div>
-          </div>
-        </div>
-
-        <div class="col-md-2">
-          <div class="form-group">
-            <label for="producto"></label>
-            <div class="input-group">
-             
-              <div class="button_container">
-                <button class="btn btn-success float-right" [routerLink]="['/products']">Producto Nuevo</button>
-              </div>
-            </div>
-            <div class="texto3" id="texto3"></div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="producto"></label>
-            <div class="input-group">
-             
-              <div class="button_container">
-                <button class="btn btn-warning" (click)="addProduct()"><i class="i-Add"></i> Agregar Item</button>
-              </div>
-            </div>
-            <div class="texto3" id="texto3"></div>
-          </div>
-        </div>
-
-
-      </div>
       
-    
-      <div class="row">
 
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="precioCompra">Precio Compra<span class="required">*</span></label>
-            <input type="text" class="form-control" id="precioCompra" placeholder="Precio Compra" style="width: 100%;" />
-            <div class="texto5" id="texto5"></div>
-          </div>
-        </div>
+              <!--==== Edit Area =====-->
+              <div *ngIf="viewMode === 'new'">
+                  <form [formGroup]="purchaseForm">
+                      <div class="row">
 
-      <div class="col-md-3">
-          <div class="form-group">
-            <label for="precioCompra">Precio Venta<span class="required">*</span></label>
-            <input type="text" class="form-control" id="precioCompra" placeholder=" Precio Venta" style="width: 100%;" />
-            <div class="texto5" id="texto5"></div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <label for="invoice_number">Numero Factura<span class="required">*</span></label>
+                            <input type="number" class="form-control" id="invoice_number" name="invoice_number" style="width: 100%;" />
+                            <div class="textoF" id="textoF"></div>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <label for="id_provider">Proveedor<span class="required">*</span></label>
+                            <select class="form-control" id="id_provider" name="id_provider" formControlName="id_provider"
+                                (change)="handleProviderSelection($event, i)">
+                            <option *ngFor="let provider of lisProviders" [value]="provider.id_provider">{{ provider.name_provider }}</option>
+                        </select>
+                          </div>
+                        </div>
+                       <div class="col-md-3">
+                          <div class="form-grouP">
+                            <label for="picker1">Fecha Compra<span class="required">*</span></label>
+                              <input formControlName="purchase_date" id="picker1" name="purchase_date" class="form-control text-right" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #orderDatePicker="ngbDatepicker">
+                          </div>
+                        </div>
+                        <div class="col-md-3 align-self-end">
+                          <div class="form-group">
+                            <label for=""></label>
+                            <button class="btn btn-secondary" (click)="orderDatePicker.toggle()" type="button">
+                              <i class="icon-regular i-Calendar-4"></i>
+                            </button>
+                          </div>
+                        </div>
+
+
+                
+                          </div>
+                   
+
+                      <div class="mt-3 mb-4 border-top"></div>
+                      <form class="row" formArrayName="purchase_detail">
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="id_category">Categoría</label>
+                              <select class="form-control" id="id_category" name="id_category" formControlName="id_category"
+                              (change)="handleCategorySelection($event, i)"> 
+                              <option *ngFor="let category of listCategories" [value]="category.id_category">{{ category.name_category }}</option>
+                              </select>
+                         
+                            </div>
+                          </div>
+
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="id_product">Producto</label>
+                                <select class="form-control" id="id_product" name="id_product" formControlName="id_product"
+                                (change)="handleProductSelection($event, i)">
+                                <option *ngFor="let product of listProducts" [value]="product.id_product">{{
+                                  product.name_product }}</option>
+                              </select>
+                        
+                              </div>
+                            </div>
+                         
+                            <div class="col-md-3 align-self-end">
+                              <div class="form-group">
+                                <label for="id_product"></label>
+                                <button class="btn btn-secondary"><i class="i-Add"></i></button>
+                              </div>
+                            </div>
+                         
+                         
+                          <div class="row">
+                    
+                    
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="cost_price">Precio Compra<span class="required">*</span></label>
+                                <input type="number" class="form-control" id="cost_price" name="cost_price" formControlName="cost_price"
+                                  style="width: 100%;" />
+                             
+                              </div>
+                            </div>
+                    
+                    
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="selling_price">Precio Venta<span class="required">*</span></label>
+                                <input type="number" class="form-control" id="selling_price" name="selling_price" formControlName="selling_price"
+                                  style="width: 100%;" />
+                                <div class="textoF" id="textoF"></div>
+                              </div>
+                            </div>
+                    
+                    
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="vat">Iva<span class="required">*</span></label>
+                                <input type="number" class="form-control" id="vat" name="vat" formControlName="vat"
+                                  style="width: 100%;" />
+                                <div class="textoF" id="textoF"></div>
+                              </div>
+                            </div>
+                    
+                    
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="product_quantity">Cantidad<span class="required">*</span></label>
+                                <input type="number" class="form-control" id="product_quantity" name="product_quantity"  formControlName="product_quantity"
+                                  style="width: 100%;" />
+                                <div class="textoF" id="textoF"></div>
+                              </div>
+                            </div>
+                    
+                          </div>
+                      </form>
+                          
+                    
+                          <div class="button_container">
+                            <button class="btn btn-primary" (click)="addPurchaseDetail()">Agregar Producto</button>
+                          </div>
+                          <br>
+
+                          <div class="col-md-12">
+
+                          </div>   
+                  </form>
+                  <div class="col-md-12 table-responsive">
+                    <table class="table table-hover mb-4">
+                      <thead class="bg-gray-300">
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col" >Categoría</th>
+                          <th scope="col" >Producto</th>
+                          <th scope="col" >Precio Compra</th>
+                          <th scope="col" >Precio Venta</th>
+                          <th scope="col" >Iva</th>
+                          <th scope="col" >Cantidad</th>
+                          <th scope="col" >Sub Total</th>
+                          <th scope="col" >Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of purchaseDetailArray; let i = index">
+                          <td><i>{{ i + 1 }}</i></td>
+                          <td>{{ item.id_category }}</td>                       
+                          <td>{{ item.id_product }}</td>
+                          <td>{{ item.cost_price | currency:'':'symbol':'1.0-0' }}</td>
+                          <td>{{ item.selling_price | currency:'':'symbol':'1.0-0' }}</td>
+                          <td>{{ item.vat | currency:'':'symbol':'1.0-0' }}</td>
+                          <td>{{ item.product_quantity }}</td>
+                          <td>{{ ((item.cost_price + item.vat) * item.product_quantity) | currency:'':'symbol':'1.0-0' }}</td>
+
+                          <td>
+                            <button class="btn btn-danger" (click)="removePurchaseDetail(i)">
+                              <i class="i-Remove-Cart"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                      <div class="table-footer">
+                        <div class="col-md-8"></div>
+                        
+                        <div class="col-md-8">
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-md-12" style="margin-top: 20px;">
+                    <div class="d-flex justify-content-end">
+                      <button class="btn btn-danger float-right" [routerLink]="['/purchases']">Volver</button>
+                      <div *ngIf="viewMode === 'new'" style="width: 10px;"></div>
+                      <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">Crear
+                        Compra</btn-loading>
+                    </div>
+                  </div>
+                  <div class="col-md-6 form-group mb-3">
+                    <label for="observation_purchase">Observación</label>
+                    <textarea class="form-control" id="observation_category" formControlName="observation_purchase"></textarea>
+                  </div>
+                          
+              </div>
+            
+              <!--==== / Edit Area =====-->
           </div>
-        </div>
-        
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="precioVenta"> Iva<span class="required">*</span></label>
-            <input type="text" class="form-control" id="precioVenta" placeholder="Iva" style="width: 100%;" />
-            <div class="texto7" id="texto7"></div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="cantidad">Cantidad<span class="required">*</span></label>
-            <input type="text" class="form-control" id="cantidad" placeholder="Cantidad" style="width: 100%;" />
-            <div class="texto8" id="texto8"></div>
-          </div>
-        </div>
       </div>
-    </section>
-    
- 
-    <section class="ng-container">
-      <div class="col-md-12 mt-4 table-border">
-        <table class="table table-hover mb-4">
-          <thead class="bg-gray-300">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nombre del Producto</th>
-              <th scope="col">Precio Unitario</th>
-              <th scope="col">Unidades</th>
-              <th scope="col">Subtotal</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody formArrayName="products">
-            <ng-container *ngIf="viewMode === 'new'; else detailView">
-              <tr *ngFor="let product of productsFormArray.controls; let i = index" [formGroupName]="i">
-                <th scope="row">{{i + 1}}</th>
-                <td>
-                  <select class="form-control" id="id_product" formControlName="id_product"
-                    (change)="handleProductSelection($event, i)">
-                    <option *ngFor="let product of listProducts" [value]="product.id_product">{{ product.name_product }}</option>
-                  </select>
-                </td>
-                <td>
-                  <input type="number" name="unitPrice" id="unitPrice" class="form-control" formControlName="unitPrice"
-                    [readonly]="true" *ngIf="viewMode === 'new'">
-                </td>
-                <td>
-                  <input type="number" class="form-control" formControlName="unit" (change)="handleProductSelection($event, i)">
-                </td>
-                <td>
-                  <input type="number" class="form-control" formControlName="subtotal" [readonly]="true">
-                </td>
-                <td>
-                  <button class="btn btn-danger" (click)="removeProduct(i)">
-                    <i class="i-Remove-Cart"></i>
-                  </button>
-                </td>
-              </tr>
-            </ng-container>
-            <ng-template #detailView>
-              <tr *ngFor="let product of order_detail_products; let i = index">
-                <th scope="row">{{i + 1}}</th>
-                <td>{{ product.id_product }}</td>
-                <td>{{ product.product_price }}</td>
-                <td>{{ product.product_quantity}}</td>
-                <td>{{ product.product_quantity }}</td>
-                <td></td>
-              </tr>
-            </ng-template>
-          </tbody>
-        </table>
-        <div class="table-footer">
-              
-<div class="col-md-8"></div>
-
+  </div>
 </div>
-
-  <br>
-<div class="col-md-8">
-  <div class="total"><strong>Total Compra:</strong> {{ viewMode === 'new' ? calculateTotal() : orderTotal }}</div>
-</div>
-</div>
-<div class="row mt-4"> <!-- Añadido un espacio superior -->
-<div class="col-md-6 form-group mb-3">
-<label for="observation">Observación</label>
-<textarea class="form-control" id="observation_category" placeholder="Observación" formControlName="observation_category"></textarea>
-<div *ngIf="categoryForm.get('observation_category').hasError('maxlength')" class="error-message">
-  El campo Observación no puede superar los 100 caracteres.
-
-  El campo Observación no puede super
-
-  El campo Observación
-</div>
-</div>
-</div>
-    </section>
-    
-    <div class="col-md-12" style="margin-top: 20px;">
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-danger float-right" [routerLink]="['/orders']">Volver</button>
-        <div *ngIf="viewMode === 'new-purchase'" style="width: 10px;"></div>
-        <btn-loading  btnClass="btn-primary" [loading]="loading">Crear
-          Pedido</btn-loading>
-      </div>
-    </div>
- 
-  </form>
-</div>
-
-<!-- FIN VISTA DE CREAR COMPRAS --->
-

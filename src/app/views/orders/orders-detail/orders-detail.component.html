@@ -41,10 +41,10 @@
               <div class="col-md-6 form-group mb-3">
                 <label for="id_employee">Empleado</label>
                 <select class="form-control" id="id_employee" [disabled]="viewMode === 'detail'"
-                  *ngIf="viewMode === 'detail'; else employeeNewMode">
+                  *ngIf="viewMode === 'detail'; else Category">
                   <option>{{ selected_employee }}</option>
                 </select>
-                <ng-template #employeeNewMode>
+                <ng-template #Category>
                   <select class="form-control">
                     <option *ngFor="let employee of listEmployees" [value]="employee.id_employee">{{
                       employee.name_employee }}</option>

@@ -199,11 +199,11 @@ saveChanges() {
     this.loading = true;
     setTimeout(() => {
         this.loading = false;
-        this.toastr.success('Categoría registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+        this.toastr.success('Categoría registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000});
         setTimeout(() => {
             this.router.navigateByUrl('/categories');
-        }, 3000);
-    }, 3000);
+        }, );
+    },);
   }
   }
 

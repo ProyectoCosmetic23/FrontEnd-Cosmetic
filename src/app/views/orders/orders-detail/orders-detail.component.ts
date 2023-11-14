@@ -3,6 +3,11 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrdersService } from 'src/app/shared/services/orders.service';
 import { ToastrService } from 'ngx-toastr';
+import { PurchasesService } from 'src/app/shared/services/purchase.service';
+import { Utils } from 'src/app/shared/utils';
+import { ProvidersService } from 'src/app/shared/services/provider.service';
+import { ProductService } from 'src/app/shared/services/product.service';
+import { CategoriesService } from 'src/app/shared/services/category.service';
 
 @Component({
   selector: 'app-orders-detail',
