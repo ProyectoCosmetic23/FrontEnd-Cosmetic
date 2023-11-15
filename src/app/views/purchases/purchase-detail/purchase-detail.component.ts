@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray,UntypedFormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Times } from 'src/app/shared/times';
+import { Utils } from 'src/app/shared/utils';
 import { PurchaseFormMode, Detail } from '../models/purchase.model';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { ProductService } from 'src/app/shared/services/product.service';
@@ -311,7 +311,7 @@ private setDataPurchase(): void {
   if (this.purchaseData) {
     this.idPurchase.setValue(this.purchaseData.id_purchase)
     this.purchaseForm.setValue(this.purchaseData)
-    this.datePurchase.setValue(Times.ngbDateToTimestamp(this.purchaseForm.value.purchase_date));
+    this.datePurchase.setValue(Utils.ngbDateToDate(this.purchaseForm.value.purchase_date));
     const purchaseDetailArray = this.purchaseData.purchase_detail || []; // Asegúrate de que purchase_detail no sea nulo
   
  
