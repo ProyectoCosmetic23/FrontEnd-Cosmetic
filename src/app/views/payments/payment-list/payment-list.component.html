@@ -5,9 +5,7 @@
         <li>Pagos</li>
     </ul>
 </div>
-
 <div class="separator-breadcrumb border-top"></div>
-
 <div class="col-md-12 mb-3">
     <div class="row">
         <div class="col-md-6">
@@ -20,26 +18,19 @@
         </div>
     </div>
 </div>
-
 <div class="card o-hidden">
     <ngx-datatable class="material fullscreen" style="height: 460px;" [columnMode]="'force'" [headerHeight]="50"
-        [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="listPayments" [externalPaging]="true"
-        [count]="listPayments.length" [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
+        [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="sales" [externalPaging]="true"
+        [count]="sales.length" [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
         (page)="onPageChange($event)">
         <ngx-datatable-column name="id_client">
             <ng-template ngx-datatable-header-template>
                 Cliente
             </ng-template>
             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                {{ clients[row.id_client] }}
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="payment_date">
-            <ng-template ngx-datatable-header-template>
-                Fecha de pago
-            </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                {{ row.payment_date | date: 'yyyy-MM-dd' }}
+                <ng-container>
+                    {{ clients[row.id_client] }}
+                </ng-container>
             </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column name="id_sale">
@@ -50,21 +41,12 @@
                 {{ row.id_sale }}
             </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="total_payment">
+        <ngx-datatable-column name="id_sale">
             <ng-template ngx-datatable-header-template>
-                Total pago
+                Estado
             </ng-template>
             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                {{ row.total_payment }}
-            </ng-template>
-        </ngx-datatable-column>
-
-        <ngx-datatable-column name="total_remaining">
-            <ng-template ngx-datatable-header-template>
-                Total restante
-            </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                {{ row.total_remaining }}
+               Por pagar
             </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column [width]="120">
