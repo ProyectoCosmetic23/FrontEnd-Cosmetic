@@ -25,11 +25,11 @@ export class CategoryListComponent {
         private modalService: NgbModal,
         private toastr: ToastrService
     ) { }
-
+//inicializa el get
     ngOnInit(): void {
         this.getCategories();
     }
-
+//CONSULTA TODAS LAS CATEGORIAS
     getCategories() {
         this._categoriesService.getAllCategory().subscribe(
             (data) => {
@@ -47,11 +47,11 @@ export class CategoryListComponent {
     @ViewChild(DatatableComponent)
     table: DatatableComponent;
 
-    // Luego, puedes actualizar el valor visual de count según tus necesidades
+    //  actualizar el valor visual de count según tus necesidades
     actualizarCountLabel() {
         this.countLabel = this.listCategories.length;
     }
-
+//AJUSTAR LA LISTA DE CATEGORIAS
     adjustListCategories() {
         const totalRows = this.listCategories.length;
         const remainingRows = 6 - (totalRows % 6);
@@ -74,7 +74,7 @@ export class CategoryListComponent {
             return 0;
         });
     }
-
+//CARGA LAS CATEGORIAS EN CADA PAGINA
     loadData() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         let endIndex = startIndex + this.itemsPerPage;
@@ -102,18 +102,19 @@ export class CategoryListComponent {
         this.currentPage = event.offset + 1;
         this.loadData();
     }
+    //CAMBIAR ESTADO
 
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 
-    openModal(idRole: number) {
-        this._categoriesService.getCategoryById(idRole).subscribe(
+    openModal(IdCategory: number) {
+        this._categoriesService.getCategoryById(IdCategory).subscribe(
             (data) => {
                 if (!this.modalAbierto) {
                     this.modalAbierto = true;
                     this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
                         (result) => {
                             if (result === 'Ok') {
-                                this._categoriesService.CategoryChangeStatus(idRole).subscribe(
+                                this._categoriesService.CategoryChangeStatus(IdCategory).subscribe(
                                     (data) => {
                                         this.loading = false;
                                         this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {

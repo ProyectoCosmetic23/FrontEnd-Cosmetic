@@ -26,7 +26,7 @@
                         <div class="col-md-3">
                           <div class="form-group">
                             <label for="invoice_number">Numero Factura<span class="required">*</span></label>
-                            <input type="number" class="form-control" id="invoice_number" name="invoice_number" formControlName="invoice_number" style="width: 100%;" />
+                            <input type="text"   class="form-control" id="invoice_number" name="invoice_number" formControlName="invoice_number" style="width: 100%;" />
                             <div class="textoF" id="textoF"></div>
                           </div>
                         </div>
@@ -63,10 +63,10 @@
                    
 
                       <div class="mt-3 mb-4 border-top"></div>
-                      <form class="row" formArrayName="purchase_detail">
+                      <form class="row" formArrayName="purchase_detail_form">
                           <div class="col-md-3">
                             <div class="form-group">
-                              <label for="id_category">Categoría</label>
+                              <label for="id_category">Categoría<span class="required">*</span></label>
                               <select class="form-control" id="id_category" name="id_category" formControlName="id_category"
                               (change)="handleCategorySelection($event, i)"> 
                               <option *ngFor="let category of listCategories" [value]="category.id_category">{{ category.name_category }}</option>
@@ -77,10 +77,10 @@
 
                             <div class="col-md-3">
                               <div class="form-group">
-                                <label for="id_product">Producto</label>
+                                <label for="id_product">Producto<span class="required">*</span></label>
                                 <select class="form-control" id="id_product" name="id_product" formControlName="id_product"
                                 (change)="handleProductSelection($event, i)">
-                                <option *ngFor="let product of listProducts" [value]="product.id_product">{{
+                                <option *ngFor="let product of products" [value]="product.id_product">{{
                                   product.name_product }}</option>
                               </select>
                         
@@ -101,7 +101,7 @@
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="cost_price">Precio Compra<span class="required">*</span></label>
-                                <input type="number" class="form-control" id="cost_price" name="cost_price" formControlName="cost_price"
+                                <input type="number" min="0"  class="form-control" id="cost_price" name="cost_price" formControlName="cost_price"
                                   style="width: 100%;" />
                              
                               </div>
@@ -111,7 +111,7 @@
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="selling_price">Precio Venta<span class="required">*</span></label>
-                                <input type="number" class="form-control" id="selling_price" name="selling_price" formControlName="selling_price"
+                                <input type="number" min="0" class="form-control" id="selling_price" name="selling_price" formControlName="selling_price"
                                   style="width: 100%;" />
                                 <div class="textoF" id="textoF"></div>
                               </div>
@@ -121,7 +121,7 @@
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="vat">Iva<span class="required">*</span></label>
-                                <input type="number" class="form-control" id="vat" name="vat" formControlName="vat"
+                                <input type="number" min="0" class="form-control" id="vat" name="vat" formControlName="vat"
                                   style="width: 100%;" />
                                 <div class="textoF" id="textoF"></div>
                               </div>
@@ -131,7 +131,7 @@
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="product_quantity">Cantidad<span class="required">*</span></label>
-                                <input type="number" class="form-control" id="product_quantity" name="product_quantity"  formControlName="product_quantity"
+                                <input type="number" min="1" class="form-control" id="product_quantity" name="product_quantity"  formControlName="product_quantity"
                                   style="width: 100%;" />
                                 <div class="textoF" id="textoF"></div>
                               </div>
