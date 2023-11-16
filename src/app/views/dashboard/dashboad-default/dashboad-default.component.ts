@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { echartStyles } from '../../../shared/echart-styles';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { User } from 'src/app/shared/interfaces';
 
 @Component({
 	selector: 'app-dashboad-default',
@@ -13,6 +15,19 @@ export class DashboadDefaultComponent implements OnInit {
 	chartLineOption3: EChartsOption;
     salesChartBar: EChartsOption;
     salesChartPie: EChartsOption;
+
+
+    private authService = inject(AuthService);
+
+    get user(): User | null {
+    let currentUser: User | null;
+
+    this.authService.currentUser.subscribe(user => {
+        currentUser = user;
+    });
+
+    return currentUser;
+}
 
 	constructor() { }
 

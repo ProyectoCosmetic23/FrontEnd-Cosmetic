@@ -1,13 +1,16 @@
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
-import { AuthGaurd } from './shared/services/auth.gaurd';
+import { AuthGuard } from './shared/services/auth.guard';
+
 
 
 const adminRoutes: Routes = [
   {
     path: 'dashboard',
+    canActivate:[AuthGuard],
     loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
@@ -40,6 +43,7 @@ const adminRoutes: Routes = [
   },
   {
     path: 'products',
+    canActivate:[AuthGuard],
     loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
   }
   ];
@@ -47,7 +51,7 @@ const adminRoutes: Routes = [
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard/v1',
+    redirectTo: '',
     pathMatch: 'full'
   },
   {
@@ -64,17 +68,18 @@ const routes: Routes = [
   {
     path: '',
     component: AdminLayoutSidebarCompactComponent,
-    canActivate: [AuthGaurd],
-    children: adminRoutes
+     children: adminRoutes
   },
   {
     path: '**',
-    redirectTo: 'others/404'
+    redirectTo: 'dashboard/v1'
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })],
+  providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy }],
+
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
