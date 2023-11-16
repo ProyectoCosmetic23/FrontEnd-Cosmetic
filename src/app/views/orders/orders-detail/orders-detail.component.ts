@@ -25,6 +25,7 @@ export class OrdersDetailComponent implements OnInit {
   // Otras propiedades
   id: string;
   orders: any = {};
+  orderTotal: any;
   order: any = {};
   listClients: any[] = [];
   listEmployees: any[] = [];

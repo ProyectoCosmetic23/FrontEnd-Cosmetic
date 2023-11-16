@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class ComissionsService {
 
-  private baseUrl = 'https://api-cosmetic-w32d.onrender.com/commissions';
-  private url2 = 'https://api-cosmetic-w32d.onrender.com/detailComs';
-  private url3 = 'https://api-cosmetic-w32d.onrender.com/api/employees';
-  private url4 = 'https://api-cosmetic-w32d.onrender.com/api/sales';
+  private baseUrl = 'http://localhost:8080/commissions';
+  private url2 = 'http://localhost:8080/detailComs';
+  private url3 = 'http://localhost:8080/api/employees';
+  private url4 = 'http://localhost:8080/api/sales';
 
   constructor(private http: HttpClient) { }
 

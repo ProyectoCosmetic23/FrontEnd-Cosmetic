@@ -7,7 +7,7 @@ import { Observable } from 'rxjs-compat';
 })
 export class RolesService {
 
-  url = 'https://api-cosmetic-w32d.onrender.com/api/roles';
+  url = 'http://localhost:8080/api/roles';
   constructor(
     private http: HttpClient
   ) { }

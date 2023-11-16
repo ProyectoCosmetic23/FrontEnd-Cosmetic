@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class PaymentsService {
 
-  private baseUrl = 'https://api-cosmetic-w32d.onrender.com/api/payments';
-  private url2 = 'https://api-cosmetic-w32d.onrender.com/api/clients';
-  private url3 = 'https://api-cosmetic-w32d.onrender.com/api/sales';
-  private url4 = 'https://api-cosmetic-w32d.onrender.com/api/orders';
+  private baseUrl = 'http://localhost:8080/api/payments';
+  private url2 = 'http://localhost:8080/api/clients';
+  private url3 = 'http://localhost:8080/api/sales';
+  private url4 = 'http://localhost:8080/api/orders';
 
   constructor(private http: HttpClient) { }
 

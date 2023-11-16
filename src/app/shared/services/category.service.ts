@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 export class CategoriesService {
 
   //Url de la api
-  url ='https://api-cosmetic-w32d.onrender.com/api/categories';
+  url ='http://localhost:8080/api/categories';
   constructor(
     private http: HttpClient
   ) { }
