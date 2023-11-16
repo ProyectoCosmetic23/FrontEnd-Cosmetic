@@ -29,16 +29,8 @@
             </ng-template>
             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                 <ng-container>
-                    {{ clients[row.id_client] }}
+                    {{ clientsToPay.includes(row.id_client.toString()) ? clients[row.id_client] : '' }}
                 </ng-container>
-            </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="id_sale">
-            <ng-template ngx-datatable-header-template>
-                # venta
-            </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                {{ row.id_sale }}
             </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column name="id_sale">
