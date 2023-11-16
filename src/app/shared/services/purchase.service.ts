@@ -21,8 +21,8 @@ export class PurchasesService {
   }
 
   //Ruta para verificar si ya esxite una categoria
-  getValidatePurchaseExist(name_category: boolean): Observable<boolean>{
-    return this.http.get<boolean>(`${this.url}-validate-categoryexist?name_category=${name_category}`);
+  getValidatePurchaseExist(invoice_number: boolean): Observable<boolean>{
+    return this.http.get<boolean>(`${this.url}-validate-invoiceexist?invoice_number=${invoice_number}`);
   }
 
 

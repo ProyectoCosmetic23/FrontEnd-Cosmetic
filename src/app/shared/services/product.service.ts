@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProductService {
-  url = 'https://api-cosmetic-w32d.onrender.com/api/productcs';
+  url = 'http://localhost:8080/api/products';
 
   constructor(private http: HttpClient) { }
 

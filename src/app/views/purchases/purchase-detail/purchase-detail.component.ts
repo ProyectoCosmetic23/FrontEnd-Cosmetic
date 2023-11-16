@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray,UntypedFormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray,UntypedFormArray, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Utils } from 'src/app/shared/utils';
 import { PurchaseFormMode, Detail } from '../models/purchase.model';
@@ -34,6 +34,7 @@ export class PurchaseDetailComponent implements OnInit {
   categoriesFormArray: FormArray;
   productsFormSelect: FormArray;
   products: any[] = [];
+  purchaseExists: boolean;
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -59,7 +60,7 @@ export class PurchaseDetailComponent implements OnInit {
   private inicializateForm(id: number): void {
     this.purchaseForm = this.formBuilder.group({
       id_purchase: [''],
-      invoice_number: ['',[Validators.required]],
+      invoice_number: ['',[Validators.required], (control) => this.validatePurchaseExist(control)],
       id_provider: ['', [Validators.required]],
       purchase_date: ['', Validators.required],
       state_purchase: [],
@@ -242,18 +243,32 @@ export class PurchaseDetailComponent implements OnInit {
   addPurchaseDetail(): void {
     const purchaseDetail = this.purchaseForm.get('purchase_detail_form') as FormArray;
     const newProductFormGroup = this.createDetailFormGroup(purchaseDetail.value);
-    this.purchaseDetailArray.push(newProductFormGroup.value);
-    
+  
+    // Buscar si el producto ya existe en la lista
+    const existingProductIndex = this.purchaseDetailArray.findIndex(item =>
+      item.id_product === newProductFormGroup.value.id_product &&
+      item.id_category === newProductFormGroup.value.id_category
+    );
+  
+    if (existingProductIndex !== -1) {
+      // Si el producto ya existe, simplemente incrementa la cantidad
+      this.purchaseDetailArray[existingProductIndex].product_quantity += newProductFormGroup.value.product_quantity;
+    } else {
+      // Si el producto no existe, agrégalo a la lista
+      this.purchaseDetailArray.push(newProductFormGroup.value);
+    }
+  
     // Clear the form after adding the new detail
-    purchaseDetail.reset();  // Use reset() instead of reset()
+    purchaseDetail.reset();
   }
   
-//REMOVER PRODUCTO DE LA TABLA DETALLE
-  removePurchaseDetail(index: number): void {
+  // ...
   
+  removePurchaseDetail(index: number): void {
     // Remove the product from the local array
     this.purchaseDetailArray.splice(index, 1);
   }
+  
 
 //CALCULAR TOTAL DE COMPRA
   calculateTotal(): number {
@@ -322,5 +337,26 @@ private setDataPurchase(): void {
 
   }
 
+
+    //VALIDAR SI YA EXISTE EL NOMBRE DE UNA CATEGORIA 
+validatePurchaseExist(control: FormControl) {
+  return new Promise((resolve) => {
+    if (!control.value) {
+      resolve(true);
+    } else {
+      this.purchaseService.getValidatePurchaseExist(control.value).subscribe(
+        (isAvailable) => {
+          this.purchaseExists = isAvailable;
+          resolve(this.purchaseExists ? { purchaseTaken: true } : null);
+        },
+        (error) => {
+          
+          this.purchaseExists = true;
+          resolve({ purchaseTaken: true });
+        }
+      );
+    }
+  });
+}
 
 }

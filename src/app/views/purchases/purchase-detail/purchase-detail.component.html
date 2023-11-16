@@ -27,7 +27,12 @@
                           <div class="form-group">
                             <label for="invoice_number">Numero Factura<span class="required">*</span></label>
                             <input type="text"   class="form-control" id="invoice_number" name="invoice_number" formControlName="invoice_number" style="width: 100%;" />
-                            <div class="textoF" id="textoF"></div>
+                            <div *ngIf="purchaseForm.get('invoice_number').touched && purchaseForm.get('invoice_number').hasError('required')"class="error-message">
+                              El campo  es obligatorio.
+                          </div>
+                          <div *ngIf="viewMode === 'new'">
+                            <div *ngIf="purchaseExists" class="error-message">el número de factura ya existe.</div>
+                          </div>
                           </div>
                         </div>
                         <div class="col-md-3">
@@ -37,13 +42,19 @@
                                 (change)="handleProviderSelection($event, i)">
                             <option *ngFor="let provider of lisProviders" [value]="provider.id_provider">{{ provider.name_provider }}</option>
                         </select>
+                        <div *ngIf="purchaseForm.get('id_provider').touched && purchaseForm.get('id_provider').hasError('required')"class="error-message">
+                          El campo  es obligatorio.
+                      </div>
                           </div>
                         </div>
                        <div class="col-md-3">
                           <div class="form-grouP">
                             <label for="picker1">Fecha Compra<span class="required">*</span></label>
-                              <input formControlName="purchase_date" id="picker1" name="purchase_date" class="form-control text-right" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #orderDatePicker="ngbDatepicker">
+                              <input formControlName="purchase_date" id="picker1" name="purchase_date" class="form-control text-right" name="dp" ngbDatepicker #orderDatePicker="ngbDatepicker" >
                           </div>
+                          <div *ngIf="purchaseForm.get('purchase_date').touched && purchaseForm.get('purchase_date').hasError('required')"class="error-message">
+                            El campo  es obligatorio.
+                        </div>
                         </div>
                         <div class="col-md-3 align-self-end">
                           <div class="form-group">
@@ -55,7 +66,10 @@
                         </div>
                         <div class="col-md-6 form-group mb-3">
                           <label for="observation_purchase">Observación</label>
-                          <textarea class="form-control" id="observation_category" formControlName="observation_purchase" placeholder="opcional"></textarea>
+                          <textarea class="form-control" id="observation_purchase" formControlName="observation_purchase" ></textarea>
+                          <div *ngIf="purchaseForm.get('observation_purchase').touched && purchaseForm.get('observation_purchase').hasError('maxlength')"class="error-message">
+                            El campo superar los 100 caracteres.
+                        </div>
                         </div>
 
                 
@@ -112,8 +126,7 @@
                               <div class="form-group">
                                 <label for="selling_price">Precio Venta<span class="required">*</span></label>
                                 <input type="number" min="0" class="form-control" id="selling_price" name="selling_price" formControlName="selling_price"
-                                  style="width: 100%;" />
-                                <div class="textoF" id="textoF"></div>
+                                  style="width: 100%;" />   
                               </div>
                             </div>
                     
