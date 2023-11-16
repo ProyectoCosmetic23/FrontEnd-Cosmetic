@@ -5,8 +5,6 @@ import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
 import { AuthGuard } from './shared/services/auth.guard';
 
-
-
 const adminRoutes: Routes = [
   {
     path: 'dashboard',
@@ -46,13 +44,14 @@ const adminRoutes: Routes = [
     canActivate:[AuthGuard],
     loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
   }
-  ];
+];
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: '',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    canActivate: [AuthGuard],  // Agregado para verificar la autenticación al cargar la página de inicio
   },
   {
     path: '',
@@ -64,11 +63,10 @@ const routes: Routes = [
       }
     ]
   },
-
   {
     path: '',
     component: AdminLayoutSidebarCompactComponent,
-     children: adminRoutes
+    children: adminRoutes
   },
   {
     path: '**',
@@ -79,7 +77,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })],
   providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy }],
-
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -12,11 +12,11 @@ import { SearchService } from "src/app/shared/services/search.service";
 })
 export class HeaderSidebarCompactComponent implements OnInit {
   notifications: any[];
-
+  user: User | null;
+  
   constructor(
     private navService: NavigationService,
     public searchService: SearchService,
-    private auth: AuthService,
     private authService: AuthService,
     private router: Router
   ) {
@@ -67,7 +67,9 @@ export class HeaderSidebarCompactComponent implements OnInit {
     ];
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.user = this.authService.getStoredUser()
+  }
 
   /*
   get User():User | undefined {
