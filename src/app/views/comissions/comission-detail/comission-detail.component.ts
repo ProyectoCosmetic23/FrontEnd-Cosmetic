@@ -7,11 +7,11 @@ import { NgZone } from '@angular/core';
 
 interface Comission {
   id_employee: number;
-  total_commission: number;
   id_commission_detail: number;
-  total_sales: number;
-  month_commission: string;
-  commission_percentage: number;
+  // total_commission: number;
+  // total_sales: number;
+  // month_commission: string;
+  // commission_percentage: number;
 
 }
 
@@ -43,11 +43,11 @@ export class ComissionsDetailComponent implements OnInit {
   comission: any = {};
   new_comission: Comission = {
     id_employee: 0,
-    total_commission: 0,
     id_commission_detail: 0,
-    total_sales: 0,
-    month_commission: '',
-    commission_percentage: 0,
+    // total_commission: 0,
+    // total_sales: 0,
+    // month_commission: '',
+    // commission_percentage: 0,
   };
 
   constructor(
@@ -119,6 +119,30 @@ export class ComissionsDetailComponent implements OnInit {
     );
   }
 
+  updateComs(){
+    const detail = this.formBasic.get('id_commission_detail')?.value;
+    let employee = this.formBasic.get('id_employee')?.value;
+    this.updateCommissionPercentage();
+    if (detail === null || detail === undefined || detail === "") {
+      console.log("Falta el mes (detalle) comision")
+    }
+    else if(employee === null || employee === undefined || employee === ""){
+      console.log("Falta el empleado")
+    }
+    else{
+      this.salesTotal()
+      this.handleEmployeeSelection(event)
+      this.handleDetailSelection(event)
+    }
+  }
+  handleEmployeeSelection(event: any) {
+    this.new_comission.id_employee = event.target.value;
+    console.log("Id empleado: ",this.new_comission.id_employee)
+  }
+  handleDetailSelection(event: any) {
+    this.new_comission.id_commission_detail = event.target.value;
+    console.log("Detalle comision: ", this.comission.id_commission_detail)
+  }
   salesTotal() {
     const Iddetail = this.formBasic.get('id_commission_detail')?.value;
     let idEmployee = this.formBasic.get('id_employee')?.value;
@@ -205,35 +229,27 @@ export class ComissionsDetailComponent implements OnInit {
     this.formBasic = this.formBuilder.group({
       id: [i.id_commission],
       id_employee: [i.id_employee],
-      nit_cedula: [i.nit_cedula],
-      total_commission: [i.total_commission],
       id_commission_detail: [i.id_commission_detail],
       total_sales: [i.total_sales],
       month_commission: [i.month_commission],
+      nit_cedula: [i.nit_cedula],
+      total_commission: [i.total_commission],
       commission_percentage: [i.commission_percentage],
     });
   }
-  handleStateSelection(event: any) {
-    this.new_comission.id_employee = event.target.value;
-  }
-  handleNameProviderSelection(event: any) {
-    this.comission.id_commission_detail = event.target.value;
-    // Busca el porcentaje correspondiente en la lista de comisiones
-    const selectedCommission = this.listComisionDetail.find((commission) => commission.month_commission === this.comission.month_commission);
-    if (selectedCommission) {
-      this.comission.commission_percentage = selectedCommission.commission_percentage;
-    } else {
-      this.comission.commission_percentage = 0;
-    }
-  }
 
-  handleNameContactSelection(event: any) {
-    this.comission.total_commission = event.target.value;
-  }
+  // handleNameProviderSelection(event: any) {
+  //   this.comission.id_commission_detail = event.target.value;
+  //   // Busca el porcentaje correspondiente en la lista de comisiones
+  //   const selectedCommission = this.listComisionDetail.find((commission) => commission.month_commission === this.comission.month_commission);
+  //   if (selectedCommission) {
+  //     this.comission.commission_percentage = selectedCommission.commission_percentage;
+  //   } else {
+  //     this.comission.commission_percentage = 0;
+  //   }
+  // }
 
-  handleNitSelection(event: any) {
-    this.comission.total_sales = event.target.value;
-  }
+
 
   createComission() {
     const currentRoute = this.router.url;

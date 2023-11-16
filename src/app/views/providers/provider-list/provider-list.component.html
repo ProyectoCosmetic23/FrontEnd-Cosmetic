@@ -15,7 +15,7 @@
                 <button class="btn btn-primary float-right" [routerLink]="['/proveedores/registrar']">Crear nuevo proveedor</button>
             </div>
             <div class="col-md-6 d-flex justify-content-end">
-                <input _ngcontent-vet-c167="" id="email" placeholder="Buscar Proveedires" type="text" class="form-control  ng-valid ng-touched ng-dirty" ng-reflect-form="[object Object]" style="width: 50%;">
+                <input [formControl]="searchControl" id="email" placeholder="Buscar Proveedores" type="text" class="form-control">
             </div>
         </div>
     </div>
@@ -36,20 +36,12 @@
                         [footerHeight]="50"
                         [rowHeight]="60"
                         [scrollbarV]="true"
-                        [rows]="listProviders"
+                        [rows]="filteredProviders"
                         [externalPaging]="true"
                         [count]="listProviders.length"
                         [limit]="itemsPerPage"
                         [offset]="(currentPage - 1) * itemsPerPage"
                         (page)="onPageChange($event)">
-                        <!-- <ngx-datatable-column name="nit_cedula">
-                            <ng-template ngx-datatable-header-template>
-                                Cédula-NIT
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.nit_cedula }}
-                            </ng-template>
-                        </ngx-datatable-column> -->
                         <ngx-datatable-column name="name_provider">
                             <ng-template ngx-datatable-header-template>
                                 Nombre proveedor
@@ -58,22 +50,6 @@
                                 {{ row.name_provider }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <!-- <ngx-datatable-column name="email_provider">
-                            <ng-template ngx-datatable-header-template>
-                                Correo
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.email_provider }}
-                            </ng-template>
-                        </ngx-datatable-column> -->
-                        <!-- <ngx-datatable-column name="address_provider">
-                            <ng-template ngx-datatable-header-template>
-                                Dirección
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.address_provider }}
-                            </ng-template>
-                        </ngx-datatable-column> -->
                         <ngx-datatable-column name="phone_provider">
                             <ng-template ngx-datatable-header-template>
                                 Teléfono

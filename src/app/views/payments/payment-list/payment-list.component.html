@@ -8,9 +8,7 @@
 <div class="separator-breadcrumb border-top"></div>
 <div class="col-md-12 mb-3">
     <div class="row">
-        <div class="col-md-6">
-            <button class="btn btn-primary float-right" [routerLink]="['/pagos/registrar']">Crear nuevo pago</button>
-        </div>
+
         <div class="col-md-6 d-flex justify-content-end">
             <input _ngcontent-vet-c167="" id="email" placeholder="Buscar Pagos" type="text"
                 class="form-control  ng-valid ng-touched ng-dirty" ng-reflect-form="[object Object]"
@@ -58,3 +56,7 @@
 <!-- Agrega los controles de paginación justo debajo de la tabla -->
 <pagination-template (pageChange)="pageChanged($event)" [id]="paginationId">
 </pagination-template>
+
+<!-- <div class="col-md-6">
+    <button class="btn btn-primary float-right" [routerLink]="['/pagos/registrar']">Crear nuevo pago</button>
+</div> -->

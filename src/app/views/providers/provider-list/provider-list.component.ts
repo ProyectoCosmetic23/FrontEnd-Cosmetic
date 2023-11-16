@@ -42,17 +42,19 @@ export class ProviderListComponent implements OnInit {
     ngOnInit(): void {
         this._providersService.getAllProviders()
             .subscribe((res: any[]) => {
+                this.providers = [...res];
                 this.listProviders = [...res];
-                this.filteredProviders = res;
+                this.filteredProviders = [...res];
                 this.originalListProviders = [...res];
             });
-
+    
         this.searchControl.valueChanges
             .pipe(debounceTime(200))
             .subscribe(value => {
                 this.filerData(value);
             });
     }
+    
 
     
     updateListProviders() {
@@ -78,27 +80,28 @@ export class ProviderListComponent implements OnInit {
     }
 
     filerData(val) {
+        console.log('Valor de búsqueda (antes del toLowerCase):', val);
+    
         if (val) {
             val = val.toLowerCase();
         } else {
-            return this.filteredProviders = [...this.providers];
-        }
-
-        const columns = Object.keys(this.providers[0]);
-        if (!columns.length) {
+            this.filteredProviders = [...this.listProviders];
             return;
         }
-
-        const rows = this.providers.filter(function (d) {
-            for (let i = 0; i <= columns.length; i++) {
-                const column = columns[i];
-                if (d[column] && d[column].toString().toLowerCase().indexOf(val) > -1) {
-                    return true;
-                }
-            }
+    
+        console.log('Valor de búsqueda (después del toLowerCase):', val);
+    
+        const rows = this.listProviders.filter(function (d) {
+            const nameProvider = d['name_provider'] ? d['name_provider'].toString().toLowerCase() : '';
+            return nameProvider.indexOf(val) > -1;
         });
+    
+        console.log('Resultados después de filtrar:', rows);
+    
         this.filteredProviders = rows;
     }
+    
+    
 
     sortListProvidersById() {
         this.listProviders.sort((a, b) => a.id_provider - b.id_provider);
@@ -157,6 +160,4 @@ export class ProviderListComponent implements OnInit {
             );
         }
     }
-
-
 }
