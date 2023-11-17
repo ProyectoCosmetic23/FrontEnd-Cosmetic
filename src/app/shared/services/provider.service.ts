@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ProvidersService {
 
-  private baseUrl = 'http://localhost:8080/api/providers';
+  private baseUrl = 'https://api-cosmetic-w32d.onrender.com/api/providers';
 
   constructor(private http: HttpClient) { }
 

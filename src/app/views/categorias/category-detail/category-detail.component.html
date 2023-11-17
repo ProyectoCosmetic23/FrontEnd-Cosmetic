@@ -26,14 +26,14 @@
                 <label for="name_category">Nombre de Categoría<span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="name_category" placeholder="Nombre de empleado" formControlName="name_category" required>
                 <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
-                  El campo Nombre es obligatorio.
+                  El campo nombre es obligatorio.
               </div>
               <div *ngIf="categoryForm.get('name_category').hasError('pattern')"class="error-message">
-                  El campo Nombre no puede tener tener numeros ni simbolos.
+                  El campo nombre no puede tener tener numeros ni simbolos.
               </div>
               
               <div *ngIf="categoryForm.get('name_category').hasError('maxlength')"class="error-message">
-                  El campo Nombre no puede superar los 80 caracteres.
+                  El campo nombre no puede superar los 80 caracteres.
               </div>
 
               <div *ngIf="viewMode === 'new'">

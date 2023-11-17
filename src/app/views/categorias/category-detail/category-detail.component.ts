@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators, FormControl,UntypedFormGroup, Untyp
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { CategoriesService } from 'src/app/shared/services/category.service';
-import { Utils } from 'src/app/shared/utils';
 import { CategoryFormMode } from '../models/category.model';
+import { Utils } from 'src/app/shared/utils';
 
 
 
@@ -38,7 +38,7 @@ export class CategoryDetailComponent implements OnInit {
 
 
   }
-
+//METODO DE INICIALIZACION DE FORMULARIOS Y GETS
   ngOnInit() {
     this.id = this.route.snapshot.params['id_category'];
     console.log(this.id);
@@ -46,7 +46,7 @@ export class CategoryDetailComponent implements OnInit {
     this.setViewMode();
     this.inicializateForm(Number(this.id));
 }
-
+//INICIALIZAR RL FORMULARIO
 private inicializateForm(id: number): void {
     this.categoryForm = this.formBuilder.group({
         id_category: [''],
@@ -71,7 +71,7 @@ private inicializateForm(id: number): void {
 
 }
 
-
+//CONSULTAR LA CATEGORIA
 private getCategoryById(id: number): void {
   this.loading = true;
   this.categoriesService.getCategoryById(id).subscribe({
@@ -89,6 +89,7 @@ private getCategoryById(id: number): void {
   });
 }
 
+//SET PARA EDITAR 
 private setDataCategory(): void {
   if (this.categoryData) {
       this.idCategory.setValue(this.categoryData.id_category)
@@ -97,6 +98,31 @@ private setDataCategory(): void {
  
   }
 }
+
+
+//VALIDAR SI YA EXISTE EL NOMBRE DE UNA CATEGORIA 
+validateCategoryExist(control: FormControl) {
+  return new Promise((resolve) => {
+    if (!control.value) {
+      resolve(true);
+    } else {
+      this.categoriesService.getValidateCategoryExist(control.value).subscribe(
+        (isAvailable) => {
+          this.categoryExists = isAvailable;
+          resolve(this.categoryExists ? { categoryTaken: true } : null);
+        },
+        (error) => {
+          
+          this.categoryExists = true;
+          resolve({ categoryTaken: true });
+        }
+      );
+    }
+  });
+}
+ 
+//CREAR LA CATEGORIA
+
 
 createCategory() {
   if (this.categoryForm.valid) {
@@ -120,29 +146,7 @@ createCategory() {
   }
 }
 
-
-validateCategoryExist(control: FormControl) {
-  return new Promise((resolve) => {
-    if (!control.value) {
-      resolve(true);
-    } else {
-      this.categoriesService.getValidateCategoryExist(control.value).subscribe(
-        (isAvailable) => {
-          this.categoryExists = isAvailable;
-          resolve(this.categoryExists ? { categoryTaken: true } : null);
-        },
-        (error) => {
-          
-          this.categoryExists = true;
-          resolve({ categoryTaken: true });
-        }
-      );
-    }
-  });
-}
-
-
-
+//GUARDAR CAMBIOS AL EDITAR
   saveCategoryChanges(id: number, updatedData: any) {
     this.categoriesService.updateCategory(id, updatedData).subscribe(
         (response) => {
@@ -158,7 +162,7 @@ validateCategoryExist(control: FormControl) {
     );
   }
 
-
+//SUBMIT PARA BOTONES SEGU LA VISTA
 public submitCategory(): void {
   if (this.viewMode == 'new') {
       this.createCategory();
@@ -167,7 +171,7 @@ public submitCategory(): void {
   }
 }
 
-
+//GUARDAR EL CREAR 
 saveChanges() {
   console.log('editar');
 
@@ -186,30 +190,28 @@ saveChanges() {
 
 
 
-
+//RETORNAR A LA LISTA DE CATEGORIAS
   cancel() {
 
     this.router.navigateByUrl('/categories');
   }
 
 
-      
+      //CONFIRMAR REGISTRO
   submit() {
   if (!this.loading) {
     this.loading = true;
     setTimeout(() => {
         this.loading = false;
-        this.toastr.success('Categoría registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+        this.toastr.success('Categoría registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000});
         setTimeout(() => {
             this.router.navigateByUrl('/categories');
-        }, 3000);
-    }, 3000);
+        }, );
+    },);
   }
   }
 
-
-
-
+//METODO QUE CONDICIONA LA RUTA PARA LA VISTA
     setViewMode() {
       const currentRoute = this.router.url;
       if (currentRoute.includes('/new')) {
@@ -223,17 +225,7 @@ saveChanges() {
     }
 
 
-
-
-
-
-
-  print() {
-    if (window) {
-        window.print();
-    }
-  }
-
+//CONSULTA PARA EL VER DETALLE
   get idCategory() {
     return this.categoryForm.get('id_category');
   }

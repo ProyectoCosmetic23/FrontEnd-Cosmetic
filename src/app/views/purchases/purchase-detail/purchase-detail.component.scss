@@ -11,17 +11,17 @@
   
 
 
-  .form-group.text-right .btn btn-danger  {
-    margin-right: 10px;
-    color: white; /* Texto en blanco */
-    font-size: 14px; 
-  }
-//ESTILO DE FORMULARIOS 
-.form-container {
-  padding: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-}
+//   .form-group.text-right .btn btn-danger  {
+//     margin-right: 10px;
+//     color: white; /* Texto en blanco */
+//     font-size: 14px; 
+//   }
+// //ESTILO DE FORMULARIOS 
+// .form-container {
+//   padding: 20px;
+//   background-color: white;
+//   border: 1px solid white;
+// }
 
 .form-group {
   margin-bottom: 20px;
@@ -31,17 +31,17 @@
 //   font-weight: bold;
 // }
 
-.form-control {
-  width: 100%;
-}
+// .form-control {
+//   width: 100%;
+// }
 
-//ESTILO DE SECCIONES
-.section {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 20px;
-  background-color: #fff;
-}
+// //ESTILO DE SECCIONES
+// .section {
+//   border: 1px solid white;
+//   padding: 10px;
+//   margin-bottom: 20px;
+//   background-color: white;
+// }
 
 //ESTILOS PARA LA TABLA DETALLES
 .table {
@@ -70,3 +70,55 @@
   display: flex;
   align-items: center;
 }
+
+
+//-------------------------------------------------------------------//
+
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+
+.form-container {
+  border: 1px solid hwb(0 100% 0%) / 0.5510, 0%, 80%;
+  padding: 20px;
+  background-color: transparent; /* Cambiado a transparente */
+  border-radius: 5px;
+}
+
+.required {
+  color: red;
+}
+
+.form-group.text-right .btn.btn-danger {
+  margin-right: 10px;
+  color: white; /* Texto en blanco */
+  font-size: 14px;
+}
+
+.ngx-datatable.scroll-vertical.datatable-body {
+  overflow: hidden;
+  overflow-y: hidden !important;
+}
+
+/* Estilo para quitar el fondo gris de los inputs */
+.form-control {
+  background-color: transparent;
+  width: 100%;
+}
+.table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* Estilo para inputs deshabilitados */
+input:disabled {
+  background-color: #f0f0f0; /* Cambia el color de fondo a gris claro */
+  color: #808080; /* Cambia el color del texto a gris oscuro */
+  cursor: not-allowed; /* Cambia el cursor a "no permitido" */
+  /* Otros estilos que desees aplicar */
+}
+
+
