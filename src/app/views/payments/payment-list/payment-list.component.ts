@@ -18,6 +18,10 @@ export class PaymentListComponent implements OnInit {
     loading: boolean;
     listPayments: any[] = []
     originalListPayments: any[] = [];
+    sales: any[] = [];
+    listClients: any[] = [];
+    orders: any[] = [];
+    clientsToPay: any[] = [];
     openedModal = false;
     clients: any = {};
     searchControl: UntypedFormControl = new UntypedFormControl();
@@ -25,7 +29,6 @@ export class PaymentListComponent implements OnInit {
     providers: [DatePipe]
     filteredPayments;
     paginationId: string = 'payments-pagination';
-
     currentPage: number = 1;
     itemsPerPage: number = 6;
 
@@ -41,6 +44,8 @@ export class PaymentListComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.loadSales();
+        this.loadOrders();
         this._paymentsService.getAllPayments().subscribe((res: any[]) => {
             this.listPayments = res;
             // Llamar al servicio para obtener datos de clientes
@@ -49,15 +54,73 @@ export class PaymentListComponent implements OnInit {
                 clients.forEach(client => {
                     this.clients[client.id_client] = client.name_client;
                 });
+    
+                // Ahora, después de cargar las ventas, llamamos a onlyClientsPay
+                this.onlyClientsPay();
+    
+                this.searchControl.valueChanges
+                    .pipe(debounceTime(200))
+                    .subscribe(value => {
+                        this.filerData(value);
+                    });
             });
-
-            this.searchControl.valueChanges
-                .pipe(debounceTime(200))
-                .subscribe(value => {
-                    this.filerData(value);
-                });
         });
     }
+    
+
+    onlyClientsPay() {
+        for (let sale of this.sales) {
+            if (sale.payment_state === "Por pagar") {
+                this.clientsToPay.push(sale.id_client.toString());
+            }
+        }
+        for (let order of this.orders) {
+            if (order.payment_state === "Por pagar") {
+                this.clientsToPay.push(order.id_client.toString());
+            }
+        }
+    
+        // Convertir el array en un conjunto (Set) para eliminar duplicados
+        const uniqueClientsToPay = Array.from(new Set(this.clientsToPay));
+    
+        console.log('Clientes con pago pendiente:', uniqueClientsToPay);
+    }
+    
+    
+    loadClients(){
+        this._paymentsService.getAllClients().subscribe(
+            (data) => {
+              this.listClients = data;
+              console.log('Lista de clientes cargada:', this.listClients);
+            },
+            (error) => {
+              console.error('Error al obtener la lista de clientes:', error);
+            }
+          );
+    }
+    loadSales() {
+        this._paymentsService.getAllSales().subscribe(
+          (data) => {
+            this.sales = data;
+            console.log('Lista de ventas cargada:', this.sales);
+          },
+          (error) => {
+            console.error('Error al obtener la lista de ventas:', error);
+          }
+        );
+      }
+      loadOrders() {
+        this._paymentsService.getAllOrders().subscribe(
+          (data) => {
+            this.orders = data;
+            console.log('Lista de pedidos cargada:', this.orders);
+          },
+          (error) => {
+            console.error('Error al obtener la lista de pedidos:', error);
+          }
+        );
+      }
+
     updateListPayments() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         let endIndex = startIndex + this.itemsPerPage;
@@ -74,7 +137,10 @@ export class PaymentListComponent implements OnInit {
         endIndex += rowsToAdd
         this.filteredPayments = this.listPayments.slice(startIndex, endIndex)
     }
-
+    
+    filterPaymentsByPaymentState() {
+        this.filteredPayments = this.payments.filter(payment => payment.payment_state === 'Por pagar');
+    }
     pageChanged(event: any) {
         this.currentPage = event.page;
         this.updateListPayments();
@@ -110,15 +176,17 @@ export class PaymentListComponent implements OnInit {
     getPayments() {
         this._paymentsService.getAllPayments().subscribe(
             (data) => {
+                console.log(data);
                 this.listPayments = data;
                 this.sortListPaymentssById();
                 location.reload();
+                
             },
             (error) => {
                 console.error('Error al obtener los proveedores:', error);
             }
         );
-        console.log(this.listPayments)
+        console.log("pagos" + this.listPayments)
     }
 }
 

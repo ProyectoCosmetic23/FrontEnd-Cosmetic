@@ -8,13 +8,11 @@ import { ToastrService } from 'ngx-toastr';
 interface ComissionDetail {
   commission_percentage: number;
 }
-
 @Component({
   selector: 'app-comissionDetail-detail',
   templateUrl: './comissionDetail-detail.component.html',
   styleUrls: ['./comissionDetail-detail.component.scss']
 })
-
 export class ComissionsDetailDetailComponent implements OnInit {
   loading: boolean;
   formBasic: FormGroup;
@@ -27,7 +25,6 @@ export class ComissionsDetailDetailComponent implements OnInit {
   new_comissionDetail = {
     commission_percentage: 0,
   };
-
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -37,7 +34,6 @@ export class ComissionsDetailDetailComponent implements OnInit {
   ) {
     this.formBasic = this.formBuilder.group({});
   }
-
   currentMonthYear: string;
   ngOnInit() {
     this.id = this.route.snapshot.params['id'];
@@ -48,15 +44,12 @@ export class ComissionsDetailDetailComponent implements OnInit {
     const date = new Date();
     const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() starts from 0 for January, so we add 1.
     const year = date.getFullYear();
-
     this.currentMonthYear = `${month}/${year}`;
     if (!this.isNew) {
       this.getComissionDetail();
     }
   }
-
   updatedFields: any = {};
-
   buildProvidersForm(i: any = {}) {
     this.formBasic = this.formBuilder.group({
       id: [i.id_commission_detail],
@@ -65,9 +58,7 @@ export class ComissionsDetailDetailComponent implements OnInit {
     });
   }
   setViewMode() {
-
     const currentRoute = this.router.url;
-
     if (currentRoute.includes('/registrar')) {
       this.viewMode = 'new';
     } else if (currentRoute.includes('/detalle/')) {
@@ -76,11 +67,10 @@ export class ComissionsDetailDetailComponent implements OnInit {
     console.log('viewMode:', this.viewMode);
   }
   getComissionDetail() {
-    this.id = this.route.snapshot.params['id_commission_detail'];
+    if (this.viewMode === 'print') {
+      this.id = this.route.snapshot.params['id_commission_detail'];
     console.log(this.id);
-
     const comissionDetailId = parseInt(this.id, 10); // Convierte this.id a un número
-
     this._comssionDetailService.getDetailComsById(comissionDetailId).subscribe(
       (data) => {
         this.comissionDetail = data;
@@ -90,13 +80,11 @@ export class ComissionsDetailDetailComponent implements OnInit {
         console.error('Error al obtener el detalle de la comisión:', error);
       }
     );
+    }
   }
   handlePerccentageSelection(event: any) {
     this.new_comissionDetail.commission_percentage = event.target.value;
   }
-
-  
-
   createComissionDetail() {
     if (this.viewMode === 'new') {
       const currentRoute = this.router.url;
@@ -119,8 +107,8 @@ export class ComissionsDetailDetailComponent implements OnInit {
           },
           (error) => {
             this.loading = false;
-            this.toastr.error('Fallo al crear el detalle comisión.', 'Error', { progressBar: true });
-            console.error('Error al crear el detalle comisión:', error);
+            this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
+            console.error('Ya existe un registro para este ', error);
           }
         );
       }

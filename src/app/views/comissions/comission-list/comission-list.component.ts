@@ -1,6 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ComissionsService } from 'src/app/shared/services/comission.service';
 import { UntypedFormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
+import { ComissionsDetailService } from 'src/app/shared/services/comission-detail.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
+
+
 
 
 @Component({
@@ -9,6 +17,7 @@ import { UntypedFormControl } from '@angular/forms';
     styleUrls: ['./comission-list.component.scss']
 })
 export class ComissionListComponent implements OnInit {
+    formBasic: FormGroup; 
     loading: boolean;
     details: any[] = [];
     months = [
@@ -18,7 +27,7 @@ export class ComissionListComponent implements OnInit {
         { value: 4, label: 'Abril' },
         { value: 5, label: 'Mayo' },
         { value: 6, label: 'Junio' },
-        { value: 7, label: 'Julio' },
+        { value: 7, label: '    Julio' },
         { value: 8, label: 'Agosto' },
         { value: 9, label: 'Septiembre' },
         { value: 10, label: 'Octubre' },
@@ -37,9 +46,20 @@ export class ComissionListComponent implements OnInit {
     commissionsMonth;
     constructor(
         private _comissionsService: ComissionsService,
+        private _comssionDetailService: ComissionsDetailService,
+        private modalService: NgbModal,
+        private toastr: ToastrService,
+        private fb: FormBuilder
+        
     ) { }
 
     ngOnInit(): void {
+        this.formBasic = this.fb.group({
+            // Define la estructura del formulario según tus necesidades
+            // Ejemplo:
+            commission_percentage: [null, Validators.required],
+            // Agrega otros campos según tus necesidades
+          });
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             this.listComissions = res;
             this._comissionsService.getAllEmployees().subscribe((employees: any[]) => {
@@ -62,8 +82,33 @@ export class ComissionListComponent implements OnInit {
                 this.filterComissionsByMonth();
                 console.log(this.originalListComissions)
             });
-
+            this.searchControl.valueChanges
+            .pipe(debounceTime(200))
+            .subscribe(value => {
+                this.filerData(value);
+            });
         });
+    }
+    filerData(val) {
+        console.log('Valor de búsqueda (antes del toLowerCase):', val);
+    
+        if (val) {
+            val = val.toLowerCase();
+        } else {
+            this.filteredComissions = [...this.listComissions];
+            return;
+        }
+    
+        console.log('Valor de búsqueda (después del toLowerCase):', val);
+    
+        const rows = this.listComissions.filter(function (d) {
+            const nameEmployee = d['id_employee'] ? d['id_employee'].toString().toLowerCase() : '';
+            return nameEmployee.indexOf(val) > -1;
+        });
+    
+        console.log('Resultados después de filtrar:', rows);
+    
+        this.filteredComissions = rows;
     }
     filterComissionsByMonth() {
         const currentYear = new Date().getFullYear();
@@ -104,4 +149,31 @@ export class ComissionListComponent implements OnInit {
         this.currentPage = event.offset / this.itemsPerPage + 1;
         this.updateListComissions();
     }
+
+    @ViewChild('createModal', { static: true }) createModal: any;
+
+    openModal() {
+        if (!this.openedModal) {
+          this.openedModal = true;
+          const modalRef = this.modalService.open(this.createModal, { centered: true });
+      
+          modalRef.componentInstance.formBasic = this.formBasic; // Pasa el formulario al componente del modal
+      
+          modalRef.result.then(
+            (result) => {
+              if (result === 'Yes') {
+                // Lógica para guardar el porcentaje
+                // Puedes acceder al formulario dentro del componente del modal usando modalRef.componentInstance.formBasic
+                // ...
+              } else if (result === 'Cancel') {
+                this.openedModal = false;
+              }
+            },
+            (reason) => {
+              this.openedModal = false;
+            }
+          );
+        }
+      }
 }
+

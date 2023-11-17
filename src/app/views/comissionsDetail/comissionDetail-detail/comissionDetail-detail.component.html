@@ -1,9 +1,9 @@
 <div class="breadcrumb">
-    <h1 *ngIf="viewMode === 'new'">Registrar Detalle de la Comision</h1>
+    <h1 *ngIf="viewMode === 'new'">Registrar porcentaje de la Comision</h1>
     <!-- <h1 *ngIf="viewMode === 'print'">Ver Detalle de la Comision</h1> -->
     <ul>
         <li><a [routerLink]="['/comisiones']">Comisiones</a></li>
-        <li *ngIf="viewMode === 'new'">Registrar Detalle de Comision</li>
+        <li *ngIf="viewMode === 'new'">Porcentaje de Comision</li>
         <!-- <li *ngIf="viewMode === 'print'">Ver Detalle de la Comision</li> -->
     </ul>
 </div>
@@ -12,7 +12,7 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title mb-3">Formulario de Detalle de la Comision</div>
+                <div class="card-title mb-3">Formulario parade la Comision</div>
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-2 form-group mb-3">
