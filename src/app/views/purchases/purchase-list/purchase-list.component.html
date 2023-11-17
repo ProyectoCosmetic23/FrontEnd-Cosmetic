@@ -17,7 +17,7 @@
             </div>
             <div class="col-md-6 text-end">
                 <div class="form-group">
-                    <input id="id_provider" placeholder="Buscar Category" [formControl]="searchControl" class="form-control" type="text">
+                    <input id="id_provider" placeholder="Buscar Compra" [formControl]="searchControl" class="form-control" type="text">
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                 [rowHeight]="'auto'"
                 [rowHeight]="60"
                 [scrollbarV]="true"
-                [scrollbarH]="true"
+                [scrollbarH]="false"
                 [rows]="listPurchases"
                 [externalPaging]="true"
                 [count]="listPurchases.length"
@@ -43,7 +43,7 @@
                 (page)="onPageChange($event)"
             >
                 <!-- Define la cantidad de registros por página -->
-                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         # Factura
                     </ng-template>
@@ -54,7 +54,7 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         Proveedor
                     </ng-template>
@@ -65,7 +65,7 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="purchase_date" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ngx-datatable-column name="purchase_date" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         Fecha
                     </ng-template>
@@ -74,26 +74,26 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="total_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column name="total_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         Total Factura
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.total_purchase }}
+                        {{ row.total_purchase | currency:'':'symbol':'1.0-0'}}
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         Estado
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.state_purchase }}
+                        {{ row.state_purchase ? 'Activo':'Anulada' }}
                     </ng-template>
                 </ngx-datatable-column>
 
                 <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los categories -->
-                <ngx-datatable-column [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         Acciones
                     </ng-template>

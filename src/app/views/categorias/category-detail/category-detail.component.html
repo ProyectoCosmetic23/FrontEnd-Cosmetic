@@ -24,7 +24,7 @@
             
               <div class="col-md-6 form-group mb-3">
                 <label for="name_category">Nombre de Categoría<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="name_category" placeholder="Nombre de empleado" formControlName="name_category" required>
+                <input type="text" class="form-control" id="name_category"  formControlName="name_category" required>
                 <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
                   El campo nombre es obligatorio.
               </div>
@@ -44,17 +44,19 @@
 
               <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
                 <label for="state_category">Estado<span class="text-danger">*</span></label>
-                <input class="form-control" id="state_category" placeholder="Fecha de Creacion" formControlName="state_category">
-                <!-- Resto del código para el campo de estado -->
+                <input class="form-control" id="state_category"  formControlName="state_category">
+            
               </div>
 
               <div class="col-md-6 form-group mb-3">
                 <label for="observation">Observación</label>
-                <textarea class="form-control" id="observation_category" placeholder="Observación" formControlName="observation_category"></textarea>
+                <textarea class="form-control" id="observation_category"  formControlName="observation_category"></textarea>
                 <div *ngIf="categoryForm.get('observation_category').hasError('maxlength')"class="error-message">
                   El campo Observación no puede superar los 100 caracteres.
               </div>
               </div>
+
+             
 
               <div class="form-group text-right" style="text-align: right;">
                 <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
