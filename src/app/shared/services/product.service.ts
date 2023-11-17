@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProductService {
-  url = 'http://localhost:8080/api/products';
+  url = 'http://localhost:8080/api/productcs';
 
   constructor(private http: HttpClient) { }
 

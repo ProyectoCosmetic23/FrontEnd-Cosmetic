@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "app-orders-detail",
@@ -41,6 +42,7 @@ export class OrdersDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private _ordersService: OrdersService,
+    private cookieService: CookieService,
     private toastr: ToastrService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
@@ -135,7 +137,6 @@ export class OrdersDetailComponent implements OnInit {
       this.selected_client === undefined
     ) {
       this.loadingData = true;
-      location.reload();
     }
 
     console.log(this.selected_client);

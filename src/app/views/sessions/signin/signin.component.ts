@@ -28,6 +28,7 @@ export class SigninComponent implements OnInit {
     });
 
     ngOnInit() {
+        this.authService.logout();
         this.router.events.subscribe(event => {
             if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
                 this.loadingText = 'Loading Dashboard Module...';

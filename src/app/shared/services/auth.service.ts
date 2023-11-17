@@ -4,12 +4,13 @@ import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable, of, throwError } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { RolesService } from "./roles.service";
 import {
   AuthStatus,
   LoginResponse,
   User,
-  checkTokenResponse,
 } from "../interfaces";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
@@ -31,12 +32,17 @@ export class AuthService {
     return this._authStatus.value;
   }
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(
+    private http: HttpClient, 
+    private cookieService: CookieService,
+    private rolesService: RolesService, 
+    private router: Router
+    ) {}
 
   isAuthenticated(): boolean {
     const token = this.cookieService.get("token");
     console.log(token);
-    return !!token; // Devuelve true si hay un token, de lo contrario, false
+    return !!token; 
   }
 
   private setAuthentication(user: User, token: string): boolean {
@@ -137,6 +143,7 @@ export class AuthService {
     this._currentUser.next(null);
     this._authStatus.next(AuthStatus.notAuthenticated);
     this.cookieService.delete("token");
+    console.log("Token eliminado:", this.cookieService.get("token"));
     sessionStorage.removeItem(this.userSessionStorageKey);
   }
 }
