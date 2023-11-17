@@ -117,5 +117,18 @@ export class NavigationService {
     // navigation component has subscribed to this Observable
     menuItems$ = this.menuItems.asObservable();
 
-
+    // You can customize this method to supply different menu for
+    // different user type.
+    // publishNavigationChange(menuType: string) {
+    //   switch (userType) {
+    //     case 'admin':
+    //       this.menuItems.next(this.adminMenu);
+    //       break;
+    //     case 'user':
+    //       this.menuItems.next(this.userMenu);
+    //       break;
+    //     default:
+    //       this.menuItems.next(this.defaultMenu);
+    //   }
+    // }
 }

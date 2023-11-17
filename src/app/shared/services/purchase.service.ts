@@ -9,7 +9,7 @@ import { Utils } from 'src/app/shared/utils';
 export class PurchasesService {
 
   //Url de la api
-  url ='http://localhost:8080/api/purchases';
+  url ='https://api-cosmetic-w32d.onrender.com/api/purchases';
   constructor(
     private http: HttpClient
   ) { }
