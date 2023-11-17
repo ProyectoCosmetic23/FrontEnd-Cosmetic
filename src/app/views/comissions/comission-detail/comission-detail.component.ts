@@ -121,7 +121,9 @@ export class ComissionsDetailComponent implements OnInit {
 
   updateComs(){
     const detail = this.formBasic.get('id_commission_detail')?.value;
+    console.log("detalle", detail);
     let employee = this.formBasic.get('id_employee')?.value;
+    console.log("detalle empleao", employee);
     this.updateCommissionPercentage();
     if (detail === null || detail === undefined || detail === "") {
       console.log("Falta el mes (detalle) comision")
@@ -238,16 +240,16 @@ export class ComissionsDetailComponent implements OnInit {
     });
   }
 
-  // handleNameProviderSelection(event: any) {
-  //   this.comission.id_commission_detail = event.target.value;
-  //   // Busca el porcentaje correspondiente en la lista de comisiones
-  //   const selectedCommission = this.listComisionDetail.find((commission) => commission.month_commission === this.comission.month_commission);
-  //   if (selectedCommission) {
-  //     this.comission.commission_percentage = selectedCommission.commission_percentage;
-  //   } else {
-  //     this.comission.commission_percentage = 0;
-  //   }
-  // }
+  handleNameProviderSelection(event: any) {
+    this.comission.id_commission_detail = event.target.value;
+    // Busca el porcentaje correspondiente en la lista de comisiones
+    const selectedCommission = this.listComisionDetail.find((commission) => commission.month_commission === this.comission.month_commission);
+    if (selectedCommission) {
+      this.comission.commission_percentage = selectedCommission.commission_percentage;
+    } else {
+      this.comission.commission_percentage = 0;
+    }
+  }
 
 
 

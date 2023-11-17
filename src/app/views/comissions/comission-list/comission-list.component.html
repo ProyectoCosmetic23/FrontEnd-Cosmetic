@@ -110,40 +110,43 @@
       <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual</h4>
     </div>
     <div class="modal-body">
-      <app-tu-formulario [formBasic]="formBasic">
-        <div class="row">
-            <div class="col-md-5 form-group mb-3">
-                <label for="commission_percentage">Porcentaje de comisión del mes</label>
+        <form [formGroup]="formBasic" (ngSubmit)="submit()">
+            <div class="row">
+                <div class="col-md-5 form-group mb-3">
+                    <label for="commission_percentage">Porcentaje de comisión del mes</label>
 
-                <select class="form-control" id="commission_percentage"
-                    (change)="handlePerccentageSelection($event)">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
+                    <select class="form-control" id="commission_percentage"
+                        (change)="handlePerccentageSelection($event)">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+
+
+                <div class="col-md-5 form-group mb-3">
+                    <label for="month_commission">Mes comisión</label>
+                    <input type="text" class="form-control" id="month_commission" value="{{currentMonthYear}}"
+                        [readonly]="viewMode === 'print' || viewMode === 'new'"
+                        [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                </div>
+                <div class="col-md-12">
+                    
+                </div>
             </div>
-
-
-            <div class="col-md-5 form-group mb-3">
-                <label for="month_commission">Mes comisión</label>
-                <input type="text" class="form-control" id="month_commission" value="{{currentMonthYear}}"
-                    [readonly]="viewMode === 'print' || viewMode === 'new'"
-                    [ngClass]="{'placeholder-black': viewMode === 'print'}">
-            </div>
-        </div>
-      </app-tu-formulario>
+        </form>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-secondary btn-rounded"
           (click)="modal.dismiss('cancel')">Cancelar</button>
-      <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
-          (click)="modal.close('Yes')">Asignar</button>
+      <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
+          (click)="modal.close('Yes')" >Asignar</button>
     </div>
   </ng-template>

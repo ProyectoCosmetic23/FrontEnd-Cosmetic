@@ -69,56 +69,56 @@ export class ComissionsDetailDetailComponent implements OnInit {
   getComissionDetail() {
     if (this.viewMode === 'print') {
       this.id = this.route.snapshot.params['id_commission_detail'];
-    console.log(this.id);
-    const comissionDetailId = parseInt(this.id, 10); // Convierte this.id a un número
-    this._comssionDetailService.getDetailComsById(comissionDetailId).subscribe(
-      (data) => {
-        this.comissionDetail = data;
-        console.log(this.comissionDetail);
-      },
-      (error) => {
-        console.error('Error al obtener el detalle de la comisión:', error);
-      }
-    );
+      console.log(this.id);
+      const comissionDetailId = parseInt(this.id, 10); // Convierte this.id a un número
+      this._comssionDetailService.getDetailComsById(comissionDetailId).subscribe(
+        (data) => {
+          this.comissionDetail = data;
+          console.log(this.comissionDetail);
+        },
+        (error) => {
+          console.error('Error al obtener el detalle de la comisión:', error);
+        }
+      );
     }
   }
   handlePerccentageSelection(event: any) {
     this.new_comissionDetail.commission_percentage = event.target.value;
   }
-  createComissionDetail() {
-    if (this.viewMode === 'new') {
-      const currentRoute = this.router.url;
-      console.log(currentRoute);
-  
-      if (currentRoute.includes('/registrar')) {
-        console.log(this.new_comissionDetail);
-  
-        this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe(
-          (data) => {
-            console.log(data);
-            this.loading = true;
-            setTimeout(() => {
-              this.loading = false;
-              this.toastr.success('Detalle comisión creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+    createComissionDetail() {
+      if (this.viewMode === 'new') {
+        const currentRoute = this.router.url;
+        console.log(currentRoute);
+
+        if (currentRoute.includes('/registrar')) {
+          console.log(this.new_comissionDetail);
+
+          this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe(
+            (data) => {
+              console.log(data);
+              this.loading = true;
               setTimeout(() => {
-                this.router.navigate(['/comisiones']);
+                this.loading = false;
+                this.toastr.success('Detalle comisión creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+                setTimeout(() => {
+                  this.router.navigate(['/comisiones']);
+                }, 3000);
               }, 3000);
-            }, 3000);
-          },
-          (error) => {
-            this.loading = false;
-            this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
-            console.error('Ya existe un registro para este ', error);
-          }
-        );
+            },
+            (error) => {
+              this.loading = false;
+              this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
+              console.error('Ya existe un registro para este ', error);
+            }
+          );
+        }
       }
     }
-  }
-  submit() {
-    if (this.viewMode === 'new') {
-      this.createComissionDetail(); // Lógica de creación
-    } 
-  }
+    submit() {
+      if (this.viewMode === 'new') {
+        this.createComissionDetail(); // Lógica de creación
+      }
+    }
   navigateBack() {
     this.router.navigate(['/comisiones']);
   }

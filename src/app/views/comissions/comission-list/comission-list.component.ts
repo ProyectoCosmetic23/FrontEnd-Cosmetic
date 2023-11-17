@@ -3,11 +3,15 @@ import { ComissionsService } from 'src/app/shared/services/comission.service';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { ComissionsDetailService } from 'src/app/shared/services/comission-detail.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validator } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
+interface ComissionDetail {
+    commission_percentage: number;
+}
 
 
 
@@ -17,7 +21,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
     styleUrls: ['./comission-list.component.scss']
 })
 export class ComissionListComponent implements OnInit {
-    formBasic: FormGroup; 
+    formBasic: FormGroup;
+    comissionDetail: ComissionDetail = {
+        commission_percentage: 0,
+    };
+    new_comissionDetail = {
+        commission_percentage: 0,
+    };
     loading: boolean;
     details: any[] = [];
     months = [
@@ -27,7 +37,7 @@ export class ComissionListComponent implements OnInit {
         { value: 4, label: 'Abril' },
         { value: 5, label: 'Mayo' },
         { value: 6, label: 'Junio' },
-        { value: 7, label: '    Julio' },
+        { value: 7, label: 'Julio' },
         { value: 8, label: 'Agosto' },
         { value: 9, label: 'Septiembre' },
         { value: 10, label: 'Octubre' },
@@ -44,22 +54,30 @@ export class ComissionListComponent implements OnInit {
     searchControl: UntypedFormControl = new UntypedFormControl();
     filteredComissions;
     commissionsMonth;
+    modalRef: NgbModalRef;
+
     constructor(
         private _comissionsService: ComissionsService,
+        private formBuilder: FormBuilder,
         private _comssionDetailService: ComissionsDetailService,
         private modalService: NgbModal,
         private toastr: ToastrService,
+        private route: ActivatedRoute,
+        private router: Router,
         private fb: FormBuilder
-        
-    ) { }
+
+    ) {
+        this.formBasic = this.formBuilder.group({
+            commission_percentage: [0],
+        });
+    }
+    currentMonthYear: string;
 
     ngOnInit(): void {
-        this.formBasic = this.fb.group({
-            // Define la estructura del formulario según tus necesidades
-            // Ejemplo:
-            commission_percentage: [null, Validators.required],
-            // Agrega otros campos según tus necesidades
-          });
+        const date = new Date();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() starts from 0 for January, so we add 1.
+        const year = date.getFullYear();
+        this.currentMonthYear = `${month}/${year}`;
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             this.listComissions = res;
             this._comissionsService.getAllEmployees().subscribe((employees: any[]) => {
@@ -82,34 +100,44 @@ export class ComissionListComponent implements OnInit {
                 this.filterComissionsByMonth();
                 console.log(this.originalListComissions)
             });
-            this.searchControl.valueChanges
-            .pipe(debounceTime(200))
-            .subscribe(value => {
-                this.filerData(value);
-            });
         });
     }
-    filerData(val) {
-        console.log('Valor de búsqueda (antes del toLowerCase):', val);
-    
-        if (val) {
-            val = val.toLowerCase();
-        } else {
-            this.filteredComissions = [...this.listComissions];
-            return;
-        }
-    
-        console.log('Valor de búsqueda (después del toLowerCase):', val);
-    
-        const rows = this.listComissions.filter(function (d) {
-            const nameEmployee = d['id_employee'] ? d['id_employee'].toString().toLowerCase() : '';
-            return nameEmployee.indexOf(val) > -1;
-        });
-    
-        console.log('Resultados después de filtrar:', rows);
-    
-        this.filteredComissions = rows;
+    handlePerccentageSelection(event: any) {
+        this.new_comissionDetail.commission_percentage = event.target.value;
     }
+    createComissionDetail() {
+        this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe(
+            (data) => {
+                console.log(data);
+                this.loading = true;
+                setTimeout(() => {
+                    this.loading = false;
+                    this.toastr.success('Detalle comisión creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+                    setTimeout(() => {
+                        this.router.navigate(['/comisiones']);
+                    }, 3000);
+                }, 3000);
+            },
+            (error) => {
+                this.loading = false;
+                this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
+                console.error('Ya existe un registro para este ', error);
+            }
+        );
+    }
+    submit() {
+        const formData = this.formBasic.value;
+        this.new_comissionDetail.commission_percentage = formData.commission_percentage;
+        this.createComissionDetail();
+        this.modalRef.close('Yes'); // Cierra el modal después de enviar el formulario
+    }
+
+    buildProvidersForm(i: any = {}) {
+        this.formBasic = this.formBuilder.group({
+            commission_percentage: [i.commission_percentage || 0],
+        });
+    }
+
     filterComissionsByMonth() {
         const currentYear = new Date().getFullYear();
         const selectedDate = `${currentYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
@@ -119,7 +147,7 @@ export class ComissionListComponent implements OnInit {
         } else {
             this.listComissions = [];
         }
-    }  
+    }
     filterByMonth() {
         this.filterComissionsByMonth();
     }
@@ -154,26 +182,37 @@ export class ComissionListComponent implements OnInit {
 
     openModal() {
         if (!this.openedModal) {
-          this.openedModal = true;
-          const modalRef = this.modalService.open(this.createModal, { centered: true });
-      
-          modalRef.componentInstance.formBasic = this.formBasic; // Pasa el formulario al componente del modal
-      
-          modalRef.result.then(
-            (result) => {
-              if (result === 'Yes') {
-                // Lógica para guardar el porcentaje
-                // Puedes acceder al formulario dentro del componente del modal usando modalRef.componentInstance.formBasic
-                // ...
-              } else if (result === 'Cancel') {
-                this.openedModal = false;
-              }
-            },
-            (reason) => {
-              this.openedModal = false;
-            }
-          );
-        }
-      }
-}
+            this.openedModal = true;
+            this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
+            this.modalRef = this.modalService.open(this.createModal, { centered: true });
 
+            this.modalRef.result.then(
+                (result) => {
+                    if (result === 'Yes') {
+                        console.log(result);
+                        this.openedModal = false;
+                        this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
+
+                            this.loading = false;
+                            this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                            console.log(data);
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        },
+                            (error) => {
+                                this.loading = false;
+                                this.toastr.error('Ya existe un porcentaje para este mes.', 'Error', { progressBar: true, timeOut: 2000 });
+                                console.error('Error al cambiar de estado:', error);
+                            }
+                        );
+                    }
+                },
+                (reason) => {
+                    this.openedModal = false;
+                }
+            );
+        }
+    }
+}
