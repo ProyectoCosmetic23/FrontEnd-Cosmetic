@@ -7,7 +7,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validator } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import Swal from 'sweetalert2';
 
 interface ComissionDetail {
     commission_percentage: number;
@@ -59,6 +59,7 @@ export class ComissionListComponent implements OnInit {
     filteredComissions;
     commissionsMonth;
     modalRef: NgbModalRef;
+    sweetAlert: any;
 
     constructor(
         private _comissionsService: ComissionsService,
@@ -68,8 +69,7 @@ export class ComissionListComponent implements OnInit {
         private toastr: ToastrService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder
-
+        private fb: FormBuilder,
     ) {
         this.formBasic = this.formBuilder.group({
             commission_percentage: [0],
@@ -78,6 +78,7 @@ export class ComissionListComponent implements OnInit {
     currentMonthYear: string;
 
     ngOnInit(): void {
+         this.sweetAlert = Swal;
         const date = new Date();
         this.currentYear = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() starts from 0 for January, so we add 1.
@@ -191,39 +192,53 @@ export class ComissionListComponent implements OnInit {
 
     @ViewChild('createModal', { static: true }) createModal: any;
 
+
     openModal() {
         if (!this.openedModal) {
-            this.openedModal = true;
-            this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
-            this.modalRef = this.modalService.open(this.createModal, { centered: true });
-
-            this.modalRef.result.then(
-                (result) => {
-                    if (result === 'Yes') {
-                        console.log(result);
-                        this.openedModal = false;
-                        this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
-
-                            this.loading = false;
-                            this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                            console.log(data);
-
-                            setTimeout(() => {
-                                location.reload();
-                            }, 2000);
-                        },
-                            (error) => {
-                                this.loading = false;
-                                this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });
-                                console.error('Error al cambiar de estado:', error);
-                            }
-                        );
+          this.openedModal = true;
+          this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
+          this.modalRef = this.modalService.open(this.createModal, { centered: true });
+      
+          this.modalRef.result.then(
+            (result) => {
+              if (result === 'Yes') {
+                // Mostrar confirmación antes de enviar
+                const sweetAlertResult = this.sweetAlert.fire({
+                    title: '¿Está seguro que desea asignar este porcentaje?',
+                    text: 'Recuerde que no lo podrá editar después.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    customClass: {
+                      confirmButton: 'btn btn-wide btn-primary btn-rounded',
+                      cancelButton: 'btn btn-outline-secondary btn-rounded'
                     }
-                },
-                (reason) => {
+                  });
+                sweetAlertResult.then((result) => {
+                  if (result.value) {
                     this.openedModal = false;
-                }
-            );
+                    this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
+                      this.loading = false;
+                      this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                      console.log(data);
+      
+                      setTimeout(() => {
+                        location.reload();
+                      }, 2000);
+                    }, (error) => {
+                      this.loading = false;
+                      this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });
+                    });
+                  }
+                  this.openedModal = false;
+                });
+              }
+            },
+            (reason) => {
+              this.openedModal = false;
+            }
+          );
         }
-    }
+      }
 }
