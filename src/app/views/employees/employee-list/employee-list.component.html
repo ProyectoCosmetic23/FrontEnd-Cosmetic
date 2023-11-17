@@ -10,18 +10,17 @@
         <div class="separator-breadcrumb border-top"></div>
 
         <div class="row mb-3">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <button class="btn btn-primary float-right" [routerLink]="['/employees/new']">Crear nuevo Empleado</button>
-                        </div>
-                      
+           
+            <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <button class="btn btn-primary" [routerLink]="['/employees/new']">Crear nuevo Empleado</button>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <div class="form-group">
-                            <input id="search" placeholder="Buscar Empleados" [formControl]="searchControl" class="form-control" type="text">
-                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input id="role" placeholder="Buscar Empleados" [formControl]="searchControl" class="form-control"
+                            type="role">
                     </div>
                 </div>
             </div>

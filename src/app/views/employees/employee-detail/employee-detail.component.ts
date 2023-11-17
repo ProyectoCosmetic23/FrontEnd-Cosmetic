@@ -44,6 +44,7 @@ export class EmployeeDetailComponent implements OnInit {
 
 
     ngOnInit() {
+        
         this.id = this.route.snapshot.params['id_employee'];
         this.isNew = !this.id;
         this.setViewMode();
@@ -57,7 +58,7 @@ export class EmployeeDetailComponent implements OnInit {
             email: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
             address: ['', [Validators.required, Validators.maxLength(80)]],
             phone: ['', [Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
-            observation: ['', [Validators.required, Validators.maxLength(100)]],
+            observation: ['',[ Validators.maxLength(100)]],
             state_employee: [],
             creation_date_employee: []
         });

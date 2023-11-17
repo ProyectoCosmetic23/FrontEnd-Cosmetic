@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ProductFormModel } from '../models/product.model';
 import { DatePipe } from '@angular/common';
+import { CategoriesService } from 'src/app/shared/services/category.service';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class ProductDetailComponent implements OnInit {
     id: string;
     isNew: boolean;
     invoice: any = {};
+    category: any[];
     invoiceForm: UntypedFormGroup;
     invoiceFormSub: Subscription;
     subTotal: number;
@@ -36,7 +38,8 @@ export class ProductDetailComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
         private productsService: ProductService,
-        private datePipe: DatePipe
+        private datePipe: DatePipe,
+        private categorieService: CategoriesService
     ) {
 
     }
@@ -47,6 +50,8 @@ export class ProductDetailComponent implements OnInit {
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
+        this.getCategories();
+        
     }
 
     private inicializateForm(id: number): void {
@@ -78,7 +83,20 @@ export class ProductDetailComponent implements OnInit {
         }
 
     }
+    
+    private getCategories() {
+        this.categorieService.getAllCategory().subscribe({
+          next: (response: any) => {
+            this.category = response;
+          },
+          error: (err) => {
+            console.log('Error al obtener categorías', err);
+          },
+        });
+      }
 
+
+      
     private getProductByID(id: number): void {
         this.loading = true;
         this.productsService.getProductsById(id).subscribe({

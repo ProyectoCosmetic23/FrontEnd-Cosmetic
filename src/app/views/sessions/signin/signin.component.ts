@@ -23,7 +23,7 @@ export class SigninComponent implements OnInit {
     constructor(private toastr: ToastrService) { }
 
     public myForm: FormGroup = this.fb.group({
-        email: ['julian2@gmail.com', [Validators.required, Validators.email]],
+        email: ['julian@gmail.com', [Validators.required, Validators.email]],
         password: ['Julian9*', [Validators.required, Validators.minLength(6)]],
     });
 
