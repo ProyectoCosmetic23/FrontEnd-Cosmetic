@@ -28,9 +28,12 @@ import { AuthService } from './auth.service';
       } else {
         // AuthStatus.checking o cualquier otro estado
         console.log('Verificando...');
-        // Puedes elegir manejar este caso de acuerdo a tus necesidades
-        this.router.navigateByUrl('/sessions/signin');
-        return false;
+        if (this.authService.isAuthenticated()) {
+          return true;
+        } else {
+          this.router.navigateByUrl('/sessions/signin');
+          return false;          
+        }
       }
     }
   }

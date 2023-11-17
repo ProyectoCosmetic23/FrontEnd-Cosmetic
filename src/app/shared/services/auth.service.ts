@@ -142,7 +142,7 @@ export class AuthService {
   logout() {
     this._currentUser.next(null);
     this._authStatus.next(AuthStatus.notAuthenticated);
-    this.cookieService.delete("token");
+    this.cookieService.deleteAll("token");
     console.log("Token eliminado:", this.cookieService.get("token"));
     sessionStorage.removeItem(this.userSessionStorageKey);
   }
