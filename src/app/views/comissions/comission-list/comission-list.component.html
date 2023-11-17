@@ -72,7 +72,7 @@
                                 Mes Comisión
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.month_commission }}
+                                {{ row.month_commission | date:'yyyy-MM' }}
                             </ng-template>
                         </ngx-datatable-column>
 
@@ -107,7 +107,7 @@
 
 <ng-template #createModal let-modal>
     <div class="modal-header">
-      <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual</h4>
+      <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual para {{currentYear}}</h4>
     </div>
     <div class="modal-body">
         <form [formGroup]="formBasic" (ngSubmit)="submit()">

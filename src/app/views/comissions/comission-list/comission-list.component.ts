@@ -51,6 +51,7 @@ export class ComissionListComponent implements OnInit {
     employees: any = {};
     comissionDetails: any = {};
     openedModal = false;
+    currentYear: number;
     searchControl: UntypedFormControl = new UntypedFormControl();
     filteredComissions;
     commissionsMonth;
@@ -77,6 +78,7 @@ export class ComissionListComponent implements OnInit {
         const date = new Date();
         const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() starts from 0 for January, so we add 1.
         const year = date.getFullYear();
+        this.currentYear = date.getFullYear();
         this.currentMonthYear = `${month}/${year}`;
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             this.listComissions = res;
