@@ -132,9 +132,11 @@ export class ComissionsDetailComponent implements OnInit {
       console.log("Falta el empleado")
     }
     else{
+      this.new_comission.id_employee = employee
+      console.log("new comission", this.new_comission.id_employee)
+      this.new_comission.id_commission_detail = detail
+      console.log("new comission", this.new_comission.id_commission_detail)
       this.salesTotal()
-      this.handleEmployeeSelection(event)
-      this.handleDetailSelection(event)
     }
   }
   handleEmployeeSelection(event: any) {
@@ -160,7 +162,7 @@ export class ComissionsDetailComponent implements OnInit {
     this._comissionsService.getSalesByEmployeeAndMonth(idEmployee, this.month).subscribe(
       (data) => {
         this.sales = data;
-        console.log(this.sales);
+        // console.log(this.sales);
   
         // Inicializar totalSale antes de la iteración
         this.totalSale = 0;
@@ -210,9 +212,9 @@ export class ComissionsDetailComponent implements OnInit {
       return;
     }
 
-    console.log(this.selectedEmployee);
-    console.log(this.selectedPercentage);
-    console.log(this.selectedMonth);
+    console.log("selected employee", this.selectedEmployee);
+    console.log("selected percentaje",this.selectedPercentage);
+    console.log("selected mont",this.selectedMonth);
   }
 
   updateCommissionPercentage() {
@@ -221,7 +223,7 @@ export class ComissionsDetailComponent implements OnInit {
     const selectedCommission = this.listComisionDetail.find((commission) => commission.id_commission_detail === selectedId);
     if (selectedCommission) {
       this.commissionPercentage = selectedCommission.commission_percentage
-      console.log(this.commissionPercentage)
+
       this.formBasic.get('commission_percentage')?.setValue(selectedCommission.commission_percentage);
     } else {
       this.formBasic.get('commission_percentage')?.setValue(0);
