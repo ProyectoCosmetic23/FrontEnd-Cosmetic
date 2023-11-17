@@ -72,7 +72,7 @@
                                 Mes Comisión
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.month_commission | date:'yyyy-MM' }}
+                                {{ row.month_commission | date: 'yyyy-MM'}}
                             </ng-template>
                         </ngx-datatable-column>
 
@@ -107,13 +107,13 @@
 
 <ng-template #createModal let-modal>
     <div class="modal-header">
-      <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual para {{currentYear}}</h4>
+      <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual para el año {{currentYear}}</h4>
     </div>
     <div class="modal-body">
         <form [formGroup]="formBasic" (ngSubmit)="submit()">
             <div class="row">
                 <div class="col-md-5 form-group mb-3">
-                    <label for="commission_percentage">Porcentaje de comisión del mes</label>
+                    <label for="commission_percentage">Porcentaje de comisión</label>
 
                     <select class="form-control" id="commission_percentage"
                         (change)="handlePerccentageSelection($event)">
@@ -133,9 +133,20 @@
 
                 <div class="col-md-5 form-group mb-3">
                     <label for="month_commission">Mes comisión</label>
-                    <input type="text" class="form-control" id="month_commission" value="{{currentMonthYear}}"
-                        [readonly]="viewMode === 'print' || viewMode === 'new'"
-                        [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                    <select class="form-control" id="commission_percentage" (change)="handleMonth($event)">
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
                 </div>
                 <div class="col-md-12">
                     

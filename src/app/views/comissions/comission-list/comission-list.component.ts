@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 interface ComissionDetail {
     commission_percentage: number;
+    month_commission: string
 }
 
 
@@ -24,9 +25,11 @@ export class ComissionListComponent implements OnInit {
     formBasic: FormGroup;
     comissionDetail: ComissionDetail = {
         commission_percentage: 0,
+        month_commission: "",
     };
     new_comissionDetail = {
         commission_percentage: 0,
+        month_commission: "",
     };
     loading: boolean;
     details: any[] = [];
@@ -50,8 +53,8 @@ export class ComissionListComponent implements OnInit {
     originalListComissions: any[] = [];
     employees: any = {};
     comissionDetails: any = {};
-    openedModal = false;
     currentYear: number;
+    openedModal = false;
     searchControl: UntypedFormControl = new UntypedFormControl();
     filteredComissions;
     commissionsMonth;
@@ -76,9 +79,9 @@ export class ComissionListComponent implements OnInit {
 
     ngOnInit(): void {
         const date = new Date();
+        this.currentYear = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() starts from 0 for January, so we add 1.
         const year = date.getFullYear();
-        this.currentYear = date.getFullYear();
         this.currentMonthYear = `${month}/${year}`;
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             this.listComissions = res;
@@ -106,6 +109,12 @@ export class ComissionListComponent implements OnInit {
     }
     handlePerccentageSelection(event: any) {
         this.new_comissionDetail.commission_percentage = event.target.value;
+    }
+    handleMonth(event: any) {
+        const selectedMonth = event.target.value;
+        const currentYear = new Date().getFullYear();
+        this.new_comissionDetail.month_commission = `${currentYear}-${selectedMonth.toString().padStart(2, '0')}-01`;
+        console.log(this.new_comissionDetail.month_commission)
     }
     createComissionDetail() {
         this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe(
@@ -205,7 +214,7 @@ export class ComissionListComponent implements OnInit {
                         },
                             (error) => {
                                 this.loading = false;
-                                this.toastr.error('Ya existe un porcentaje para este mes.', 'Error', { progressBar: true, timeOut: 2000 });
+                                this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });
                                 console.error('Error al cambiar de estado:', error);
                             }
                         );
