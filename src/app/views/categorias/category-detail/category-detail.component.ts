@@ -58,6 +58,7 @@ private inicializateForm(id: number): void {
 
     if (this.viewMode == 'print') {
         this.categoryForm.disable();
+    
     }
 
     if (this.viewMode == 'edit') {
@@ -155,8 +156,8 @@ createCategory() {
         },
         (error) => {
             this.loading = false;
-            console.error("Error al crear caetgoría: ", this.toastr.error);
-            const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el caetgoría.';
+            console.error("Error al editar categoría: ", this.toastr.error);
+            const errorMessage = error.error ? error.error : 'Ocurrió un error al editar el categoría.';
             this.toastr.error(errorMessage, 'Error');
         }
     );
