@@ -1,30 +1,27 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { SharedModule } from './shared/shared.module';
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './shared/inmemory-db/inmemory-db.service';
-import { HttpClientModule } from '@angular/common/http';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientModule } from "@angular/common/http";
+import { ReactiveFormsModule } from "@angular/forms";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgxPaginationModule } from "ngx-pagination";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { SharedModule } from "./shared/shared.module";
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     SharedModule,
     NgxPaginationModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService, { passThruUnknownUrl: true }),
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule, 
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
