@@ -18,13 +18,14 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 })
 export class PurchaseDetailComponent implements OnInit {
   purchaseForm: FormGroup;
+  purchaseDetailform: FormGroup;
   loading: boolean;
   viewMode: 'new' | 'print' = 'new';
   isNew: boolean;
   id: string;
   purchaseData: PurchaseFormMode;
   purchaseDetailArray: Detail[] = [];;
-  lisProviders: any  []=[];
+  listProviders: any  []=[];
   listCategories: any[] = [];
   listProducts: any[] = [];
   selected_categories: string;
@@ -35,6 +36,8 @@ export class PurchaseDetailComponent implements OnInit {
   productsFormSelect: FormArray;
   products: any[] = [];
   purchaseExists: boolean;
+  minDate = { year: 2023, month: 1, day: 1 };
+  maxDate={year:new Date().getFullYear(),month: new Date().getMonth()+ 1, day: new Date().getDate()}
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -60,22 +63,27 @@ export class PurchaseDetailComponent implements OnInit {
   private inicializateForm(id: number): void {
     this.purchaseForm = this.formBuilder.group({
       id_purchase: [''],
-      invoice_number: ['',[Validators.required], (control) => this.validatePurchaseExist(control)],
+      invoice_number: ['', [Validators.required]],
       id_provider: ['', [Validators.required]],
-      purchase_date: ['', Validators.required],
+      purchase_date: ['', [Validators.required]],
       state_purchase: [],
       observation_purchase: ['', [ Validators.maxLength(100)]],
-      purchase_detail_form: this.formBuilder.group({
-        id_product: [Validators.required],
-        id_category: [Validators.required],
-        cost_price: [Validators.required],
-        selling_price: [Validators.required],
-        vat: [],
-        product_quantity: [Validators.required]
-      }),
       products: this.formBuilder.array([]),
-     
     });
+
+    this.purchaseDetailform = this.formBuilder.group({
+      id_product: ['', [Validators.required]],
+      id_category: ['', [Validators.required]],
+      cost_price: ['', [Validators.required]],
+      selling_price: [''],
+      vat: ['',],
+      product_quantity: ['', [Validators.required]],
+    })
+
+
+    // Agrega la validación personalizada para el precio de venta
+    this.purchaseDetailform.get('selling_price').setValidators([Validators.required, this.validatePriceSelling.bind(this)]);
+    this.purchaseDetailform.get('vat').setValidators([Validators.required, this.validateVat.bind(this)]);
 
     if (this.viewMode == 'print') {
       this.purchaseForm.disable();
@@ -88,14 +96,14 @@ export class PurchaseDetailComponent implements OnInit {
   }
     
   }
-
+ 
   
   
   getProviders() {
     this.providersService.getAllProviders().subscribe(
       (data) => {
-        this.lisProviders = data;
-        console.log(this.lisProviders);
+        this.listProviders = data;
+        console.log(this.listProviders);
       },
       (error) => {
         console.error('Error al obtener proveedores:', error);
@@ -211,8 +219,8 @@ export class PurchaseDetailComponent implements OnInit {
           this.loading = false;
           console.log("Éxito al crear la compra: ", response);
           this.submit();
-          this.toastr.success('Compra registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
-          // Lógica adicional después de crear la compra, si es necesario
+          //this.toastr.success('Compra registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+   
         },
         (error) => {
           this.loading = false;
@@ -241,8 +249,10 @@ export class PurchaseDetailComponent implements OnInit {
 
   //AGREGAR PRODUCTO A LA TABLA DETALLE 
   addPurchaseDetail(): void {
-    const purchaseDetail = this.purchaseForm.get('purchase_detail_form') as FormArray;
-    const newProductFormGroup = this.createDetailFormGroup(purchaseDetail.value);
+    this.markFormGroupTouched(this.purchaseForm);
+    this.markFormGroupTouched(this.purchaseDetailform);
+    if (!this.purchaseForm.valid || !this.purchaseDetailform.valid)return;
+    const newProductFormGroup = this.createDetailFormGroup( this.purchaseDetailform.value);
   
     // Buscar si el producto ya existe en la lista
     const existingProductIndex = this.purchaseDetailArray.findIndex(item =>
@@ -259,8 +269,8 @@ export class PurchaseDetailComponent implements OnInit {
     }
   
     // Clear the form after adding the new detail
-    purchaseDetail.reset();
-  }
+    this.purchaseDetailform.reset();
+}
   
   // ...
   
@@ -285,7 +295,7 @@ export class PurchaseDetailComponent implements OnInit {
   handleProviderSelection(event: any, i: number) {
     const selectedProviderId = this.providersFormArray.at(i).get('id_provider').value;
   
-    const selectedProvider = this.lisProviders.find(provider => provider.id_provider == selectedProviderId);
+    const selectedProvider = this.listProviders.find(provider => provider.id_provider == selectedProviderId);
     if (selectedProvider) {
     
     } else {
@@ -347,6 +357,7 @@ validatePurchaseExist(control: FormControl) {
       this.purchaseService.getValidatePurchaseExist(control.value).subscribe(
         (isAvailable) => {
           this.purchaseExists = isAvailable;
+          console.log('Is Purchase Available:', isAvailable);
           resolve(this.purchaseExists ? { purchaseTaken: true } : null);
         },
         (error) => {
@@ -359,6 +370,53 @@ validatePurchaseExist(control: FormControl) {
   });
 }
 
+public submitPurchase(): void {
+  if (this.viewMode == 'new') {
+      this.createPurchase();
+ 
+}
+
+}
+
+
+//RETORNAR A LA LISTA DE CATEGORIAS
+cancel() {
+
+  this.router.navigateByUrl('/purchases');
+}
+
+private markFormGroupTouched(formGroup: FormGroup) {
+  Object.values(formGroup.controls).forEach(control => {
+    if (control instanceof FormGroup) {
+      this.markFormGroupTouched(control);
+    } else {
+      control.markAsTouched();
+    }
+  });
+}
+validateVat(){
+  const vatValue = this.purchaseDetailform.get('vat').value;
+  const costPriceValue = this.purchaseDetailform.get('cost_price').value;
+
+  if (vatValue > costPriceValue) {
+    return { invalidVat: true };
+  }
+
+  
+  
+return null;
+}
+
+validatePriceSelling(control: FormControl) {
+  const sellingPriceValue = this.purchaseDetailform.get('selling_price').value;
+  const costPriceValue = this.purchaseDetailform.get('cost_price').value;
+
+  if (sellingPriceValue < costPriceValue) {
+    return { invalidSellingPrice: true };
+  }
+
+  return null;
+  }
 
 
 

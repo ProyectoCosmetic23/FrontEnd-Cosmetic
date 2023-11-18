@@ -124,52 +124,42 @@ export class PurchaseListComponent implements OnInit {
   }
   
 
-  @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
+  // @ViewChild('changeStatusModal', { static: true }) changeStatusModal: any;
 
-  openModal(idCategory: number) {
-      this._purchaseService.getPurchaseById(idCategory).subscribe
-      if (!this.modalAbierto) {
-          this.modalAbierto = true;
-          this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
-              (result) => {
-                  if (result === 'Ok') {
-                      this._purchaseService.PurchaseChangeStatus(idCategory).subscribe(
-                          (data) => {
+  // modalStatus(IdCategory: number, $event?: any): void {
+ 
+  //         this.modalService.open(this.changeStatusModal, { centered: true }).result.then(
+  //             (result) => {
+  //                 if (result === 'Ok') {
+  //                     const isChecked = ($event.target as HTMLInputElement).checked;
+  //                     this._purchaseService.PurchaseChangeStatus(IdCategory,isChecked).subscribe(
+  //                         (data) => {
+  //                             this.loading = false;
+  //                             this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
+  //                                 progressBar: true,
+  //                                 timeOut: 2000
+  //                             });
+  //                             this.getCategories();
+  //                             this.modalAbierto = false;
 
-                              this.loading = false;
-                              this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                              console.log(data);
-
-                              setTimeout(() => {
-                                  location.reload();
-                              }, 2000);
-                          },
-                          (error) => {
-                              this.loading = false;
-                              this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
-                              console.error('Error al cambiar de estado:', error);
-                          }
-                      );
-                  } else if (result === 'Cancel') {
-                      this.modalAbierto = false;
-                      setTimeout(() => {
-                          location.reload();
-                      }, 2000);
-                  }
-              },
-              (reason) => {
-                  this.modalAbierto = false;
-                  location.reload();
-              }
-          );
-      }
-  }
-
-
-  toggleState(row: any) {
-    row.state_category = !row.state_category;
-    // Aquí puedes realizar acciones adicionales según el nuevo estado, si es necesario.
-  }
+                             
+  //                         },
+  //                         (error) => {
+  //                             this.loading = false;
+  //                             this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', {
+  //                                 progressBar: true,
+  //                                 timeOut: 2000
+  //                             });
+  //                             console.error('Error al cambiar de estado:', error);
+  //                         }
+  //                     );
+  //                 } else if (result === 'Cancel') {
+  //                     this.modalAbierto = false;
+                   
+  //                 }
+  //             }
+  //         );
+  // }
 
 
   
