@@ -59,9 +59,10 @@
             name="name_role"
             [resizeable]="false"
             [canAutoResize]="true"
-            [minWidth]="450"
+            class="custom-column-roles"
+            style="text-align: center;" 
           >
-            <ng-template ngx-datatable-header-template>
+            <ng-template ngx-datatable-header-template style="text-align: center;" >
               Nombre del Rol
             </ng-template>
             <ng-template
@@ -70,7 +71,8 @@
               let-row="row"
               let-rowIndex="rowIndex"
             >
-              <ng-container *ngIf="row && row.id_role">
+              <ng-container *ngIf="row && row.id_role" style="font-size: 10px; text-align: center; margin-top: 12px">
+                
                 {{ row.name_role }}
               </ng-container>
             </ng-template>
@@ -79,8 +81,8 @@
             name="state_role"
             [resizeable]="false"
             [canAutoResize]="true"
-            [minWidth]="450"
-          >
+            [minWidth]="60"
+            >
             <ng-template ngx-datatable-header-template>
               Estado del Rol
             </ng-template>
@@ -98,7 +100,6 @@
             name="actions"
             [resizeable]="false"
             [canAutoResize]="true"
-            [minWidth]="450"
           >
             <ng-template ngx-datatable-header-template> Acciones </ng-template>
             <ng-template
@@ -182,3 +183,4 @@
     </button>
   </div>
 </ng-template>
+

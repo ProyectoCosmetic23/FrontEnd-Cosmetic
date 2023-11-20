@@ -40,6 +40,10 @@ export class OrdersService {
     return this.http.get(this.url + '/' + id);
   }
 
+  createOrder(orderData: any): Observable<any> {
+    return this.http.post(this.url, orderData);
+  }
+
   updateOrderStatus(id: any): Observable<any> {
     return this.http.put(this.url + '/updateStatus/' + id, {});
   }
