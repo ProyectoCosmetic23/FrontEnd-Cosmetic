@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProductService {
-  url = 'http://localhost:8080/api/products';
+  url = 'http://localhost:8080/api/productcs';
 
   constructor(private http: HttpClient) { }
 
@@ -45,6 +45,13 @@ export class ProductService {
 getProducts() {
   return this.http.get('api/products');
 }
+
+
+getValidateProductExist(id_category: number , name_product: string): Observable<boolean>{
+  return this.http.get<boolean>(`${this.url}-validate-productexist?id_category=${id_category}&&name_product=${name_product}`);
+}
+
+
 
 }
  

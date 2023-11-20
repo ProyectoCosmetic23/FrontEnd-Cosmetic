@@ -21,10 +21,9 @@ export class PurchasesService {
   }
 
   //Ruta para verificar si ya esxite una categoria
-  getValidatePurchaseExist(invoice_number: string): Observable<boolean> {
+  getValidatePurchaseExist(invoice_number: boolean): Observable<boolean>{
     return this.http.get<boolean>(`${this.url}-validate-invoiceexist?invoice_number=${invoice_number}`);
   }
-  
 
 
 //Ruta para crear una categoria
@@ -41,25 +40,17 @@ export class PurchasesService {
       console.error('ID de categoría no válido');
       
     }
-    return this.http.get(this.url + '/' + id, {});
+    return this.http.get<any>(`${this.url}/${id}`);
   }
 
 
   //Ruta para cambiar el estado de una categoria
-  PurchaseChangeStatus(id: any):Observable<any>{
-    return this.http.put(this.url + '/change-status' + id, {});
+  PurchaseChangeStatus(id: any, reason: any):Observable<any>{
+    return this.http.put(this.url + '/anulate/' + id, {reasonAnulate: reason});
 
 
   }
 
-  savePurchase(category) {
-    if(category.id_category) {
-        return this.http.put<any[]>('/api/purchase/'+category.id_category, category);
-    } else {
-        category.id = Utils.genId();
-        return this.http.post<any[]>('/api/purchase/', category);
-    }
-}
 
 
   categoryPut(id: any):Observable<any>{
