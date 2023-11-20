@@ -87,15 +87,8 @@ import { ToastrService } from 'ngx-toastr';
                         );
                     } else if (result === 'Cancel') {
                         this.modalAbierto = false;
-                        setTimeout(() => {
-                        location.reload();
-                        }, 2000);
                     }
                     },
-                    (reason) => {
-                    this.modalAbierto = false;
-                    location.reload();
-                    }
                 );
                 }
             }

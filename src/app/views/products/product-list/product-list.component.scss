@@ -1,7 +1,13 @@
 .no-scroll-table {
-    max-height: 500px; /* Ajusta la altura máxima según tus necesidades */
-    overflow-y: hidden;
-  }
-  .o-hiddene {
-    overflow: auto;
-  }
+  max-height: 500px; /* Ajusta la altura máxima según tus necesidades */
+  overflow-y: hidden;
+}
+
+/* Otras clases de estilo */
+.o-hidden {
+  overflow: auto;
+}
+
+.fixed-width-cell {
+  width: 100px;
+}

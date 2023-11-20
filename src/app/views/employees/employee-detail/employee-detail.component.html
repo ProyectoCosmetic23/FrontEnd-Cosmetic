@@ -2,12 +2,7 @@
     <h1 *ngIf="viewMode === 'new'">Registrar Empleado</h1>
     <h1 *ngIf="viewMode === 'edit'">Editar Empleado</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Empleado</h1>
-    <ul>
-    <li><a [routerLink]="['/employees']">Empleados</a></li>
-    <li *ngIf="viewMode === 'new'">Registrar Empleado</li>
-    <li *ngIf="viewMode === 'edit'">Editar Empleado</li>
-    <li *ngIf="viewMode === 'print'">Ver Detalle de Empleado</li>
-    </ul>
+    
 </div>
 
 

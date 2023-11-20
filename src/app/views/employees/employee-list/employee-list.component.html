@@ -1,10 +1,6 @@
 <div class="">
     <div class="breadcrumb">
-        <h1>Listar Empleados</h1>
-        <ul>
-            <li><a href="#">Servicios</a></li>
-            <li>Empleados</li>
-        </ul>
+        <h1>Empleados</h1>
         </div>
     
         <div class="separator-breadcrumb border-top"></div>
@@ -26,9 +22,14 @@
             </div>
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
-                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"[rows]="filteredEmployees">
-                <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ngx-datatable style="height: 460px;" class="material fullscreen"  [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="60"
+                [scrollbarV]="true"
+                [scrollbarH]="false"
+                [rows]="filteredEmployees">>
+                <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         <p style="font-size:10px;">Cedula</p>
                     </ng-template>
@@ -36,7 +37,7 @@
                         {{ row.id_card_employee }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="name_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="220">
+                <ngx-datatable-column name="name_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         <p style="font-size:10px;">Nombre</p>
                         </ng-template>
@@ -45,7 +46,7 @@
                         </ng-template>
                     </ngx-datatable-column>
                     
-                    <ngx-datatable-column name="email" [resizeable]="false" [canAutoResize]="true" [minWidth]="220">
+                    <ngx-datatable-column name="email" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                         <ng-template ngx-datatable-header-template>
                             <p style="font-size:10px;">Correo</p>
                         </ng-template>
@@ -54,7 +55,7 @@
                         </ng-template>
                     </ngx-datatable-column>
                 
-                <ngx-datatable-column name="state_employee"  [resizeable]="false" [canAutoResize]="true" [minWidth]="20">
+                <ngx-datatable-column name="state_employee"  [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
                     <ng-template ngx-datatable-header-template>
                         <p style="font-size:10px;">Estado</p>
                     </ng-template>
@@ -68,16 +69,17 @@
                         <p style="font-size:10px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1" [routerLink]="['/employees/print', row.id_employee]">
+                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm" [routerLink]="['/employees/print', row.id_employee]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/employees/edit', row.id_employee]">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm" [routerLink]="['/employees/edit', row.id_employee]">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3" (click)="openModal(row.id_employee)">
-                            <input type="checkbox" [checked]="row.state_employee === 'Activo'">
+                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3 btn-sm btn-custom" (click)="openModal(row.id_employee)">
+                            <input type="checkbox"  [checked]="row.state_employee === 'Activo'" (change)="handleChange($event, row)"  >
                             <span class="slider"></span>
                         </label>
+                     
                     </ng-template>
                 </ngx-datatable-column>
                 </ngx-datatable>
@@ -89,19 +91,15 @@
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header" [closable]="false">
         <h4 class="modal-title" id="modal-title">Cambiar Estado Empleado</h4>
-        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
-            (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea inhabilitar este Empleado?</strong></p>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn-rounded"
+        <button type="button" class="btn btn-outline-secondary "
             (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger "
             (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>

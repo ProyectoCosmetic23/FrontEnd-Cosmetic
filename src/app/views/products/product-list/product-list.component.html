@@ -24,19 +24,29 @@
                 </div>
             </div>
         <div class="col-md-12">
-            <div class="card o-hidden">
-                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
-                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"[rows]="filteredProducts">
+            <div class="card o-hidden no-scroll-table">
+                <ngx-datatable
+                    style="height: 460px;"
+                    class="material"
+                    [columnMode]="'force'"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [rowHeight]="60"
+                    [scrollbarV]="true"
+                    [scrollbarH]="false"
+                    [rows]="filteredProducts">
+
 
                 <ngx-datatable-column name="id_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
-                    <ng-template ngx-datatable-header-template>
+                    <ng-template ngx-datatable-header-template  class="fixed-width-cell">
                         Categoria
                     </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" class="fixed-width-cell">
                         {{ row.id_category }}
                     </ng-template>
+                    
                 </ngx-datatable-column>
-                <ngx-datatable-column name="name_product" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column name="name_product" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
                         Nombre
                     </ng-template>
@@ -44,7 +54,7 @@
                         {{ row.name_product }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
+                <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
                         Precio de costo
                     </ng-template>
@@ -53,7 +63,7 @@
                     </ng-template>
                 </ngx-datatable-column>
                 
-                <ngx-datatable-column name="state_product"  [resizeable]="false" [canAutoResize]="true" [minWidth]="20">
+                <ngx-datatable-column name="state_product"  [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
                         Estado
                     </ng-template>
@@ -63,7 +73,7 @@
                 </ngx-datatable-column>
                 
                 <!-- Puedes agregar más columnas según tus necesidades -->
-                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="50">
+                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="20">
                     <ng-template ngx-datatable-header-template>
                         Acciones
                     </ng-template>
@@ -89,19 +99,15 @@
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-title">Cambiar Estado Producto</h4>
-        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
-            (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea inhabilitar este Producto?</strong></p>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn-rounded"
+        <button type="button" class="btn btn-outline-secondary "
             (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger "
             (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>
