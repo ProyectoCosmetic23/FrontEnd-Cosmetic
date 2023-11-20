@@ -48,6 +48,7 @@ export class ComissionListComponent implements OnInit {
         { value: 12, label: 'Diciembre' },
 
     ];
+    totalCommissions: number;
     selectedMonth: number = new Date().getMonth() + 1;
     listComissions: any[] = []
     originalListComissions: any[] = [];
@@ -78,12 +79,13 @@ export class ComissionListComponent implements OnInit {
     currentMonthYear: string;
 
     ngOnInit(): void {
-         this.sweetAlert = Swal;
+        this.sweetAlert = Swal;
         const date = new Date();
         this.currentYear = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() starts from 0 for January, so we add 1.
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const year = date.getFullYear();
         this.currentMonthYear = `${month}/${year}`;
+        
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             this.listComissions = res;
             this._comissionsService.getAllEmployees().subscribe((employees: any[]) => {
@@ -91,10 +93,9 @@ export class ComissionListComponent implements OnInit {
                     this.employees[employee.id_employee] = employee.name_employee;
                 });
             });
-
+    
             this._comissionsService.getAllComsDetail().subscribe((details: any[]) => {
                 this.details = details;
-                // Crear un objeto que asocie los detalles de comisión con las comisiones principales
                 this.listComissions.forEach(comission => {
                     const detail = details.find(detail => detail.id_commission_detail === comission.id_commission_detail);
                     if (detail) {
@@ -104,10 +105,20 @@ export class ComissionListComponent implements OnInit {
                 });
                 this.originalListComissions = res;
                 this.filterComissionsByMonth();
+                this.calculateTotalCommission();  // Llamada a la función para calcular el total
                 console.log(this.originalListComissions)
             });
         });
     }
+    
+    calculateTotalCommission() {
+        this.totalCommissions = 0;
+        for (let commission of this.listComissions) {
+            commission = Number(commission.total_commission)
+            this.totalCommissions += commission
+        }
+    }
+    
     handlePerccentageSelection(event: any) {
         this.new_comissionDetail.commission_percentage = event.target.value;
     }
@@ -143,7 +154,6 @@ export class ComissionListComponent implements OnInit {
         this.createComissionDetail();
         this.modalRef.close('Yes'); // Cierra el modal después de enviar el formulario
     }
-
     buildProvidersForm(i: any = {}) {
         this.formBasic = this.formBuilder.group({
             commission_percentage: [i.commission_percentage || 0],
@@ -154,12 +164,16 @@ export class ComissionListComponent implements OnInit {
         const currentYear = new Date().getFullYear();
         const selectedDate = `${currentYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
         const selectedDetail = this.details.find(detail => detail.month_commission === selectedDate);
+        
         if (selectedDetail) {
             this.listComissions = this.originalListComissions.filter(comission => comission.id_commission_detail === selectedDetail.id_commission_detail);
+            this.calculateTotalCommission();  // Recalcula el total cuando cambias de mes
         } else {
             this.listComissions = [];
+            this.totalCommissions = 0;  // Reinicia el total a cero si no hay comisiones para el mes seleccionado
         }
     }
+    
     filterByMonth() {
         this.filterComissionsByMonth();
     }

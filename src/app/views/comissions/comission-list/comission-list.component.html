@@ -13,24 +13,28 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <button class="btn btn-primary float-right" [routerLink]="['/comisiones/registrar']">Crear nueva
                             comisión</button>
                     </div>
-                    <div class="col-md-5">
-                        <button class="btn btn-primary float-right" (click) = "openModal()">Asignar porcentaje de comisión</button>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary float-right" (click)="openModal()">Asignar porcentaje de
+                            comisión</button>
                     </div>
+
                     <div class="col-md-3">
-                        <select class="form-select" [(ngModel)]="selectedMonth"  (change)="filterByMonth()">
+                        <select class="form-select" [(ngModel)]="selectedMonth" (change)="filterByMonth()">
                             <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
                         </select>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-6 d-flex justify-content-end">
-                <input [formControl]="searchControl" placeholder="Buscar Comisiones por Empleado" type="text" class="form-control"
-                    style="width: 50%;">
+                <div class="col-md-3" style="padding-top: 1%;">
+                    <span>Total Comisiones: {{ totalCommissions }}</span>
+                </div>
+                <input [formControl]="searchControl" placeholder="Buscar Comisiones por Empleado" type="text"
+                    class="form-control" style="width: 50%;">
             </div>
         </div>
     </div>
@@ -107,7 +111,7 @@
 
 <ng-template #createModal let-modal>
     <div class="modal-header">
-      <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual para el año {{currentYear}}</h4>
+        <h4 class="Cambiar estado" id="modal-title">Asignar porcentaje mensual para el año {{currentYear}}</h4>
     </div>
     <div class="modal-body">
         <form [formGroup]="formBasic" (ngSubmit)="submit()">
@@ -149,15 +153,15 @@
                     </select>
                 </div>
                 <div class="col-md-12">
-                    
+
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary btn-rounded"
-          (click)="modal.dismiss('cancel')">Cancelar</button>
-      <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
-          (click)="modal.close('Yes')" >Asignar</button>
+        <button type="button" class="btn btn-outline-secondary btn-rounded"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
+            (click)="modal.close('Yes')">Asignar</button>
     </div>
-  </ng-template>
+</ng-template>
