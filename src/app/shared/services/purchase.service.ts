@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 import { Utils } from 'src/app/shared/utils';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Utils } from 'src/app/shared/utils';
 export class PurchasesService {
 
   //Url de la api
-  url ='http://localhost:8080/api/purchases';
+  url = environment.url +'/api/purchases';
   constructor(
     private http: HttpClient
   ) { }

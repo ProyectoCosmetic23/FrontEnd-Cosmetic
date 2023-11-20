@@ -56,6 +56,7 @@ export class PurchaseDetailComponent implements OnInit {
   productExists: boolean;
   numberInvoiceExists: boolean;
 
+
   minDate = { year: 2023, month: 1, day: 1 };
   maxDate = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }
   constructor(
@@ -344,13 +345,6 @@ export class PurchaseDetailComponent implements OnInit {
   }
 
 
-  //CALCULAR TOTAL DE COMPRA
-  calculateTotal(): number {
-    return this.purchaseDetailArray.reduce((total, item) => {
-      const subTotal = (item.cost_price + item.vat) * item.product_quantity;
-      return total + subTotal;
-    }, 0);
-  }
 
 
 
@@ -490,6 +484,30 @@ export class PurchaseDetailComponent implements OnInit {
 
     return null;
   }
+
+calculateSubtotal(cost_price, vat, product_quantity) {
+  const numericCostPrice = parseFloat(cost_price);
+  const numericVat = parseFloat(vat);
+  const numericProductQuantity = parseFloat(product_quantity);
+
+  if (isNaN(numericCostPrice) || isNaN(numericVat) || isNaN(numericProductQuantity)) {
+    // Manejar el caso en el que no se puedan convertir a números.
+    return 0;
+  }
+
+  const subTotal = (numericCostPrice + numericVat) * numericProductQuantity;
+  
+  return subTotal;
+}
+
+calculateTotal(){
+  let total = 0;
+  this.purchaseDetailArray.forEach( i=> {
+    total += this.calculateSubtotal(i.cost_price, i.vat, i.product_quantity)
+  });
+  return total;
+}
+
   //VALIDAR SI YA EXISTE EL NOMBRE DE UNA CATEGORIA 
   validateProductExist() {
     const product_name = this.productForm.get('name_product').value;

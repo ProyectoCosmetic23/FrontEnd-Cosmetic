@@ -112,6 +112,11 @@
   text-overflow: ellipsis;
 }
 
+.align-self-end {
+  align-self: flex-end !important;
+  margin-left: -25px;
+  margin-top: -5px;
+}
 
 /* Estilo para inputs deshabilitados */
 input:disabled {

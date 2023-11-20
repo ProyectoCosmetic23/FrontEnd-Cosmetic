@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PurchasesService } from 'src/app/shared/services/purchase.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class PurchaseListComponent implements OnInit {
   currentPage = 1;
   modalAbierto = false;
   loading: boolean;
-  providers:  any = {};
+  providers: any = {};
   countLabel: number;
   reasonForm: FormGroup;
   reasonAnulate = {}
@@ -37,57 +37,57 @@ export class PurchaseListComponent implements OnInit {
     private modalService: NgbModal,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
-  ) {}
+  ) { }
 
-  ngOnInit(): void{
-    
+  ngOnInit(): void {
+
     this.reasoniniForm();
     this.getPurchases();
-      this.providersService.getAllProviders().subscribe((providers: any[]) => {
-        providers.forEach(provider => {
-            this.providers[provider.id_provider] = provider.name_provider;
-        });
+    this.providersService.getAllProviders().subscribe((providers: any[]) => {
+      providers.forEach(provider => {
+        this.providers[provider.id_provider] = provider.name_provider;
+      });
     });
 
- 
+
   }
 
   getPurchases() {
     this._purchaseService.getAllPurchase().subscribe(
-        (data) => {
-            this.listPurchases = data;
-            this.filteredPurchases = this.listPurchases;
-            this.sortListPurchases();
-            this.adjustListPurchases();
-        },
-        (error) => {
-            console.error('Error al obtener categorías:', error);
-        }
+      (data) => {
+        this.listPurchases = data;
+        this.filteredPurchases = this.listPurchases;
+        this.sortListPurchases();
+        this.adjustListPurchases();
+      },
+      (error) => {
+        console.error('Error al obtener categorías:', error);
+      }
     );
   }
 
-  
+
   @ViewChild(DatatableComponent)
   table: DatatableComponent;
 
-  
-  adjustListPurchases(){
-    this.loadData(); 
-  }  
+
+  adjustListPurchases() {
+    this.loadData();
+  }
 
   sortListPurchases() {
     this.filteredPurchases.sort((a, b) => {
       if (a.id_purchase > b.id_purchase) {
-          return -1;
+        return -1;
       }
       if (a.id_purchase > b.id_purchase) {
-          return 1;
+        return 1;
       }
       return 0;
-  });
+    });
   }
-  
-  
+
+
 
 
   loadData() {
@@ -97,10 +97,10 @@ export class PurchaseListComponent implements OnInit {
     const totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
 
     if (this.currentPage === totalPages) {
-        const remainingRows = this.filteredPurchases.length % this.itemsPerPage;
-        if (remainingRows > 0) {
-            endIndex = startIndex + remainingRows;
-        }
+      const remainingRows = this.filteredPurchases.length % this.itemsPerPage;
+      if (remainingRows > 0) {
+        endIndex = startIndex + remainingRows;
+      }
     }
 
     // Ajusta endIndex para que sea el próximo número divisible por 6
@@ -115,34 +115,35 @@ export class PurchaseListComponent implements OnInit {
 
   onPageChange(event: any) {
     console.log('onPageChange: ', event);
-    this.currentPage = event.offset +1;
+    this.currentPage = event.offset + 1;
     this.loadData(); // Llama a loadData al cambiar de página
   }
   searchPurchases($event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value !== null && value !== undefined && value !== '') {
       this.filteredPurchases = this.listPurchases.filter(n =>
-        n.invoice_number.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+        n.invoice_number.toLowerCase().indexOf(value.toLowerCase()) !== -1 || 
         this.changePurchaseStateDescription(n.state_purchase).toLowerCase().indexOf(value.toLowerCase()) !== -1
       );
     } else {
       this.filteredPurchases = this.listPurchases;
     }
   }
-  
-
-changePurchaseStateDescription(state_purchase:boolean){
-    return state_purchase ? 'Activo':'Anulada';}
-  
 
 
-    private reasoniniForm(): void {
-      this.reasonForm = this.formBuilder.group({
-        reason_anulate: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(220)]],
+  changePurchaseStateDescription(state_purchase: boolean) {
+    return state_purchase ? 'Activo' : 'Anulada';
+  }
 
-      });
 
-    }
+
+  private reasoniniForm(): void {
+    this.reasonForm = this.formBuilder.group({
+      reason_anulate: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(220)]],
+
+    });
+
+  }
 
 
 
@@ -151,38 +152,38 @@ changePurchaseStateDescription(state_purchase:boolean){
   modalStatus(idPurchase: number, $event?: any): void {
     this.modalService.open(this.changeStatusModal, { centered: true }).result.then(
       (result) => {
-          
-  
-if (result === 'Ok') {
-      const reasonAnulate = this.reasonForm.get('reason_anulate').value;  
-      const serializedReason = flatted.stringify(reasonAnulate);
-      this._purchaseService.PurchaseChangeStatus(idPurchase, serializedReason).subscribe(
 
-        (data) => {
-            this.loading = false;
-            this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
+
+        if (result === 'Ok') {
+          const reasonAnulate = this.reasonForm.get('reason_anulate').value;
+          const serializedReason = flatted.stringify(reasonAnulate);
+          this._purchaseService.PurchaseChangeStatus(idPurchase, serializedReason).subscribe(
+
+            (data) => {
+              this.loading = false;
+              this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
                 progressBar: true,
                 timeOut: 2000
-            });
-            this.getPurchases();
-            this.modalAbierto = false;
-            this.reasonForm.get('reason_anulate').setValue(null);
-           },
-                (error) => {
-                    this.loading = false;
-                    this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', {
-                        progressBar: true,
-                        timeOut: 2000
-                    });
-                    console.error('Error al cambiar de estado:', error);
-                }
-            );
-        } else if (result === 'Cancel') {
-            this.modalAbierto = false;
-          
-        }
-    }
+              });
+              this.getPurchases();
+              this.modalAbierto = false;
+              this.reasonForm.get('reason_anulate').setValue(null);
+            },
+            (error) => {
+              this.loading = false;
+              this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', {
+                progressBar: true,
+                timeOut: 2000
+              });
+              console.error('Error al cambiar de estado:', error);
+            }
           );
+        } else if (result === 'Cancel') {
+          this.modalAbierto = false;
+
+        }
+      }
+    );
   }
 
 
@@ -199,6 +200,6 @@ if (result === 'Ok') {
 }
 
 
-  
+
 
 

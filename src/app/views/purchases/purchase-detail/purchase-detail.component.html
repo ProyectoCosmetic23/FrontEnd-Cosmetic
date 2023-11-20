@@ -24,7 +24,7 @@
 
                       <div class="row">
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                           <div class="form-group" >
                             <label for="invoice_number">Numero Factura<span class="required" *ngIf="viewMode === 'new'">*</span></label>
                             <input type="text"   class="form-control" id="invoice_number" name="invoice_number" 
@@ -37,7 +37,7 @@
                           </div>
                           </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                           <div class="form-group" [ngClass]="{'disabled-field': viewMode === 'print'}">
                             <label for="id_provider">Proveedor<span class="required" *ngIf="viewMode === 'new'">*</span></label>
                             <select class="form-control" id="id_provider" name="id_provider" formControlName="id_provider" (change)="handleProviderSelection($event, i)" [disabled]="viewMode === 'print'">
@@ -62,7 +62,7 @@
                             El campo  es obligatorio.
                         </div>
                         </div>
-                        <div class="col-md-3 align-self-end" *ngIf="viewMode === 'new'">
+                        <div class="col-md-1 align-self-end" *ngIf="viewMode === 'new'">
                           <div class="form-group">
                             <label for=""></label>
                             <button class="btn btn-secondary" (click)="orderDatePicker.toggle()" type="button" >
@@ -70,7 +70,7 @@
                             </button>
                           </div>
                         </div>
-                        <div class="col-md-3" *ngIf="viewMode === 'print'">
+                        <div class="col-md-4" *ngIf="viewMode === 'print'">
                         <div class="form-grouP">
                           <label for="picker1">Fecha Registro</label>
                             <input formControlName="record_date_purchase"
@@ -78,13 +78,13 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 form-group mb-3">
+                        <div class="col-md-12 form-group mb-12">
                           <label for="observation_purchase">Observación</label>
                           <textarea
                             class="form-control"
                             id="observation_purchase"
                             formControlName="observation_purchase"
-                            *ngIf="viewMode === 'print'"
+                            *ngIf="viewMode === 'print' || viewMode === 'new'"
                             [ngStyle]="{ 'max-width.px': 1000 }"
                             [disabled]="viewMode === 'print'"></textarea>
                           <div *ngIf="purchaseForm.get('observation_purchase').touched && purchaseForm.get('observation_purchase').hasError('maxlength')" class="error-message">
@@ -92,13 +92,7 @@
                           </div>
                         </div>
                         
-                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print' && state_purchase === false">
-                          <label for="reason_anulate">Motivo de Anulación</label>
-                          <textarea class="form-control" id="reason_anulate" formControlName="observation_purchase"></textarea>
-                          <div >
-                     
-                          </div>
-                        </div>
+                   
                         
                       </div>
                       
@@ -238,7 +232,10 @@
                           <td>{{ item.selling_price | currency:'':'symbol':'1.0-0' }}</td>
                           <td>{{ item.vat | currency:'':'symbol':'1.0-0' }}</td>
                           <td>{{ item.product_quantity }}</td>
-                          <td>{{((item.cost_price + item.vat) * item.product_quantity) | currency:'':'symbol':'1.0-0' }}</td>
+                          <td>{{( calculateSubtotal(item.cost_price, item.vat, item.product_quantity) | currency:'':'symbol':'1.0-0' ) }}
+
+
+                          </td>
                           <td>
                             <button class="btn btn-danger" (click)="removePurchaseDetail(i)" *ngIf="viewMode === 'new'">
                               <i class="i-Remove-Cart"></i>
@@ -249,8 +246,8 @@
                     </table>
                     <div class="table-footer">
                       <div class="col-md-8"></div>
-                      <div class="col-md-8">
-                        <div class="total" >Total: {{ viewMode === 'new' || viewMode === 'print'  ? calculateTotal() : total_purchase  | currency:'':'symbol':'1.0-0' }} </div>
+                      <div class="col-md-8" *ngIf="viewMode === 'new' || viewMode === 'print'">
+                        <div class="total" >Total: {{   calculateTotal()  | currency:'':'symbol':'1.0-0' }} </div>
                       </div>
                     </div>
                   </div>

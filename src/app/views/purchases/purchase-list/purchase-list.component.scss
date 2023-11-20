@@ -41,4 +41,9 @@
     /* Otros estilos que desees aplicar */
   }
   
-
+  //para  que el nombre del proveedor no se esconda
+.long-text {
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: normal;
+  }

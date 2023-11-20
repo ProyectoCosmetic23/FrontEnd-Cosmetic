@@ -60,7 +60,7 @@
                         Proveedor
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        <ng-container *ngIf="row && row.id_purchase">
+                        <ng-container *ngIf="row && row.id_purchase" class="long-text">
                             {{ providers[row.id_provider] }}
                         </ng-container>
                     </ng-template>
@@ -99,12 +99,18 @@
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
+                       
+                            
+                        
                         <button class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]" >
                             <i class="i-Eye"></i>
                         </button>
-                            <button class="btn btn-danger m-1" name="state" (click)="modalStatus(row.id_purchase, $event)" *ngIf="state_purchase">
-                              <i class="i-Close"></i> 
-                          </button>
+     
+                        <button class="btn btn-danger " name="state" (click)="modalStatus(row.id_purchase, $event)"*ngIf="row.state_purchase == true" >
+                            <i class="i-Close"></i> 
+                        </button>
+                    
+                        
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
