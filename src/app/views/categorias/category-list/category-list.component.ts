@@ -36,7 +36,7 @@ export class CategoryListComponent {
                 this.listCategories = data;
                 this.filteredCategories =this.listCategories;
                 this.sortListCategoriesById();
-                this.adjustListCategories();
+                this.refreshListPurchases();
             },
             (error) => {
                 console.error('Error al obtener Categorías:', error);
@@ -52,7 +52,7 @@ export class CategoryListComponent {
         this.countLabel = this.filteredCategories.length;
     }
 //AJUSTAR LA LISTA DE CATEGORIAS
-    adjustListCategories() {
+    refreshListPurchases() {
         // const totalRows = this.filteredCategories.length;
         // const remainingRows = 6 - (totalRows % 6);
 

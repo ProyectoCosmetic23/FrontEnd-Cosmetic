@@ -23,7 +23,7 @@
           <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
             
               <div class="col-md-6 form-group mb-3">
-                <label for="name_category">Nombre de Categoría<span class="text-danger">*</span></label>
+                <label for="name_category">Nombre de Categoría<span class="text-danger" *ngIf="viewMode == 'new' || viewMode == 'edit'">*</span></label>
                 <input type="text" class="form-control" id="name_category"  formControlName="name_category" required>
                 <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
                   El campo nombre es obligatorio.
@@ -43,7 +43,7 @@
               </div>
 
               <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
-                <label for="state_category">Estado<span class="text-danger">*</span></label>
+                <label for="state_category">Estado<span class="text-danger" *ngIf="viewMode == 'new' ">*</span></label>
                 <input class="form-control" id="state_category"  formControlName="state_category">
             
               </div>
