@@ -95,6 +95,7 @@ export class PurchaseDetailComponent implements OnInit {
       state_purchase: [''],
       observation_purchase: ['', [Validators.maxLength(100)]],
       record_date_purchase:[''],
+      reason_anulate:[''],
       products: this.formBuilder.array([]),
     });
 
@@ -394,15 +395,15 @@ export class PurchaseDetailComponent implements OnInit {
     if (this.purchaseData) {
       const purchaseDate = Utils.dateToNgbDate(this.purchaseData.purchase_date);
       const purchaseDateRegistration = Utils.dateToNgbDate(this.purchaseData.record_date_purchase);
-      
+      this.purchaseForm.get("reason_anulate").setValue(this.purchaseData.reason_anulate)
       this.purchaseForm.get("id_purchase").setValue(this.purchaseData.id_purchase)
       this.purchaseForm.get("invoice_number").setValue(this.purchaseData.invoice_number)
       this.purchaseForm.get("id_provider").setValue(this.purchaseData.id_provider)
       this.purchaseForm.get("purchase_date").setValue(purchaseDate)
       this.purchaseForm.get("observation_purchase").setValue(this.purchaseData.observation_purchase)
      this.purchaseForm.get("record_date_purchase").setValue(purchaseDateRegistration)
-      // this.datePurchase.setValue(Utils.ngbDateToDate(this.purchaseForm.value.purchase_date));
-      const purchaseDetailArray = this.purchaseData.purchase_details || []; // Asegúrate de que purchase_detail no sea nulo
+     this.purchaseForm.get("state_purchase").setValue(this.purchaseData.state_purchase)
+    const purchaseDetailArray = this.purchaseData.purchase_details || []; // Asegúrate de que purchase_detail no sea nulo
     
       this.purchaseDetailArray = purchaseDetailArray.map(detail => ({
         ...detail,

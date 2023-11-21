@@ -38,6 +38,7 @@ export class PurchaseFormMode {
     total_purchase: number;
     state_purchase: string;
     observation_purchase: string;
+    reason_anulate: string;
     purchase_detail: Detail[]; // Cambiado de Product a Products
     purchase_details: Detail[]; // Cambiado de Product a Products
    
@@ -50,5 +51,7 @@ export class PurchaseFormMode {
         this.purchase_detail = response.products;
         this.purchase_details = response.purchase_details;
         this.record_date_purchase = response.record_date_purchase;
+        this.reason_anulate = response.reason_anulate;
+        this.state_purchase = response.state_purchase;
     }
 }

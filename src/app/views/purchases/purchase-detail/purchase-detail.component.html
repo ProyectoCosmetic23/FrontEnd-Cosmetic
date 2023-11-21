@@ -70,37 +70,66 @@
                             </button>
                           </div>
                         </div>
-                        <div class="col-md-4" *ngIf="viewMode === 'print'">
+                        <div class="row" *ngIf="viewMode === 'print'">
+                          <div class="col-md-6">
                         <div class="form-grouP">
                           <label for="picker1">Fecha Registro</label>
                             <input formControlName="record_date_purchase"
                             [minDate]="minDate" [maxDate]="maxDate"  id="picker1" name="record_date_purchase" class="form-control text-right" name="dp" ngbDatepicker #orderDatePicker="ngbDatepicker" >
                         </div>
                       </div>
+                      <div class="col-md-6">
+                        <div class="form-grouP">
+                          <label for="picker1">Estado</label>
+                            <input formControlName="state_purchase"
+                            name="state_purchase" class="form-control text-right" [value]="purchaseForm.get('state_purchase').value ? 'Activo' : 'Anulada'"
+                            >
+                        </div>
+                      </div>
+                      </div>
                       <div class="row">
-                        <div class="col-md-12 form-group mb-12">
+                        <div class="col-md-12 form-group mb-12"  *ngIf=" viewMode === 'new'">
                           <label for="observation_purchase">Observación</label>
                           <textarea
                             class="form-control"
                             id="observation_purchase"
                             formControlName="observation_purchase"
-                            *ngIf="viewMode === 'print' || viewMode === 'new'"
+                          
                             [ngStyle]="{ 'max-width.px': 1000 }"
                             [disabled]="viewMode === 'print'"></textarea>
                           <div *ngIf="purchaseForm.get('observation_purchase').touched && purchaseForm.get('observation_purchase').hasError('maxlength')" class="error-message">
                             El campo supera los 100 caracteres.
                           </div>
                         </div>
-                        
-                   
-                        
                       </div>
-                      
-
-                
                           </div>
-                   
-
+                          <div class="row" *ngIf="viewMode === 'print' ">
+                            <div [class.col-md-12]="purchaseForm.get('state_purchase').value" [class.col-md-6]="!purchaseForm.get('state_purchase').value" >
+                              <label for="observation_purchase">Observación</label>
+                              <textarea
+                                class="form-control"
+                                id="observation_purchase"
+                                formControlName="observation_purchase"
+                              
+                                [ngStyle]="{ 'max-width.px': 1000 }"
+                                [disabled]="viewMode === 'print' && !state_purchase"></textarea>
+                              <div *ngIf="purchaseForm.get('observation_purchase').touched && purchaseForm.get('observation_purchase').hasError('maxlength')" class="error-message">
+                                El campo supera los 100 caracteres.
+                              </div>
+                            </div>
+                            <div class="col-md-6 form-group mb-6" *ngIf=" !purchaseForm.get('state_purchase').value">
+                              <label for="reason_anulate">Motivo de anulación</label>
+                              <textarea
+                                class="form-control"
+                                id="reason_anulate"
+                                formControlName="reason_anulate"
+                                [ngStyle]="{ 'max-width.px': 1000 }"
+                                disabled
+                              ></textarea>
+                            </div>
+                        
+                          </div>
+                         
                       <div class="mt-3 mb-4 border-top"></div>
                       <div *ngIf="viewMode === 'new'">
                       <form class="row"  [formGroup]="purchaseDetailform" >
