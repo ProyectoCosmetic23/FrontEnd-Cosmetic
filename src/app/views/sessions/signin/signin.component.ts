@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
+import { ResolveEnd, ResolveStart, RouteConfigLoadEnd, RouteConfigLoadStart, Router } from '@angular/router';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
-import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, ResolveEnd } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-signin',
@@ -11,41 +12,45 @@ import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, Resolve
     animations: [SharedAnimations]
 })
 export class SigninComponent implements OnInit {
+    private fb = inject(FormBuilder);
+    private authService = inject(AuthService);
+    private router = inject(Router);
     loading: boolean;
     loadingText: string;
-    signinForm: UntypedFormGroup;
-    constructor(
-        private fb: UntypedFormBuilder,
-        private auth: AuthService,
-        private router: Router
-    ) { }
+    signinForm: FormGroup;
+
+  
+    constructor(private toastr: ToastrService) { }
+    public myForm: FormGroup = this.fb.group({
+        email: ['julian2@gmail.com', [Validators.required, Validators.email]],
+        password: ['Julian9*', [Validators.required, Validators.minLength(6)]],
+    });
 
     ngOnInit() {
+        this.authService.logout();
         this.router.events.subscribe(event => {
             if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
                 this.loadingText = 'Loading Dashboard Module...';
-
                 this.loading = true;
             }
             if (event instanceof RouteConfigLoadEnd || event instanceof ResolveEnd) {
                 this.loading = false;
             }
         });
+    }
 
-        this.signinForm = this.fb.group({
-            email: ['test@example.com', Validators.required],
-            password: ['1234', Validators.required]
+    login() {
+        const { email, password } = this.myForm.value;
+        this.authService.login(email, password).subscribe({
+            next: () => this.router.navigateByUrl('/dashboard/v1'),
+            error: (errorMessage) => {
+                console.error('Error del servidor:', errorMessage);
+                this.toastr.error(errorMessage, 'Error de validación', { progressBar: true, timeOut: 3000 });
+            },
         });
     }
 
-    signin() {
-        this.loading = true;
-        this.loadingText = 'Sigining in...';
-        this.auth.signin(this.signinForm.value)
-            .subscribe(res => {
-                this.router.navigateByUrl('/dashboard/v1');
-                this.loading = false;
-            });
-    }
+    
+
 
 }

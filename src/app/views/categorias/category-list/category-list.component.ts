@@ -25,18 +25,18 @@ export class CategoryListComponent {
         private modalService: NgbModal,
         private toastr: ToastrService
     ) { }
-
+//inicializa el get
     ngOnInit(): void {
         this.getCategories();
     }
-
+//CONSULTA TODAS LAS CATEGORIAS
     getCategories() {
         this._categoriesService.getAllCategory().subscribe(
             (data) => {
                 this.listCategories = data;
-                console.log(this.listCategories);
+                this.filteredCategories =this.listCategories;
                 this.sortListCategoriesById();
-                this.adjustListCategories();
+                this.refreshListPurchases();
             },
             (error) => {
                 console.error('Error al obtener Categorías:', error);
@@ -47,42 +47,42 @@ export class CategoryListComponent {
     @ViewChild(DatatableComponent)
     table: DatatableComponent;
 
-    // Luego, puedes actualizar el valor visual de count según tus necesidades
+    //  actualizar el valor visual de count según tus necesidades
     actualizarCountLabel() {
-        this.countLabel = this.listCategories.length;
+        this.countLabel = this.filteredCategories.length;
     }
+//AJUSTAR LA LISTA DE CATEGORIAS
+    refreshListPurchases() {
+        // const totalRows = this.filteredCategories.length;
+        // const remainingRows = 6 - (totalRows % 6);
 
-    adjustListCategories() {
-        const totalRows = this.listCategories.length;
-        const remainingRows = 6 - (totalRows % 6);
-
-        for (let i = 0; i < remainingRows; i++) {
-            this.listCategories.push({}); // Agrega filas vacías
-        }
+        // for (let i = 0; i < remainingRows; i++) {
+        //     // this.filteredCategories.push({}); // Agrega filas vacías
+        // }
 
         this.loadData();
     }
 
     sortListCategoriesById() {
-        this.listCategories.sort((a, b) => {
-            if (a.id_categoríae < b.id_categoríae) {
+        this.filteredCategories.sort((a, b) => {
+            if (a.id_category > b.id_category) {
                 return -1;
             }
-            if (a.id_categoríae > b.id_categoríae) {
+            if (a.id_category > b.id_category) {
                 return 1;
             }
             return 0;
         });
     }
-
+//CARGA LAS CATEGORIAS EN CADA PAGINA
     loadData() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         let endIndex = startIndex + this.itemsPerPage;
 
-        const totalPages = Math.ceil(this.listCategories.length / this.itemsPerPage);
+        const totalPages = Math.ceil(this.filteredCategories.length / this.itemsPerPage);
 
         if (this.currentPage === totalPages) {
-            const remainingRows = this.listCategories.length % this.itemsPerPage;
+            const remainingRows = this.filteredCategories.length % this.itemsPerPage;
             if (remainingRows > 0) {
                 endIndex = startIndex + remainingRows;
             }
@@ -92,7 +92,7 @@ export class CategoryListComponent {
         const rowsToAdd = 6 - (endIndex % 6);
         endIndex += rowsToAdd;
 
-        this.filteredCategories = this.listCategories.slice(startIndex, endIndex);
+        // this.filteredCategories = this.filteredCategories.slice(startIndex, endIndex);
 
         console.log('load data charged');
     }
@@ -103,53 +103,58 @@ export class CategoryListComponent {
         this.loadData();
     }
 
+    searchCategory($event){
+        
+        const value = ($event.target as HTMLInputElement).value;
+        if(value !==null && value !== undefined && value !== '')
+        {
+            this.filteredCategories = this.listCategories.filter(c => c.name_category.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            || this.changeCategoryStateDescription(c.state_category).toLowerCase().indexOf(value.toLowerCase()) !== -1)
+        }else{
+            this.filteredCategories = this.listCategories;
+        }
+    }
+
+    changeCategoryStateDescription(state_category:boolean){
+        return state_category ? 'Activo':'Inactivo';}
+
+
+    //CAMBIAR ESTADO
+
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 
-    openModal(idRole: number) {
-        this._categoriesService.getCategoryById(idRole).subscribe(
-            (data) => {
-                if (!this.modalAbierto) {
-                    this.modalAbierto = true;
-                    this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
-                        (result) => {
-                            if (result === 'Ok') {
-                                this._categoriesService.CategoryChangeStatus(idRole).subscribe(
-                                    (data) => {
-                                        this.loading = false;
-                                        this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
-                                            progressBar: true,
-                                            timeOut: 2000
-                                        });
-                                        setTimeout(() => {
-                                            location.reload();
-                                        }, 2000);
-                                    },
-                                    (error) => {
-                                        this.loading = false;
-                                        this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', {
-                                            progressBar: true,
-                                            timeOut: 2000
-                                        });
-                                        console.error('Error al cambiar de estado:', error);
-                                    }
-                                );
-                            } else if (result === 'Cancel') {
+    modalStatus(IdCategory: number, $event?: any): void {
+   
+            this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
+                (result) => {
+                    if (result === 'Ok') {
+                        const isChecked = ($event.target as HTMLInputElement).checked;
+                        this._categoriesService.CategoryChangeStatus(IdCategory,isChecked).subscribe(
+                            (data) => {
+                                this.loading = false;
+                                this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
+                                    progressBar: true,
+                                    timeOut: 2000
+                                });
+                                this.getCategories();
                                 this.modalAbierto = false;
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 2000);
+
+                               
+                            },
+                            (error) => {
+                                this.loading = false;
+                                this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', {
+                                    progressBar: true,
+                                    timeOut: 2000
+                                });
+                                console.error('Error al cambiar de estado:', error);
                             }
-                        },
-                        (reason) => {
-                            this.modalAbierto = false;
-                            location.reload();
-                        }
-                    );
+                        );
+                    } else if (result === 'Cancel') {
+                        this.modalAbierto = false;
+                     
+                    }
                 }
-            },
-            (error) => {
-                console.error('Error al obtener el categoría:', error);
-            }
-        );
+            );
     }
 }

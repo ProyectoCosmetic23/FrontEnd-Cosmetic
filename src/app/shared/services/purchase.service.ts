@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs-compat';
 import { Utils } from 'src/app/shared/utils';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Utils } from 'src/app/shared/utils';
 export class PurchasesService {
 
   //Url de la api
-  url ='http://localhost:8080/api/purchases';
+  url = environment.url +'/api/purchases';
   constructor(
     private http: HttpClient
   ) { }
@@ -21,8 +22,8 @@ export class PurchasesService {
   }
 
   //Ruta para verificar si ya esxite una categoria
-  getValidatePurchaseExist(name_category: boolean): Observable<boolean>{
-    return this.http.get<boolean>(`${this.url}-validate-categoryexist?name_category=${name_category}`);
+  getValidatePurchaseExist(invoice_number: boolean): Observable<boolean>{
+    return this.http.get<boolean>(`${this.url}-validate-invoiceexist?invoice_number=${invoice_number}`);
   }
 
 
@@ -40,25 +41,17 @@ export class PurchasesService {
       console.error('ID de categoría no válido');
       
     }
-    return this.http.get(this.url + '/' + id, {});
+    return this.http.get<any>(`${this.url}/${id}`);
   }
 
 
   //Ruta para cambiar el estado de una categoria
-  PurchaseChangeStatus(id: any):Observable<any>{
-    return this.http.put(this.url + '/change-status' + id, {});
+  PurchaseChangeStatus(id: any, reason: any):Observable<any>{
+    return this.http.put(this.url + '/anulate/' + id, {reasonAnulate: reason});
 
 
   }
 
-  savePurchase(category) {
-    if(category.id_category) {
-        return this.http.put<any[]>('/api/purchase/'+category.id_category, category);
-    } else {
-        category.id = Utils.genId();
-        return this.http.post<any[]>('/api/purchase/', category);
-    }
-}
 
 
   categoryPut(id: any):Observable<any>{

@@ -1,28 +1,31 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { AdminLayoutSidebarCompactComponent } from "./shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component";
-import { AuthLayoutComponent } from "./shared/components/layouts/auth-layout/auth-layout.component";
-import { AuthGaurd } from "./shared/services/auth.gaurd";
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component';
+import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
+import { AuthGuard } from './shared/services/auth.guard';
 
 const adminRoutes: Routes = [
   {
-    path: "dashboard",
-    loadChildren: () =>
-      import("./views/dashboard/dashboard.module").then(
-        (m) => m.DashboardModule
-      ),
+    path: 'dashboard',
+    canActivate:[AuthGuard],
+    loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
     path: "proveedores",
+    canActivate:[AuthGuard],
+
     loadChildren: () =>
       import("./views/providers/provider.module").then((m) => m.ProviderModule),
   },
   {
     path: 'comisiones',
+    canActivate:[AuthGuard],
     loadChildren: () => import('./views/comissions/comission.module').then(m => m.ComissionModule)
   },
   {
     path: "detalleComs",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/comissionsDetail/comissionDetail.module").then(
         (m) => m.ComissionDetailModule
@@ -30,36 +33,42 @@ const adminRoutes: Routes = [
   },
   {
     path: "pagos",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/payments/payment.module").then((m) => m.PaymentModule),
   },
   {
     path: "roles",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/roles/roles.module").then((m) => m.RolesModule),
   },
   {
     path: "orders",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/orders/orders.module").then((m) => m.OrdersModule),
   },
   {
     path: "employees",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/employees/employee.module").then((m) => m.EmployeeModule),
   },
   {
-    path: "products",
-    loadChildren: () =>
-      import("./views/products/product.module").then((m) => m.ProductModule),
+    path: 'products',
+    canActivate:[AuthGuard],
+    loadChildren: () => import('./views/products/product.module').then(m => m.ProductModule)
   },
   {
     path: "purchases",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/purchases/purchase.module").then((m) => m.PurchaseModule),
   },
   {
     path: "categories",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/categorias/category.module").then(
         (m) => m.CategoryModule
@@ -67,11 +76,13 @@ const adminRoutes: Routes = [
   },
   {
     path: "clients",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/clients/client.module").then((m) => m.ClientModule),
   },
   {
     path: "users",
+    canActivate:[AuthGuard],
     loadChildren: () =>
       import("./views/users/user.module").then((m) => m.UserModule),
   },
@@ -79,9 +90,10 @@ const adminRoutes: Routes = [
 
 const routes: Routes = [
   {
-    path: "",
-    redirectTo: "dashboard/v1",
-    pathMatch: "full",
+    path: '',
+    redirectTo: '',
+    pathMatch: 'full',
+    canActivate: [AuthGuard],  // Agregado para verificar la autenticación al cargar la página de inicio
   },
   {
     path: "",
@@ -96,26 +108,20 @@ const routes: Routes = [
       },
     ],
   },
-
   {
     path: "",
     component: AdminLayoutSidebarCompactComponent,
-    canActivate: [AuthGaurd],
-    children: adminRoutes,
+    children: adminRoutes
   },
   {
-    path: "**",
-    redirectTo: "others/404",
-  },
+    path: '**',
+    redirectTo: 'dashboard/v1'
+  }
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      useHash: true,
-      relativeLinkResolution: "legacy",
-    }),
-  ],
-  exports: [RouterModule],
+  imports: [RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })],
+  providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy }],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}
