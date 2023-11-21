@@ -19,6 +19,12 @@ export class ProductListComponent implements OnInit {
     pageSize: number = 10;
     currentPage: number = 1;
     modalAbierto = false;
+    selectedProductId: number;
+    selectedProductValue: number;
+    returnQuantity: number = 0;
+    calculatedValue: number = 0;
+    returnReason: string = '';
+    returnValue: number ;
 
 
     constructor(
@@ -39,6 +45,19 @@ export class ProductListComponent implements OnInit {
     handleChange(event: any, row: any) {
         row.state_product = event.target.checked ? 'Activo' : 'Inactivo';
     }
+
+    getProductNameById(productId: number): string {
+        const product = this.listProducts.find(p => p.id_product === productId);
+        return product ? product.name_product : '';
+        }
+
+    calculateUpdatedValue(originalValue: number): number {
+        // Asegúrate de que returnQuantity esté definido en tu componente
+        return this.returnQuantity * originalValue;
+        }
+        
+        
+        
 
     getProducts() {
         const token = this.cookieService.get('token');
@@ -69,6 +88,47 @@ export class ProductListComponent implements OnInit {
         this.currentPage = 1;
     }
 
+    openRetireModal(productId: number, productValue: number, content: any): void {
+        this.selectedProductId = productId;
+        this.selectedProductValue = productValue;
+        this.returnQuantity = 0;
+        this.returnReason = '';
+        this.returnValue ;
+        this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+    }
+    
+        
+    retireProduct(): void {
+        if (this.selectedProductId && this.returnQuantity) {
+            const data = {
+                return_quantity: this.returnQuantity,
+                return_reason: this.returnReason,
+                return_value: this.returnValue,
+            };
+    
+            // Llamada a la API para dar de baja el producto
+            this._productService.retireProduct(this.selectedProductId, data).subscribe(
+                (response) => {
+                    // Después de dar de baja, actualiza la cantidad en el modelo local
+                    this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
+                    console.log('Producto dado de baja exitosamente', response);
+                },
+                (error) => {
+                    console.error('Error al dar de baja el producto', error);
+                    // Manejar errores, por ejemplo, mostrar un mensaje al usuario
+                }
+            );
+        }
+    }
+    
+    updateProductQuantity(productId: number, quantityToSubtract: number): void {
+        // Encuentra el producto en tu lista local y resta la cantidad
+        const productToUpdate = this.filteredProducts.find(product => product.id_product === productId);
+    
+        if (productToUpdate) {
+            productToUpdate.quantity -= quantityToSubtract;
+        }
+    }
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 
     openModal(idProduct: number) {

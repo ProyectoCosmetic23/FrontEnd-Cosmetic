@@ -34,7 +34,10 @@ export class ProductService {
       })
     );
   }
-  
+  retireProduct(id: number, data: any): Observable<any> {
+    const url = `${this.baseUrl}/retire/${id}`;
+    return this.http.put(url, data);
+  }
 
   getProductsById(id: number,token?: string): Observable<any> {
     const headers = token ? new HttpHeaders().set('x-token', token) : undefined;

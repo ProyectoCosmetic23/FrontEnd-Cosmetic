@@ -77,7 +77,12 @@
                     <ng-template ngx-datatable-header-template>
                         Acciones
                     </ng-template>
+                   
+
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <button ngbTooltip="Dar de baja" class="btn btn-dark m-1" (click)="openRetireModal(row.id_product, row.selling_price,retireModal)">
+                            <i class="i-Eye"></i>
+                        </button>
                         <button ngbTooltip="Ver Estado" class="btn btn-dark m-1" [routerLink]="['/products/print', row.id_product]">
                             <i class="i-Eye"></i>
                         </button>
@@ -111,3 +116,36 @@
             (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>
+<ng-template #retireModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Dar de baja el producto</h4>
+           
+        </div>
+        <div class="modal-body">
+        <!-- Formulario para la cantidad, motivo y valor de la baja -->
+        <div class="form-group">
+            <label for="selectedProductId">Producto:</label>
+            <input type="text" id="selectedProductId" class="form-control readonly-input" readonly [value]="getProductNameById(selectedProductId)" />
+        </div>
+        <div class="form-group">
+            <label for="returnQuantity">Cantidad:</label>
+            <input type="number" id="returnQuantity" class="form-control" [(ngModel)]="returnQuantity" (ngModelChange)="returnValue = calculateUpdatedValue(selectedProductValue)" />
+        </div>
+    
+        <div class="form-group">
+            <label for="returnReason">Motivo:</label>
+            <input type="text" id="returnReason" class="form-control" [(ngModel)]="returnReason" />
+        </div>
+        
+        <div class="form-group">
+            <label for="selectedProductValue">Valor del producto:</label>
+            <label for="selectedProductValue">Valor:</label>
+            <input type="number" id="returnValue" class="form-control" disabled="true" [(ngModel)]= "returnValue" />
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="retireProduct()">Dar de baja</button>
+        </div>
+    </ng-template>
+
