@@ -1,0 +1,104 @@
+<div class="breadcrumb">
+    <h1>Categorías de Productos</h1>
+    <ul>
+        <li><a [routerLink]="['/purchases']">Compras</a></li>
+        <li><a [routerLink]="['/categories']">Categorías</a></li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row mb-3">
+    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button class="btn btn-primary" [routerLink]="['/categories/new']">Crear Categoría</button>
+            </div>
+        
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <input id="category" placeholder="Buscar Categoría" name="category" [formControl]="searchControl" class="form-control"
+                    type="category" (keyup)="searchCategory($event)">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card o-hidden">
+            <ngx-datatable class="material fullscreen" 
+            style="height: 460px;" 
+            [columnMode]="'force'"
+             [headerHeight]="50"
+                [footerHeight]="50"
+                 [rowHeight]="60" 
+                 [scrollbarV]="true" 
+                 [rows]="filteredCategories" 
+                 [externalPaging]="true"
+                [count]="filteredCategories.length"
+                 [limit]="itemsPerPage" 
+                 [offset]="(currentPage - 1) * itemsPerPage"
+                (page)="onPageChange($event)">
+                <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
+                    <ng-template ngx-datatable-header-template>
+                        Nombre 
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+                        <ng-container *ngIf="row && row.id_category">
+                            {{ row.name_category }}
+                        </ng-container>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="state_category" [resizeable]="false" [canAutoResize]="true">
+                    <ng-template ngx-datatable-header-template>
+                        Estado 
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <ng-container *ngIf="row && row.id_category">
+                            {{ row.state_category ? 'Activo':'Inactivo' }}
+                        </ng-container>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="250">
+                    <ng-template ngx-datatable-header-template>
+                        Acciones
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <ng-container *ngIf="row && row.id_category">
+                            <button class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
+                                <i class="i-Eye"></i>
+                            </button>
+                            <button class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]">
+                                <i class="i-Pen-4"></i>
+                            </button>
+                            <label class="switch switch-success me-3">
+                                <input type="checkbox"  [checked]="row.state_category" (click)="modalStatus(row.id_category, $event) ">
+                                <span class="slider"></span>
+                            </label>
+                            
+                            
+                            
+                        </ng-container>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+</div>
+
+<ng-template #deleteConfirmModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Cambiar Estado de la Categoría</h4>
+      
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea cambiar el estado de  esta categoría?</strong></p>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
+            (click)="modal.close('Ok')">Aceptar</button>
+    </div>
+</ng-template>

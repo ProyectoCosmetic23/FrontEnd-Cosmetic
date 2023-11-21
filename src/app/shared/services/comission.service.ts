@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class ComissionsService {
 
-  private baseUrl = 'http://localhost:8080/api/commissions';
-  private url2 = 'http://localhost:8080/api/detailComs';
+  private baseUrl = 'http://localhost:8080/commissions';
+  private url2 = 'http://localhost:8080/detailComs';
   private url3 = 'http://localhost:8080/api/employees';
   private url4 = 'http://localhost:8080/api/sales';
 

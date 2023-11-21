@@ -10,6 +10,7 @@ export class BtnLoadingComponent implements OnInit {
   @Input('btnClass') btnClass: string;
   @Input('loadingText') loadingText = 'Please wait';
   @Input('type') type: 'button' | 'submit' = 'submit';
+  @Input() disabled: boolean = false;
 
   constructor() { }
 

@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { User } from "src/app/shared/interfaces/user.interfaces";
+import { AuthService } from "src/app/shared/services/auth.service";
 import { NavigationService } from "src/app/shared/services/navigation.service";
 import { SearchService } from "src/app/shared/services/search.service";
-import { AuthService } from "src/app/shared/services/auth.service";
 
 @Component({
   selector: "app-header-sidebar-compact",
@@ -10,11 +12,13 @@ import { AuthService } from "src/app/shared/services/auth.service";
 })
 export class HeaderSidebarCompactComponent implements OnInit {
   notifications: any[];
-
+  user: User | null;
+  
   constructor(
     private navService: NavigationService,
     public searchService: SearchService,
-    private auth: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.notifications = [
       {
@@ -63,7 +67,15 @@ export class HeaderSidebarCompactComponent implements OnInit {
     ];
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.user = this.authService.getStoredUser()
+  }
+
+  /*
+  get User():User | undefined {
+    return this.authService._currentUser;
+  }
+  */
 
   toggelSidebar() {
     const state = this.navService.sidebarState;
@@ -71,7 +83,8 @@ export class HeaderSidebarCompactComponent implements OnInit {
     state.childnavOpen = !state.childnavOpen;
   }
 
-  signout() {
-    this.auth.signout();
+  onLogout() {
+    this.authService.logout();
+    this.router.navigate(['/sessions/signin']);
   }
 }

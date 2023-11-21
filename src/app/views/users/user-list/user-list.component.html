@@ -1,0 +1,103 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Listar usuarios</h1>
+        <ul>
+            <li><a href="#">Servicios</a></li>
+            <li>Usuarios</li>
+        </ul>
+    </div>
+
+    <div class="separator-breadcrumb border-top"></div>
+
+    <div class="row mb-3">
+        <div class="col-md-12 mb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary float-right" [routerLink]="['/users/new']">Crear nuevo usuario</button>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <input _ngcontent-vet-c167="" id="search" placeholder="Buscar usuario" type="text"
+                        class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
+                        style="width: 50%;">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card o-hidden">
+                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
+                    [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="filteredUsers">
+                    <ngx-datatable-column name="id_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                        <ng-template ngx-datatable-header-template>
+                            Id usuario
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            {{ row.id_user }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="username" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                        <ng-template ngx-datatable-header-template>
+                            Nombre usuario
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            {{ row.username }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="email" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
+                        <ng-template ngx-datatable-header-template>
+                            Correo
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            {{ row.email }}
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="state_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="20">
+                        <ng-template ngx-datatable-header-template>
+                            Estado
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            {{ row.state_user }}
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="50">
+                        <ng-template ngx-datatable-header-template>
+                            Acciones
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            <button class="btn btn-dark m-1" [routerLink]="['/users/print', row.id_user]">
+                                <i class="i-Eye"></i>
+                            </button>
+                            <button class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]">
+                                <i class="i-Pen-4"></i>
+                            </button>
+                            <label class="switch switch-success me-3" (click)="openModal(row.id_user)">
+                                <input type="checkbox" [checked]="row.state_user === 'Activo'">
+                                <span class="slider"></span>
+                            </label>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #deleteConfirmModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Cambiar estado usuario</h4>
+       
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea cambiar el estado del usuario?</strong></p>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger ml-2"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-primary -m1 custom-button"
+            (click)="modal.close('Ok')">Aceptar</button>
+    </div>
+</ng-template>

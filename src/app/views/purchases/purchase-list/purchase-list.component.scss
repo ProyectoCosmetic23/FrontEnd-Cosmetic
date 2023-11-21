@@ -1,0 +1,44 @@
+.ngx-datatable.scroll-vertical .datatable-body {
+    overflow-x: hidden;
+}
+
+.ngx-datatable.scroll-horz .datatable-body {
+    overflow-y: hidden;
+}
+
+@media print {
+    .print-view {
+      background-color: #fff;
+      padding: 20px;
+    }
+  
+    .print-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
+    .print-field {
+      margin-bottom: 20px; 
+    }
+  }
+  
+
+
+.btn-separator {
+    margin-right: 10px;
+  }
+
+  .button-spacing {
+    margin-right: 10px; /* Ajusta el valor según el espacio deseado */
+  }
+  
+  .form-group {
+    margin-bottom: 10px; /* Ajusta el valor según el espacio deseado */
+  }
+  
+  .red-button {
+    color: red;
+    /* Otros estilos que desees aplicar */
+  }
+  
+

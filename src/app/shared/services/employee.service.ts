@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -6,16 +6,18 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class EmployeesService {
-  url = 'http://localhost:8080/api/employees';
+  baseUrl = 'http://localhost:8080/api/employees';
 
   constructor(private http: HttpClient) { }
 
-  getAllEmployees():Observable<any>{
-    return this.http.get(this.url);
+  getAllEmployees(token?: string): Observable<any[]> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.get<any[]>(this.baseUrl, { headers });
   }
 
-  createEmployee(employee: any): Observable<any> {
-    return this.http.post(this.url, employee).pipe(
+  createEmployee(employee: any, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.post(this.baseUrl, employee, { headers }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud:', error);
         return throwError('Ocurrió un error al crear el empleado. Por favor, inténtalo de nuevo.');
@@ -23,8 +25,9 @@ export class EmployeesService {
     );
   }
 
-  updateEmployee(id: number, updatedData: any): Observable<any> {
-    return this.http.put(`${this.url}/${id}`, updatedData).pipe(
+  updateEmployee(id: number, updatedData: any, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.put(`${this.baseUrl}/${id}`, updatedData, { headers }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud:', error);
         return throwError('Ocurrió un error al actualizar el empleado. Por favor, inténtalo de nuevo.');
@@ -36,21 +39,23 @@ export class EmployeesService {
 
 
 checkCedulaAvailability(cedula: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.url}-check-cedula?cedula=${cedula}`);
+    return this.http.get<boolean>(`${this.baseUrl}-check-cedula?cedula=${cedula}`);
 }
 
 checkEmailAvailability(email: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.url}-check-email?email=${email}`);
+    return this.http.get<boolean>(`${this.baseUrl}-check-email?email=${email}`);
 }
 
-getEmployeesById(id: number): Observable<any> {
-  return this.http.get<any>(`${this.url}/${id}`);
+getEmployeesById(id: number, token?: string): Observable<any> {
+  const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+  const url = `${this.baseUrl}/${id}`;
+  return this.http.get<any>(url, { headers });
 }
 
-
-employeeChangeStatus(id: any): Observable<any> {
-  return this.http.put<boolean>(`${this.url}/changeState/${id}`, {});
-
+employeeChangeStatus(id: number, token?: string): Observable<any> {
+  const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+  const url = `${this.baseUrl}/changeState/${id}`;
+  return this.http.put<any>(url, {}, { headers });
 }
 
 }

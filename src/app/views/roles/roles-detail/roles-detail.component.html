@@ -10,47 +10,113 @@
   </ul>
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="card-title mb-3">Formulario de Rol</div>
-        <form [formGroup]="formBasic" (ngSubmit)="createRole()">
-          <div class="row">
-            <div class="col-md-6 form-group mb-3">
-              <label for="nombre_rol">Nombre del Rol</label>
-              <input type="text" class="form-control" id="nombre_rol" (change)="handleNameSelection($event)"
-                [placeholder]="role?.name_role || 'Ingrese el nombre del rol'" [readonly]="viewMode === 'print'">
+<div
+  *ngIf="
+    showLoadingScreen == true && (viewMode == 'edit' || viewMode == 'print')
+  "
+  class="loading-screen"
+>
+  <div class="loading-content">
+    <div class="spinner spinner-primary me-3"></div>
+  </div>
+</div>
 
-            </div>
-            <div class="col-md-12">
-              <div class="card mb-4">
-                <div class="card-body">
-                  <div class="card-title">Módulos</div>
-                  <div
-                    *ngFor="let modulo of ['Usuarios', 'Categorías de Productos', 'Productos', 'Proveedores', 'Compras', 'Empleados', 'Clientes', 'Pedidos', 'Ventas', 'Comisiones']">
-                    <label class="checkbox checkbox-primary me-3">
-                      <span>{{ modulo }}</span>
-                      <input type="checkbox" [disabled]="viewMode === 'print'"
-                        [checked]="role?.modules_role.includes(modulo)" (change)="handleModuleSelection(modulo)">
-                      <span class="checkmark"></span>
-                    </label>
+<div *ngIf="showLoadingScreen == false || viewMode == 'new'">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="card-title mb-3">Formulario de Rol</div>
+          <form [formGroup]="formBasic" (ngSubmit)="saveData()">
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <label for="nombre_rol">Nombre del Rol</label>
+                <input
+                  *ngIf="viewMode === 'edit' || viewMode === 'new'"
+                  type="text"
+                  class="form-control"
+                  id="nombre_rol"
+                  (change)="handleNameSelection($event)"
+                  [value]="role?.name_role"
+                  [placeholder]="role?.name_role || 'Ingrese el nombre del rol'"
+                  [readonly]="viewMode === 'print'"
+                />
+                <input
+                  *ngIf="viewMode === 'print'"
+                  type="text"
+                  class="form-control"
+                  id="nombre_rol"
+                  (touch)="handleNameSelection($event)"
+                  [value]="role?.name_role || 'Ingrese el nombre del rol'"
+                  [readonly]="viewMode === 'print'"
+                />
+              </div>
+              <div class="error-message" *ngIf="showErrorMessageName">
+                <p class="text-danger">{{ nameErrorMessage }}</p>
+              </div>
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <div class="card-title">Módulos</div>
+                    <div
+                      *ngFor="
+                        let modulo of [
+                          'Usuarios',
+                          'Categorías de Productos',
+                          'Productos',
+                          'Proveedores',
+                          'Compras',
+                          'Empleados',
+                          'Clientes',
+                          'Pedidos',
+                          'Ventas',
+                          'Comisiones'
+                        ]
+                      "
+                    >
+                      <label class="checkbox checkbox-primary me-3">
+                        <span>{{ modulo }}</span>
+                        <input
+                          type="checkbox"
+                          [disabled]="viewMode === 'print'"
+                          [checked]="role?.modules_role.includes(modulo)"
+                          (change)="handleModuleSelection(modulo)"
+                        />
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-12">
-              <div class="d-flex justify-content-end">
-                <button class="btn btn-danger float-right" [routerLink]="['/roles']">Volver</button>
-                <div style="width: 10px;"></div>
-                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">Crear
-                  Rol</btn-loading>
-                <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">Editar
-                  Rol</btn-loading>
+              <div class="error-message" *ngIf="showErrorMessageModules">
+                <p class="text-danger">Debe agregar al menos un módulo.</p>
+              </div>
+              <div class="col-md-12">
+                <div class="d-flex justify-content-end">
+                  <button
+                    class="btn btn-danger float-right"
+                    [routerLink]="['/roles']"
+                  >
+                    Volver
+                  </button>
+                  <div style="width: 10px"></div>
+                  <btn-loading
+                    *ngIf="viewMode === 'new'"
+                    btnClass="btn-primary"
+                    [loading]="loading"
+                    >Crear Rol</btn-loading
+                  >
+                  <btn-loading
+                    *ngIf="viewMode === 'edit'"
+                    btnClass="btn-primary"
+                    [loading]="loading"
+                    >Editar Rol</btn-loading
+                  >
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
