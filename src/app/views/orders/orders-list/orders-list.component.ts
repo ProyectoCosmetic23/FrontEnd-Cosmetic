@@ -16,6 +16,7 @@ export class OrdersListComponent implements OnInit {
   modalAbierto = false;
   searchControl: UntypedFormControl = new UntypedFormControl();
   filteredOrders: any[] = [];
+  listClients: any[] = [];
   currentPage = 1;
   itemsPerPage = 6;
   countLabel: number;
@@ -30,28 +31,68 @@ export class OrdersListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getClients();
     this.getOrders();
+  }
+
+  // Método para obtener todos los clientes
+  getClients() {
+    this._ordersService.getAllClients().subscribe(
+      (data) => {
+        this.listClients = data;
+        console.log(this.listClients);
+      },
+      (error) => {
+        console.error("Error al obtener Clientes:", error);
+      }
+    );
   }
 
   getOrders() {
     this.showLoadingScreen = true;
     this._ordersService.getAllOrders().subscribe(
-      (data) => {
-        this.listOrders = data;
+      (ordersData) => {
+        this.listOrders = ordersData;
         console.log(this.listOrders);
-        this.originalRowCount = this.listOrders.length;
-        setTimeout(() => {
-          const pageCountElement =
-            this.el.nativeElement.querySelector(".page-count");
-          if (pageCountElement) {
-            const innerText = pageCountElement.innerText;
-            pageCountElement.innerText = this.originalRowCount + " registros.";
-            console.log("Inner text de .page-count:", innerText);
+
+        // Después de obtener la lista de pedidos, obtenemos la lista de clientes
+        this._ordersService.getAllClients().subscribe(
+          (clientsData) => {
+            this.listClients = clientsData;
+
+            // Mapeamos los id_client en la lista de pedidos a los nombres de los clientes
+            this.listOrders.forEach((order) => {
+              const matchingClient = this.listClients.find(
+                (client) => client.id_client === order.id_client
+              );
+
+              // Si encontramos un cliente coincidente, asignamos el nombre al pedido
+              if (matchingClient) {
+                order.name_client = matchingClient.name_client;
+              }
+            });
+
+            // Resto del código para actualizar la interfaz de usuario
+            this.originalRowCount = this.listOrders.length;
+            setTimeout(() => {
+              const pageCountElement =
+                this.el.nativeElement.querySelector(".page-count");
+              if (pageCountElement) {
+                const innerText = pageCountElement.innerText;
+                pageCountElement.innerText =
+                  this.originalRowCount + " registros.";
+                console.log("Inner text de .page-count:", innerText);
+              }
+            });
+            this.sortListOrdersById();
+            this.adjustListOrders();
+            this.showLoadingScreen = false;
+          },
+          (clientsError) => {
+            console.error("Error al obtener clientes:", clientsError);
+            this.showLoadingScreen = false;
           }
-        });
-        this.sortListOrdersById();
-        this.adjustListOrders();
-        this.showLoadingScreen = false;
+        );
       },
       (error) => {
         console.error("Error al obtener pedidos:", error);
@@ -119,8 +160,8 @@ export class OrdersListComponent implements OnInit {
 
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
-  openModal(idRole: number) {
-    this._ordersService.getOrderById(idRole).subscribe(
+  openModal(idOrder: number) {
+    this._ordersService.getOrderById(idOrder).subscribe(
       (data) => {
         if (!this.modalAbierto) {
           this.modalAbierto = true;
@@ -129,7 +170,7 @@ export class OrdersListComponent implements OnInit {
             .result.then(
               (result) => {
                 if (result === "Ok") {
-                  this._ordersService.updateOrderStatus(idRole).subscribe(
+                  this._ordersService.updateOrderStatus(idOrder).subscribe(
                     (data) => {
                       this.loading = false;
                       this.toastr.success(
