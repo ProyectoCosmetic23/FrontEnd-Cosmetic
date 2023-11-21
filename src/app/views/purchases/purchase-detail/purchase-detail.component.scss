@@ -112,6 +112,11 @@
   text-overflow: ellipsis;
 }
 
+.align-self-end {
+  align-self: flex-end !important;
+  margin-left: -25px;
+  margin-top: -5px;
+}
 
 /* Estilo para inputs deshabilitados */
 input:disabled {
@@ -121,4 +126,16 @@ input:disabled {
   /* Otros estilos que desees aplicar */
 }
 
+textarea:disabled {
+  background-color: #f0f0f0; /* Cambia el color de fondo a gris claro */
+  color: #808080; /* Cambia el color del texto a gris oscuro */
+  cursor: not-allowed; /* Cambia el cursor a "no permitido" */
+  /* Otros estilos que desees aplicar */
+}
 
+select:disabled {
+  background-color: #f0f0f0; /* Cambia el color de fondo a gris claro */
+  color: #808080; /* Cambia el color del texto a gris oscuro */
+  cursor: not-allowed; /* Cambia el cursor a "no permitido" */
+  /* Otros estilos que desees aplicar */
+}

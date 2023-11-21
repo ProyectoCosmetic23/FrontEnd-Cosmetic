@@ -1,7 +1,7 @@
 <div class="breadcrumb">
     <h1>Categorías de Productos</h1>
     <ul>
-        <li><a [routerLink]="['/purchases']">Compras</a></li>
+        <li><a [routerLink]="['/categories']">Categorías</a></li>
         <li><a [routerLink]="['/categories']">Categorías</a></li>
     </ul>
 </div>
@@ -68,7 +68,7 @@
                             <button class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]">
+                            <button class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
                                 <i class="i-Pen-4"></i>
                             </button>
                             <label class="switch switch-success me-3">

@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ProductFormModel } from '../models/product.model';
 import { DatePipe } from '@angular/common';
+import { CategoriesService } from 'src/app/shared/services/category.service';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class ProductDetailComponent implements OnInit {
     subTotal: number;
     saving: boolean;
     productData: ProductFormModel;
-
+    listCategories: any[] = [];
+    selected_categories: string;
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -36,7 +38,9 @@ export class ProductDetailComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
         private productsService: ProductService,
-        private datePipe: DatePipe
+        private datePipe: DatePipe,
+        private categoriesService: CategoriesService,
+
     ) {
 
     }
@@ -62,7 +66,8 @@ export class ProductDetailComponent implements OnInit {
             profit: [],
             observation: [],
             state_product: [],
-            creation_date_product: []
+            creation_date_product: [],
+           
         });
 
         if (this.viewMode == 'print') {
@@ -100,6 +105,7 @@ export class ProductDetailComponent implements OnInit {
     private setDataProduct(): void {
         if (this.productData) {
             this.idProduct.setValue(this.productData.id_product);
+            this.idCategory.setValue(this.productData.id_category);
             this.productForm.setValue(this.productData)
             this.dateProduct.setValue( this.datePipe.transform(this.productData.creation_date_product, 'yyyy-MM-dd'));
            ;
@@ -128,6 +134,10 @@ export class ProductDetailComponent implements OnInit {
         }
     }
 
+    getCategoryName(category_id: string): string {
+        return this.listCategories.find(x => x.id_category == category_id).name_category
+      }
+    
 
 
 
@@ -170,6 +180,28 @@ export class ProductDetailComponent implements OnInit {
         );
     }
 
+
+    
+  handleCategorySelection(event: any) {
+    const selectedCategoryId = event.target.value;
+    const selectedCategory = this.listCategories.find(category => category.id_category == selectedCategoryId);
+
+
+
+
+  }
+
+  getCategories() {
+    this.categoriesService.getAllCategory().subscribe(
+      (data) => {
+        this.listCategories = data;
+        console.log(this.listCategories);
+      },
+      (error) => {
+        console.error('Error al obtener proveedores:', error);
+      }
+    );
+  }
 
     
     
@@ -256,6 +288,10 @@ export class ProductDetailComponent implements OnInit {
 
     get dateProduct() {
         return this.productForm.get('creation_date_product');
+    }
+
+    get idCategory() {
+        return this.productForm.get('id_category');
     }
 
 }
