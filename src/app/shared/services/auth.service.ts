@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 export class AuthService {
   private readonly userSessionStorageKey = "currentUser";
 
-  private readonly baseUrl: string = environment.baseUrl;
+  private readonly baseUrl: string = environment.url;
 
   private _currentUser: BehaviorSubject<User | null> =
     new BehaviorSubject<User | null>(null);
@@ -54,10 +54,12 @@ export class AuthService {
     expirationDate.setHours(expirationDate.getHours() + 1);
 
     // Insertar el token en las cookies
-    this.cookieService.set("token", token, {
-      sameSite: "Strict",
-      expires: expirationDate,
-    });
+    this.cookieService.set("token", token
+    // , {
+    //   sameSite: "Strict",
+    //   expires: expirationDate,
+    // }
+    );
 
     // Comprobar si el token se insertó correctamente
     const isTokenSet = this.cookieService.get("token") === token;
@@ -119,7 +121,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<boolean> {
-    const url = `${this.baseUrl}/users/login`;
+    const url = `${this.baseUrl}/api/users/login`;
     const body = { email, password };
 
     return this.http.post<LoginResponse>(url, body).pipe(
