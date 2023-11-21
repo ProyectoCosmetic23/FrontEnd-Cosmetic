@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse,HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -6,25 +6,28 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProductService {
-  url = 'http://localhost:8080/api/productcs';
+  baseUrl = 'http://localhost:8080/api/productcs';
 
   constructor(private http: HttpClient) { }
 
-  getAllProducts():Observable<any>{
-    return this.http.get(this.url);
+  getAllProducts(token?: string):Observable<any[]>{
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.get<any[]>(this.baseUrl, { headers });
   }
 
-  createProduct(product: any): Observable<any> {
-    return this.http.post(this.url, product).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.error('Error en la solicitud:', error);
-        return throwError('Ocurrió un error al crear el producto. Por favor, inténtalo de nuevo.');
-      })
+  createProduct(product: any, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.post(this.baseUrl, product, { headers }).pipe(
+        catchError((error: HttpErrorResponse) => {
+            console.error('Error en la solicitud:', error);
+            return throwError('Ocurrió un error al crear el producto. Detalles: ' + error.error);
+        })
     );
-  }
+}
 
-  updateProduct(id: number, updatedData: any): Observable<any> {
-    return this.http.put(`${this.url}/${id}`, updatedData).pipe(
+  updateProduct(id: number, updatedData: any,token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.put(`${this.baseUrl}/${id}`, updatedData, { headers }).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error('Error en la solicitud:', error);
         return throwError('Ocurrió un error al actualizar el producto. Por favor, inténtalo de nuevo.');
@@ -33,19 +36,20 @@ export class ProductService {
   }
   
 
-  getProductsById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.url}/${id}`);
+  getProductsById(id: number,token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    const url = `${this.baseUrl}/${id}`;
+    return this.http.get<any>(url, { headers });
   }
   
   
-  productChangeStatus(id: any): Observable<any> {
-    return this.http.put<boolean>(`${this.url}/changeState/${id}`, {});
+  productChangeStatus(id: any,token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    const url = `${this.baseUrl}/changeState/${id}`;
+    return this.http.put<any>(url, {}, { headers });
   
   }
-getProducts() {
-  return this.http.get('api/products');
-}
 
 }
- 
+
 

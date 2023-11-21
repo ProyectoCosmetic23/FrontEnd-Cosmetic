@@ -69,17 +69,16 @@
                         <p style="font-size:10px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm" [routerLink]="['/employees/print', row.id_employee]">
+                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 " [routerLink]="['/employees/print', row.id_employee]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm" [routerLink]="['/employees/edit', row.id_employee]">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1 " [routerLink]="['/employees/edit', row.id_employee]">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3 btn-sm btn-custom" (click)="openModal(row.id_employee)">
+                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom" (click)="openModal(row.id_employee)">
                             <input type="checkbox"  [checked]="row.state_employee === 'Activo'" (change)="handleChange($event, row)"  >
                             <span class="slider"></span>
                         </label>
-                     
                     </ng-template>
                 </ngx-datatable-column>
                 </ngx-datatable>

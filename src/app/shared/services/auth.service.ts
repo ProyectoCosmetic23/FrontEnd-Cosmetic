@@ -35,7 +35,6 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = this.cookieService.get("token");
-    console.log(token);
     return !!token; // Devuelve true si hay un token, de lo contrario, false
   }
 

@@ -98,10 +98,10 @@
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        <button class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]">
+                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button class="btn btn-danger m-1" (click)="openModal(row.id_purchase)">
+                        <button ngbTooltip="inhabilitar compra"class="btn btn-danger m-1" (click)="openModal(row.id_purchase)">
                             <i class="i-Close"></i>
                         </button>
                     </ng-template>

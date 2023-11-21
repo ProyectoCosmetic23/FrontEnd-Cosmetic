@@ -49,6 +49,7 @@ export class EmployeeDetailComponent implements OnInit {
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
+        
     }
 
     private inicializateForm(id: number): void {
@@ -105,10 +106,11 @@ export class EmployeeDetailComponent implements OnInit {
 
     createEmployee() {
         if (this.employeeForm.valid) {
+            
             const employeeData = this.employeeForm.value;
             const token = this.cookieService.get('token');
             this.loading = true;
-            this.employeesService.createEmployee(employeeData, token).subscribe(
+            this.employeesService.createEmployee(employeeData,token).subscribe(
                 (response) => {
                     this.loading = false;
                     console.log("Éxito al crear empleado: ", response);
@@ -283,7 +285,7 @@ export class EmployeeDetailComponent implements OnInit {
             this.loading = true;
             setTimeout(() => {
                 this.loading = false;
-                this.toastr.success('Empleado registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+                this.toastr.success('Empleado Modificado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
                 setTimeout(() => {
                     this.router.navigateByUrl('/employees');
                 },);

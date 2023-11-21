@@ -36,9 +36,6 @@ export class EmployeeListComponent implements OnInit {
         this.filterData(value);
       });
   }
-
-
-
   handleChange(event: any, row: any) {
     row.state_employee = event.target.checked ? 'Activo' : 'Inactivo';
   }
@@ -78,8 +75,6 @@ export class EmployeeListComponent implements OnInit {
   openModal(idEmployee: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
-      const employee = this.filteredEmployees.find(e => e.id_employee === idEmployee);
-      const previousState = employee ? employee.state_employee : '';
       this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
         (result) => {
           if (result === 'Ok') {
@@ -88,7 +83,6 @@ export class EmployeeListComponent implements OnInit {
               (data) => {
                 this.loading = false;
                 this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                console.log(data);
                 this.getEmployees();
                 this.modalAbierto = false;
               },

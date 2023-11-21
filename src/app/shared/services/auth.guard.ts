@@ -18,10 +18,10 @@ import { AuthService } from './auth.service';
   
       // Verifica si el usuario está autenticado según el estado de autenticación y si hay un token en las cookies
       if (authStatus === AuthStatus.authenticated || this.authService.isAuthenticated()) {
-        console.log('Autenticado');
+   
         return true;
       } else if (authStatus === AuthStatus.notAuthenticated) {
-        console.log('No autenticado');
+    
         // Redirige a la página de inicio de sesión si no está autenticado
         this.router.navigateByUrl('/sessions/signin');
         return false;
