@@ -63,6 +63,17 @@ export class NavigationService {
             ]
         },
         {
+            name: 'Sessions',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-Administrator',
+            sub: [
+                { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
+                { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
+                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
+            ]
+        },
+        {
             name: 'Compras',
             description: 'Gestión de Compras',
             type: 'dropDown',
@@ -83,7 +94,7 @@ export class NavigationService {
                 { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
                 { icon: 'i-Money1', name: 'Ventas', state: '/sales', type: 'link' },
                 { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/chat', type: 'link' },
-                { icon: 'i-Full-Cart', name: 'Clientes', state: '/calendar', type: 'link' },
+                { icon: 'i-Conference', name: 'Clientes', state: '/clients', type: 'link' },
                 { icon: 'i-Financial', name: 'Pagos', state: '/pagos', type: 'link' },
             ]
         },
@@ -93,9 +104,9 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Files',
             sub: [
-                { icon: 'i-Conference', name: 'Usuarios', state: 'por arreglar', type: 'link' },
+                { icon: 'i-Conference', name: 'Usuarios', state: 'users', type: 'link' },
                 { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
-                { icon: 'i-Money-2', name: 'Comisiones', state: '/comissions', type: 'link' },
+                { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
 
             ]
         },
@@ -106,7 +117,7 @@ export class NavigationService {
             icon: 'i-Gear',
             sub: [
                 { icon: 'i-Key', name: 'Roles', state: '/roles', type: 'link' },
-                { icon: 'i-Conference', name: 'Usuarios', state: '/others/404', type: 'link' },
+                { icon: 'i-Conference', name: 'Usuarios', state: '/users', type: 'link' },
             ]
         },
     ];
@@ -117,5 +128,18 @@ export class NavigationService {
     // navigation component has subscribed to this Observable
     menuItems$ = this.menuItems.asObservable();
 
-
+    // You can customize this method to supply different menu for
+    // different user type.
+    // publishNavigationChange(menuType: string) {
+    //   switch (userType) {
+    //     case 'admin':
+    //       this.menuItems.next(this.adminMenu);
+    //       break;
+    //     case 'user':
+    //       this.menuItems.next(this.userMenu);
+    //       break;
+    //     default:
+    //       this.menuItems.next(this.defaultMenu);
+    //   }
+    // }
 }

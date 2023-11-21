@@ -11,21 +11,3 @@
   .datatable-pager .pager-current {
     margin: 0 10px;
   }
-
-
-  /* Ajusta el ancho de las columnas */
-.table th, .table td {
-  white-space: nowrap; /* Evita el desbordamiento de texto */
-}
-
-/* Define un tamaño de fuente más pequeño para los inputs */
-.table input {
-  font-size: 12px; /* Ajusta según sea necesario */
-}
-
-/* Ajusta el tamaño de la tabla en dispositivos pequeños */
-@media (max-width: 767px) {
-  .table-responsive {
-    overflow-x: auto;
-  }
-}

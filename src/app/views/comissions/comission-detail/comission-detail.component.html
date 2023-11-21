@@ -7,7 +7,6 @@
         <li *ngIf="viewMode === 'print'">Ver Detalle de la Comision</li>
     </ul>
 </div>
-
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
@@ -15,55 +14,61 @@
                 <div class="card-title mb-3">Formulario de Comisiones</div>
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
-
                         <div class="col-md-6 form-group mb-3">
                             <label for="id_employee">Empleado</label>
-                            <select class="form-control" id="id_employee" formControlName="id_employee">
-                                <option value="" disabled selected>Elija al empleado</option>
-                                <option *ngFor="let employee of listEmployees" [value]="employee.id_employee">{{
-                                    employee.name_employee }}</option>
-                            </select>
+                            <div *ngIf="viewMode === 'new'">
+                                <select class="form-control" id="id_employee"
+                                    formControlName="id_employee" (change) = "updateComs()">
+                                    <option value="" disabled selected>Elija el empleado</option>
+                                    <option *ngFor="let employee of listEmployees"
+                                        [value]="employee.id_employee">
+                                        {{ employee.name_employee }}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="viewMode === 'print'">
+                                <input type="text" class="form-control" [readonly]="true"
+                                    [ngClass]="{'placeholder-black': viewMode === 'print'}"
+                                    [value]="selectedEmployee">
+                            </div>
                         </div>
-
-
-                        <div class="col-md-6 form-group mb-3">
-                            <label for="total_commission">Total comisión</label>
-                            <input type="text" class="form-control" id="total_commission"
-                                [placeholder]="comission?.total_commission || 'Total Comisión'"
-                                [readonly]="viewMode === 'print'"
-                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
-                        </div>
-
                         <div class="col-md-6 form-group mb-3">
                             <label for="id_comission_detail">Mes comisión</label>
                             <div *ngIf="viewMode === 'new'">
-                              <select class="form-control" id="id_comission_detail" formControlName="id_commission_detail"
-                                (change)="updateCommissionPercentage()">
-                                <option value="" disabled selected>Elija el mes de la comisión</option>
-                                <option *ngFor="let detail of listComisionDetail" [value]="detail.id_commission_detail">
-                                  {{ detail.month_commission | date: 'yyyy-MM' }}</option>
-                              </select>
+                                <select class="form-control" id="id_comission_detail"
+                                    formControlName="id_commission_detail" (change)="updateComs()">
+                                    <option value="" disabled selected>Elija el mes de la comisión</option>
+                                    <option *ngFor="let detail of listComisionDetail"
+                                        [value]="detail.id_commission_detail">
+                                        {{ detail.month_commission | date: 'yyyy-MM' }}</option>
+                                </select>
                             </div>
                             <div *ngIf="viewMode === 'print'">
-                              <input type="text" class="form-control" [readonly]="true" [ngClass]="{'placeholder-black': viewMode === 'print'}"
-                                [value]="comission?.month_commission">
+                                <input type="text" class="form-control" [readonly]="true"
+                                    [ngClass]="{'placeholder-black': viewMode === 'print'}"
+                                    [value]="selectedMonth | date: 'yyyy-MM'">
                             </div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="total_commission">Total comisión</label>
+                            <input type="text" class="form-control" id="total_commission"
+                              [placeholder]="totalComs || 'Total Comisión'" [readonly]="true"
+                              [ngClass]="{'placeholder-black': viewMode === 'print'}" formControlName="total_commission">
                           </div>
 
+                        
                         <div class="col-md-6 form-group mb-3">
                             <label for="commission_percentage">Porcentaje de comisión</label>
-                            <input class="form-control" id="commission_percentage" [readonly]="viewMode === 'print'"
-                              formControlName="commission_percentage">
-                          </div>
-
-
-                        <div class="col-md-6 form-group mb-3">
-                            <label for="total_sales">Total ventas</label>
-                            <input class="form-control" id="total_sales" [readonly]="viewMode === 'print'"
+                            <input class="form-control" id="commission_percentage" [readonly]="true"
+                                formControlName="commission_percentage"
+                                [placeholder]="selectedPercentage || 'Porcentaje'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
-
-
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="total_sales">Total ventas</label>
+                            <input class="form-control" id="total_sales" [readonly]="true"
+                                   [ngClass]="{'placeholder-black': viewMode === 'print'}"
+                                   [placeholder]="totalSales || 'No realizó ninguna venta'" formControlName="total_sales">
+                         </div>
 
                         <div class="col-md-12">
                             <div class="d-flex justify-content-end">
@@ -81,8 +86,38 @@
         </div>
     </div>
 </div>
-<!--'"
-[placeholder]="employe?.name_employee || 'Empleado'"
-[placeholder]="comission?.total_sales || 'Total ventas'"
-[placeholder]="comissionDetail?.commission_percentage || 'Porcentaje de comisión'"
- -->
+
+<!-- <div class="col-md-6 form-group mb-3">
+    <label for="id_comission_detail">Mes comisión</label>
+    <div *ngIf="viewMode === 'new'">
+        <select class="form-control" id="id_comission_detail"
+            formControlName="id_commission_detail" (change)="updateCommissionPercentage()">
+            <option value="" disabled selected>Elija el mes de la comisión</option>
+            <option *ngFor="let detail of listComisionDetail"
+                [value]="detail.id_commission_detail">
+                {{ detail.month_commission | date: 'yyyy-MM' }}</option>
+        </select>
+    </div>
+    <div *ngIf="viewMode === 'print'">
+        <input type="text" class="form-control" [readonly]="true"
+            [ngClass]="{'placeholder-black': viewMode === 'print'}"
+            [value]="comission?.month_commission">
+    </div>
+</div> -->
+
+<!-- <div class="col-md-6 form-group mb-3">
+    <label for="id_comission_detail">Mes comisión</label>
+
+    <select class="form-control" id="id_comission_detail" [disabled]="viewMode === 'print'"
+        *ngIf="viewMode === 'print'; else commisionNewMode"
+        (change)="updateCommissionPercentage()">
+        <option>{{ selectedMonth | date: 'yyyy-MM'}}</option>
+    </select>
+    <ng-template #commisionNewMode>
+        <select class="form-control">
+            <option *ngFor="let detail of listComisionDetail"
+                [value]="detail.id_commission_detail">
+                {{ detail.month_commission | date: 'yyyy-MM' }}</option>
+        </select>
+    </ng-template>
+</div> -->

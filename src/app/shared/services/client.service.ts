@@ -32,15 +32,12 @@ export class ClientsService {
         );
     }
 
-
-
-
-    checkCedulaAvailability(cedula: string): Observable<boolean> {
-        return this.http.get<boolean>(`${this.url}-check-cedula?cedula=${cedula}`);
+    checkCedulaAvailability(nit_or_id_client: string): Observable<boolean> {
+        return this.http.get<boolean>(`${this.url}-check-cedula?cedula=${nit_or_id_client}`);
     }
 
-    checkEmailAvailability(email: string): Observable<boolean> {
-        return this.http.get<boolean>(`${this.url}-check-email?email=${email}`);
+    checkEmailAvailability(email_client: string): Observable<boolean> {
+        return this.http.get<boolean>(`${this.url}-check-email?email=${email_client}`);
     }
 
     getClientsById(id: number): Observable<any> {
@@ -49,8 +46,8 @@ export class ClientsService {
 
 
     clientChangeStatus(id: any): Observable<any> {
-        return this.http.put<boolean>(`${this.url}/changeState/${id}`, {});
+        return this.http.put<boolean>(`${this.url}/change-status/${id}`, {});
 
     }
 
-} 
+}

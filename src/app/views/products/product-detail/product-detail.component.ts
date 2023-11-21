@@ -251,8 +251,8 @@ export class ProductDetailComponent implements OnInit {
                 this.toastr.success('Producto registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
                 setTimeout(() => {
                     this.router.navigateByUrl('/products');
-                }, 3000);
-            }, 3000);
+                },);
+            },);
         }
     }
 

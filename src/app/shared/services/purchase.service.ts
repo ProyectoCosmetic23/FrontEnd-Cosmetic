@@ -15,7 +15,7 @@ export class PurchasesService {
     private http: HttpClient
   ) { }
 
-
+  
   // Trae toas las purchase
   getAllPurchase():Observable<any>{
     return this.http.get(this.url);
