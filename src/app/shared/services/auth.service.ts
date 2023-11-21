@@ -4,12 +4,13 @@ import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable, of, throwError } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { RolesService } from "./roles.service";
 import {
   AuthStatus,
   LoginResponse,
   User,
-  checkTokenResponse,
 } from "../interfaces";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
@@ -17,7 +18,7 @@ import {
 export class AuthService {
   private readonly userSessionStorageKey = "currentUser";
 
-  private readonly baseUrl: string = environment.baseUrl;
+  private readonly baseUrl: string = environment.url;
 
   private _currentUser: BehaviorSubject<User | null> =
     new BehaviorSubject<User | null>(null);
@@ -31,11 +32,17 @@ export class AuthService {
     return this._authStatus.value;
   }
 
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(
+    private http: HttpClient, 
+    private cookieService: CookieService,
+    private rolesService: RolesService, 
+    private router: Router
+    ) {}
 
   isAuthenticated(): boolean {
     const token = this.cookieService.get("token");
-    return !!token; // Devuelve true si hay un token, de lo contrario, false
+    console.log(token);
+    return !!token; 
   }
 
   private setAuthentication(user: User, token: string): boolean {
@@ -47,10 +54,12 @@ export class AuthService {
     expirationDate.setHours(expirationDate.getHours() + 1);
 
     // Insertar el token en las cookies
-    this.cookieService.set("token", token, {
-      sameSite: "Strict",
-      expires: expirationDate,
-    });
+    this.cookieService.set("token", token
+    // , {
+    //   sameSite: "Strict",
+    //   expires: expirationDate,
+    // }
+    );
 
     // Comprobar si el token se insertó correctamente
     const isTokenSet = this.cookieService.get("token") === token;
@@ -112,7 +121,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<boolean> {
-    const url = `${this.baseUrl}/users/login`;
+    const url = `${this.baseUrl}/api/users/login`;
     const body = { email, password };
 
     return this.http.post<LoginResponse>(url, body).pipe(
@@ -135,7 +144,8 @@ export class AuthService {
   logout() {
     this._currentUser.next(null);
     this._authStatus.next(AuthStatus.notAuthenticated);
-    this.cookieService.delete("token");
+    this.cookieService.deleteAll("token");
+    console.log("Token eliminado:", this.cookieService.get("token"));
     sessionStorage.removeItem(this.userSessionStorageKey);
   }
 }

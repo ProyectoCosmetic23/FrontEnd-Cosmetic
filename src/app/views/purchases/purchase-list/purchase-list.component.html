@@ -17,7 +17,7 @@
             </div>
             <div class="col-md-6 text-end">
                 <div class="form-group">
-                    <input id="id_provider" placeholder="Buscar Category" [formControl]="searchControl" class="form-control" type="text">
+                    <input id="purchase" placeholder="Buscar Compra" [formControl]="searchControl" class="form-control" type="text"(keyup)="searchPurchases($event)">
                 </div>
             </div>
         </div>
@@ -28,22 +28,23 @@
             <ngx-datatable
                 class="material fullscreen"
                 style="height: 460px;"
+              
                 [columnMode]="'force'"
                 [headerHeight]="50"
                 [footerHeight]="50"
                 [rowHeight]="'auto'"
                 [rowHeight]="60"
                 [scrollbarV]="true"
-                [scrollbarH]="true"
-                [rows]="listPurchases"
+                [scrollbarH]="false"
+                [rows]="filteredPurchases"
                 [externalPaging]="true"
-                [count]="listPurchases.length"
-                [limit]="pageSize"
-                [offset]="(currentPage - 1) * pageSize"
+                [count]="filteredPurchases.length"
+                [limit]="itemsPerPage"
+                [offset]="(currentPage - 1) * itemsPerPage"
                 (page)="onPageChange($event)"
             >
-                <!-- Define la cantidad de registros por página -->
-                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+           
+                <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         # Factura
                     </ng-template>
@@ -54,18 +55,18 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         Proveedor
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        <ng-container *ngIf="row && row.id_purchase">
+                        <ng-container *ngIf="row && row.id_purchase" class="long-text">
                             {{ providers[row.id_provider] }}
                         </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="purchase_date" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ngx-datatable-column name="purchase_date" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         Fecha
                     </ng-template>
@@ -74,36 +75,42 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="total_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column name="total_purchase" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         Total Factura
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.total_purchase }}
+                        {{ row.total_purchase | currency:'':'symbol':'1.0-0'}}
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         Estado
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.state_purchase }}
+                        {{ row.state_purchase ? 'Activo':'Anulada' }}
                     </ng-template>
                 </ngx-datatable-column>
 
                 <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los categories -->
-                <ngx-datatable-column [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                <ngx-datatable-column [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         Acciones
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
-                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]">
+                       
+                            
+                        
+                        <button class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]" >
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="inhabilitar compra"class="btn btn-danger m-1" (click)="openModal(row.id_purchase)">
-                            <i class="i-Close"></i>
+     
+                        <button class="btn btn-danger " name="state" (click)="modalStatus(row.id_purchase, $event)"*ngIf="row.state_purchase == true" >
+                            <i class="i-Close"></i> 
                         </button>
+                    
+                        
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
@@ -111,18 +118,30 @@
     </div>
 </div>
 
-<ng-template #deleteConfirmModal let-modal>
+
+<ng-template #changeStatusModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar Estado del Categoría</h4>
-        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <h4 class="modal-title" id="modal-title">Anular Compra</h4>
+      
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea inhabilitar esta compra?</strong></p>
+        <p><strong>¿Está seguro de que desea anular esta compra?</strong></p>
+        <form [formGroup]="reasonForm">
+            <div class="col-md-6 form-group mb-3">
+                <label for="reason_anulate">Motivo de Anulación</label>
+                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"></textarea>
+                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
+                  El campo superar los 100 caracteres.
+              </div>
+              </div>
+        </form>
+
     </div>
+
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger" (click)="modal.close('Ok')">Aceptar</button>
+        <button type="button" class="btn btn-outline-secondary btn"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn" [disabled]="!this.reasonForm.valid"
+            (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>

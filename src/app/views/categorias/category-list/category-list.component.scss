@@ -47,3 +47,22 @@
     background-color: red;
   }
 
+//   .switch .slider {
+//     background-color: red !important;
+// }
+.switch-success input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  width: 42px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 34px;
+  background-color: red;
+  transition: 0.4s;
+}

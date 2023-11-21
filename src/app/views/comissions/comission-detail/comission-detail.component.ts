@@ -4,15 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ComissionsService } from 'src/app/shared/services/comission.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgZone } from '@angular/core';
+import { forkJoin } from 'rxjs';
 
 interface Comission {
   id_employee: number;
   id_commission_detail: number;
-  // total_commission: number;
-  // total_sales: number;
-  // month_commission: string;
-  // commission_percentage: number;
-
 }
 
 @Component({
@@ -44,10 +40,6 @@ export class ComissionsDetailComponent implements OnInit {
   new_comission: Comission = {
     id_employee: 0,
     id_commission_detail: 0,
-    // total_commission: 0,
-    // total_sales: 0,
-    // month_commission: '',
-    // commission_percentage: 0,
   };
 
   constructor(
@@ -69,11 +61,31 @@ export class ComissionsDetailComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
     this.buildProvidersForm(this.comission);
     this.setViewMode();
+    forkJoin({
+      employees: this._comissionsService.getAllEmployees(),
+      comissionDetail: this._comissionsService.getAllComsDetail(),
+      sales: this._comissionsService.getAllSales()
+    }).subscribe(
+      (data: any) => {
+        this.listEmployees = data.employees;
+        this.listComisionDetail = data.comissionDetail;
+        this.listSales = data.sales;
+
+        this.buildProvidersForm(this.comission);
+        this.getComission();
+      },
+      (error) => {
+        console.error('Error al obtener datos:', error);
+      }
+    );
     this.getComission();
     if (!this.isNew) {
       this.getComission();
     }
   }
+
+
+
   setViewMode() {
     const currentRoute = this.router.url;
     if (currentRoute.includes('/registrar')) {
@@ -82,6 +94,43 @@ export class ComissionsDetailComponent implements OnInit {
       this.viewMode = 'print';
     }
     console.log('viewMode:', this.viewMode);
+  }
+  getComission() {
+    if (this.viewMode === "print") {
+      this.id = this.route.snapshot.params['id_commission'];
+      console.log(this.id);
+      this.loadingData = true;
+      const comissionId = parseInt(this.id, 10); // Convierte this.id a un número
+      this._comissionsService.getComsById(comissionId).subscribe(
+        (data) => {
+          this.comission = data;
+          console.log(this.comission);
+          if (this.comission && this.comission.comissions) {
+            const idComissionDetail = this.comission.comissions.id_commission_detail;
+            const idEmployee = this.comission.comissions.id_employee;
+            this.totalComs = this.comission.comissions.total_commission;
+            this.totalSales = this.comission.comissions.total_sales;
+
+            if (this.listComisionDetail && this.listEmployees) {
+              this.findComsData(idComissionDetail, idEmployee);
+            } else {
+              console.error('Error: Listas no definidas correctamente.');
+            }
+
+            console.log(idComissionDetail)
+            console.log(idEmployee)
+            this.loadingData = false;
+          } else {
+            console.error('Error: Objeto comission o comission.comissions no definidos correctamente.');
+            this.loadingData = false;
+          }
+        },
+        (error) => {
+          console.error('Error al obtener comisión:', error);
+        }
+      );
+    }
+
   }
 
   loadEmployees() {
@@ -121,7 +170,9 @@ export class ComissionsDetailComponent implements OnInit {
 
   updateComs(){
     const detail = this.formBasic.get('id_commission_detail')?.value;
+    console.log("detalle", detail);
     let employee = this.formBasic.get('id_employee')?.value;
+    console.log("detalle empleao", employee);
     this.updateCommissionPercentage();
     if (detail === null || detail === undefined || detail === "") {
       console.log("Falta el mes (detalle) comision")
@@ -130,9 +181,11 @@ export class ComissionsDetailComponent implements OnInit {
       console.log("Falta el empleado")
     }
     else{
+      this.new_comission.id_employee = employee
+      console.log("new comission", this.new_comission.id_employee)
+      this.new_comission.id_commission_detail = detail
+      console.log("new comission", this.new_comission.id_commission_detail)
       this.salesTotal()
-      this.handleEmployeeSelection(event)
-      this.handleDetailSelection(event)
     }
   }
   handleEmployeeSelection(event: any) {
@@ -158,7 +211,7 @@ export class ComissionsDetailComponent implements OnInit {
     this._comissionsService.getSalesByEmployeeAndMonth(idEmployee, this.month).subscribe(
       (data) => {
         this.sales = data;
-        console.log(this.sales);
+        // console.log(this.sales);
   
         // Inicializar totalSale antes de la iteración
         this.totalSale = 0;
@@ -208,9 +261,9 @@ export class ComissionsDetailComponent implements OnInit {
       return;
     }
 
-    console.log(this.selectedEmployee);
-    console.log(this.selectedPercentage);
-    console.log(this.selectedMonth);
+    console.log("selected employee", this.selectedEmployee);
+    console.log("selected percentaje",this.selectedPercentage);
+    console.log("selected mont",this.selectedMonth);
   }
 
   updateCommissionPercentage() {
@@ -219,7 +272,7 @@ export class ComissionsDetailComponent implements OnInit {
     const selectedCommission = this.listComisionDetail.find((commission) => commission.id_commission_detail === selectedId);
     if (selectedCommission) {
       this.commissionPercentage = selectedCommission.commission_percentage
-      console.log(this.commissionPercentage)
+
       this.formBasic.get('commission_percentage')?.setValue(selectedCommission.commission_percentage);
     } else {
       this.formBasic.get('commission_percentage')?.setValue(0);
@@ -238,16 +291,16 @@ export class ComissionsDetailComponent implements OnInit {
     });
   }
 
-  // handleNameProviderSelection(event: any) {
-  //   this.comission.id_commission_detail = event.target.value;
-  //   // Busca el porcentaje correspondiente en la lista de comisiones
-  //   const selectedCommission = this.listComisionDetail.find((commission) => commission.month_commission === this.comission.month_commission);
-  //   if (selectedCommission) {
-  //     this.comission.commission_percentage = selectedCommission.commission_percentage;
-  //   } else {
-  //     this.comission.commission_percentage = 0;
-  //   }
-  // }
+  handleNameProviderSelection(event: any) {
+    this.comission.id_commission_detail = event.target.value;
+    // Busca el porcentaje correspondiente en la lista de comisiones
+    const selectedCommission = this.listComisionDetail.find((commission) => commission.month_commission === this.comission.month_commission);
+    if (selectedCommission) {
+      this.comission.commission_percentage = selectedCommission.commission_percentage;
+    } else {
+      this.comission.commission_percentage = 0;
+    }
+  }
 
 
 
@@ -276,43 +329,6 @@ export class ComissionsDetailComponent implements OnInit {
       );
     }
     this.loading = true;
-  }
-  getComission() {
-    if (this.viewMode === "print") {
-      this.id = this.route.snapshot.params['id_commission'];
-      console.log(this.id);
-      this.loadingData = true;
-      const comissionId = parseInt(this.id, 10); // Convierte this.id a un número
-      this._comissionsService.getComsById(comissionId).subscribe(
-        (data) => {
-          this.comission = data;
-          console.log(this.comission);
-          if (this.comission && this.comission.comissions) {
-            const idComissionDetail = this.comission.comissions.id_commission_detail;
-            const idEmployee = this.comission.comissions.id_employee;
-            this.totalComs = this.comission.comissions.total_commission;
-            this.totalSales = this.comission.comissions.total_sales;
-
-            if (this.listComisionDetail && this.listEmployees) {
-              this.findComsData(idComissionDetail, idEmployee);
-            } else {
-              console.error('Error: Listas no definidas correctamente.');
-            }
-
-            console.log(idComissionDetail)
-            console.log(idEmployee)
-            this.loadingData = false;
-          } else {
-            console.error('Error: Objeto comission o comission.comissions no definidos correctamente.');
-            this.loadingData = false;
-          }
-        },
-        (error) => {
-          console.error('Error al obtener comisión:', error);
-        }
-      );
-    }
-
   }
 
   submit() {

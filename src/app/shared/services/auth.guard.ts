@@ -17,8 +17,8 @@ import { AuthService } from './auth.service';
       const authStatus = this.authService.getAuthStatus();
   
       // Verifica si el usuario está autenticado según el estado de autenticación y si hay un token en las cookies
-      if (authStatus === AuthStatus.authenticated || this.authService.isAuthenticated()) {
-   
+      if (authStatus === AuthStatus.authenticated) {
+        console.log('Autenticado');
         return true;
       } else if (authStatus === AuthStatus.notAuthenticated) {
     
@@ -28,9 +28,12 @@ import { AuthService } from './auth.service';
       } else {
         // AuthStatus.checking o cualquier otro estado
         console.log('Verificando...');
-        // Puedes elegir manejar este caso de acuerdo a tus necesidades
-        this.router.navigateByUrl('/sessions/signin');
-        return false;
+        if (this.authService.isAuthenticated()) {
+          return true;
+        } else {
+          this.router.navigateByUrl('/sessions/signin');
+          return false;          
+        }
       }
     }
   }

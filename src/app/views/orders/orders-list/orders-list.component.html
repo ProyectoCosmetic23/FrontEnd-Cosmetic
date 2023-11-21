@@ -62,7 +62,7 @@
             [maxWidth]="60"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 10px">N°</p>
+              <p style="font-size: 10px; text-align: center;">N°</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -82,10 +82,9 @@
             name="client"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="120"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 10px; text-align: center;">Cliente</p>
+              <p style="font-size: 10px; text-align: center">Cliente</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -105,10 +104,10 @@
             name="order_date"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="260"
+            [maxWidth]="100"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px; text-align: center;">Fecha de Pedido</p>
+              <p style="font-size: 12px; text-align: center">Fecha</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -116,9 +115,7 @@
               let-row="row"
             >
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.order_date }}
                 </p>
               </ng-container>
@@ -128,10 +125,9 @@
             name="order_state"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="120"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px">Estado de Pedido</p>
+              <p style="font-size: 12px; text-align: center">Estado de Pedido</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -151,10 +147,11 @@
             name="delivery_state"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="130"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 102x; text-align: center;">Estado de Entrega</p>
+              <p style="font-size: 102x; text-align: center">
+                Estado de Entrega
+              </p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -174,10 +171,9 @@
             name="payment_state"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="120"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px">Estado de Pago</p>
+              <p style="font-size: 12px; text-align: center">Estado de Pago</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -197,10 +193,10 @@
             name="total_order"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="120"
+            [maxWidth]="100"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px; text-align: center">Total Pedido</p>
+              <p style="font-size: 12px; text-align: center">Total</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -211,7 +207,7 @@
                 <p
                   style="font-size: 10px; text-align: center; margin-top: 12px"
                 >
-                  {{ row.total_order }}
+                  {{ row.total_order | currency:'':'symbol':'1.2-2' }}
                 </p>
               </ng-container>
             </ng-template>
@@ -220,7 +216,6 @@
             name="actions"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="270"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px">Acciones</p>
@@ -230,47 +225,45 @@
               let-value="value"
               let-row="row"
             >
-              <ng-container
-                *ngIf="row && row.id_order"
-                class="d-flex justify-content-center"
-              >
-                <button
-                  style="margin-bottom: 10px"
-                  class="btn btn-dark m-1"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Ver detalle"
-                  [routerLink]="['/orders/detail', row.id_order]"
-                >
-                  <i class="i-Eye" style="font-size: 20px"></i>
-                </button>
-                <button
-                  class="btn btn-success m-1"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Realizar pago"
-                  [routerLink]="['/payments/new', row.id_order]"
-                >
-                  <i class="i-Financial" style="font-size: 20px"></i>
-                </button>
-                <button
-                  class="btn btn-warning m-1"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Enviar pedido"
-                  (click)="openModal(row.id_role)"
-                >
-                  <i class="i-Jeep" style="font-size: 20px"></i>
-                </button>
-                <button
-                  class="btn btn-danger m-1"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Anular pedido"
-                  (click)="openModal(row.id_role)"
-                >
-                  <i class="i-Close" style="font-size: 20px"></i>
-                </button>
+              <ng-container *ngIf="row && row.id_order">
+                <div style="display: flex; justify-content: space-between; margin-top: 5px">
+                  <button
+                    class="btn btn-dark btn-sm"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Ver detalle"
+                    [routerLink]="['/orders/detail', row.id_order]"
+                  >
+                    <i class="i-Eye" style="font-size: 15px"></i>
+                  </button>
+                  <button
+                    class="btn btn-success btn-sm"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Realizar pago"
+                    [routerLink]="['/payments/new', row.id_order]"
+                  >
+                    <i class="i-Financial" style="font-size: 15px"></i>
+                  </button>
+                  <button
+                    class="btn btn-warning btn-sm"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Enviar pedido"
+                    (click)="openModal(row.id_order)"
+                  >
+                    <i class="i-Jeep" style="font-size: 15px"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Anular pedido"
+                    (click)="openModal(row.id_role)"
+                  >
+                    <i class="i-Close" style="font-size: 15px"></i>
+                  </button>
+                </div>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>

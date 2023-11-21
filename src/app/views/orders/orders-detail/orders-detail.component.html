@@ -28,7 +28,10 @@
                 <option>{{ selected_client }}</option>
               </select>
               <ng-template #clientNewMode>
-                <select class="form-control">
+                <select
+                  class="form-control"
+                  (change)="onClientSelected($event)"
+                >
                   <option [value]="">Seleccione el nombre del cliente</option>
                   <option
                     *ngFor="let client of listClients"
@@ -38,6 +41,7 @@
                   </option>
                 </select>
               </ng-template>
+              <p *ngIf="error_client" style="color: red; margin: 3% 0 0 3%;">Se debe seleccionar un cliente*</p>
             </div>
 
             <div class="col-md-5 form-group mb-3">
@@ -51,7 +55,10 @@
                 <option>{{ selected_employee }}</option>
               </select>
               <ng-template #employeeNewMode>
-                <select class="form-control">
+                <select
+                  class="form-control"
+                  (change)="onEmployeeSelected($event)"
+                >
                   <option [value]="">Seleccione el nombre del empleado</option>
                   <option
                     *ngFor="let employee of listEmployees"
@@ -61,6 +68,7 @@
                   </option>
                 </select>
               </ng-template>
+              <p *ngIf="error_employee" style="color: red; margin: 3% 0 0 3%;">Se debe seleccionar un empleado*</p>
             </div>
 
             <div class="col-md-2 form-group mb-3">
@@ -74,11 +82,17 @@
                 <option>{{ selected_payment_type }}</option>
               </select>
               <ng-template #paymentTypeNewMode>
-                <select class="form-control" id="payment_type">
-                  <option [value]="Contado">Contado</option>
-                  <option [value]="Credito">Crédito</option>
+                <select
+                  class="form-control"
+                  id="payment_type"
+                  (change)="onPaymentTypeSelected($event)"
+                >
+                  <option [value]="">Seleccione el tipo de pago</option>
+                  <option [value]="'Contado'">Contado</option>
+                  <option [value]="'Credito'">Crédito</option>
                 </select>
               </ng-template>
+              <p *ngIf="error_payment_type" style="color: red; margin: 3% 0 0 3%;">Se debe seleccionar un tipo de pago*</p>
             </div>
           </div>
 
@@ -91,7 +105,7 @@
                   <th scope="col">Precio Unitario</th>
                   <th scope="col">Unidades</th>
                   <th scope="col">Subtotal</th>
-                  <th scope="col">Acciones</th>
+                  <th *ngIf="viewMode == 'new'" scope="col">Acciones</th>
                 </tr>
               </thead>
               <tbody formArrayName="products">
@@ -122,10 +136,10 @@
                     <td>
                       <input
                         type="number"
-                        name="unitPrice"
-                        id="unitPrice"
+                        name="product_price"
+                        id="product_price"
                         class="form-control"
-                        formControlName="unitPrice"
+                        formControlName="product_price"
                         [readonly]="true"
                         *ngIf="viewMode === 'new'"
                       />
@@ -134,7 +148,7 @@
                       <input
                         type="number"
                         class="form-control"
-                        formControlName="unit"
+                        formControlName="product_quantity"
                         (change)="handleProductSelection($event, i)"
                       />
                     </td>
@@ -146,7 +160,10 @@
                         [readonly]="true"
                       />
                     </td>
-                    <td class="d-flex justify-content-between">
+                    <td
+                      *ngIf="viewMode == 'new'"
+                      class="d-flex justify-content-between"
+                    >
                       <button
                         *ngIf="numberOfProducts > 1"
                         class="btn btn-danger"
@@ -170,10 +187,15 @@
                     *ngFor="let product of order_detail_products; let i = index"
                   >
                     <th scope="row">{{ i + 1 }}</th>
-                    <td>{{ product.id_product }}</td>
+                    <td>{{ product.product_name }}</td>
                     <td>{{ product.product_price }}</td>
                     <td>{{ product.product_quantity }}</td>
-                    <td>{{ product.product_quantity }}</td>
+                    <td>
+                      {{
+                        product.product_subtotal
+                          | currency : "" : "symbol" : "1.2"
+                      }}
+                    </td>
                   </tr>
                 </ng-template>
               </tbody>
@@ -183,7 +205,11 @@
               <div class="col-md-8">
                 <div class="total">
                   Total:
-                  {{ viewMode == "new" ? calculateTotal() : orderTotal }}
+                  {{
+                    viewMode == "new"
+                      ? calculateTotal()
+                      : order.order.total_order
+                  }}
                 </div>
               </div>
             </div>

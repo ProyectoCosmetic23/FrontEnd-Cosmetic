@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "app-orders-detail",
@@ -35,12 +36,18 @@ export class OrdersDetailComponent implements OnInit {
   selected_employee: string;
   selected_client: string;
   selected_payment_type: string;
+  error_payment_type: boolean = false;
+  selected_employee_id: number;
+  error_employee: boolean = false;
+  selected_client_id: number;
+  error_client: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private _ordersService: OrdersService,
+    private cookieService: CookieService,
     private toastr: ToastrService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
@@ -85,8 +92,32 @@ export class OrdersDetailComponent implements OnInit {
           this.order = data;
           const idClient = this.order.order.id_client;
           const idEmployee = this.order.order.id_employee;
-          const orderDetail = this.order.order_detail[0];
+          const orderDetail = this.order.order_detail;
 
+          orderDetail.forEach((detail) => {
+            let product_name;
+            let product = this.listProducts.find(
+              (product) => product.id_product === detail.id_product
+            );
+            if (product) {
+              product_name = product.name_product;
+            }
+            let product_subtotal =
+              detail.product_price * detail.product_quantity;
+            detail = {
+              id_order: 1,
+              id_order_detail: 1,
+              id_product: detail.id_product,
+              product_name: product_name,
+              product_price: detail.product_price,
+              product_quantity: detail.product_quantity,
+              product_subtotal: product_subtotal,
+            };
+            if (this.order_detail_products) {
+              this.order_detail_products.push(detail);
+            }
+            console.log(this.order_detail_products);
+          });
           this.selected_payment_type = this.order.order.payment_type;
 
           this.findOrderData(idClient, idEmployee, orderDetail);
@@ -104,7 +135,7 @@ export class OrdersDetailComponent implements OnInit {
 
   // Método para encontrar información relacionada con el pedido (cliente, empleado, productos)
   findOrderData(clientId: number, employeeId: number, products: any) {
-    console.log(clientId + " " + employeeId + " " + products);
+    console.log(clientId + " " + employeeId + " " + products.id_product);
 
     // Busca el nombre del cliente
     const client = this.listClients.find(
@@ -121,26 +152,13 @@ export class OrdersDetailComponent implements OnInit {
     if (employee) {
       this.selected_employee = employee.name_employee;
     }
-
-    // Asigna el detalle de productos del pedido
-    if (products.order_detail) {
-      this.order_detail_products = products.order_detail;
-    } else {
-      this.order_detail_products = products;
-    }
-
     // Si falta información esencial, recarga la página
     if (
       this.selected_employee === undefined ||
       this.selected_client === undefined
     ) {
       this.loadingData = true;
-      location.reload();
     }
-
-    console.log(this.selected_client);
-    console.log(this.selected_employee);
-    console.log(this.order_detail_products);
   }
 
   // Método para obtener todos los clientes
@@ -185,17 +203,71 @@ export class OrdersDetailComponent implements OnInit {
   // Método para obtener el precio unitario de un producto por su ID
   getProductPrice(idProduct: number): number | undefined {
     const product = this.listProducts.find((p) => p.id_product === idProduct);
-    return product ? product.unitPrice : undefined;
+    return product ? product.product_price : undefined;
+  }
+
+  onClientSelected(event: any): void {
+    this.selected_client_id = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el nombre del cliente" ||
+      event.target.value == undefined
+    ) {
+      this.error_client = true;
+    } else {
+      this.error_client = false;
+    }
+
+    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
+    console.log("Cliente seleccionado:", this.selected_client_id);
+  }
+
+  onEmployeeSelected(event: any): void {
+    // Accede al valor seleccionado
+    this.selected_employee_id = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el nombre del empleado" ||
+      event.target.value == undefined
+    ) {
+      this.error_employee = true;
+    } else {
+      this.error_employee = false;
+    }
+
+    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
+    console.log("Empleado seleccionado:", this.selected_employee_id);
+  }
+
+  onPaymentTypeSelected(event: any): void {
+    // Accede al valor seleccionado
+    this.selected_payment_type = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el tipo de pago" ||
+      event.target.value == undefined
+    ) {
+      this.error_payment_type = true;
+    } else {
+      this.error_payment_type = false;
+    }
+
+    // Ahora `selectedPaymentType` contiene el tipo de pago seleccionado
+    console.log("Tipo de pago seleccionado:", this.selected_payment_type);
   }
 
   // -------------- INICIO: Funciones para manipular Productos -------------- //
 
   // Método para crear un FormGroup para un producto
   createProductGroup(): FormGroup {
+    console.log(this.productsFormArray.value);
     return this.formBuilder.group({
       id_product: [""],
-      unitPrice: [""],
-      unit: [""],
+      product_price: [""],
+      product_quantity: [""],
       subtotal: [""],
     });
   }
@@ -209,23 +281,32 @@ export class OrdersDetailComponent implements OnInit {
     const selectedProduct = this.listProducts.find(
       (product) => product.id_product == selectedProductId
     );
+
     if (selectedProduct) {
       this.productsFormArray
         .at(i)
-        .get("unitPrice")
+        .get("product_price")
         .setValue(selectedProduct.selling_price);
 
       // Obtén el valor del campo "unit"
-      const unitValue = this.productsFormArray.at(i).get("unit").value;
+      const unitValue = this.productsFormArray
+        .at(i)
+        .get("product_quantity").value;
 
-      // Calcula el subtotal en función de la cantidad y el precio unitario
-      const subtotal = selectedProduct.selling_price * unitValue;
+      // Verifica que "unitValue" no sea null ni undefined
+      if (unitValue != null && unitValue !== undefined) {
+        // Calcula el subtotal en función de la cantidad y el precio unitario
+        const subtotal = selectedProduct.selling_price * unitValue;
 
-      // Asigna el subtotal al campo "subtotal" del formulario
-      this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
+        // Asigna el subtotal al campo "subtotal" del formulario
+        this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
+      } else {
+        console.log("La cantidad del producto no está definida.");
+      }
+      console.log(this.productsFormArray.at(i).value);
     } else {
       console.log("Producto no encontrado.");
-      this.productsFormArray.at(i).get("unitPrice").setValue(null);
+      this.productsFormArray.at(i).get("product_price").setValue(null);
     }
   }
 
@@ -259,6 +340,117 @@ export class OrdersDetailComponent implements OnInit {
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
   createOrder() {
-    // Implementa la lógica para crear un pedido
+    if (!this.formBasic.valid) {
+      this.showFormWarning("Completa el formulario correctamente");
+      return;
+    }
+
+    this.checkProducts();
+
+    this.checkConditions();
+
+    const order_date = new Date();
+    const total_order = this.calculateTotal();
+
+    const newOrder = {
+      id_client: this.selected_client_id,
+      id_employee: this.selected_employee_id,
+      order_date: order_date,
+      payment_type: this.selected_payment_type,
+      total_order: total_order,
+      products: this.productsFormArray.value,
+    };
+
+    this.submitOrder(newOrder);
+  }
+
+  checkProducts() {
+    if (this.productsFormArray.length === 0) {
+      this.showFormWarning("Agrega al menos un producto al pedido");
+      throw new Error("Productos insuficientes");
+    }
+
+    const productsArray = this.productsFormArray.value;
+    for (const product of productsArray) {
+      if (
+        !product.id_product ||
+        !product.product_price ||
+        !product.product_quantity
+      ) {
+        this.showFormWarning("Completa todos los campos del producto");
+        throw new Error("Campos de producto incompletos");
+      }
+    }
+  }
+
+  checkConditions() {
+    const conditions = [
+      {
+        variable: "error_client",
+        condition:
+          this.selected_client === "Seleccione el nombre del cliente" ||
+          this.selected_client_id == null ||
+          this.selected_client_id == undefined,
+        errorMessage: "Seleccione un cliente",
+      },
+      {
+        variable: "error_employee",
+        condition:
+          this.selected_employee === "Seleccione el nombre del empleado" ||
+          this.selected_employee_id == null ||
+          this.selected_employee_id == undefined,
+        errorMessage: "Seleccione un empleado",
+      },
+      {
+        variable: "error_payment_type",
+        condition:
+          this.selected_payment_type === "Seleccione el tipo de pago" ||
+          this.selected_payment_type == null ||
+          this.selected_payment_type == undefined,
+        errorMessage: "Seleccione un tipo de pago",
+      },
+    ];
+
+    conditions.forEach((condition) => {
+      this[condition.variable] =
+        this[condition.variable] || condition.condition;
+
+      if (this[condition.variable]) {
+        this.showFormWarning(condition.errorMessage);
+        throw new Error(`${condition.variable} no seleccionado`);
+      }
+    });
+
+    // Reset errors if all conditions are false
+    if (!conditions.some((condition) => this[condition.variable])) {
+      conditions.forEach((condition) => {
+        this[condition.variable] = false;
+      });
+    }
+  }
+
+  showFormWarning(message: string) {
+    this.toastr.warning(message, "Advertencia");
+  }
+
+  submitOrder(newOrder) {
+    this._ordersService.createOrder(newOrder).subscribe(
+      (response) => {
+        this.showSuccessMessage("Pedido creado exitosamente");
+        this.router.navigate(["/orders"]);
+      },
+      (error) => {
+        this.handleError("Error al crear el pedido:", error);
+      }
+    );
+  }
+
+  showSuccessMessage(message: string) {
+    this.toastr.success(message, "Éxito");
+  }
+
+  handleError(errorMessage: string, error: any) {
+    console.error(errorMessage, error);
+    this.toastr.error("Error al crear el pedido", "Error");
   }
 }

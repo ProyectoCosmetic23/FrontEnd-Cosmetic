@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { catchError } from 'rxjs/operators';
 export class CategoriesService {
 
   //Url de la api
-  url ='http://localhost:8080/api/categories';
+  url = environment.url + '/api/categories';
   constructor(
     private http: HttpClient
   ) { }
@@ -46,8 +47,8 @@ export class CategoriesService {
   
 
 
-  CategoryChangeStatus(id: any): Observable<any> {
-    return this.http.put(this.url + '/change-status' + id, {});
+  CategoryChangeStatus(id: any, state:boolean): Observable<any> {
+    return this.http.put(this.url + '/change-status/' + id, {newState: state});
   }
 
 

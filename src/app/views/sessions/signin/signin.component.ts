@@ -21,13 +21,13 @@ export class SigninComponent implements OnInit {
 
   
     constructor(private toastr: ToastrService) { }
-
     public myForm: FormGroup = this.fb.group({
         email: ['julian@gmail.com', [Validators.required, Validators.email]],
         password: ['Julian9*', [Validators.required, Validators.minLength(6)]],
     });
 
     ngOnInit() {
+        this.authService.logout();
         this.router.events.subscribe(event => {
             if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
                 this.loadingText = 'Loading Dashboard Module...';

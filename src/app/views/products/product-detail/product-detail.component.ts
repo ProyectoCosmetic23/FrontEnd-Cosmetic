@@ -33,7 +33,7 @@ export class ProductDetailComponent implements OnInit {
     subTotal: number;
     saving: boolean;
     productData: ProductFormModel;
-
+   
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -70,7 +70,8 @@ export class ProductDetailComponent implements OnInit {
             selling_price: [''],
             observation: [''],
             state_product: [],
-            creation_date_product: []
+            creation_date_product: [],
+           
         });
 
         if (this.viewMode == 'print') {
@@ -181,6 +182,10 @@ export class ProductDetailComponent implements OnInit {
 
     
 
+    getCategoryName(category_id: string): string {
+        return this.listCategories.find(x => x.id_category == category_id).name_category
+      }
+    
 
 
 
@@ -223,6 +228,8 @@ export class ProductDetailComponent implements OnInit {
             }
         );
     }
+
+
 
 
     
@@ -310,9 +317,10 @@ export class ProductDetailComponent implements OnInit {
     get dateProduct() {
         return this.productForm.get('creation_date_product');
     }
+   
     get idCategory() {
         return this.productForm.get('id_category');
-      }
+    }
 
 }
 
