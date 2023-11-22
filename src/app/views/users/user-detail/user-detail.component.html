@@ -22,33 +22,60 @@
           <div class="card-title mb-3">Formulario de usuarios</div>
           <form [formGroup]="userForm" (ngSubmit)="submitUser()">
             <div class="row">
-
-              <div class="col-md-6 form-group mb-3">
-                <label for="id_role">ID de rol</label>
-                <input
-                  type="text"
+              <div class="col-md-3 form-group mb-3">
+                <label for="name_role">Rol<span class="text-danger">*</span></label>
+                <select
                   class="form-control"
-                  id="id_role"
-                  formControlName="id_role"
-                />
+                  id="name_role"
+                  formControlName="name_role"
+                  required
+                >
+                  <option value="" disabled selected>Elija el rol</option>
+                  <option *ngFor="let role of listRoles" [value]="role.name_role">
+                    {{ role.name_role }}
+                  </option>
+                </select>
+                <div
+                *ngIf="
+                  userForm.get('name_role').touched &&
+                  userForm.get('name_role').hasError('required')
+                "
+                class="error-message"
+              >
+                El campo rol es obligatorio.
               </div>
-              <div class="col-md-6 form-group mb-3">
-                <label for="id_employee">Id empleado</label>
+              </div>
+              <div class="col-md-4 form-group mb-3">
+                <label for="id_card_employee">Cédula empleado <span class="text-danger">*</span></label>
                 <input
-                  type="text"
-                  class="form-control"
-                  id="id_employee"
-                  formControlName="id_employee"
+                    type="text"
+                    class="form-control"
+                    id="id_card_employee"
+                    formControlName="id_card_employee"
+                    (change)="searchEmployeeByEmail()"
+                    required
                 />
+                <div
+                *ngIf="
+                  userForm.get('id_card_employee').touched &&
+                  userForm.get('id_card_employee').hasError('required')
+                "
+                class="error-message"
+              >
+                El campo cédula empleado es obligatorio.
               </div>
-
-              <div class="col-md-6 form-group mb-3">
+                <!-- Mostrar mensaje de empleado no encontrado -->
+                <div *ngIf="employeeNotFoundMessage" class="error-message">
+                    {{ employeeNotFoundMessage }}
+                </div>
+            </div>
+              <div class="col-md-5 form-group mb-3">
                 <label for="username"
-                  >Nombre de usuario<span class="text-danger">*</span></label
+                  >Nombre usuario<span class="text-danger">*</span></label
                 >
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control ng-touched ng-dirty ng-invalid"
                   id="username"
                   formControlName="username"
                   required
@@ -87,9 +114,11 @@
                   class="form-control"
                   id="email"
                   formControlName="email"
-                  (change)="(checkEmailAvailability)"
+                  required
+                  
+                  
                 />
-                <div
+                <!-- <div
                   *ngIf="
                     userForm.get('email').touched &&
                     userForm.get('email').hasError('required')
@@ -97,21 +126,21 @@
                   class="error-message"
                 >
                   El campo correo es obligatorio.
-                </div>
-                <div
+                </div> -->
+                <!-- <div
                   *ngIf="userForm.get('email').hasError('email')"
                   class="error-message"
                 >
                   El campo correo debe ser un formato de correo electrónico
                   válido.
-                </div>
-                <div
+                </div> -->
+                <!-- <div
                   *ngIf="userForm.get('email').hasError('invalidDomain')"
                   class="error-message"
                 >
                   El dominio del correo no es válido.
-                </div>
-                <div
+                </div> -->
+                <!-- <div
                   *ngIf="userForm.get('email').hasError('maxlength')"
                   class="error-message"
                 >
@@ -122,7 +151,7 @@
                   class="error-message"
                 >
                   El correo electrónico ya está en uso.
-                </div>
+                </div> -->
               </div>
 
               <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
@@ -137,21 +166,33 @@
               </div>
 
               <div class="col-md-6 form-group mb-3">
-                <label for="password">Contraseña</label>
+                <label for="password">Contraseña<span class="text-danger">*</span></label>
                 <input
                   type="text"
                   class="form-control"
                   id="password"
                   formControlName="password"
                 />
+                <div
+                *ngIf="
+                  userForm.get('password').touched &&
+                  userForm.get('password').hasError('required')
+                "
+                class="error-message"
+              >
+                El campo contraseña es obligatorio.
               </div>
+              </div>
+              
 
-              <div class="col-md-6 form-group mb-3">
+              <div class="col-md-12 form-group mb-3">
                 <label for="observation_user"
                   >Observación<span class="text-danger">*</span></label
                 >
                 <textarea
-                  class="form-control"
+                  class="form-control ng-touched ng-dirty ng-invalid"
+                  style="resize: none"
+                  rows="7"
                   id="observation_user"
                   formControlName="observation_user"
                   required
@@ -174,8 +215,20 @@
               </div>
 
               <div class="form-group text-right" style="text-align: right">
-                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
-                <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" > {{viewMode == 'new' ? 'Registrar usuario' : 'Editar usuario' }} 
+                <button
+                  type="button"
+                  class="btn btn-danger ml-2"
+                  (click)="cancel()"
+                >
+                  Cancelar
+                </button>
+                <btn-loading
+                  *ngIf="viewMode !== 'print'"
+                  btnClass="btn btn-primary m-1 custom-button"
+                >
+                  {{
+                    viewMode == "new" ? "Registrar usuario" : "Editar usuario"
+                  }}
                 </btn-loading>
               </div>
             </div>

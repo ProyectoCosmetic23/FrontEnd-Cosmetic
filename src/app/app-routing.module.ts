@@ -49,7 +49,13 @@ const adminRoutes: Routes = [
   {
     path: 'users',
     loadChildren: () => import('./views/users/user.module').then(m => m.UserModule)
+  },
+  {
+    path: 'defective-products',
+    loadChildren: () => import('./views/defective-products/defective-product-module').then(m => m.DefectiveProductModule)
   }
+
+
   ];
 
 const routes: Routes = [

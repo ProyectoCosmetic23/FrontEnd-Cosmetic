@@ -82,7 +82,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
                 { icon: 'i-Money1', name: 'Ventas', state: '/sales', type: 'link' },
-                { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/chat', type: 'link' },
+                { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/defective-products', type: 'link' },
                 { icon: 'i-Conference', name: 'Clientes', state: '/clients', type: 'link' },
                 { icon: 'i-Financial', name: 'Pagos', state: '/pagos', type: 'link' },
             ]

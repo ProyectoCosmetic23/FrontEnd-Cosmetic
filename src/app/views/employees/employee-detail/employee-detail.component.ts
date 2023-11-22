@@ -7,6 +7,7 @@ import { EmployeesService } from 'src/app/shared/services/employee.service';
 import { EmployeeFormModel } from '../models/employee.model';
 
 
+
 @Component({
     selector: 'app-empleado-detail',
     templateUrl: './employee-detail.component.html',
@@ -14,8 +15,7 @@ import { EmployeeFormModel } from '../models/employee.model';
 })
 export class EmployeeDetailComponent implements OnInit {
 
-    employeeForm: FormGroup;
-    employeeFormSub: Subscription;
+    
     loading: boolean = false;
     formBasic: FormGroup;
     viewMode: 'new' | 'edit' | 'print' = 'new';
@@ -27,6 +27,8 @@ export class EmployeeDetailComponent implements OnInit {
     subTotal: number;
     saving: boolean;
     employeeData: EmployeeFormModel;
+    employeeForm: FormGroup;
+    employeeFormSub: Subscription;
 
     constructor(
         private formBuilder: FormBuilder,
