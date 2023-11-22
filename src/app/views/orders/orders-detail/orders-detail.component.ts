@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
+import { PaymentsService } from 'src/app/shared/services/payment.service';
+
 
 @Component({
   selector: "app-orders-detail",
@@ -41,12 +43,14 @@ export class OrdersDetailComponent implements OnInit {
   error_employee: boolean = false;
   selected_client_id: number;
   error_client: boolean = false;
+  listPayments: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private _ordersService: OrdersService,
+    private _paymentService: PaymentsService,
     private cookieService: CookieService,
     private toastr: ToastrService
   ) {
@@ -65,6 +69,7 @@ export class OrdersDetailComponent implements OnInit {
     this.getOrder();
     this.formBasic = this.formBuilder.group({});
     this.formBasic.addControl("products", this.productsFormArray);
+    this.getPaymentsForOrder();
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
@@ -80,7 +85,25 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   // -------------- INICIO: Métodos para obtener datos -------------- //
-
+  getPaymentsForOrder() {
+    if (this.viewMode === 'detail') {
+      // Convertir this.id a número usando parseInt
+      const orderId = parseInt(this.id, 10);
+  
+      // O alternativamente, usando Number
+      // const orderId = Number(this.id);
+  
+      this._paymentService.getPayOrder(orderId).subscribe(
+        (payments) => {
+          // Puedes almacenar los pagos en una propiedad del componente
+          this.listPayments = payments;
+        },
+        (error) => {
+          console.error('Error al obtener pagos:', error);
+        }
+      );
+    }
+  }
   // Método para obtener un pedido y sus detalles
   getOrder() {
     const currentRoute = this.router.url;

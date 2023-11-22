@@ -214,6 +214,16 @@
               </div>
             </div>
           </div>
+          <div *ngIf="viewMode === 'detail'" style="padding-top: 2%;">
+            <h2>Pagos Realizados</h2>
+            <div *ngFor="let payment of listPayments">
+              <p>
+                <b>Fecha de Pago:</b> {{ payment.payment_date | date:'yyyy-MM-dd' }}
+                <b>Monto Pago:</b> {{ payment.total_payment | currency:'':'symbol':'1.2-2' }}
+                <b>Monto Restante:</b> {{ payment.total_remaining | currency:'':'symbol':'1.2-2' }}
+              </p>
+            </div>
+          </div>
           <div class="col-md-12" style="margin-top: 20px">
             <div class="d-flex justify-content-end">
               <button
