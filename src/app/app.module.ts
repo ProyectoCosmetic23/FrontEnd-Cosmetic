@@ -11,10 +11,13 @@ import { SharedModule } from "./shared/shared.module";
 import { MyInterceptor } from "interceptors/authentication-interceptor";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "./shared/services/auth.service";
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    FormsModule,
     BrowserModule,
     SharedModule,
     NgxPaginationModule,
