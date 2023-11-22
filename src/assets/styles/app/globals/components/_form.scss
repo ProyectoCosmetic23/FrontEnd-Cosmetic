@@ -1,7 +1,6 @@
-.form-group.text-right {
+.form-group {
     position: relative;
     margin-bottom: 10px;
-    text-align: right;
     label {
         font-size: 12px;
         color: $gray-600;
@@ -11,7 +10,7 @@
 .form-control {
     border: initial;
     outline: initial !important;
-    background: $gray-100;
+    background: white; /* Cambiado a blanco */
     border: 1px solid $gray-400;
     color: $foreground;
     &::placeholder {
@@ -89,11 +88,7 @@ select.form-control {
             transform: rotate(45deg);
         }
     }
-
 }
-
-
-
 
 @each $name, $value in $theme-colors {
     .checkbox-#{$name} {
