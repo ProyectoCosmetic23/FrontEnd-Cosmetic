@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   url:'https://api-cosmetic-1iuc.onrender.com',
-  
+  baseUrl: 'http://localhost:8080/api'
 };
 
 /*
