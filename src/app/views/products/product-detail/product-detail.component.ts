@@ -60,15 +60,15 @@ export class ProductDetailComponent implements OnInit {
 
     private inicializateForm(id: number): void {
         this.productForm = this.formBuilder.group({
-            id_category: [''],
-            name_product: [''],
+            id_category: ['',[Validators.required]],
+            name_product: ['',[Validators.required],[this.validateNameSimbolAndNumber]],
             quantity: [''],
-            max_stock: [''],
-            min_stock: [''],
+            max_stock: ['',[Validators.required]],
+            min_stock: ['',[Validators.required]],
             profit: [],
             cost_price: [''],
             selling_price: [''],
-            observation: [''],
+            observation: ['',[ Validators.maxLength(100)]],
             state_product: [],
             creation_date_product: [],
            
@@ -82,6 +82,8 @@ export class ProductDetailComponent implements OnInit {
         if (this.viewMode == 'edit') {
             this.productForm && this.productForm.get('id_category')
             this.productForm.get('id_category');
+          
+            
         }
         
 
@@ -124,6 +126,7 @@ export class ProductDetailComponent implements OnInit {
             },
         });
     }
+
 
     private setDataProduct(): void {
     if (this.productData) {

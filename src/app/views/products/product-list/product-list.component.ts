@@ -5,6 +5,8 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { CookieService } from 'ngx-cookie-service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
     selector: 'app-product-list',
@@ -99,7 +101,7 @@ export class ProductListComponent implements OnInit {
     
         
     retireProduct(): void {
-        if (this.selectedProductId && this.returnQuantity) {
+        if (this.selectedProductId && this.returnQuantity) {    
             const data = {
                 return_quantity: this.returnQuantity,
                 return_reason: this.returnReason,
@@ -109,17 +111,20 @@ export class ProductListComponent implements OnInit {
             // Llamada a la API para dar de baja el producto
             this._productService.retireProduct(this.selectedProductId, data).subscribe(
                 (response) => {
-                    // Después de dar de baja, actualiza la cantidad en el modelo local
                     this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
+                    this.toastr.success('Producto dado de baja exitosamente.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                    this.modalService.dismissAll();
+    
                     console.log('Producto dado de baja exitosamente', response);
                 },
                 (error) => {
                     console.error('Error al dar de baja el producto', error);
-                    // Manejar errores, por ejemplo, mostrar un mensaje al usuario
+                    this.toastr.error('Fallo al dar de baja el producto.', 'Error', { progressBar: true, timeOut: 2000 });
                 }
             );
         }
     }
+    
     
     updateProductQuantity(productId: number, quantityToSubtract: number): void {
         // Encuentra el producto en tu lista local y resta la cantidad

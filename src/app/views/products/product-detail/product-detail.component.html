@@ -24,18 +24,22 @@
                     <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
                         <div class="row">
 
-                           
+
 
 
                             <div class="col-md-6 form-group mb-3">
                                 <label for="id_category">Categoría</label>
-                                <select class="form-control" id="id_category"  (change)="handleCategorySelection($event)"
-                                        [formControl]="productForm.get('id_category')">
-                                    <option [value]="" [disabled]="viewMode === 'print'">Seleccione el nombre de la categoría</option>
+                                <select class="form-control" id="id_category" (change)="handleCategorySelection($event)"
+                                    [formControl]="productForm.get('id_category')">
+
                                     <option *ngFor="let category of listCategories" [value]="category.id_category">
                                         {{ category.name_category }}
                                     </option>
                                 </select>
+                                <div *ngIf="productForm.get('id_category').touched && productForm.get('id_category').hasError('required')"
+                                    class="error-message">
+                                    El campo Categoria es obligatorio.
+                                </div>
                             </div>
 
 
@@ -43,92 +47,59 @@
                                 <label for="name_product">Nombre de producto<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name_product" formControlName="name_product"
                                     required>
-                                <!--
-                        <div *ngIf="productForm.get('name_employee').touched && productForm.get('name_employee').hasError('required')"class="error-message">
-                            El campo Nombre es obligatorio.
-                        </div>
-                        <div *ngIf="productForm.get('name_employee').hasError('invalidName')"class="error-message">
-                            El campo Nombre no puede tener simbolos y solo puede tener 1  numero.
-                        </div>
+
+                                <div *ngIf="productForm.get('name_product').touched && productForm.get('name_product').hasError('required')"
+                                    class="error-message">
+                                    El campo Nombre es obligatorio.
+                                </div>
                         
-                        <div *ngIf="productForm.get('name_employee').hasError('maxlength')"class="error-message">
-                            El campo Nombre no puede superar los 80 caracteres.
-                        </div>
-                        -->
+                            <div *ngIf="productForm.get('name_product').hasError('invalidName')" class="error-message">
+                                El campo Nombre no puede tener simbolos y solo puede tener 1 numero.
                             </div>
-
-
+                        </div>
                             <div class="col-md-2 form-group mb-3">
                                 <label for="quantity">Cantidad<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control small-input" id="quantity"
+                                <input type="number" class="form-control small-input" id="quantity"
                                     formControlName="quantity">
-                                <!--
-                        <div *ngIf="productForm.get('email').touched && productForm.get('email').hasError('required')"class="error-message">
-                            El campo Correo es obligatorio.
                         </div>
-                        <div *ngIf="productForm.get('email').hasError('email')"class="error-message">
-                            El campo Correo debe ser un formato de correo electrónico válido.
-                        </div>
-                        <div *ngIf="productForm.get('email').hasError('invalidDomain')" class="error-message">El dominio del correo no es válido.</div>
-                        <div *ngIf="productForm.get('email').hasError('maxlength')"class="error-message">
-                            El campo Correo no puede superar los 80 caracteres.
-                        </div>
-                        <div *ngIf="productForm.get('email').hasError('emailTaken')"class="error-message">El correo electrónico ya está en uso.</div>
-                    -->
-                            </div>
 
                             <div class="col-md-2 form-group mb-3">
                                 <label for="max_stock">Stock Maximo<span class="text-danger">*</span></label>
-                                <input class="form-control small-input" id="max_stock" formControlName="max_stock"
-                                    required>
-                                <!--
-                        <div *ngIf="productForm.get('address').touched && productForm.get('address').hasError('required')"class="error-message">
-                            El campo Dirección es obligatorio.
-                        </div>
-                        <div *ngIf="productForm.get('address').hasError('maxlength')"class="error-message">
-                            El campo Dirección no puede superar los 80 caracteres.
-                        </div>
-                        -->
+                                <input type="number" class="form-control small-input" id="max_stock"
+                                    formControlName="max_stock" required>
+
+                                <div *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
+                                    class="error-message">
+                                    El campo Stock Maxino es obligatorio.
+                                </div>
+
+
                             </div>
 
                             <div class="col-md-2 form-group mb-3">
                                 <label for="min_stock">Stock Minimo<span class="text-danger">*</span></label>
-                                <input class="form-control small-input" id="min_stock" formControlName="min_stock"
-                                    required>
-                                <!--
-                        <div *ngIf="productForm.get('address').touched && productForm.get('address').hasError('required')"class="error-message">
-                            El campo Dirección es obligatorio.
-                        </div>
-                        <div *ngIf="productForm.get('address').hasError('maxlength')"class="error-message">
-                            El campo Dirección no puede superar los 80 caracteres.
-                        </div>
-                        -->
+                                <input type="number" class="form-control small-input" id="min_stock"
+                                    formControlName="min_stock" required>
+
+                                <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
+                                    class="error-message">
+                                    El campo Stock minimo es obligatorio.
+                                </div>
+
                             </div>
 
                             <div class="col-md-2 form-group mb-3">
                                 <label for="cost_price">Precio Costo<span class="text-danger">*</span></label>
-                                <input class="form-control" id="cost_price" formControlName="cost_price" required>
-                                <!--
-                        <div *ngIf="productForm.get('address').touched && productForm.get('address').hasError('required')"class="error-message">
-                            El campo Dirección es obligatorio.
-                        </div>
-                        <div *ngIf="productForm.get('address').hasError('maxlength')"class="error-message">
-                            El campo Dirección no puede superar los 80 caracteres.
-                        </div>
-                        -->
+                                <input type="number" class="form-control" id="cost_price" formControlName="cost_price"
+                                    required>
+
                             </div>
 
                             <div class="col-md-2 form-group mb-3">
                                 <label for="selling_price">Precio Venta<span class="text-danger">*</span></label>
-                                <input class="form-control" id="selling_price" formControlName="selling_price" required>
-                                <!--
-                        <div *ngIf="productForm.get('address').touched && productForm.get('address').hasError('required')"class="error-message">
-                            El campo Dirección es obligatorio.
-                        </div>
-                        <div *ngIf="productForm.get('address').hasError('maxlength')"class="error-message">
-                            El campo Dirección no puede superar los 80 caracteres.
-                        </div>
-                        -->
+                                <input type="number" class="form-control" id="selling_price"
+                                    formControlName="selling_price" required>
+
                             </div>
 
                             <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
@@ -141,14 +112,7 @@
                                 <label for="observation">Observación<span class="text-danger"></span></label>
                                 <textarea class="form-control" id="observation" placeholder="Observación"
                                     formControlName="observation" style="resize:none" rows="5"></textarea>
-                                <!--
-                        <div *ngIf="productForm.get('observation').touched && productForm.get('observation').hasError('required')"class="error-message">
-                            El campo Observación es obligatorio.
-                        </div>
-                        <div *ngIf="productForm.get('observation').hasError('maxlength')"class="error-message">
-                            El campo Observación no puede superar los 100 caracteres.
-                        </div>
-                        -->
+
                             </div>
                             <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
                                 <label for="creation_date_product">Fecha de creacion<span
