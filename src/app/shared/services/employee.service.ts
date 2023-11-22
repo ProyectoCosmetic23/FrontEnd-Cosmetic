@@ -34,29 +34,29 @@ export class EmployeesService {
       })
     );
   }
-  
 
 
 
-checkCedulaAvailability(cedula: string): Observable<boolean> {
+
+  checkCedulaAvailability(cedula: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.baseUrl}-check-cedula?cedula=${cedula}`);
-}
+  }
 
-checkEmailAvailability(email: string): Observable<boolean> {
+  checkEmailAvailability(email: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.baseUrl}-check-email?email=${email}`);
-}
+  }
 
-getEmployeesById(id: number, token?: string): Observable<any> {
-  const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
-  const url = `${this.baseUrl}/${id}`;
-  return this.http.get<any>(url, { headers });
-}
+  getEmployeesById(id: number, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    const url = `${this.baseUrl}/${id}`;
+    return this.http.get<any>(url, { headers });
+  }
 
-employeeChangeStatus(id: number, token?: string): Observable<any> {
-  const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
-  const url = `${this.baseUrl}/changeState/${id}`;
-  return this.http.put<any>(url, {}, { headers });
-}
+  employeeChangeStatus(id: number, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    const url = `${this.baseUrl}/changeState/${id}`;
+    return this.http.put<any>(url, {}, { headers });
+  }
 
 }
 

@@ -21,7 +21,7 @@ import { AuthService } from './auth.service';
         console.log('Autenticado');
         return true;
       } else if (authStatus === AuthStatus.notAuthenticated) {
-        console.log('No autenticado');
+    
         // Redirige a la página de inicio de sesión si no está autenticado
         this.router.navigateByUrl('/sessions/signin');
         return false;
