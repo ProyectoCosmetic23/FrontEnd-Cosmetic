@@ -17,7 +17,7 @@ import { EmployeeRoutingModule } from './employee-routing.module';
     ReactiveFormsModule,
     SharedComponentsModule,
     NgbModule,
-    EmployeeRoutingModule
+    EmployeeRoutingModule,
   ],
   declarations: [EmployeeDetailComponent, EmployeeListComponent]
 })
