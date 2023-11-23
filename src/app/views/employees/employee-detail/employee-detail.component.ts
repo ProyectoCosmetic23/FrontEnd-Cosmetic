@@ -44,10 +44,12 @@ export class EmployeeDetailComponent implements OnInit {
 
 
     ngOnInit() {
+        
         this.id = this.route.snapshot.params['id_employee'];
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
+        
     }
 
     private inicializateForm(id: number): void {
@@ -57,7 +59,7 @@ export class EmployeeDetailComponent implements OnInit {
             email: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
             address: ['', [Validators.required, Validators.maxLength(80)]],
             phone: ['', [Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
-            observation: ['', [Validators.required, Validators.maxLength(100)]],
+            observation: ['',[ Validators.maxLength(100)]],
             state_employee: [],
             creation_date_employee: []
         });
@@ -104,10 +106,11 @@ export class EmployeeDetailComponent implements OnInit {
 
     createEmployee() {
         if (this.employeeForm.valid) {
+            
             const employeeData = this.employeeForm.value;
             const token = this.cookieService.get('token');
             this.loading = true;
-            this.employeesService.createEmployee(employeeData, token).subscribe(
+            this.employeesService.createEmployee(employeeData,token).subscribe(
                 (response) => {
                     this.loading = false;
                     console.log("Éxito al crear empleado: ", response);
@@ -282,7 +285,7 @@ export class EmployeeDetailComponent implements OnInit {
             this.loading = true;
             setTimeout(() => {
                 this.loading = false;
-                this.toastr.success('Empleado registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+                this.toastr.success('Empleado Modificado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
                 setTimeout(() => {
                     this.router.navigateByUrl('/employees');
                 },);
