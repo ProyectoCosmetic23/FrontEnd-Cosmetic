@@ -365,7 +365,10 @@ export class PurchaseDetailComponent implements OnInit {
 
   handleCategorySelection(event: any, i: number) {
     const selectedCategoryId = event.target.value;
-    const selectedCategory = this.listCategories.find(category => category.id_category == selectedCategoryId);
+    let selectedCategory = this.listCategories.find(category => category.id_category == selectedCategoryId && category.state_category );
+
+
+    
 
     if (selectedCategory) {
 
@@ -373,6 +376,8 @@ export class PurchaseDetailComponent implements OnInit {
       this.purchaseDetailArray[i].id_category = selectedCategory.id_category;
 
     }
+
+  
 
 
   }
