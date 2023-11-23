@@ -6,11 +6,11 @@ import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
 
 @Component({
-  selector: "app-orders-detail",
-  templateUrl: "./orders-detail.component.html",
-  styleUrls: ["./orders-detail.component.scss"],
+  selector: "app-sales-detail",
+  templateUrl: "./sales-detail.component.html",
+  styleUrls: ["./sales-detail.component.scss"],
 })
-export class OrdersDetailComponent implements OnInit {
+export class SalesDetailComponent implements OnInit {
   // Propiedades booleanas
   loading: boolean;
   loadingData: boolean;

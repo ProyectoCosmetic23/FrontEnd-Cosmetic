@@ -6,11 +6,11 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { UntypedFormControl } from "@angular/forms";
 
 @Component({
-  selector: "app-orders-list",
-  templateUrl: "./orders-list.component.html",
-  styleUrls: ["./orders-list.component.scss"],
+  selector: "app-sales-list",
+  templateUrl: "./sales-list.component.html",
+  styleUrls: ["./sales-list.component.scss"],
 })
-export class OrdersListComponent implements OnInit {
+export class SalesListComponent implements OnInit {
   loading: boolean;
   listOrders: any[] = [];
   modalAbierto = false;
@@ -32,7 +32,7 @@ export class OrdersListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getClients();
-    this.getOrders();
+    this.getSales();
   }
 
   // Método para obtener todos los clientes
@@ -48,7 +48,7 @@ export class OrdersListComponent implements OnInit {
     );
   }
 
-  getOrders() {
+  getSales() {
     this.showLoadingScreen = true;
     this._ordersService.getAllOrders().subscribe(
       (ordersData) => {
@@ -182,7 +182,7 @@ export class OrdersListComponent implements OnInit {
                         }
                       );
                       setTimeout(() => {
-                        this.getOrders();
+                        location.reload();
                       }, 2000);
                     },
                     (error) => {
@@ -201,13 +201,13 @@ export class OrdersListComponent implements OnInit {
                 } else if (result === "Cancel") {
                   this.modalAbierto = false;
                   setTimeout(() => {
-                    this.getOrders();
+                    location.reload();
                   }, 2000);
                 }
               },
               (reason) => {
                 this.modalAbierto = false;
-                this.getOrders();
+                location.reload();
               }
             );
         }
