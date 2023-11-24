@@ -2,11 +2,12 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeesService {
-  baseUrl = 'https://api-cosmetic-1iuc.onrender.com/api/employees';
+  baseUrl = environment.url + '/api/employees';
 
   constructor(private http: HttpClient) { }
 

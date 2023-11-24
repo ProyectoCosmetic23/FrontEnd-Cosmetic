@@ -20,7 +20,7 @@ export class OrdersService {
   }
 
   getAllOrders(): Observable<any> {
-    return this.http.get(this.url);
+    return this.http.get(this.url + '/api/orders');
   }
 
   getAllClients(): Observable<any> {
@@ -38,14 +38,14 @@ export class OrdersService {
   }
 
   getOrderById(id: any): Observable<any> {
-    return this.http.get(this.url + 'api/order/' + id);
+    return this.http.get(this.url + '/api/orders/' + id);
   }
 
   createOrder(orderData: any): Observable<any> {
-    return this.http.post(this.url + 'api/order', orderData);
+    return this.http.post(this.url + '/api/orders', orderData);
   }
 
   updateOrderStatus(id: any): Observable<any> {
-    return this.http.put(this.url + 'api/order/updateStatus/' + id, {});
+    return this.http.put(this.url + 'api/orders/updateStatus/' + id, {});
   }
 }
