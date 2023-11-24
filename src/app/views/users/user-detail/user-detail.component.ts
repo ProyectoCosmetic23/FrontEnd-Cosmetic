@@ -116,6 +116,7 @@ export class UserDetailComponent implements OnInit {
 
         if (this.viewMode != 'new') {
             this.getUserByID(id);
+            this.email.disable();
            
             this.id_card_employee.disable();
         }

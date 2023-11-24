@@ -1,0 +1,68 @@
+<div class="row" *ngIf="!loading" style="width: 100%">
+  <div class="breadcrumb">
+    <h1 *ngIf="viewMode === 'detaild'">Devolver</h1>
+    <ul>
+      <li *ngIf="viewMode === 'detaild'">Devolver</li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="card-title mb-3">Formulario Devolución</div>
+        <form [formGroup]="formBasic">
+          <div class="row">
+            <div class="col-md-5 form-group mb-3">
+              <label for="id_client">Cliente</label>
+              <select
+               class="form-control" id="id_client" [disabled]="viewMode === 'detaild'" *ngIf="viewMode === 'detaild'">
+               <option >{{ selected_client }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-5 form-group mb-3">
+              <label for="id_employee">Empleado</label>
+              <select
+               class="form-control" id="employee" [disabled]="viewMode === 'detaild'" *ngIf="viewMode === 'detaild'">
+               <option >{{ selected_client }}</option>
+              </select>
+            </div>
+            <div class="col-md-2 form-group mb-3">
+              <label for="payment_type">Empleado</label>
+              <select
+               class="form-control" id="payment_type" [disabled]="viewMode === 'detaild'" *ngIf="viewMode === 'detaild'">
+               <option >{{ selected_client }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-12 mt-4 table-border">
+            <table class="table table-hover mb-4">
+              <thead class="bg-gray-300">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nombre del Producto</th>
+                  <th scope="col">Precio Unitario</th>
+                  <th scope="col">Unidades</th>
+                  <th scope="col">Subtotal</th>
+                  <th *ngIf="viewMode == 'detaild'" scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="products">
+                
+
+              </tbody>
+
+            </table>
+          </div>
+
+        </form>
+        
+      </div>
+    </div>
+
+  </div>
+</div>

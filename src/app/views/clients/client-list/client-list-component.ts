@@ -44,7 +44,7 @@ export class ClientListComponent implements OnInit {
             this.filteredClients = [...this.listClients];
         }, error => {
             console.log(error);
-        });
+        }); 
     }
 
     filterData(value: string) {

@@ -1,16 +1,19 @@
-import { Component, OnInit } from "@angular/core";
+import { Component,  OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { OrdersService } from "src/app/shared/services/orders.service";
+import { ReturnsService } from "src/app/shared/services/returns.service";
+import { ProductService } from 'src/app/shared/services/product.service';
+import { CommonModule } from '@angular/common';
+
 // import { CookieService } from "ngx-cookie-service";
 
 @Component({
-  selector: "app-orders-detail",
-  templateUrl: "./orders-detail.component.html",
-  styleUrls: ["./orders-detail.component.scss"],
+  selector: "app-returns-detail",
+  templateUrl: "./returns-detail.component.html",
+  styleUrls: ["./returns-detail.component.scss"],
 })
-export class OrdersDetailComponent implements OnInit {
+export class ReturnsDetailComponent implements OnInit {
   // Propiedades booleanas
   loading: boolean;
   loadingData: boolean;
@@ -21,7 +24,7 @@ export class OrdersDetailComponent implements OnInit {
   productsFormArray: FormArray;
 
   // Propiedades para el modo de vista
-  viewMode: "new" | "detail" = "new";
+  viewMode: "detaild";
 
   // Otras propiedades
   id: string;
@@ -31,6 +34,7 @@ export class OrdersDetailComponent implements OnInit {
   listClients: any[] = [];
   listEmployees: any[] = [];
   listProducts: any[] = [];
+  listProductsDevol: any[] = [];
   order_detail_products: any[] = [];
   numberOfProducts: number = 0;
   selected_employee: string;
@@ -41,14 +45,16 @@ export class OrdersDetailComponent implements OnInit {
   error_employee: boolean = false;
   selected_client_id: number;
   error_client: boolean = false;
+  
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private _ordersService: OrdersService,
+    private _returnsService: ReturnsService,
     // private cookieService: CookieService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private productsService: ProductService,
   ) {
     this.productsFormArray = this.formBuilder.array([]);
   }
@@ -63,8 +69,10 @@ export class OrdersDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
+    this.getproductByIdOrder();
     this.formBasic = this.formBuilder.group({});
     this.formBasic.addControl("products", this.productsFormArray);
+
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
@@ -72,10 +80,8 @@ export class OrdersDetailComponent implements OnInit {
   // Método que determina el modo de vista (nuevo o detalle) según la ruta actual
   setViewMode() {
     const currentRoute = this.router.url;
-    if (currentRoute.includes("/new")) {
-      this.viewMode = "new";
-    } else if (currentRoute.includes("/detail/")) {
-      this.viewMode = "detail";
+    if (currentRoute.includes("/detaild/")) {
+      this.viewMode = "detaild";
     }
   }
 
@@ -84,9 +90,11 @@ export class OrdersDetailComponent implements OnInit {
   // Método para obtener un pedido y sus detalles
   getOrder() {
     const currentRoute = this.router.url;
-    if (currentRoute.includes("/detail/")) {
+
+    if (currentRoute.includes("/orders/returns/")) {
+
       // Antes de cargar los datos, establece loadingData en true
-      this._ordersService.getOrderById(this.id).subscribe(
+      this._returnsService.getOrderById(this.id).subscribe(
         (data) => {
           this.order = data;
           const idClient = this.order.order.id_client;
@@ -115,7 +123,7 @@ export class OrdersDetailComponent implements OnInit {
             if (this.order_detail_products) {
               this.order_detail_products.push(detail);
             }
-            console.log(this.order_detail_products);
+            // console.log(this.order_detail_products);
           });
           this.selected_payment_type = this.order.order.payment_type;
 
@@ -162,10 +170,10 @@ export class OrdersDetailComponent implements OnInit {
 
   // Método para obtener todos los clientes
   getClients() {
-    this._ordersService.getAllClients().subscribe(
+    this._returnsService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
-        console.log(this.listClients);
+        //console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -175,10 +183,10 @@ export class OrdersDetailComponent implements OnInit {
 
   // Método para obtener todos los empleados
   getEmployees() {
-    this._ordersService.getAllEmployees().subscribe(
+    this._returnsService.getAllEmployees().subscribe(
       (data) => {
         this.listEmployees = data;
-        console.log(this.listEmployees);
+        //console.log(this.listEmployees);
       },
       (error) => {
         console.error("Error al obtener Empleados:", error);
@@ -186,9 +194,11 @@ export class OrdersDetailComponent implements OnInit {
     );
   }
 
+
+
   // Método para obtener todos los productos
   getProducts() {
-    this._ordersService.getAllProducts().subscribe(
+    this._returnsService.getAllProducts().subscribe(
       (data) => {
         this.listProducts = data;
         console.log(this.listProducts);
@@ -197,6 +207,23 @@ export class OrdersDetailComponent implements OnInit {
         console.error("Error al obtener Productos:", error);
       }
     );
+  }
+
+  // Método para obtener todos los productos
+  getproductByIdOrder() {
+    const currentRoute = this.router.url;
+    if (currentRoute.includes("/orders/returns/")) {
+      this._returnsService.getProductByIdOrder(this.id).subscribe(
+        (data) => {
+          this.listProductsDevol = data;
+         
+         // console.log(this.listProductsDevol);
+        },
+        (error) => {
+          console.error("Error al obtener Productos:", error);
+        }
+      );
+    }
   }
 
   // Método para obtener el precio unitario de un producto por su ID
@@ -360,7 +387,7 @@ export class OrdersDetailComponent implements OnInit {
       products: this.productsFormArray.value,
     };
 
-    this.submitOrder(newOrder);
+
   }
 
   checkProducts() {
@@ -432,17 +459,7 @@ export class OrdersDetailComponent implements OnInit {
     this.toastr.warning(message, "Advertencia");
   }
 
-  submitOrder(newOrder) {
-    this._ordersService.createOrder(newOrder).subscribe(
-      (response) => {
-        this.showSuccessMessage("Pedido creado exitosamente");
-        this.router.navigate(["/orders"]);
-      },
-      (error) => {
-        this.handleError("Error al crear el pedido:", error);
-      }
-    );
-  }
+
 
   showSuccessMessage(message: string) {
     this.toastr.success(message, "Éxito");

@@ -6,16 +6,18 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class OrdersService {
+export class ReturnsService {
   headers: any;
   url = 'http://localhost:8080/api/orders';
+  url2 = 'http://localhost:8080/api/returns';
+  url3='http://localhost:8080/api/clients';
   token: any;
 
   constructor(
     private http: HttpClient,
     // private cookieService: CookieService
-  ) { 
-    
+  ) {
+    // this.token = this.cookieService.get('token');
   }
 
   getAllOrders(): Observable<any> {
@@ -23,9 +25,8 @@ export class OrdersService {
   }
 
   getAllClients(): Observable<any> {
-    return this.http.get('http://localhost:8080/api/clients');
-  }
-
+    return this.http.get(this.url3);
+}
   getAllEmployees(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
     console.log("Los headers", headers);
@@ -33,18 +34,24 @@ export class OrdersService {
   }
 
   getAllProducts(): Observable<any> {
-   return this.http.get('http://localhost:8080/api/productcs');
+    return this.http.get('http://localhost:8080/api/productcs');
   }
 
   getOrderById(id: any): Observable<any> {
     return this.http.get(this.url + '/' + id);
   }
 
-  createOrder(orderData: any): Observable<any> {
-    return this.http.post(this.url, orderData);
-  }
 
-  updateOrderStatus(id: any): Observable<any> {
-    return this.http.put(this.url + '/updateStatus/' + id, {});
+
+  getProductByIdOrder(id: any): Observable<any> {
+    return this.http.get<any>(`${this.url2}/productByIdOrder/${id}`);
+
   }
+  
+
+
+
+
+
+
 }

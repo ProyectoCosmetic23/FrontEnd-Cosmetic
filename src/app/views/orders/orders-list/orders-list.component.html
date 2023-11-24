@@ -110,21 +110,24 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [maxWidth]="270">
                     <ng-template ngx-datatable-header-template>
-                        <p style="font-size: 12px;">Acciones</p>
+                        <p style="font-size: 20px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_order" class="d-flex justify-content-center">
                             <button class="btn btn-dark m-1" [routerLink]="['/orders/detail', row.id_order]">
-                                <i class="i-Eye" style="font-size: 20px;"></i>
+                                <i class="i-Eye" style="font-size: 15px;"></i>
                             </button>
                             <button class="btn btn-success m-1" [routerLink]="['/payments/new', row.id_order]">
-                                <i class="i-Financial" style="font-size: 20px;"></i>
+                                <i class="i-Financial" style="font-size: 15px;"></i>
                             </button>
                             <button class="btn btn-warning m-1" (click)="openModal(row.id_role)">
-                                <i class="i-Jeep" style="font-size: 20px;"></i>
+                                <i class="i-Jeep" style="font-size: 15px;"></i>
                             </button>
                             <button class="btn btn-danger m-1" (click)="openModal(row.id_role)">
-                                <i class="i-Close" style="font-size: 20px;"></i>
+                                <i class="i-Close" style="font-size: 15px;"></i>
+                            </button>
+                            <button class="btn btn-warning m-1" [routerLink]="['returns/', row.id_order]" title="Devolver"  >
+                                <i class="i-Close" style="font-size: 15px;"></i>
                             </button>
                         </ng-container>
                     </ng-template>
