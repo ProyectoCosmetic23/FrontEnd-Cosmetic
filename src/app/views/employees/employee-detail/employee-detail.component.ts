@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { EmployeesService } from 'src/app/shared/services/employee.service';
 import { EmployeeFormModel } from '../models/employee.model';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -31,11 +32,13 @@ export class EmployeeDetailComponent implements OnInit {
     employeeFormSub: Subscription;
 
     constructor(
+        
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
+        private cookieService: CookieService,
         private employeesService: EmployeesService
     ) {
 
@@ -43,10 +46,12 @@ export class EmployeeDetailComponent implements OnInit {
 
 
     ngOnInit() {
+        
         this.id = this.route.snapshot.params['id_employee'];
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
+        
     }
 
     private inicializateForm(id: number): void {
@@ -56,7 +61,7 @@ export class EmployeeDetailComponent implements OnInit {
             email: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
             address: ['', [Validators.required, Validators.maxLength(80)]],
             phone: ['', [Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
-            observation: ['', [Validators.required, Validators.maxLength(100)]],
+            observation: ['',[ Validators.maxLength(100)]],
             state_employee: [],
             creation_date_employee: []
         });
@@ -70,14 +75,15 @@ export class EmployeeDetailComponent implements OnInit {
         }
 
         if (this.viewMode != 'new') {
-            this.getEmployeeByID(id);
+            const token = this.cookieService.get('token');
+            this.getEmployeeByID(id, token);
         }
 
     }
-
-    private getEmployeeByID(id: number): void {
+    private getEmployeeByID(id: number, token?: string): void {
+        console.log('Token:', token); // Agrega este log para verificar el token
         this.loading = true;
-        this.employeesService.getEmployeesById(id).subscribe({
+        this.employeesService.getEmployeesById(id, token).subscribe({
             next: (response: any) => {
                 this.employeeData = new EmployeeFormModel(response);
                 this.setDataEmployee();
@@ -91,6 +97,7 @@ export class EmployeeDetailComponent implements OnInit {
             },
         });
     }
+    
 
     private setDataEmployee(): void {
         if (this.employeeData) {
@@ -101,9 +108,11 @@ export class EmployeeDetailComponent implements OnInit {
 
     createEmployee() {
         if (this.employeeForm.valid) {
+            
             const employeeData = this.employeeForm.value;
+            const token = this.cookieService.get('token');
             this.loading = true;
-            this.employeesService.createEmployee(employeeData).subscribe(
+            this.employeesService.createEmployee(employeeData,token).subscribe(
                 (response) => {
                     this.loading = false;
                     console.log("Éxito al crear empleado: ", response);
@@ -120,9 +129,7 @@ export class EmployeeDetailComponent implements OnInit {
             this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });
         }
     }
-
-
-
+    
 
     validateNameSimbolAndNumber(control: FormControl) {
         const nameValue = control.value;
@@ -219,21 +226,22 @@ export class EmployeeDetailComponent implements OnInit {
             }
         });
     }
-
     saveEmployeeChanges(id: number, updatedData: any) {
-        this.employeesService.updateEmployee(id, updatedData).subscribe(
+        const token = this.cookieService.get('token');
+        this.employeesService.updateEmployee(id, updatedData, token).subscribe(
             (response) => {
                 this.loading = false;
                 this.submit();
             },
             (error) => {
                 this.loading = false;
-                console.error("Error al crear empleado: ", this.toastr.error);
-                const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el empleado.';
+                console.error("Error al actualizar empleado: ", this.toastr.error);
+                const errorMessage = error.error ? error.error : 'Ocurrió un error al actualizar el empleado.';
                 this.toastr.error(errorMessage, 'Error');
             }
         );
     }
+    
 
 
     
@@ -252,7 +260,7 @@ export class EmployeeDetailComponent implements OnInit {
         console.log('editar')
 
         if (this.employeeForm.valid) {
-          const id = Number(this.id); // Convierte el ID a número
+          const id = Number(this.id); 
           const updatedData = {
             id_card_employee: this.cedula.value,
             name_employee: this.employeeForm.get('name_employee').value,
@@ -279,11 +287,11 @@ export class EmployeeDetailComponent implements OnInit {
             this.loading = true;
             setTimeout(() => {
                 this.loading = false;
-                this.toastr.success('Empleado registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+                this.toastr.success('Empleado Modificado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
                 setTimeout(() => {
                     this.router.navigateByUrl('/employees');
-                }, 3000);
-            }, 3000);
+                },);
+            }, );
         }
     }
 

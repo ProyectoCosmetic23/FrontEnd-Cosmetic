@@ -1,6 +1,13 @@
 html [type="button"], .btn[type="button"] {
     -webkit-appearance: none !important;
 }
+
+.btn-loading {
+    margin-left: 10px;
+}
+
+
+
 .btn {
     &.rounded, &.btn-rounded {
         border-radius: 40px;

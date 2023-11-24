@@ -18,7 +18,7 @@
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
-                            <label for="nit_cedula">Cédula o NIT del proveedor</label>
+                            <label for="nit_cedula">Cédula o NIT del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
 
                             <input type="number" class="form-control" id="nit_cedula" (change)="handleNitSelection($event)"
                               [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'" 
@@ -28,7 +28,7 @@
 
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="name_provider">Nombre del proveedor</label>
+                            <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name_provider"(change)="handleNameProviderSelection($event)"
                                 [placeholder]="provider?.name_provider || 'Nombre del proveedor'"
                                 [readonly]="viewMode === 'print'"
@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="email_provider">Correo del proveedor</label>
+                            <label for="email_provider">Correo del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="email_provider"(change)="handleMailSelection($event)"
                                 [placeholder]="provider?.email_provider || 'Correo del proveedor'"
                                 [readonly]="viewMode === 'print'"
@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="address_provider">Dirección del proveedor</label>
+                            <label for="address_provider">Dirección del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <input class="form-control" id="address_provider"(change)="handleAddressSelection($event)"
                                 [placeholder]="provider?.address_provider || 'Dirección del proveedor'"
                                 [readonly]="viewMode === 'print'"
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="phone_provider">Teléfono del proveedor</label>
+                            <label for="phone_provider">Teléfono del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <input class="form-control" id="phone_provider"(change)="handlePhoneSelection($event)"
                                 [placeholder]="provider?.phone_provider || 'Teléfono del proveedor'"
                                 [readonly]="viewMode === 'print'"
@@ -70,7 +70,7 @@
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="name_contact">Nombre del contacto</label>
+                            <label for="name_contact">Nombre del contacto<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name_contact"(change)="handleNameContactSelection($event)"
                                 [placeholder]="provider?.name_contact || 'Nombre del contacto'"
                                 [readonly]="viewMode === 'print'"
@@ -93,12 +93,12 @@
                             </ng-template>
                         </div>
 
-                        <div class="col-md-6 form-group mb-3">
+                        <div class="col-md-12 form-group mb-3">
                             <label for="observation_provider">Observación del proveedor</label>
                             <textarea class="form-control" id="observation_provider"(change)="handleObservationSelection($event)"
                                 [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
                                 [readonly]="viewMode === 'print'"
-                                [ngClass]="{'placeholder-black': viewMode === 'print'}"></textarea>
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;" rows="6"></textarea>
                         </div>
                         <div class="col-md-12">
                             <div class="d-flex justify-content-end">

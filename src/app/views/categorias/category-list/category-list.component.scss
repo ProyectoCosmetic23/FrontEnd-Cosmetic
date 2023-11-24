@@ -1,0 +1,68 @@
+.datatable-scroll {
+  overflow: hidden !important; /* Oculta la barra de desplazamiento */
+}
+
+
+.datatable.scroll-vertical .datatable-body {
+    overflow-x: hidden;
+}
+
+.datatable.scroll-horz .datatable-body {
+    overflow-y: hidden;
+}
+
+@media print {
+    .print-view {
+      background-color: #fff;
+      padding: 20px;
+    }
+  
+    .print-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
+    .print-field {
+      margin-bottom: 20px; 
+    }
+  }
+  
+
+
+.btn-separator {
+    margin-right: 10px;
+  }
+
+  .button-spacing {
+    margin-right: 10px; /* Ajusta el valor según el espacio deseado */
+  }
+  
+  .form-group {
+    margin-bottom: 10px; /* Ajusta el valor según el espacio deseado */
+  }
+  
+  //para el swisct rojo cuando el estado es inactivo
+
+  .red-switch {
+    background-color: red;
+  }
+
+//   .switch .slider {
+//     background-color: red !important;
+// }
+.switch-success input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+// .switch .slider {
+//   position: absolute;
+//   cursor: pointer;
+//   width: 42px;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   border-radius: 34px;
+//   background-color: red;
+//   transition: 0.4s;
+// }

@@ -1,19 +1,68 @@
-<div class="app-footer">
-    <div class="row">
-        <div class="col-md-9">
-            <p><strong>CosmeTIC - Sistema getión ventas de cosméticos y productos de belleza al por mayor</strong></p>
-            <p>Autores: Alejandro Cañas, Marcela Morales, Julián Carreño, Sebastián Tamayo y Mariana Granados.</p>
-        </div>
+<div
+  class="app-footer"
+  style="
+    margin-top: 0 auto;
+    justify-content: flex-end;
+    bottom: 0;
+    width: 100%;
+  "
+>
+  <div class="row">
+    <div class="col-md-9">
+      <p>
+        <strong
+          >CosmeTIC - Sistema de Ventas de Cosméticos y Productos de Belleza al
+          por Mayor</strong
+        >
+      </p>
+      <p>
+        Tu solución integral para la gestión eficiente de compras y ventas de
+        productos de belleza. ¡Potenciando tu negocio!
+      </p>
     </div>
-    <div class="footer-bottom border-top pt-3 d-flex flex-column flex-sm-row align-items-center">
-     
-        <span class="flex-grow-1"></span>
-        <div class="d-flex align-items-center">
-            <img class="logo" src="./assets/images/logo.png" alt="Logo de CosmeTIC">
-            <div>
-                <p class="m-0">&copy; 2023 CosmeTIC</p>
-                <p class="m-0">Todos los derechos reservados</p>
-            </div>
-        </div>
+  </div>
+  <div
+    class="footer-bottom border-top pt-3 d-flex flex-column flex-sm-row align-items-center"
+  >
+    <a
+      class="btn btn-warning btn-rounded mb-3 mb-sm-0"
+      href="https://tu-enlace-de-feedback.com"
+      target="_blank"
+      >Soporte</a
+    >
+    <span class="flex-grow-1"></span>
+    <div class="d-flex align-items-center">
+      <button
+        class="btn btn-primary ng btn-rounded mb-3 mb-sm-0"
+        (click)="showTeamModal(teamModal)"
+      >
+        Equipo CosmeTIC
+      </button>
+      <img class="logo" src="./assets/images/logo.png" alt="Logo de CosmeTIC" />
+      <div>
+        <p class="m-0">&copy; 2023 CosmeTIC</p>
+        <p class="m-0">Todos los derechos reservados</p>
+      </div>
     </div>
+  </div>
 </div>
+
+<!-- Modal de Equipo CosmeTIC -->
+<ng-template #teamModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Equipo CosmeTIC</h4>
+    <button
+      type="button"
+      class="close"
+      (click)="modal.dismiss()"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ul class="list-unstyled">
+      <li *ngFor="let member of teamMembers">{{ member }}</li>
+    </ul>
+  </div>
+</ng-template>

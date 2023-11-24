@@ -63,15 +63,26 @@ export class NavigationService {
             ]
         },
         {
+            name: 'Sessions',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            type: 'dropDown',
+            icon: 'i-Administrator',
+            sub: [
+                { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
+                { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
+                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
+            ]
+        },
+        {
             name: 'Compras',
             description: 'Gestión de Compras',
             type: 'dropDown',
             icon: 'i-Full-Cart',
             sub: [
                 { icon: 'i-Administrator', name: 'Proveedores', state: '/proveedores', type: 'link' },
-                { icon: 'i-Tag-3', name: 'Categorias', state: '/categorias', type: 'link' },
+                { icon: 'i-Tag-3', name: 'Categorias', state: '/categories', type: 'link' },
                 { icon: 'i-File-Clipboard-Text--Image', name: 'Productos', state: '/products', type: 'link' },
-                { icon: 'i-Full-Cart', name: 'Compras', state: '/calendar', type: 'link' },
+                { icon: 'i-Full-Cart', name: 'Compras', state: '/purchases', type: 'link' },
             ]
         },
         {
@@ -95,7 +106,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Conference', name: 'Usuarios', state: 'users', type: 'link' },
                 { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
-                { icon: 'i-Money-2', name: 'Comisiones', state: '/comissions', type: 'link' },
+                { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
 
             ]
         },

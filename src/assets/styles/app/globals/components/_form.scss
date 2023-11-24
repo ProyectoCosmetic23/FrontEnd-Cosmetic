@@ -10,7 +10,7 @@
 .form-control {
     border: initial;
     outline: initial !important;
-    background: $gray-100;
+    background: white; /* Cambiado a blanco */
     border: 1px solid $gray-400;
     color: $foreground;
     &::placeholder {
@@ -20,6 +20,7 @@
         border-radius: 20px;
     }
 }
+
 
 select.form-control {
     -webkit-appearance: none;

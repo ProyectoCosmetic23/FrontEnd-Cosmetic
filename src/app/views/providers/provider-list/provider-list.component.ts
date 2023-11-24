@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DataLayerService } from 'src/app/shared/services/data-layer.service';
-import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { UntypedFormControl } from '@angular/forms';
-import { PaginationControlsComponent } from 'ngx-pagination';
 import { debounceTime } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -37,22 +35,27 @@ export class ProviderListComponent implements OnInit {
         private _providersService: ProvidersService,
         private modalService: NgbModal,
         private toastr: ToastrService,
+        private cookieService: CookieService,
     ) { }
 
     ngOnInit(): void {
-        this._providersService.getAllProviders()
+        const token = this.cookieService.get('token');
+        console.log(token);
+        this._providersService.getAllProviders(token)
             .subscribe((res: any[]) => {
+                this.providers = [...res];
                 this.listProviders = [...res];
-                this.filteredProviders = res;
+                this.filteredProviders = [...res];
                 this.originalListProviders = [...res];
             });
-
+    
         this.searchControl.valueChanges
             .pipe(debounceTime(200))
             .subscribe(value => {
                 this.filerData(value);
             });
     }
+    
 
     
     updateListProviders() {
@@ -78,33 +81,35 @@ export class ProviderListComponent implements OnInit {
     }
 
     filerData(val) {
+        console.log('Valor de búsqueda (antes del toLowerCase):', val);
+    
         if (val) {
             val = val.toLowerCase();
         } else {
-            return this.filteredProviders = [...this.providers];
-        }
-
-        const columns = Object.keys(this.providers[0]);
-        if (!columns.length) {
+            this.filteredProviders = [...this.listProviders];
             return;
         }
-
-        const rows = this.providers.filter(function (d) {
-            for (let i = 0; i <= columns.length; i++) {
-                const column = columns[i];
-                if (d[column] && d[column].toString().toLowerCase().indexOf(val) > -1) {
-                    return true;
-                }
-            }
+    
+        console.log('Valor de búsqueda (después del toLowerCase):', val);
+    
+        const rows = this.listProviders.filter(function (d) {
+            const nameProvider = d['name_provider'] ? d['name_provider'].toString().toLowerCase() : '';
+            return nameProvider.indexOf(val) > -1;
         });
+    
+        console.log('Resultados después de filtrar:', rows);
+    
         this.filteredProviders = rows;
     }
+    
+    
 
     sortListProvidersById() {
         this.listProviders.sort((a, b) => a.id_provider - b.id_provider);
     }
 
     getProviders() {
+        const token = this.cookieService.get('token');
         this._providersService.getAllProviders().subscribe(
             (data) => {
                 this.listProviders = data;
@@ -157,6 +162,4 @@ export class ProviderListComponent implements OnInit {
             );
         }
     }
-
-
 }
