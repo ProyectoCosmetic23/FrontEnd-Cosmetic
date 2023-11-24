@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { OrdersService } from 'src/app/shared/services/orders.service';
-import { ToastrService } from 'ngx-toastr';
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { OrdersService } from "src/app/shared/services/orders.service";
+import { CookieService } from "ngx-cookie-service";
+import { PaymentsService } from 'src/app/shared/services/payment.service';
+
 
 @Component({
   selector: "app-orders-detail",
@@ -35,13 +38,20 @@ export class OrdersDetailComponent implements OnInit {
   selected_employee: string;
   selected_client: string;
   selected_payment_type: string;
-  order_detail_products: any[] = [];
+  error_payment_type: boolean = false;
+  selected_employee_id: number;
+  error_employee: boolean = false;
+  selected_client_id: number;
+  error_client: boolean = false;
+  listPayments: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private _ordersService: OrdersService,
+    private _paymentService: PaymentsService,
+    private cookieService: CookieService,
     private toastr: ToastrService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
@@ -57,8 +67,9 @@ export class OrdersDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    this.formBasic = this.formBuilder.group({})
-    this.formBasic.addControl('products', this.productsFormArray);
+    this.formBasic = this.formBuilder.group({});
+    this.formBasic.addControl("products", this.productsFormArray);
+    this.getPaymentsForOrder();
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
@@ -66,13 +77,34 @@ export class OrdersDetailComponent implements OnInit {
   // Método que determina el modo de vista (nuevo o detalle) según la ruta actual
   setViewMode() {
     const currentRoute = this.router.url;
-    if (currentRoute.includes('/new')) {
-      this.viewMode = 'new';
-    } else if (currentRoute.includes('/detail/')) {
-      this.viewMode = 'detail';
+    if (currentRoute.includes("/new")) {
+      this.viewMode = "new";
+    } else if (currentRoute.includes("/detail/")) {
+      this.viewMode = "detail";
     }
   }
 
+  // -------------- INICIO: Métodos para obtener datos -------------- //
+  getPaymentsForOrder() {
+    if (this.viewMode === 'detail') {
+      // Convertir this.id a número usando parseInt
+      const orderId = parseInt(this.id, 10);
+  
+      // O alternativamente, usando Number
+      // const orderId = Number(this.id);
+  
+      this._paymentService.getPayOrder(orderId).subscribe(
+        (payments) => {
+          // Puedes almacenar los pagos en una propiedad del componente
+          this.listPayments = payments;
+        },
+        (error) => {
+          console.error('Error al obtener pagos:', error);
+        }
+      );
+    }
+  }
+  // Método para obtener un pedido y sus detalles
   getOrder() {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/detail/")) {
@@ -330,6 +362,210 @@ export class OrdersDetailComponent implements OnInit {
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
   createOrder() {
-    // Implementa la lógica para crear un pedido
+    if (!this.formBasic.valid) {
+      this.showFormWarning("Completa el formulario correctamente");
+      return;
+    }
+
+    this.checkProducts();
+
+    this.checkConditions();
+
+    const order_date = new Date();
+    const total_order = this.calculateTotal();
+
+    const newOrder = {
+      id_client: this.selected_client_id,
+      id_employee: this.selected_employee_id,
+      order_date: order_date,
+      payment_type: this.selected_payment_type,
+      total_order: total_order,
+      products: this.productsFormArray.value,
+    };
+
+    this.submitOrder(newOrder);
+<<<<<<< HEAD
+=======
+  }
+
+  checkProducts() {
+    if (this.productsFormArray.length === 0) {
+      this.showFormWarning("Agrega al menos un producto al pedido");
+      throw new Error("Productos insuficientes");
+    }
+
+    const productsArray = this.productsFormArray.value;
+    for (const product of productsArray) {
+      if (
+        !product.id_product ||
+        !product.product_price ||
+        !product.product_quantity
+      ) {
+        this.showFormWarning("Completa todos los campos del producto");
+        throw new Error("Campos de producto incompletos");
+      }
+    }
+  }
+
+  checkConditions() {
+    const conditions = [
+      {
+        variable: "error_client",
+        condition:
+          this.selected_client === "Seleccione el nombre del cliente" ||
+          this.selected_client_id == null ||
+          this.selected_client_id == undefined,
+        errorMessage: "Seleccione un cliente",
+      },
+      {
+        variable: "error_employee",
+        condition:
+          this.selected_employee === "Seleccione el nombre del empleado" ||
+          this.selected_employee_id == null ||
+          this.selected_employee_id == undefined,
+        errorMessage: "Seleccione un empleado",
+      },
+      {
+        variable: "error_payment_type",
+        condition:
+          this.selected_payment_type === "Seleccione el tipo de pago" ||
+          this.selected_payment_type == null ||
+          this.selected_payment_type == undefined,
+        errorMessage: "Seleccione un tipo de pago",
+      },
+    ];
+
+    conditions.forEach((condition) => {
+      this[condition.variable] =
+        this[condition.variable] || condition.condition;
+
+      if (this[condition.variable]) {
+        this.showFormWarning(condition.errorMessage);
+        throw new Error(`${condition.variable} no seleccionado`);
+      }
+    });
+
+    // Reset errors if all conditions are false
+    if (!conditions.some((condition) => this[condition.variable])) {
+      conditions.forEach((condition) => {
+        this[condition.variable] = false;
+      });
+    }
+  }
+
+  showFormWarning(message: string) {
+    this.toastr.warning(message, "Advertencia");
+  }
+
+  submitOrder(newOrder) {
+    this._ordersService.createOrder(newOrder).subscribe(
+      (response) => {
+        this.showSuccessMessage("Pedido creado exitosamente");
+        this.router.navigate(["/orders"]);
+      },
+      (error) => {
+        this.handleError("Error al crear el pedido:", error);
+      }
+    );
+  }
+
+  showSuccessMessage(message: string) {
+    this.toastr.success(message, "Éxito");
+  }
+
+  handleError(errorMessage: string, error: any) {
+    console.error(errorMessage, error);
+    this.toastr.error("Error al crear el pedido", "Error");
+>>>>>>> d510e23e760b38134f89ccc4d674df993433b6f3
+  }
+
+  checkProducts() {
+    if (this.productsFormArray.length === 0) {
+      this.showFormWarning("Agrega al menos un producto al pedido");
+      throw new Error("Productos insuficientes");
+    }
+
+    const productsArray = this.productsFormArray.value;
+    for (const product of productsArray) {
+      if (
+        !product.id_product ||
+        !product.product_price ||
+        !product.product_quantity
+      ) {
+        this.showFormWarning("Completa todos los campos del producto");
+        throw new Error("Campos de producto incompletos");
+      }
+    }
+  }
+
+  checkConditions() {
+    const conditions = [
+      {
+        variable: "error_client",
+        condition:
+          this.selected_client === "Seleccione el nombre del cliente" ||
+          this.selected_client_id == null ||
+          this.selected_client_id == undefined,
+        errorMessage: "Seleccione un cliente",
+      },
+      {
+        variable: "error_employee",
+        condition:
+          this.selected_employee === "Seleccione el nombre del empleado" ||
+          this.selected_employee_id == null ||
+          this.selected_employee_id == undefined,
+        errorMessage: "Seleccione un empleado",
+      },
+      {
+        variable: "error_payment_type",
+        condition:
+          this.selected_payment_type === "Seleccione el tipo de pago" ||
+          this.selected_payment_type == null ||
+          this.selected_payment_type == undefined,
+        errorMessage: "Seleccione un tipo de pago",
+      },
+    ];
+
+    conditions.forEach((condition) => {
+      this[condition.variable] =
+        this[condition.variable] || condition.condition;
+
+      if (this[condition.variable]) {
+        this.showFormWarning(condition.errorMessage);
+        throw new Error(`${condition.variable} no seleccionado`);
+      }
+    });
+
+    // Reset errors if all conditions are false
+    if (!conditions.some((condition) => this[condition.variable])) {
+      conditions.forEach((condition) => {
+        this[condition.variable] = false;
+      });
+    }
+  }
+
+  showFormWarning(message: string) {
+    this.toastr.warning(message, "Advertencia");
+  }
+
+  submitOrder(newOrder) {
+    this._ordersService.createOrder(newOrder).subscribe(
+      (response) => {
+        this.showSuccessMessage("Pedido creado exitosamente");
+        this.router.navigate(["/orders"]);
+      },
+      (error) => {
+        this.handleError("Error al crear el pedido:", error);
+      }
+    );
+  }
+
+  showSuccessMessage(message: string) {
+    this.toastr.success(message, "Éxito");
+  }
+
+  handleError(errorMessage: string, error: any) {
+    console.error(errorMessage, error);
+    this.toastr.error("Error al crear el pedido", "Error");
   }
 }
