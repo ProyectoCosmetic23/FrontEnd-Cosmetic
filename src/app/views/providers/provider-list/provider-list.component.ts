@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DataLayerService } from 'src/app/shared/services/data-layer.service';
-import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { UntypedFormControl } from '@angular/forms';
-import { PaginationControlsComponent } from 'ngx-pagination';
 import { debounceTime } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -37,10 +35,13 @@ export class ProviderListComponent implements OnInit {
         private _providersService: ProvidersService,
         private modalService: NgbModal,
         private toastr: ToastrService,
+        private cookieService: CookieService,
     ) { }
 
     ngOnInit(): void {
-        this._providersService.getAllProviders()
+        const token = this.cookieService.get('token');
+        console.log(token);
+        this._providersService.getAllProviders(token)
             .subscribe((res: any[]) => {
                 this.providers = [...res];
                 this.listProviders = [...res];
@@ -108,6 +109,7 @@ export class ProviderListComponent implements OnInit {
     }
 
     getProviders() {
+        const token = this.cookieService.get('token');
         this._providersService.getAllProviders().subscribe(
             (data) => {
                 this.listProviders = data;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -20,8 +20,9 @@ export class PaymentsService {
   createPayment(paymentData: any): Observable<any> {
     return this.http.post(this.baseUrl, paymentData);
   }
-  getAllPayments(): Observable<any> {
-    return this.http.get(this.baseUrl);
+  getAllPayments(token?: string): Observable<any[]> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.get<any[]>(this.baseUrl, { headers });
   }
   getPaymentById(paymentID: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${paymentID}`);
