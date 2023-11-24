@@ -380,8 +380,7 @@
               "
             />
           </div>
-
-          <div class="col-md-6 form-group mb-3">
+          <!-- <div class="col-md-6 form-group mb-3">
             <label for="id_order"># Orden</label>
             <input
               class="form-control"
@@ -391,6 +390,9 @@
               (change)="handleOrderSelection($event)"
             />
           </div>
+            <input class="form-control" id="id_order" [readonly]="true" formControlName="id_order"
+              (change)="handleOrderSelection($event)" />
+          </div> -->
           <div class="col-md-6 form-group mb-3">
             <label for="total_payment"
               >Monto pago<span class="text-danger">*</span></label
@@ -431,21 +433,10 @@
           <div class="col-md-12">
             <div class="d-flex justify-content-end">
               <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary btn-rounded"
-                  (click)="modal.close('cancel')"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  ngbAutofocus
-                  class="btn btn-wide btn-primary btn-rounded"
-                  (click)="asignarPago()"
-                >
-                  Asignar
-                </button>
+                <button type="button" class="btn btn-outline-secondary btn-rounded"
+                  (click)="modal.close('cancel')">Cancelar</button>
+                <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
+                  (click)="asignarPago()">Pagar</button>
               </div>
             </div>
           </div>
@@ -453,7 +444,17 @@
       </form>
     </div>
     <div class="tab-pane" [class.active]="activeTab === 'abonos'">
-      <h2>Probando listas</h2>
+      <div class="tab-pane" [class.active]="activeTab === 'abonos'">
+        <h1 class="text-center">Pagos del pedido {{ currentOrder?.order_number }}</h1>
+        <div *ngFor="let payment of paymentsForOrder">
+          <p style="display: inline-block; margin-right: 50px;" >
+            <b>Fecha Pago: </b>{{ payment.payment_date | date:'yyyy-MM-dd'}}
+            <b>Monto Pago:</b> {{ payment.total_payment | currency:'':'symbol':'1.2-2' }}
+            <b>Monto Restante:</b> {{ payment.total_remaining | currency:'':'symbol':'1.2-2' }}
+          </p>
+        </div>
+      
+      </div>
     </div>
   </div>
 </ng-template>

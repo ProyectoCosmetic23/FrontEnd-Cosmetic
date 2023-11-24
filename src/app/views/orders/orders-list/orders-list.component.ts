@@ -27,11 +27,13 @@ export class OrdersListComponent implements OnInit {
   };
   loading: boolean;
   modalRef: NgbModalRef;
+  currentOrder: any;
   payments: any[] = [];
   listClients: any[] = [];
   clientName: string;
   id_client: number;
   listOrders: any[] = [];
+  paymentsForOrder: any[] = [];
   modalAbierto = false;
   modalPayment = false;
   searchControl: UntypedFormControl = new UntypedFormControl();
@@ -258,73 +260,58 @@ export class OrdersListComponent implements OnInit {
   openPayments(idOrder: number) {
     if (!this.modalPayment) {
       this.modalPayment = true;
-      console.log("ID de la orden:", idOrder);
-
-      const order = this.listOrders.find((o) => o.id_order === idOrder);
-
-      if (order && this.listClients) {
-        const client = this.listClients.find(
-          (c) => c.id_client === order.id_client
-        );
-
-        // Asigna valores a las propiedades
-        this.clientName = client ? client.name_client : "Cliente no encontrado";
-        this.id_client = client ? client.id_client : null;
-
-        this.formBasic.patchValue({
-          id_order: order.id_order,
-          id_client: this.clientName, // Muestra el nombre del cliente en el formulario
-          total_order: order.total_order,
-        });
-
-        // Guardar la referencia al modal al abrirlo
-        this.modalRef = this.modalService.open(this.paymentModal, {
-          centered: true,
-        });
-
-        // Verificar si existen pagos asociados al pedido
-        this._paymentService.getPayOrder(idOrder).subscribe(
-          (payments) => {
+      console.log('ID de la orden:', idOrder);
+  
+      this._paymentService.getPayOrder(idOrder).subscribe(
+        (payments) => {
+          this.paymentsForOrder = payments;
+  
+          const order = this.listOrders.find((o) => o.id_order === idOrder);
+  
+          if (order && this.listClients) {
+            this.currentOrder = order; // Asigna el pedido actual a currentOrder
+  
+            const client = this.listClients.find((c) => c.id_client === order.id_client);
+  
+            this.clientName = client ? client.name_client : 'Cliente no encontrado';
+            this.id_client = client ? client.id_client : null;
+  
+            this.formBasic.patchValue({
+              id_order: order.id_order,
+              id_client: this.clientName,
+              total_order: order.total_order,
+            });
+  
+            this.modalRef = this.modalService.open(this.paymentModal, { centered: true, size: 'lg',});
+  
             if (payments.length > 0) {
-              // Sumar los total_payment de los pagos
-              const totalPayments = payments.reduce(
-                (sum, payment) => sum + parseFloat(payment.total_payment),
-                0
-              );
-
-              // Calcular el nuevo total_remaining
+              const totalPayments = payments.reduce((sum, payment) => sum + parseFloat(payment.total_payment), 0);
               const updatedTotalRemaining = order.total_order - totalPayments;
-
-              // Asignar el total_remaining al formulario
+  
               this.formBasic.patchValue({
                 total_remaining: updatedTotalRemaining,
               });
             }
-          },
-          (error) => {
-            console.error("Error al obtener pagos:", error);
-            // Puedes manejar el error según tus necesidades
-          }
-        );
-
-        this.modalRef.result.then(
-          (result) => {
-            if (result === "yes") {
-              if (result.value) {
-                this.createPayment();
-                console.log(result);
+  
+            this.modalRef.result.then(
+              (result) => {
+                if (result === 'yes' && result.value) {
+                  this.createPayment();
+                  console.log(result);
+                }
+                this.modalPayment = false;
+              },
+              (reason) => {
                 this.modalPayment = false;
               }
-            } else if (result === "cancel") {
-              console.log(result);
-              this.modalPayment = false;
-            }
-          },
-          (reason) => {
-            this.modalPayment = false;
+            );
           }
-        );
-      }
+        },
+        (error) => {
+          console.error('Error al obtener pagos:', error);
+          // Puedes manejar el error según tus necesidades
+        }
+      );
     }
   }
 
