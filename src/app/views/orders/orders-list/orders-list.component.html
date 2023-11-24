@@ -203,12 +203,6 @@
             <input type="text" class="form-control" id="payment_date" [placeholder]="'Fecha de pago'" [readonly]="true"
               [value]="formBasic.get('payment_date').value | date:'yyyy-MM-dd'" />
           </div>
-
-          <!-- <div class="col-md-6 form-group mb-3">
-            <label for="id_order"># Orden</label>
-            <input class="form-control" id="id_order" [readonly]="true" formControlName="id_order"
-              (change)="handleOrderSelection($event)" />
-          </div> -->
           <div class="col-md-6 form-group mb-3">
             <label for="total_payment">Monto pago<span class="text-danger">*</span></label>
             <input type="number" class="form-control" id="total_payment" [placeholder]="'Monto pago'"

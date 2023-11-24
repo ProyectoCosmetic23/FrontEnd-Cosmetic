@@ -172,7 +172,7 @@ export class ProvidersDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Ya existe un proveedor con estos datos.', 'Error', { progressBar: true });
+          this.toastr.error('Error al crear el proveedor:', 'Error', { progressBar: true });
           console.error('Error al crear el proveedor:', error);
         }
       );
