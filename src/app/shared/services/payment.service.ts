@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentsService {
 
-  private baseUrl = 'http://localhost:8080/api/payments';
-  private url2 = 'http://localhost:8080/api/clients';
-  private url3 = 'http://localhost:8080/api/sales';
-  private url4 = 'http://localhost:8080/api/orders';
+  private baseUrl = environment.url +'/api/payments';
+  private url2 = environment.url +'/api/clients';
+  private url3 = environment.url +'/api/sales';
+  private url4 = environment.url +'/api/orders';
 
   constructor(private http: HttpClient) { }
   getPayOrder(orderID: number): Observable<any> {

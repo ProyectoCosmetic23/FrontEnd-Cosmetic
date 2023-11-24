@@ -41,7 +41,9 @@
                   </option>
                 </select>
               </ng-template>
-              <p *ngIf="error_client" style="color: red; margin: 3% 0 0 3%;">Se debe seleccionar un cliente*</p>
+              <p *ngIf="error_client" style="color: red; margin: 3% 0 0 3%">
+                Se debe seleccionar un cliente*
+              </p>
             </div>
 
             <div class="col-md-5 form-group mb-3">
@@ -68,7 +70,9 @@
                   </option>
                 </select>
               </ng-template>
-              <p *ngIf="error_employee" style="color: red; margin: 3% 0 0 3%;">Se debe seleccionar un empleado*</p>
+              <p *ngIf="error_employee" style="color: red; margin: 3% 0 0 3%">
+                Se debe seleccionar un empleado*
+              </p>
             </div>
 
             <div class="col-md-2 form-group mb-3">
@@ -92,7 +96,12 @@
                   <option [value]="'Credito'">Crédito</option>
                 </select>
               </ng-template>
-              <p *ngIf="error_payment_type" style="color: red; margin: 3% 0 0 3%;">Se debe seleccionar un tipo de pago*</p>
+              <p
+                *ngIf="error_payment_type"
+                style="color: red; margin: 3% 0 0 3%"
+              >
+                Se debe seleccionar un tipo de pago*
+              </p>
             </div>
           </div>
 
@@ -208,19 +217,27 @@
                   {{
                     viewMode == "new"
                       ? calculateTotal()
-                      : order.order.total_order
+                      : (order?.order?.total_order
+                        | currency : "" : "symbol" : "1.2")
                   }}
                 </div>
               </div>
             </div>
           </div>
-          <div *ngIf="viewMode === 'detail'" style="padding-top: 2%;">
+          <div *ngIf="viewMode === 'detail'" style="padding-top: 2%">
             <h2>Pagos Realizados</h2>
             <div *ngFor="let payment of listPayments">
               <p>
-                <b>Fecha de Pago:</b> {{ payment.payment_date | date:'yyyy-MM-dd' }}
-                <b>Monto Pago:</b> {{ payment.total_payment | currency:'':'symbol':'1.2-2' }}
-                <b>Monto Restante:</b> {{ payment.total_remaining | currency:'':'symbol':'1.2-2' }}
+                <b>Fecha de Pago:</b>
+                {{ payment.payment_date | date : "yyyy-MM-dd" }}
+                <b>Monto Pago:</b>
+                {{
+                  payment.total_payment | currency : "" : "symbol" : "1.2-2"
+                }}
+                <b>Monto Restante:</b>
+                {{
+                  payment.total_remaining | currency : "" : "symbol" : "1.2-2"
+                }}
               </p>
             </div>
           </div>

@@ -14,8 +14,6 @@ interface ComissionDetail {
     month_commission: string
 }
 
-
-
 @Component({
     selector: 'app-comission-list',
     templateUrl: './comission-list.component.html',

@@ -22,10 +22,9 @@ export class ProductFormModel {
         this.min_stock = response.min_stock;
         this.cost_price = response.cost_price;
         this.selling_price = response.selling_price;
-        this.selling_price = response.selling_price;
         this.profit = response.profit;
         this.state_product = response.state_product;
         this.observation = response.observation;
-        this.creation_date_product = new Date(response.creation_date_product);
+        this.creation_date_product = response.creation_date_product;
     }
 }

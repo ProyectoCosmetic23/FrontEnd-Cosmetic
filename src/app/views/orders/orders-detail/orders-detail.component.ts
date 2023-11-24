@@ -109,7 +109,6 @@ export class OrdersDetailComponent implements OnInit {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/detail/")) {
       // Antes de cargar los datos, establece loadingData en true
-      this.loadingData = true;
       this._ordersService.getOrderById(this.id).subscribe(
         (data) => {
           this.order = data;

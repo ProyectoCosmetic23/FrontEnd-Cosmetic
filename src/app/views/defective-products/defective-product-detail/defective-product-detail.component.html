@@ -1,0 +1,68 @@
+<div class="breadcrumb">
+   
+    <h1 *ngIf="viewMode === 'print'">Ver detalle de producto dado de baja</h1>
+    <ul>
+    <li><a [routerLink]="['/defective-products']">Productos dados de baja</a></li>
+    <li *ngIf="viewMode === 'print'">Ver detalle de producto dado de baja</li>
+    </ul>
+</div>
+
+
+<div class="separator-breadcrumb border-top"></div>
+
+<!-- Contenido común a todas las vistas -->
+<div class="form-container">
+<!-- Vista de crear clientes -->
+<div class="row">
+<div class="col-md-12">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="card-title mb-3">Formulario de productos dados de baja</div>
+            <form [formGroup]="defectiveProductForm" (ngSubmit)="submitDefectiveProduct()">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="id_defective_product">Id devolucion <span class="text-danger">*</span></label>
+                        <input type="text"  class="form-control" id="id_defective_product" formControlName="id_defective_product" >
+                    
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="id_product">Id producto<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="id_product" formControlName="id_product" required>
+                     
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="return_reason">Motivo devolucion<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="return_reason" formControlName="return_reason" required>
+                       
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="return_date">Fecha devolucion<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="return_date" formControlName="return_date" required>
+                       
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="return_quantity">Cantidad devolucion<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="return_quantity" formControlName="return_quantity" required>
+                       
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="return_value">Valor devolucion<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="return_value" formControlName="return_value" required>
+                       
+                    </div>
+                    
+                    <div class="form-group text-right" style="text-align: right;">
+                        <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                        <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" (click)="submitDefectiveProduct()" >
+                            {{ viewMode == 'new' ? 'Registrar cliente' : 'Editar cliente' }}
+                        </btn-loading>
+                       
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+  </div>
+</div>

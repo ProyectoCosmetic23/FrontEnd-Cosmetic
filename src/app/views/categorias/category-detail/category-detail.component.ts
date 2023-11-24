@@ -132,13 +132,13 @@ createCategory() {
       this.categoriesService.createCategory(categoryData).subscribe(
           (response) => {
               this.loading = false;
-              console.log("Éxito al crear caetgoría: ", response);
+              console.log("Éxito al crear categoría: ", response);
               this.submit();
           },
           (error) => {
               this.loading = false;
-              console.error("Error al crear caetgoría: ", this.toastr.error);
-              const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el caetgoría.';
+              console.error("Error al crear categoría: ", this.toastr.error);
+              const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el categoría.';
               this.toastr.error(errorMessage, 'Error');
           }
       );

@@ -15,7 +15,7 @@ import {PurchaseRoutingModule } from './purchase-routing.module';
     NgxDatatableModule,
     
     ReactiveFormsModule, // Solo importa ReactiveFormsModule
-    SharedComponentsModule,
+
     NgbModule,
    PurchaseRoutingModule,
     

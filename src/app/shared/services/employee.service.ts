@@ -2,11 +2,12 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeesService {
-  baseUrl = 'http://localhost:8080/api/employees';
+  baseUrl = environment.url + '/api/employees';
 
   constructor(private http: HttpClient) { }
 
@@ -34,29 +35,29 @@ export class EmployeesService {
       })
     );
   }
-  
 
 
 
-checkCedulaAvailability(cedula: string): Observable<boolean> {
+
+  checkCedulaAvailability(cedula: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.baseUrl}-check-cedula?cedula=${cedula}`);
-}
+  }
 
-checkEmailAvailability(email: string): Observable<boolean> {
+  checkEmailAvailability(email: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.baseUrl}-check-email?email=${email}`);
-}
+  }
 
-getEmployeesById(id: number, token?: string): Observable<any> {
-  const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
-  const url = `${this.baseUrl}/${id}`;
-  return this.http.get<any>(url, { headers });
-}
+  getEmployeesById(id: number, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    const url = `${this.baseUrl}/${id}`;
+    return this.http.get<any>(url, { headers });
+  }
 
-employeeChangeStatus(id: number, token?: string): Observable<any> {
-  const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
-  const url = `${this.baseUrl}/changeState/${id}`;
-  return this.http.put<any>(url, {}, { headers });
-}
+  employeeChangeStatus(id: number, token?: string): Observable<any> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    const url = `${this.baseUrl}/changeState/${id}`;
+    return this.http.put<any>(url, {}, { headers });
+  }
 
 }
 
