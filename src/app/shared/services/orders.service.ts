@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrdersService {
   headers: any;
-  url = 'https://api-cosmetic-1iuc.onrender.com/api/orders';
+  url = environment.url;
   token: any;
 
   constructor(
@@ -23,28 +24,28 @@ export class OrdersService {
   }
 
   getAllClients(): Observable<any> {
-    return this.http.get('https://api-cosmetic-1iuc.onrender.com/api/clients');
+    return this.http.get(this.url + '/api/clients');
   }
 
   getAllEmployees(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
     console.log("Los headers", headers);
-    return this.http.get<any[]>('https://api-cosmetic-1iuc.onrender.com/api/employees', { headers });
+    return this.http.get<any[]>(this.url + '/api/employees', { headers });
   }
 
   getAllProducts(): Observable<any> {
-   return this.http.get('https://api-cosmetic-1iuc.onrender.com/api/productcs');
+   return this.http.get(this.url + '/api/productcs');
   }
 
   getOrderById(id: any): Observable<any> {
-    return this.http.get(this.url + '/' + id);
+    return this.http.get(this.url + 'api/order/' + id);
   }
 
   createOrder(orderData: any): Observable<any> {
-    return this.http.post(this.url, orderData);
+    return this.http.post(this.url + 'api/order', orderData);
   }
 
   updateOrderStatus(id: any): Observable<any> {
-    return this.http.put(this.url + '/updateStatus/' + id, {});
+    return this.http.put(this.url + 'api/order/updateStatus/' + id, {});
   }
 }
