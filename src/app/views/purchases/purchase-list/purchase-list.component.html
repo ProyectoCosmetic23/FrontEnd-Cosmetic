@@ -106,7 +106,7 @@
                             <i class="i-Eye"></i>
                         </button>
      
-                        <button  ngbTooltip="Anular"  class="btn btn-danger " name="state" (click)="modalStatus(row.id_purchase, $event)"*ngIf="row.state_purchase == true" >
+                        <button  ngbTooltip="Anular"  class="btn btn-danger " name="state" (click)="modalStatus(row.id_purchase, $event)" [disabled]="!row.state_purchase" >
                             <i class="i-Close"></i> 
                         </button>
                     
