@@ -7,7 +7,6 @@
   </div>
 </div>
 
-
 <div class="row">
   <div class="col-md-12">
     <div class="card mb-4">
@@ -18,23 +17,35 @@
             <div class="col-md-5 form-group mb-3">
               <label for="id_client">Cliente</label>
               <select
-               class="form-control" id="id_client" [disabled]="viewMode === 'detaild'" *ngIf="viewMode === 'detaild'">
-               <option >{{ selected_client }}</option>
+                class="form-control"
+                id="id_client"
+                [disabled]="viewMode === 'detaild'"
+                *ngIf="viewMode === 'detaild'"
+              >
+                <option>{{ selected_client }}</option>
               </select>
             </div>
 
             <div class="col-md-5 form-group mb-3">
               <label for="id_employee">Empleado</label>
               <select
-               class="form-control" id="employee" [disabled]="viewMode === 'detaild'" *ngIf="viewMode === 'detaild'">
-               <option >{{ selected_client }}</option>
+                class="form-control"
+                id="employee"
+                [disabled]="viewMode === 'detaild'"
+                *ngIf="viewMode === 'detaild'"
+              >
+                <option>{{ selected_client }}</option>
               </select>
             </div>
             <div class="col-md-2 form-group mb-3">
-              <label for="payment_type">Empleado</label>
+              <label for="payment_type">Tipo de pago</label>
               <select
-               class="form-control" id="payment_type" [disabled]="viewMode === 'detaild'" *ngIf="viewMode === 'detaild'">
-               <option >{{ selected_client }}</option>
+                class="form-control"
+                id="payment_type"
+                [disabled]="viewMode === 'detaild'"
+                *ngIf="viewMode === 'detaild'"
+              >
+                <option>{{ selected_client }}</option>
               </select>
             </div>
           </div>
@@ -52,17 +63,84 @@
                 </tr>
               </thead>
               <tbody formArrayName="products">
-                
-
+                <ng-container *ngIf="viewMode === detaildView">
+                  <tr
+                    *ngFor="
+                      let product of productsFormArray.controls;
+                      let i = index
+                    "
+                    [formGroupName]="i"
+                  >
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>
+                      <select
+                        class="form-control"
+                        id="id_product"
+                        formControlName="id_product"
+                        (change)="handleProductSelection($event, i)"
+                      >
+                        <option
+                          *ngFor="let product of listProducts"
+                          [value]="product.id_product"
+                        >
+                          {{ product.name_product }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="product_price"
+                        id="product_price"
+                        class="form-control"
+                        formControlName="product_price"
+                        [readonly]="true"
+                        *ngIf="viewMode === 'detaild'"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control"
+                        formControlName="product_quantity"
+                        (change)="handleProductSelection($event, i)"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control"
+                        formControlName="subtotal"
+                        [readonly]="true"
+                      />
+                    </td>
+                    <td
+                      *ngIf="viewMode == 'detaild'"
+                      class="d-flex justify-content-between"
+                    >
+                      <button
+                        *ngIf="numberOfProducts > 1"
+                        class="btn btn-danger"
+                        (click)="removeProduct(i)"
+                      >
+                        <i class="i-Remove-Cart"></i>
+                      </button>
+                      <div
+                        class="button_container"
+                        *ngIf="i === productsFormArray.controls.length - 1"
+                      >
+                        <button class="btn btn-primary" (click)="addProduct()">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
               </tbody>
-
             </table>
           </div>
-
         </form>
-        
       </div>
     </div>
-
   </div>
 </div>

@@ -89,10 +89,10 @@ export class OrdersDetailComponent implements OnInit {
     if (this.viewMode === 'detail') {
       // Convertir this.id a número usando parseInt
       const orderId = parseInt(this.id, 10);
-  
+
       // O alternativamente, usando Number
       // const orderId = Number(this.id);
-  
+
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
           // Puedes almacenar los pagos en una propiedad del componente
@@ -384,8 +384,6 @@ export class OrdersDetailComponent implements OnInit {
     };
 
     this.submitOrder(newOrder);
-<<<<<<< HEAD
-=======
   }
 
   checkProducts() {
@@ -469,96 +467,6 @@ export class OrdersDetailComponent implements OnInit {
     );
   }
 
-  showSuccessMessage(message: string) {
-    this.toastr.success(message, "Éxito");
-  }
-
-  handleError(errorMessage: string, error: any) {
-    console.error(errorMessage, error);
-    this.toastr.error("Error al crear el pedido", "Error");
->>>>>>> d510e23e760b38134f89ccc4d674df993433b6f3
-  }
-
-  checkProducts() {
-    if (this.productsFormArray.length === 0) {
-      this.showFormWarning("Agrega al menos un producto al pedido");
-      throw new Error("Productos insuficientes");
-    }
-
-    const productsArray = this.productsFormArray.value;
-    for (const product of productsArray) {
-      if (
-        !product.id_product ||
-        !product.product_price ||
-        !product.product_quantity
-      ) {
-        this.showFormWarning("Completa todos los campos del producto");
-        throw new Error("Campos de producto incompletos");
-      }
-    }
-  }
-
-  checkConditions() {
-    const conditions = [
-      {
-        variable: "error_client",
-        condition:
-          this.selected_client === "Seleccione el nombre del cliente" ||
-          this.selected_client_id == null ||
-          this.selected_client_id == undefined,
-        errorMessage: "Seleccione un cliente",
-      },
-      {
-        variable: "error_employee",
-        condition:
-          this.selected_employee === "Seleccione el nombre del empleado" ||
-          this.selected_employee_id == null ||
-          this.selected_employee_id == undefined,
-        errorMessage: "Seleccione un empleado",
-      },
-      {
-        variable: "error_payment_type",
-        condition:
-          this.selected_payment_type === "Seleccione el tipo de pago" ||
-          this.selected_payment_type == null ||
-          this.selected_payment_type == undefined,
-        errorMessage: "Seleccione un tipo de pago",
-      },
-    ];
-
-    conditions.forEach((condition) => {
-      this[condition.variable] =
-        this[condition.variable] || condition.condition;
-
-      if (this[condition.variable]) {
-        this.showFormWarning(condition.errorMessage);
-        throw new Error(`${condition.variable} no seleccionado`);
-      }
-    });
-
-    // Reset errors if all conditions are false
-    if (!conditions.some((condition) => this[condition.variable])) {
-      conditions.forEach((condition) => {
-        this[condition.variable] = false;
-      });
-    }
-  }
-
-  showFormWarning(message: string) {
-    this.toastr.warning(message, "Advertencia");
-  }
-
-  submitOrder(newOrder) {
-    this._ordersService.createOrder(newOrder).subscribe(
-      (response) => {
-        this.showSuccessMessage("Pedido creado exitosamente");
-        this.router.navigate(["/orders"]);
-      },
-      (error) => {
-        this.handleError("Error al crear el pedido:", error);
-      }
-    );
-  }
 
   showSuccessMessage(message: string) {
     this.toastr.success(message, "Éxito");
