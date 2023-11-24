@@ -1,0 +1,65 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Productos dados de baja</h1>
+        <ul>
+            <li><a href="#">Ventas</a></li>
+            <li>Productos dados de baja</li>
+        </ul>
+        </div>
+    
+        <div class="separator-breadcrumb border-top"></div>
+        <div class="col-md-12 mb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <input _ngcontent-vet-c167="" id="search" placeholder="Buscar producto dado de baja" type="text"
+                        class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
+                        style="width: 50%;">
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="row mb-3">
+        
+        <div class="col-md-12">
+            <div class="card o-hidden">
+                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
+                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"[rows]="filteredDefectiveProducts">
+                <ngx-datatable-column name="id_product" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                    <ng-template ngx-datatable-header-template>
+                        Id del producto:
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.id_product }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="return_reason" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
+                    <ng-template ngx-datatable-header-template>
+                        Motivo devolución
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        {{ row.return_reason}} 
+                    </ng-template>
+                </ngx-datatable-column>
+
+
+
+                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="50">
+                    <ng-template ngx-datatable-header-template>
+                        Acciones
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <button class="btn btn-dark m-1" [routerLink]="['/defective-products/print', row.id_defective_product]">
+                            <i class="i-Eye"></i>
+                        </button>
+                    </ng-template>
+                </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </div>
+</div>
+

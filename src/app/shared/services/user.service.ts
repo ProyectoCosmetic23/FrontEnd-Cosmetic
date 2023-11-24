@@ -7,6 +7,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class UsersService {
     url = 'http://localhost:8080/api/Users';
+    url2 = 'http://localhost:8080/api/roles';
+    url3 = 'http://localhost:8080/api/employees';
 
     constructor(private http: HttpClient) { }
 
@@ -40,7 +42,8 @@ export class UsersService {
     checkEmailAvailability(email: string): Observable<boolean> {
         return this.http.get<boolean>(`${this.url}-check-email?email=${email}`);
     }
-    
+
+
 
     getUsersById(id: number): Observable<any> {
         return this.http.get<any>(`${this.url}/${id}`);
@@ -51,6 +54,30 @@ export class UsersService {
         return this.http.put<boolean>(`${this.url}/state/${id}`, {});
 
     }
+
+    getAllRoles(): Observable<any> {
+        return this.http.get(this.url2);
+    }
+
+    getEmployeeByEmail(idCard: string): Observable<any> {
+        const url = `${this.url}/employeeByCard/${idCard}`;
+    
+        return this.http.get(url).pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.error('Error al obtener el correo del empleado:', error);
+            return throwError('Ocurrió un error al buscar el correo del empleado.');
+          })
+        );
+      }
+
+    
+
+
+
+      
+
+
+  
 
 }
 

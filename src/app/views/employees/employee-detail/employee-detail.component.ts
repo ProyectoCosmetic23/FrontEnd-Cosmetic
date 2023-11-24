@@ -8,6 +8,7 @@ import { EmployeeFormModel } from '../models/employee.model';
 import { CookieService } from 'ngx-cookie-service';
 
 
+
 @Component({
     selector: 'app-empleado-detail',
     templateUrl: './employee-detail.component.html',
@@ -15,8 +16,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class EmployeeDetailComponent implements OnInit {
 
-    employeeForm: FormGroup;
-    employeeFormSub: Subscription;
+    
     loading: boolean = false;
     formBasic: FormGroup;
     viewMode: 'new' | 'edit' | 'print' = 'new';
@@ -28,6 +28,8 @@ export class EmployeeDetailComponent implements OnInit {
     subTotal: number;
     saving: boolean;
     employeeData: EmployeeFormModel;
+    employeeForm: FormGroup;
+    employeeFormSub: Subscription;
 
     constructor(
         
