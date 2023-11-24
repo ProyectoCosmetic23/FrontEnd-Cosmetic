@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComissionsDetailService {
 
-  private baseUrl = 'http://localhost:8080/api/detailComs';
-  private url2 = 'http://localhost:8080/api/commissions';
+  private baseUrl = environment.url +'/api/detailComs';
+  private url2 = environment.url +'/api/commissions';
 
   constructor(private http: HttpClient) { }
 

@@ -7,14 +7,12 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validator } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-///import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 interface ComissionDetail {
     commission_percentage: number;
     month_commission: string
 }
-
-
 
 @Component({
     selector: 'app-comission-list',
@@ -79,7 +77,7 @@ export class ComissionListComponent implements OnInit {
     currentMonthYear: string;
 
     ngOnInit(): void {
-        //this.sweetAlert = Swal;
+        this.sweetAlert = Swal;
         const date = new Date();
         this.currentYear = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2);

@@ -62,7 +62,7 @@
             [maxWidth]="60"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 10px; text-align: center;">N°</p>
+              <p style="font-size: 10px; text-align: center">N°</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -95,7 +95,7 @@
                 <p
                   style="font-size: 10px; text-align: center; margin-top: 12px"
                 >
-                  {{ row.id_client }}
+                  {{ row.name_client }}
                 </p>
               </ng-container>
             </ng-template>
@@ -115,7 +115,9 @@
               let-row="row"
             >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.order_date }}
                 </p>
               </ng-container>
@@ -127,7 +129,9 @@
             [canAutoResize]="true"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px; text-align: center">Estado de Pedido</p>
+              <p style="font-size: 12px; text-align: center">
+                Estado de Pedido
+              </p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -207,7 +211,7 @@
                 <p
                   style="font-size: 10px; text-align: center; margin-top: 12px"
                 >
-                  {{ row.total_order | currency:'':'symbol':'1.2-2' }}
+                  {{ row.total_order | currency : "" : "symbol" : "1.2-2" }}
                 </p>
               </ng-container>
             </ng-template>
@@ -226,7 +230,13 @@
               let-row="row"
             >
               <ng-container *ngIf="row && row.id_order">
-                <div style="display: flex; justify-content: space-between; margin-top: 5px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 5px;
+                  "
+                >
                   <button
                     class="btn btn-dark btn-sm"
                     data-toggle="tooltip"
@@ -238,15 +248,27 @@
                   </button>
                   <button
                     class="btn btn-success btn-sm"
+                    *ngIf="row.payment_state !== 'Pagado'"
                     data-toggle="tooltip"
                     data-placement="top"
                     title="Realizar pago"
-                    [routerLink]="['/payments/new', row.id_order]"
+                    (click)="openPayments(row.id_order)"
                   >
                     <i class="i-Financial" style="font-size: 15px"></i>
                   </button>
                   <button
-                    class="btn btn-warning btn-sm"
+                    class="btn btn-sm"
+                    [ngClass]="{
+                      'btn-warning': row.delivery_state === 'En proceso',
+                      'btn-primary':
+                        row.delivery_state === 'Por entregar' ||
+                        row.delivery_state === 'Entregado'
+                    }"
+                    *ngIf="
+                      ['En proceso', 'Por entregar', 'Entregado'].includes(
+                        row.delivery_state
+                      )
+                    "
                     data-toggle="tooltip"
                     data-placement="top"
                     title="Enviar pedido"
@@ -275,7 +297,9 @@
 
 <ng-template #deleteConfirmModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Cambiar Estado del Rol</h4>
+    <h4 class="modal-title" id="modal-title">
+      Cambiar Estado de Entrega del Pedido
+    </h4>
     <button
       type="button"
       class="close"
@@ -287,7 +311,9 @@
     </button>
   </div>
   <div class="modal-body">
-    <p><strong>¿Está seguro de que desea inhabilitar este rol?</strong></p>
+    <p>
+      <strong>¿Está seguro de que desea cambiar el estado del pedido?</strong>
+    </p>
   </div>
   <div class="modal-footer">
     <button
@@ -305,5 +331,130 @@
     >
       Aceptar
     </button>
+  </div>
+</ng-template>
+
+<ng-template #paymentModal let-modal>
+  <ul class="nav nav-tabs">
+    <li
+      class="nav-item"
+      (click)="activeTab = 'formulario'"
+      style="cursor: pointer"
+    >
+      <a class="nav-link" [class.active]="activeTab === 'formulario'"
+        >Registrar pago</a
+      >
+    </li>
+    <li class="nav-item" (click)="activeTab = 'abonos'" style="cursor: pointer">
+      <a class="nav-link" [class.active]="activeTab === 'abonos'"
+        >Pagos registrados</a
+      >
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane" [class.active]="activeTab === 'formulario'">
+      <form [formGroup]="formBasic" (ngSubmit)="submit()">
+        <div class="row">
+          <div class="col-md-6 form-group mb-3">
+            <label for="id_client">Nombre cliente</label>
+            <input
+              class="form-control"
+              id="id_client"
+              [readonly]="true"
+              (change)="handleClientSelection($event)"
+              formControlName="id_client"
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="payment_date">Fecha de pago</label>
+            <input
+              type="text"
+              class="form-control"
+              id="payment_date"
+              [placeholder]="'Fecha de pago'"
+              [readonly]="true"
+              [value]="
+                formBasic.get('payment_date').value | date : 'yyyy-MM-dd'
+              "
+            />
+          </div>
+          <!-- <div class="col-md-6 form-group mb-3">
+            <label for="id_order"># Orden</label>
+            <input
+              class="form-control"
+              id="id_order"
+              [readonly]="true"
+              formControlName="id_order"
+              (change)="handleOrderSelection($event)"
+            />
+          </div>
+            <input class="form-control" id="id_order" [readonly]="true" formControlName="id_order"
+              (change)="handleOrderSelection($event)" />
+          </div> -->
+          <div class="col-md-6 form-group mb-3">
+            <label for="total_payment"
+              >Monto pago<span class="text-danger">*</span></label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="total_payment"
+              [placeholder]="'Monto pago'"
+              [readonly]="viewMode === 'print'"
+              (change)="updateTotalRemaining()"
+              formControlName="total_payment"
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="total_order">Total pedido</label>
+            <input
+              class="form-control"
+              id="total_order"
+              [readonly]="true"
+              formControlName="total_order"
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="total_remaining">Total restante</label>
+            <input
+              type="number"
+              class="form-control"
+              id="total_remaining"
+              [placeholder]="'Total restante'"
+              [readonly]="true"
+              [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
+              formControlName="total_remaining"
+            />
+          </div>
+          <div class="col-md-12">
+            <div class="d-flex justify-content-end">
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-rounded"
+                  (click)="modal.close('cancel')">Cancelar</button>
+                <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
+                  (click)="asignarPago()">Pagar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="tab-pane" [class.active]="activeTab === 'abonos'">
+      <div class="tab-pane" [class.active]="activeTab === 'abonos'">
+        <h1 class="text-center">Pagos del pedido {{ currentOrder?.order_number }}</h1>
+        <div *ngFor="let payment of paymentsForOrder">
+          <p style="display: inline-block; margin-right: 50px;" >
+            <b>Fecha Pago: </b>{{ payment.payment_date | date:'yyyy-MM-dd'}}
+            <b>Monto Pago:</b> {{ payment.total_payment | currency:'':'symbol':'1.2-2' }}
+            <b>Monto Restante:</b> {{ payment.total_remaining | currency:'':'symbol':'1.2-2' }}
+          </p>
+        </div>
+      
+      </div>
+    </div>
   </div>
 </ng-template>

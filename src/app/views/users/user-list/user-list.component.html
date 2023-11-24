@@ -1,6 +1,6 @@
 <div class="">
     <div class="breadcrumb">
-        <h1>Listar usuarios</h1>
+        <h1>Usuarios</h1>
         <ul>
             <li><a href="#">Servicios</a></li>
             <li>Usuarios</li>
@@ -27,14 +27,14 @@
             <div class="card o-hidden">
                 <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
                     [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="filteredUsers">
-                    <ngx-datatable-column name="id_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                    <!-- <ngx-datatable-column name="id_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
                             Id usuario
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.id_user }}
                         </ng-template>
-                    </ngx-datatable-column>
+                    </ngx-datatable-column> -->
                     <ngx-datatable-column name="username" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
                         <ng-template ngx-datatable-header-template>
                             Nombre usuario
