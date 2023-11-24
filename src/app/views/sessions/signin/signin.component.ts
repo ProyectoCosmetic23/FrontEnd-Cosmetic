@@ -32,8 +32,8 @@ export class SigninComponent implements OnInit {
 
   constructor(private toastr: ToastrService) {}
   public myForm: FormGroup = this.fb.group({
-    email: ["julian@gmail.com", [Validators.required, Validators.email]],
-    password: ["Julian9*", [Validators.required, Validators.minLength(6)]],
+    email: ["marcela18@gmai.com", [Validators.required, Validators.email]],
+    password: ["M1234567*", [Validators.required, Validators.minLength(6)]],
   });
 
   ngOnInit() {
