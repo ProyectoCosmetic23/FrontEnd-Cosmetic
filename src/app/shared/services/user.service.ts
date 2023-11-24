@@ -6,9 +6,9 @@ import { catchError } from 'rxjs/operators';
     providedIn: 'root'
 })
 export class UsersService {
-    url = 'http://localhost:8080/api/Users';
-    url2 = 'http://localhost:8080/api/roles';
-    url3 = 'http://localhost:8080/api/employees';
+    url = 'https://api-cosmetic-1iuc.onrender.com/api/Users';
+    url2 = 'https://api-cosmetic-1iuc.onrender.com/api/roles';
+    url3 = 'https://api-cosmetic-1iuc.onrender.com/api/employees';
 
     constructor(private http: HttpClient) { }
 

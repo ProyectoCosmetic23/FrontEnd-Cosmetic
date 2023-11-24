@@ -7,7 +7,7 @@ import { Observable } from 'rxjs-compat';
 })
 export class RolesService {
 
-  url = 'http://localhost:8080/api/roles';
+  url = 'https://api-cosmetic-1iuc.onrender.com/api/roles';
   constructor(
     private http: HttpClient
   ) { }
