@@ -13,7 +13,9 @@ export class PaymentsService {
   private url4 = 'http://localhost:8080/api/orders';
 
   constructor(private http: HttpClient) { }
-
+  getPayOrder(orderID: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/orders/${orderID}`);
+  }
   createPayment(paymentData: any): Observable<any> {
     return this.http.post(this.baseUrl, paymentData);
   }
@@ -47,4 +49,5 @@ export class PaymentsService {
   getUnpaidClients(): Observable<any> {
     return this.http.get(`${this.baseUrl}/unpaid-clients`);
   }
+
 }

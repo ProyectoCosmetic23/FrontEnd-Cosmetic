@@ -15,11 +15,11 @@
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
-                            <label for="id_employee">Empleado</label>
+                            <label for="id_employee">Empleado<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <div *ngIf="viewMode === 'new'">
                                 <select class="form-control" id="id_employee"
                                     formControlName="id_employee" (change) = "updateComs()">
-                                    <option value="" disabled selected>Elija el empleado</option>
+                                    <option>Elija el empleado</option>
                                     <option *ngFor="let employee of listEmployees"
                                         [value]="employee.id_employee">
                                         {{ employee.name_employee }}</option>
@@ -32,11 +32,11 @@
                             </div>
                         </div>
                         <div class="col-md-6 form-group mb-3">
-                            <label for="id_comission_detail">Mes comisión</label>
+                            <label for="id_comission_detail">Mes comisión<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
                             <div *ngIf="viewMode === 'new'">
                                 <select class="form-control" id="id_comission_detail"
                                     formControlName="id_commission_detail" (change)="updateComs()">
-                                    <option value="" disabled selected>Elija el mes de la comisión</option>
+                                    <option>Elija el mes de la comisión</option>
                                     <option *ngFor="let detail of listComisionDetail"
                                         [value]="detail.id_commission_detail">
                                         {{ detail.month_commission | date: 'yyyy-MM' }}</option>

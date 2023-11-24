@@ -248,10 +248,11 @@
                   </button>
                   <button
                     class="btn btn-success btn-sm"
+                    *ngIf="row.payment_state !== 'Pagado'"
                     data-toggle="tooltip"
                     data-placement="top"
                     title="Realizar pago"
-                    [routerLink]="['/payments/new', row.id_order]"
+                    (click)="openPayments(row.id_order)"
                   >
                     <i class="i-Financial" style="font-size: 15px"></i>
                   </button>
@@ -330,5 +331,129 @@
     >
       Aceptar
     </button>
+  </div>
+</ng-template>
+
+<ng-template #paymentModal let-modal>
+  <ul class="nav nav-tabs">
+    <li
+      class="nav-item"
+      (click)="activeTab = 'formulario'"
+      style="cursor: pointer"
+    >
+      <a class="nav-link" [class.active]="activeTab === 'formulario'"
+        >Registrar pago</a
+      >
+    </li>
+    <li class="nav-item" (click)="activeTab = 'abonos'" style="cursor: pointer">
+      <a class="nav-link" [class.active]="activeTab === 'abonos'"
+        >Pagos registrados</a
+      >
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane" [class.active]="activeTab === 'formulario'">
+      <form [formGroup]="formBasic" (ngSubmit)="submit()">
+        <div class="row">
+          <div class="col-md-6 form-group mb-3">
+            <label for="id_client">Nombre cliente</label>
+            <input
+              class="form-control"
+              id="id_client"
+              [readonly]="true"
+              (change)="handleClientSelection($event)"
+              formControlName="id_client"
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="payment_date">Fecha de pago</label>
+            <input
+              type="text"
+              class="form-control"
+              id="payment_date"
+              [placeholder]="'Fecha de pago'"
+              [readonly]="true"
+              [value]="
+                formBasic.get('payment_date').value | date : 'yyyy-MM-dd'
+              "
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="id_order"># Orden</label>
+            <input
+              class="form-control"
+              id="id_order"
+              [readonly]="true"
+              formControlName="id_order"
+              (change)="handleOrderSelection($event)"
+            />
+          </div>
+          <div class="col-md-6 form-group mb-3">
+            <label for="total_payment"
+              >Monto pago<span class="text-danger">*</span></label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="total_payment"
+              [placeholder]="'Monto pago'"
+              [readonly]="viewMode === 'print'"
+              (change)="updateTotalRemaining()"
+              formControlName="total_payment"
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="total_order">Total pedido</label>
+            <input
+              class="form-control"
+              id="total_order"
+              [readonly]="true"
+              formControlName="total_order"
+            />
+          </div>
+
+          <div class="col-md-6 form-group mb-3">
+            <label for="total_remaining">Total restante</label>
+            <input
+              type="number"
+              class="form-control"
+              id="total_remaining"
+              [placeholder]="'Total restante'"
+              [readonly]="true"
+              [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
+              formControlName="total_remaining"
+            />
+          </div>
+          <div class="col-md-12">
+            <div class="d-flex justify-content-end">
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-rounded"
+                  (click)="modal.close('cancel')"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  ngbAutofocus
+                  class="btn btn-wide btn-primary btn-rounded"
+                  (click)="asignarPago()"
+                >
+                  Asignar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="tab-pane" [class.active]="activeTab === 'abonos'">
+      <h2>Probando listas</h2>
+    </div>
   </div>
 </ng-template>
