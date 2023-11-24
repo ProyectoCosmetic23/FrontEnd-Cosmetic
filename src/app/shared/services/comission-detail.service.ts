@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class ComissionsDetailService {
 
-  private baseUrl = 'http://localhost:8080/api/detailComs';
-  private url2 = 'http://localhost:8080/api/commissions';
+  private baseUrl = 'https://api-cosmetic-1iuc.onrender.com/api/detailComs';
+  private url2 = 'https://api-cosmetic-1iuc.onrender.com/api/commissions';
 
   constructor(private http: HttpClient) { }
 

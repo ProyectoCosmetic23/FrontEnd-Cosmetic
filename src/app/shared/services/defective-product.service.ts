@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
     providedIn: 'root'
 })
 export class DefectiveProductsService {
-    url = 'http://localhost:8080/api/returns';
+    url = 'https://api-cosmetic-1iuc.onrender.com/api/returns';
 
     constructor(private http: HttpClient) { }
 

@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 })
 export class EmpleadosService {
 
-  url = 'http://localhost:8080/api/employees';
+  url = 'https://api-cosmetic-1iuc.onrender.com/api/employees';
   constructor(
     private http: HttpClient,
     private authService: AuthService
