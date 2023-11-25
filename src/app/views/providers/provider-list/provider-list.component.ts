@@ -7,6 +7,7 @@ import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { UntypedFormControl } from '@angular/forms';
 import { PaginationControlsComponent } from 'ngx-pagination';
 import { debounceTime } from 'rxjs/operators';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 
 @Component({
@@ -26,12 +27,8 @@ export class ProviderListComponent implements OnInit {
 
     currentPage: number = 1;
     itemsPerPage: number = 6;
+    countLabel: number;
 
-
-    onPageChange(event: any) {
-        this.currentPage = event.offset / this.itemsPerPage + 1;
-        this.updateListProviders();
-    }
 
     constructor(
         private _providersService: ProvidersService,
@@ -40,85 +37,97 @@ export class ProviderListComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this._providersService.getAllProviders()
-            .subscribe((res: any[]) => {
-                this.providers = [...res];
-                this.listProviders = [...res];
-                this.filteredProviders = [...res];
-                this.originalListProviders = [...res];
-            });
-    
-        this.searchControl.valueChanges
-            .pipe(debounceTime(200))
-            .subscribe(value => {
-                this.filerData(value);
-            });
-    }
-    
-
-    
-    updateListProviders() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        let endIndex = startIndex + this.itemsPerPage;
-        const totalPages = Math.ceil(this.listProviders.length / this.itemsPerPage);
-
-        if (this.currentPage === totalPages) {
-            const remainingRows = this.listProviders.length%this.itemsPerPage
-            if (remainingRows > 0) {
-                endIndex = startIndex + remainingRows
-            }
-        }
-
-        const rowsToAdd = 6 -(endIndex % 6)
-        endIndex += rowsToAdd
-        this.filteredProviders = this.listProviders.slice(startIndex, endIndex)
+        this.getProviders();
+        
     }
 
-    pageChanged(event: any) {
-        this.currentPage = event.page;
-        this.updateListProviders();
-    }
-
-    filerData(val) {
-        console.log('Valor de búsqueda (antes del toLowerCase):', val);
-    
-        if (val) {
-            val = val.toLowerCase();
-        } else {
-            this.filteredProviders = [...this.listProviders];
-            return;
-        }
-    
-        console.log('Valor de búsqueda (después del toLowerCase):', val);
-    
-        const rows = this.listProviders.filter(function (d) {
-            const nameProvider = d['name_provider'] ? d['name_provider'].toString().toLowerCase() : '';
-            return nameProvider.indexOf(val) > -1;
-        });
-    
-        console.log('Resultados después de filtrar:', rows);
-    
-        this.filteredProviders = rows;
-    }
-    
-    
-
-    sortListProvidersById() {
-        this.listProviders.sort((a, b) => a.id_provider - b.id_provider);
-    }
-
+ 
     getProviders() {
         this._providersService.getAllProviders().subscribe(
             (data) => {
                 this.listProviders = data;
+                this.filteredProviders =this.listProviders;
                 this.sortListProvidersById();
-                location.reload();
+                this.refreshListProviders();
             },
             (error) => {
-                console.error('Error al obtener los proveedores:', error);
+                console.error('Error al obtener Categorías:', error);
             }
         );
     }
+
+    @ViewChild(DatatableComponent)
+    table: DatatableComponent;
+    //  actualizar el valor visual de count según tus necesidades
+    actualizarCountLabel() {
+        this.countLabel = this.filteredProviders.length;
+    }
+//AJUSTAR LA LISTA DE CATEGORIAS
+    refreshListProviders() {
+        // const totalRows = this.filteredProviders.length;
+        // const remainingRows = 6 - (totalRows % 6);
+
+        // for (let i = 0; i < remainingRows; i++) {
+        //     // this.filteredProviders.push({}); // Agrega filas vacías
+        // }
+
+        this.loadData();
+    }
+
+    sortListProvidersById() {
+        this.filteredProviders.sort((a, b) => {
+            if (a.id_provider > b.id_provider) {
+                return -1;
+            }
+            if (a.id_provider > b.id_provider) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+//CARGA LAS CATEGORIAS EN CADA PAGINA
+    loadData() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        let endIndex = startIndex + this.itemsPerPage;
+
+        const totalPages = Math.ceil(this.filteredProviders.length / this.itemsPerPage);
+
+        if (this.currentPage === totalPages) {
+            const remainingRows = this.filteredProviders.length % this.itemsPerPage;
+            if (remainingRows > 0) {
+                endIndex = startIndex + remainingRows;
+            }
+        }
+
+        // Ajusta endIndex para que sea el próximo número divisible por 6
+        const rowsToAdd = 6 - (endIndex % 6);
+        endIndex += rowsToAdd;
+
+        // this.filteredProviders = this.filteredProviders.slice(startIndex, endIndex);
+
+        console.log('load data charged');
+    }
+
+    onPageChange(event: any) {
+        console.log('onPageChange event:', event);
+        this.currentPage = event.offset + 1;
+        this.loadData();
+    }
+
+    searchProvider($event){
+        
+        const value = ($event.target as HTMLInputElement).value;
+        if(value !==null && value !== undefined && value !== '')
+        {
+            this.filteredProviders = this.listProviders.filter(c => c.name_provider.toLowerCase().indexOf(value.toLowerCase()) !== -1
+            || this.changeProviderStateDescription(c.state_provider).toLowerCase().indexOf(value.toLowerCase()) !== -1)
+        }else{
+            this.filteredProviders = this.listProviders;
+        }
+    }
+
+    changeProviderStateDescription(state_provider:boolean){
+        return state_provider ? 'Activo':'Inactivo';}
 
     @ViewChild('changeStateModal', { static: true }) changeStateModal: any;
 
@@ -135,7 +144,6 @@ export class ProviderListComponent implements OnInit {
                                 this.loading = false;
                                 this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
                                 console.log(data);
-
                                 setTimeout(() => {
                                     location.reload();
                                 }, 2000);
@@ -148,9 +156,7 @@ export class ProviderListComponent implements OnInit {
                         );
                     } else if (result === 'Cancel') {
                         this.openedModal = false;
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
+                       
                     }
                 },
                 (reason) => {
