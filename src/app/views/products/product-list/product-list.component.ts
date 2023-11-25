@@ -27,8 +27,9 @@ export class ProductListComponent implements OnInit {
     calculatedValue: number = 0;
     returnReason: string = '';
     returnValue: number ;
+    countLabel: number;
 
-
+    itemsPerPage = 6; // El número de filas por página
     constructor(
         private _productService: ProductService,
         private cookieService: CookieService,
@@ -36,12 +37,7 @@ export class ProductListComponent implements OnInit {
         private toastr: ToastrService,) { }
 
     ngOnInit(): void {
-        this.getProducts();
-        this.searchControl.valueChanges
-            .pipe(debounceTime(200))
-            .subscribe(value => {
-                this.filterData(value);
-            });
+        this.getProducts()
     }
 
     handleChange(event: any, row: any) {
@@ -59,37 +55,93 @@ export class ProductListComponent implements OnInit {
         }
         
         
-        
-
-    getProducts() {
-        const token = this.cookieService.get('token');
-        this._productService.getAllProducts(token).subscribe(data => {
-            this.listProducts = data.sort((a, b) => a.id_product - b.id_product);
-            this.filteredProducts = [...this.listProducts];
-        }, error => {
-            console.log(error);
-        });
-    }
-
-    filterData(value: string) {
-        if (value) {
-            value = value.toLowerCase();
-        } else {
-            this.filteredProducts = [...this.listProducts];
-            return;
+        getProducts() {
+            this._productService.getAllProducts().subscribe(
+                (data) => {
+                    this.listProducts = data;
+                    this.filteredProducts =this.listProducts;
+                    this.sortListProdcuctsById();
+                    this.irefreshListProducts();
+                },
+                (error) => {
+                    console.error('Error al obtener Productos:', error);
+                }
+            );
         }
-
-        this.filteredProducts = this.listProducts.filter(productc => {
-            const nombreMatch = productc.name_product.toLowerCase().includes(value);
-            const cost_priceMatch = productc.cost_price.toLowerCase().includes(value);
-            const estadoMatch = productc.state_product.toLowerCase().includes(value);
-
-            return nombreMatch || cost_priceMatch || estadoMatch;
-        });
-
-        this.currentPage = 1;
-    }
-
+    
+    
+        //  actualizar el valor visual de count según tus necesidades
+        actualizarCountLabel() {
+            this.countLabel = this.filteredProducts.length;
+        }
+    //AJUSTAR LA LISTA DE CATEGORIAS
+        irefreshListProducts() {
+            // const totalRows = this.filteredProducts.length;
+            // const remainingRows = 6 - (totalRows % 6);
+    
+            // for (let i = 0; i < remainingRows; i++) {
+            //     // this.filteredProducts.push({}); // Agrega filas vacías
+            // }
+    
+            this.loadData();
+        }
+    
+        sortListProdcuctsById() {
+            this.filteredProducts.sort((a, b) => {
+                if (a.id_product > b.id_product) {
+                    return -1;
+                }
+                if (a.id_product > b.id_product) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+    //CARGA LAS CATEGORIAS EN CADA PAGINA
+        loadData() {
+            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+            let endIndex = startIndex + this.itemsPerPage;
+    
+            const totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
+    
+            if (this.currentPage === totalPages) {
+                const remainingRows = this.filteredProducts.length % this.itemsPerPage;
+                if (remainingRows > 0) {
+                    endIndex = startIndex + remainingRows;
+                }
+            }
+    
+            // Ajusta endIndex para que sea el próximo número divisible por 6
+            const rowsToAdd = 6 - (endIndex % 6);
+            endIndex += rowsToAdd;
+    
+            // this.filteredProducts = this.filteredProducts.slice(startIndex, endIndex);
+    
+            console.log('load data charged');
+        }
+    
+        onPageChange(event: any) {
+            console.log('onPageChange event:', event);
+            this.currentPage = event.offset + 1;
+            this.loadData();
+        }
+    
+        searchProduct($event){
+            
+            const value = ($event.target as HTMLInputElement).value;
+            if(value !==null && value !== undefined && value !== '')
+            {
+                this.filteredProducts = this.listProducts.filter(c => c.name_product.toLowerCase().indexOf(value.toLowerCase()) !== -1
+                || this.changeProductStateDescription(c.state_product).toLowerCase().indexOf(value.toLowerCase()) !== -1)
+            }else{
+                this.filteredProducts = this.listProducts;
+            }
+        }
+    
+        changeProductStateDescription(state_product:boolean){
+            return state_product ? 'Activo':'Inactivo';}
+    
+    
     openRetireModal(productId: number, productValue: number, content: any): void {
         this.selectedProductId = productId;
         this.selectedProductValue = productValue;

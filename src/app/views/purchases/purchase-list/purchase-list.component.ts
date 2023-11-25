@@ -43,6 +43,7 @@ export class PurchaseListComponent implements OnInit {
 
     this.reasoniniForm();
     this.getPurchases();
+    this.getPurchases();
     this.providersService.getAllProviders().subscribe((providers: any[]) => {
       providers.forEach(provider => {
         this.providers[provider.id_provider] = provider.name_provider;
@@ -52,89 +53,94 @@ export class PurchaseListComponent implements OnInit {
 
   }
 
+
   getPurchases() {
     this._purchaseService.getAllPurchase().subscribe(
-      (data) => {
-        this.listPurchases = data;
-        this.filteredPurchases = this.listPurchases;
-        this.sortListPurchases();
-        this.adjustListPurchases();
-      },
-      (error) => {
-        console.error('Error al obtener categorías:', error);
-      }
+        (data) => {
+            this.listPurchases = data;
+            this.filteredPurchases =this.listPurchases;
+            this.sortListPurchases();
+            this.refreshListPurchases();
+        },
+        (error) => {
+            console.error('Error al obtener Categorías:', error);
+        }
     );
-  }
+}
 
+@ViewChild(DatatableComponent)
+table: DatatableComponent;
 
-  @ViewChild(DatatableComponent)
-  table: DatatableComponent;
+//  actualizar el valor visual de count según tus necesidades
+actualizarCountLabel() {
+    this.countLabel = this.filteredPurchases.length;
+}
+//AJUSTAR LA LISTA DE CATEGORIAS
+refreshListPurchases() {
+    // const totalRows = this.filteredPurchases.length;
+    // const remainingRows = 6 - (totalRows % 6);
 
+    // for (let i = 0; i < remainingRows; i++) {
+    //     // this.filteredPurchases.push({}); // Agrega filas vacías
+    // }
 
-  adjustListPurchases() {
     this.loadData();
-  }
+}
 
-  sortListPurchases() {
+sortListPurchases() {
     this.filteredPurchases.sort((a, b) => {
-      if (a.id_purchase > b.id_purchase) {
-        return -1;
-      }
-      if (a.id_purchase > b.id_purchase) {
-        return 1;
-      }
-      return 0;
+        if (a.id_purchase > b.id_purchase) {
+            return -1;
+        }
+        if (a.id_purchase > b.id_purchase) {
+            return 1;
+        }
+        return 0;
     });
-  }
-
-
-
-
-  loadData() {
+}
+//CARGA LAS CATEGORIAS EN CADA PAGINA
+loadData() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     let endIndex = startIndex + this.itemsPerPage;
 
     const totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
 
     if (this.currentPage === totalPages) {
-      const remainingRows = this.filteredPurchases.length % this.itemsPerPage;
-      if (remainingRows > 0) {
-        endIndex = startIndex + remainingRows;
-      }
+        const remainingRows = this.filteredPurchases.length % this.itemsPerPage;
+        if (remainingRows > 0) {
+            endIndex = startIndex + remainingRows;
+        }
     }
 
     // Ajusta endIndex para que sea el próximo número divisible por 6
     const rowsToAdd = 6 - (endIndex % 6);
     endIndex += rowsToAdd;
 
-    // this.filteredCategories = this.filteredCategories.slice(startIndex, endIndex);
+    // this.filteredPurchases = this.filteredPurchases.slice(startIndex, endIndex);
 
     console.log('load data charged');
+}
 
-  }
-
-  onPageChange(event: any) {
-    console.log('onPageChange: ', event);
+onPageChange(event: any) {
+    console.log('onPageChange event:', event);
     this.currentPage = event.offset + 1;
-    this.loadData(); // Llama a loadData al cambiar de página
-  }
-  searchPurchases($event) {
+    this.loadData();
+}
+
+searchPurchase($event){
+    
     const value = ($event.target as HTMLInputElement).value;
-    if (value !== null && value !== undefined && value !== '') {
-      this.filteredPurchases = this.listPurchases.filter(n =>
-        n.invoice_number.toLowerCase().indexOf(value.toLowerCase()) !== -1 || 
-        this.changePurchaseStateDescription(n.state_purchase).toLowerCase().indexOf(value.toLowerCase()) !== -1
-      );
-    } else {
-      this.filteredPurchases = this.listPurchases;
+    if(value !==null && value !== undefined && value !== '')
+    {
+        this.filteredPurchases = this.listPurchases.filter(c => c.name_provider.toLowerCase().indexOf(value.toLowerCase()) !== -1
+        || this.changePuchaseStateDescription(c.state_purchase).toLowerCase().indexOf(value.toLowerCase()) !== -1)
+    }else{
+        this.filteredPurchases = this.listPurchases;
     }
-  }
+}
 
-
-  changePurchaseStateDescription(state_purchase: boolean) {
-    return state_purchase ? 'Activo' : 'Anulada';
-  }
-
+changePuchaseStateDescription(state_purchase:boolean){
+    return state_purchase ? 'Activo':'Anulada';}
 
 
   private reasoniniForm(): void {
