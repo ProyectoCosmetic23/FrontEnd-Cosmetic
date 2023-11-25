@@ -261,6 +261,10 @@ export class OrdersListComponent implements OnInit {
     if (!this.modalPayment) {
       this.modalPayment = true;
       console.log('ID de la orden:', idOrder);
+      this.formBasic.patchValue({
+        total_remaining: null,
+        total_payment: null, // o tu valor inicial
+      });
   
       this._paymentService.getPayOrder(idOrder).subscribe(
         (payments) => {
