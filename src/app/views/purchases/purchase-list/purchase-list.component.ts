@@ -140,7 +140,7 @@ searchPurchase($event){
 }
 
 changePuchaseStateDescription(state_purchase:boolean){
-    return state_purchase ? 'Activo':'Inactivo';}
+    return state_purchase ? 'Activo':'Anulada';}
 
 
   private reasoniniForm(): void {
