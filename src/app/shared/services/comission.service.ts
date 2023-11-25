@@ -36,8 +36,10 @@ export class ComissionsService {
     return this.http.get(`${this.baseUrl}/${comsId}`);
   }
 
-  getAllComsDetail(): Observable<any> {
-    return this.http.get(this.url2);
+  getAllComsDetail(): Observable<any[]> {
+    const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
+    console.log("Los headers de detalle comisiones", headers);
+    return this.http.get<any[]>(this.url2, { headers });
   }
 
   createComs(comisionData: any): Observable<any> {
@@ -56,4 +58,5 @@ export class ComissionsService {
   getComissionDetailById(idComissionDetail: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/detail/${idComissionDetail}`);
   }
+  
 }

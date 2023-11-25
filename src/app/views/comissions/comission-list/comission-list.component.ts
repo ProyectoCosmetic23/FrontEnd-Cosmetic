@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ComissionsService } from 'src/app/shared/services/comission.service';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
@@ -69,6 +69,7 @@ export class ComissionListComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
+        private cdr: ChangeDetectorRef
     ) {
         this.formBasic = this.formBuilder.group({
             commission_percentage: [0],
@@ -83,32 +84,53 @@ export class ComissionListComponent implements OnInit {
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const year = date.getFullYear();
         this.currentMonthYear = `${month}/${year}`;
-        
+        this.getComsission()
+
+    }
+    getComsission() {
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             this.listComissions = res;
             this._comissionsService.getAllEmployees().subscribe((employees: any[]) => {
                 employees.forEach(employee => {
                     this.employees[employee.id_employee] = employee.name_employee;
                 });
-            });
-    
-            this._comissionsService.getAllComsDetail().subscribe((details: any[]) => {
-                this.details = details;
-                this.listComissions.forEach(comission => {
-                    const detail = details.find(detail => detail.id_commission_detail === comission.id_commission_detail);
-                    if (detail) {
-                        comission.month_commission = detail.month_commission;
-                        comission.commission_percentage = detail.commission_percentage;
-                    }
+
+                this._comissionsService.getAllComsDetail().subscribe((details: any[]) => {
+                    console.log('Detalles de comisiones recibidos:', details);
+                    this.details = details;
+                    this.listComissions.forEach(comission => {
+                        const detail = details.find(detail => detail.id_commission_detail === comission.id_commission_detail);
+                        if (detail) {
+                            comission.month_commission = detail.month_commission;
+                            comission.commission_percentage = detail.commission_percentage;
+                        }
+                    });
+                    this.originalListComissions = res;
+                    console.log('this.selectedMonth:', this.selectedMonth);
+                    console.log('this.details:', this.details);
+                    this.filterByMonth();
+                    this.calculateTotalCommission();  // Llamada a la función para calcular el total
+                    console.log(this.originalListComissions)
                 });
-                this.originalListComissions = res;
-                this.filterComissionsByMonth();
-                this.calculateTotalCommission();  // Llamada a la función para calcular el total
-                console.log(this.originalListComissions)
             });
         });
     }
-    
+    filterComissionsByMonth() {
+        console.log("actualizar por mes")
+        const currentYear = new Date().getFullYear();
+        const selectedDate = `${currentYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
+        const selectedDetail = this.details.find(detail => detail.month_commission === selectedDate);
+        console.log('selectedDate:', selectedDate);
+        console.log('selectedDetail:', selectedDetail);
+
+        if (selectedDetail) {
+            this.listComissions = this.originalListComissions.filter(comission => comission.id_commission_detail === selectedDetail.id_commission_detail);
+            this.calculateTotalCommission();  // Recalcula el total cuando cambias de mes
+        } else {
+            this.listComissions = [];
+            this.totalCommissions = 0;  // Reinicia el total a cero si no hay comisiones para el mes seleccionado
+        }
+    }
     calculateTotalCommission() {
         this.totalCommissions = 0;
         for (let commission of this.listComissions) {
@@ -116,7 +138,7 @@ export class ComissionListComponent implements OnInit {
             this.totalCommissions += commission
         }
     }
-    
+
     handlePerccentageSelection(event: any) {
         this.new_comissionDetail.commission_percentage = event.target.value;
     }
@@ -158,21 +180,8 @@ export class ComissionListComponent implements OnInit {
         });
     }
 
-    filterComissionsByMonth() {
-        const currentYear = new Date().getFullYear();
-        const selectedDate = `${currentYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
-        const selectedDetail = this.details.find(detail => detail.month_commission === selectedDate);
-        
-        if (selectedDetail) {
-            this.listComissions = this.originalListComissions.filter(comission => comission.id_commission_detail === selectedDetail.id_commission_detail);
-            this.calculateTotalCommission();  // Recalcula el total cuando cambias de mes
-        } else {
-            this.listComissions = [];
-            this.totalCommissions = 0;  // Reinicia el total a cero si no hay comisiones para el mes seleccionado
-        }
-    }
-    
     filterByMonth() {
+        console.log("actualizar por mes")
         this.filterComissionsByMonth();
     }
     paginationId: string = 'comissions-pagination';
@@ -204,7 +213,6 @@ export class ComissionListComponent implements OnInit {
 
     @ViewChild('createModal', { static: true }) createModal: any;
 
-
     openModal() {
         if (!this.openedModal) {
           this.openedModal = true;
@@ -214,36 +222,18 @@ export class ComissionListComponent implements OnInit {
           this.modalRef.result.then(
             (result) => {
               if (result === 'Yes') {
-                // Mostrar confirmación antes de enviar
-                const sweetAlertResult = this.sweetAlert.fire({
-                    title: '¿Está seguro que desea asignar este porcentaje?',
-                    text: 'Recuerde que no lo podrá editar después.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    customClass: {
-                      confirmButton: 'btn btn-wide btn-primary btn-rounded',
-                      cancelButton: 'btn btn-outline-secondary btn-rounded'
-                    }
-                  });
-                sweetAlertResult.then((result) => {
-                  if (result.value) {
-                    this.openedModal = false;
-                    this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
-                      this.loading = false;
-                      this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                      console.log(data);
+                this.openedModal = false;
+                this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
+                  this.loading = false;
+                  this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                  console.log(data);
       
-                      setTimeout(() => {
-                        location.reload();
-                      }, 2000);
-                    }, (error) => {
-                      this.loading = false;
-                      this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });
-                    });
-                  }
-                  this.openedModal = false;
+                  setTimeout(() => {
+                    location.reload();
+                  }, 2000);
+                }, (error) => {
+                  this.loading = false;
+                  this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });
                 });
               }
             },
