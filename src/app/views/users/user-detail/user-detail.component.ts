@@ -15,7 +15,7 @@ import { UserFormModel } from '../models/user-model';
     styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent implements OnInit {
-    
+
     userForm: FormGroup;
     userFormSub: Subscription;
     loading: boolean;
@@ -31,7 +31,7 @@ export class UserDetailComponent implements OnInit {
     userData: UserFormModel;
     listRoles: any[];
     roleName: string;
-    
+
 
 
     constructor(
@@ -41,7 +41,7 @@ export class UserDetailComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
         private usersService: UsersService,
-       
+
     ) {
 
     }
@@ -64,13 +64,14 @@ export class UserDetailComponent implements OnInit {
     employeeNotFoundMessage: string = '';
 
     searchEmployeeByEmail() {
-        const idCard = this.userForm.get('id_card_employee').value;
+        const idCard = this.userForm.get('id_employee').value;
 
         if (idCard) {
             this.usersService.getEmployeeByEmail(idCard).subscribe(
                 (data: any) => {
                     this.userForm.patchValue({
-                        email: data.email // Actualiza el campo de correo electrónico con el valor obtenido
+                        email: data.email,  // Actualiza el campo de correo electrónico con el valor obtenido
+                        // id_user:data.id_employee
                     });
                     this.employeeNotFoundMessage = ''; // Reinicia el mensaje si se encontró el empleado
                 },
@@ -99,9 +100,9 @@ export class UserDetailComponent implements OnInit {
             observation_user: ['', [Validators.required, Validators.maxLength(100)]],
             state_user: [],
             creation_date_user: [],
-            password: ['',[Validators.required]],
-            name_role: ['',[Validators.required]],
-            id_card_employee: ['',[Validators.required]]
+            password: ['', [Validators.required]],
+            name_role: ['', [Validators.required]],
+            id_card_employee: ['', [Validators.required]]
 
         });
 
@@ -117,7 +118,7 @@ export class UserDetailComponent implements OnInit {
         if (this.viewMode != 'new') {
             this.getUserByID(id);
             this.email.disable();
-           
+
             this.id_card_employee.disable();
         }
 

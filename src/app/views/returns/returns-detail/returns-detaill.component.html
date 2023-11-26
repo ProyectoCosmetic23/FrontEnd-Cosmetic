@@ -55,7 +55,7 @@
               <thead class="bg-gray-300">
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Nombre del Producto</th>
+                  <th scope="col">Nombr del Producto</th>
                   <th scope="col">Precio Unitario</th>
                   <th scope="col">Unidades</th>
                   <th scope="col">Subtotal</th>
@@ -136,8 +136,71 @@
                     </td>
                   </tr>
                 </ng-container>
+                <ng-template #detaildView>
+                  <tr
+                    *ngFor="let product of order_detail_products; let i = index"
+                  >
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.product_price }}</td>
+                    <td>{{ product.product_quantity }}</td>
+                    <td>
+                      {{
+                        product.product_subtotal
+                          | currency : "" : "symbol" : "1.2"
+                      }}
+                    </td>
+                  </tr>
+                </ng-template>
               </tbody>
             </table>
+            <div class="table-footer">
+              <div class="col-md-8"></div>
+              <div class="col-md-8">
+                <div class="total">
+                  Total:
+                  {{
+                    viewMode === "detaild"
+                      ? calculateTotal()
+                      : (order?.order?.total_order
+                        | currency : "" : "symbol" : "1.2")
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="viewMode === 'detaild'" style="padding-top: 2%">
+            <h2>Pagos Realizados</h2>
+            <div *ngFor="let payment of listPayments">
+              <p>
+                <b>Fecha de Pago:</b>
+                {{ payment.payment_date | date : "yyyy-MM-dd" }}
+                <b>Monto Pago:</b>
+                {{ payment.total_payment | currency : "" : "symbol" : "1.2-2" }}
+                <b>Monto Restante:</b>
+                {{
+                  payment.total_remaining | currency : "" : "symbol" : "1.2-2"
+                }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-12" style="margin-top: 20px">
+            <div class="d-flex justify-content-end">
+              <button
+                class="btn btn-danger float-right"
+                [routerLink]="['/orders']"
+              >
+                Volver
+              </button>
+              <div *ngIf="viewMode === 'detaild'" style="width: 10px"></div>
+              <btn-loading
+                *ngIf="viewMode === 'detail'"
+                btnClass="btn-primary"
+                [loading]="loading"
+                >Crear Pedido</btn-loading
+              >
+            </div>
           </div>
         </form>
       </div>
