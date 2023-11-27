@@ -23,14 +23,32 @@ export class OrdersService {
     return this.http.get(this.url + '/api/orders');
   }
 
+  getAllProcessingOrders(): Observable<any> {
+    return this.http.get(this.url + '/api/processing_orders');
+  }
+
+  getAllDeliveredOrders(): Observable<any> {
+    return this.http.get(this.url + '/api/delivered_orders');
+  }
+
+  getAllUnpaidOrders(): Observable<any> {
+    return this.http.get(this.url + '/api/unpaid_orders');
+  }
+
+  getAllPaidOrders(): Observable<any> {
+    return this.http.get(this.url + '/api/paid_orders');
+  }
+
+  getAllAnulatedOrders(): Observable<any> {
+    return this.http.get(this.url + '/api/anulated_orders');
+  }
+
   getAllClients(): Observable<any> {
     return this.http.get(this.url + '/api/clients');
   }
 
-  getAllEmployees(): Observable<any[]> {
-    const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
-    console.log("Los headers", headers);
-    return this.http.get<any[]>(this.url + '/api/employees', { headers });
+  getAllEmployees(): Observable<any> {
+    return this.http.get(this.url + '/api/employees');
   }
 
   getAllProducts(): Observable<any> {
@@ -46,6 +64,10 @@ export class OrdersService {
   }
 
   updateOrderStatus(id: any): Observable<any> {
-    return this.http.put(this.url + 'api/orders/updateStatus/' + id, {});
+    return this.http.put(this.url + '/api/orders/updateStatus/' + id, {});
+  }
+
+  AnulateOrder(id: any): Observable<any> {
+    return this.http.put(this.url + '/api/orders/anulate/' + id, {});
   }
 }

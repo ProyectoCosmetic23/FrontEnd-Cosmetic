@@ -8,38 +8,81 @@
 
 <div class="separator-breadcrumb border-top"></div>
 
-<div *ngIf="showLoadingScreen" class="loading-screen">
-  <div class="loading-content">
-    <div class="spinner spinner-primary me-3"></div>
-  </div>
-</div>
-
-<div *ngIf="showLoadingScreen == false">
-  <div class="row mb-3">
-    <div
-      class="col-md-12 mb-3 d-flex justify-content-between align-items-center"
-    >
-      <div class="col-md-4">
-        <div class="form-group">
-          <button class="btn btn-primary" [routerLink]="['/orders/new']">
-            Crear nuevo Pedido
-          </button>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <input
-            id="role"
-            placeholder="Buscar Pedido"
-            [formControl]="searchControl"
-            class="form-control"
-            type="role"
-          />
-        </div>
+<div class="row mb-3">
+  <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button class="btn btn-primary" [routerLink]="['/orders/new']">
+          Crear nuevo Pedido
+        </button>
       </div>
     </div>
-    <div class="col-md-12">
-      <div class="card o-hidden">
+    <div class="col-md-4">
+      <div class="form-group">
+        <input
+          id="role"
+          placeholder="Buscar Pedido"
+          [formControl]="searchControl"
+          class="form-control"
+          type="role"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <!-- <tabset>
+      <tab
+        id="todos"
+        heading="Todos los Pedidos"
+        (selectTab)="onTabSelect('Pedidos Por Entregar')"
+        class="custom-tab"
+      >
+      </tab>
+      <tab
+        id="porEntregar"
+        heading="Pedidos por Entregar"
+        (selectTab)="onTabSelect('Pedidos Por Entregar')"
+        class="custom-tab"
+      >
+      </tab>
+      <tab
+        id="entregados"
+        heading="Pedidos Entregados"
+        (selectTab)="onTabSelect('Pedidos Entregados')"
+        class="custom-tab"
+      >
+      </tab>
+      <tab
+        id="porPagar"
+        heading="Pedidos por Pagar"
+        (selectTab)="onTabSelect('Pedidos Por Pagar')"
+        class="custom-tab"
+      >
+      </tab>
+      <tab
+        id="pagados"
+        heading="Pedidos Pagados"
+        (selectTab)="onTabSelect('Pedidos Pagados')"
+        class="custom-tab"
+      >
+      </tab>
+      <tab
+        id="anulados"
+        heading="Pedidos Anulados"
+        (selectTab)="onTabSelect('Pedidos Anulados')"
+        class="custom-tab"
+      >
+      </tab>
+    </tabset>     -->
+
+    <div class="card o-hidden">
+      <div *ngIf="showLoadingScreen" class="loading-screen">
+        <div class="loading-content">
+          <div class="spinner spinner-primary me-3"></div>
+        </div>
+      </div>
+
+      <div *ngIf="showLoadingScreen == false">
         <ngx-datatable
           class="material fullscreen"
           style="height: 460px"
@@ -237,6 +280,7 @@
                     margin-top: 5px;
                   "
                 >
+                  <!-- Ver detalle -->
                   <button
                     class="btn btn-dark btn-sm"
                     data-toggle="tooltip"
@@ -246,16 +290,20 @@
                   >
                     <i class="i-Eye" style="font-size: 15px"></i>
                   </button>
+
+                  <!-- Realizar pago -->
                   <button
                     class="btn btn-success btn-sm"
-                    *ngIf="row.payment_state !== 'Pagado'"
                     data-toggle="tooltip"
                     data-placement="top"
                     title="Realizar pago"
                     (click)="openPayments(row.id_order)"
+                    [disabled]="row.payment_state == 'Pagado' || row.order_state == 'Anulado'"
                   >
                     <i class="i-Financial" style="font-size: 15px"></i>
                   </button>
+
+                  <!-- Enviar pedido -->
                   <button
                     class="btn btn-sm"
                     [ngClass]="{
@@ -272,16 +320,22 @@
                     data-toggle="tooltip"
                     data-placement="top"
                     title="Enviar pedido"
-                    (click)="openModal(row.id_order)"
+                    (click)="
+                      openModal(row.id_order, 'Enviar', row.delivery_state)
+                    "
+                    [disabled]="row.delivery_state == 'Entregado' || row.order_state == 'Anulado'"
                   >
                     <i class="i-Jeep" style="font-size: 15px"></i>
                   </button>
+
+                  <!-- Anular pedido -->
                   <button
                     class="btn btn-danger btn-sm"
                     data-toggle="tooltip"
                     data-placement="top"
                     title="Anular pedido"
-                    (click)="openModal(row.id_role)"
+                    (click)="openModal(row.id_order, 'Anular')"
+                    [disabled]="row.order_state == 'Anulado'"
                   >
                     <i class="i-Close" style="font-size: 15px"></i>
                   </button>
@@ -297,9 +351,7 @@
 
 <ng-template #deleteConfirmModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">
-      Cambiar Estado de Entrega del Pedido
-    </h4>
+    <h4 class="modal-title" id="modal-title">Cambiar Estado del Pedido</h4>
     <button
       type="button"
       class="close"
@@ -312,7 +364,7 @@
   </div>
   <div class="modal-body">
     <p>
-      <strong>¿Está seguro de que desea cambiar el estado del pedido?</strong>
+      <strong>{{ modal_message }}</strong>
     </p>
   </div>
   <div class="modal-footer">
@@ -433,10 +485,21 @@
           <div class="col-md-12">
             <div class="d-flex justify-content-end">
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-rounded"
-                  (click)="modal.close('cancel')">Cancelar</button>
-                <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
-                  (click)="asignarPago()">Pagar</button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-rounded"
+                  (click)="modal.close('cancel')"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  ngbAutofocus
+                  class="btn btn-wide btn-primary btn-rounded"
+                  (click)="asignarPago()"
+                >
+                  Pagar
+                </button>
               </div>
             </div>
           </div>
@@ -445,15 +508,18 @@
     </div>
     <div class="tab-pane" [class.active]="activeTab === 'abonos'">
       <div class="tab-pane" [class.active]="activeTab === 'abonos'">
-        <h1 class="text-center">Pagos del pedido {{ currentOrder?.order_number }}</h1>
+        <h1 class="text-center">
+          Pagos del pedido {{ currentOrder?.order_number }}
+        </h1>
         <div *ngFor="let payment of paymentsForOrder">
-          <p style="display: inline-block; margin-right: 50px;" >
-            <b>Fecha Pago: </b>{{ payment.payment_date | date:'yyyy-MM-dd'}}
-            <b>Monto Pago:</b> {{ payment.total_payment | currency:'':'symbol':'1.2-2' }}
-            <b>Monto Restante:</b> {{ payment.total_remaining | currency:'':'symbol':'1.2-2' }}
+          <p style="display: inline-block; margin-right: 50px">
+            <b>Fecha Pago: </b>{{ payment.payment_date | date : "yyyy-MM-dd" }}
+            <b>Monto Pago:</b>
+            {{ payment.total_payment | currency : "" : "symbol" : "1.2-2" }}
+            <b>Monto Restante:</b>
+            {{ payment.total_remaining | currency : "" : "symbol" : "1.2-2" }}
           </p>
         </div>
-      
       </div>
     </div>
   </div>
