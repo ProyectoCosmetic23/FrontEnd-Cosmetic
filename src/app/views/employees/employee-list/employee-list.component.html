@@ -16,21 +16,27 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <input id="role" placeholder="Buscar Empleados" [formControl]="searchControl" class="form-control"
-                            type="role">
+                            type="role" (keyup)="searchEmployee($event)">
                     </div>
                 </div>
             </div>
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable style="height: 460px;" class="material fullscreen"  [columnMode]="'force'"
-                [headerHeight]="50"
-                [footerHeight]="50"
-                [rowHeight]="60"
-                [scrollbarV]="true"
-                [scrollbarH]="false"
-                [rows]="filteredEmployees">>
+                <ngx-datatable *ngIf="filteredEmployees && filteredEmployees.length" class="material fullscreen"
+                style="height: 460px;" 
+                [columnMode]="'force'"
+                 [headerHeight]="50"
+                    [footerHeight]="50"
+                     [rowHeight]="60" 
+                     [scrollbarV]="true" 
+                     [rows]="filteredEmployees" 
+                     [externalPaging]="true"
+                    [count]="filteredEmployees.length"
+                     [limit]="itemsPerPage" 
+                     [offset]="(currentPage - 1) * itemsPerPage"
+                    (page)="onPageChange($event)">
                 <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
-                    <ng-template ngx-datatable-header-template>
+                    <ng-template ngx-datatable-header-template class="fixed-width-cell">
                         <p style="font-size:10px;">Cedula</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
@@ -72,7 +78,7 @@
                         <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 " [routerLink]="['/employees/print', row.id_employee]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1 " [routerLink]="['/employees/edit', row.id_employee]">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1 " [routerLink]="['/employees/edit', row.id_employee]" [disabled]="row.state_employee== 'Inactivo'" >
                             <i class="i-Pen-4"></i>
                         </button>
                         <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom" (click)="openModal(row.id_employee)">

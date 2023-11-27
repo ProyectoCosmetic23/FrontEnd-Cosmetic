@@ -58,6 +58,8 @@ export class ProductDetailComponent implements OnInit {
         
     }
 
+
+
     private inicializateForm(id: number): void {
         this.productForm = this.formBuilder.group({
             id_category: ['',[Validators.required]],
@@ -93,6 +95,8 @@ export class ProductDetailComponent implements OnInit {
         }
 
     }
+
+    
     
     getCategories() {
         this.categoriesService.getAllCategory().subscribe(
