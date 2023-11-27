@@ -7,16 +7,18 @@ import { UsersService } from 'src/app/shared/services/user.service';
 import { UserFormModel } from '../models/user-model';
 
 
+
+
 @Component({
     selector: 'app-user-detail',
     templateUrl: './user-detail.component.html',
     styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent implements OnInit {
-
+    
     userForm: FormGroup;
     userFormSub: Subscription;
-    loading: boolean = false;
+    loading: boolean;
     formBasic: FormGroup;
     viewMode: 'new' | 'edit' | 'print' = 'new';
     id: string;
@@ -27,6 +29,10 @@ export class UserDetailComponent implements OnInit {
     subTotal: number;
     saving: boolean;
     userData: UserFormModel;
+    listRoles: any[];
+    roleName: string;
+    
+
 
     constructor(
         private formBuilder: FormBuilder,
@@ -34,7 +40,8 @@ export class UserDetailComponent implements OnInit {
         private router: Router,
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
-        private usersService: UsersService
+        private usersService: UsersService,
+       
     ) {
 
     }
@@ -42,10 +49,43 @@ export class UserDetailComponent implements OnInit {
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id_user'];
+
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
+        this.loadRoles();
+
+        // this.userForm.get('id_card_employee').valueChanges.subscribe(() => {
+        //     this.searchEmployeeByEmail();
+        // });
+
+
     }
+    employeeNotFoundMessage: string = '';
+
+    searchEmployeeByEmail() {
+        const idCard = this.userForm.get('id_card_employee').value;
+
+        if (idCard) {
+            this.usersService.getEmployeeByEmail(idCard).subscribe(
+                (data: any) => {
+                    this.userForm.patchValue({
+                        email: data.email // Actualiza el campo de correo electrónico con el valor obtenido
+                    });
+                    this.employeeNotFoundMessage = ''; // Reinicia el mensaje si se encontró el empleado
+                },
+                (error: any) => {
+                    console.error('Error al obtener el correo del empleado:', error);
+                    this.employeeNotFoundMessage = 'Empleado no encontrado'; // Establece el mensaje si no se encuentra el empleado
+                    // Manejo de errores si es necesario
+                }
+            );
+        }
+    }
+
+
+
+
 
     private inicializateForm(id: number): void {
         this.userForm = this.formBuilder.group({
@@ -55,11 +95,14 @@ export class UserDetailComponent implements OnInit {
             id_role: [],
             id_employee: [],
             username: ['', [Validators.required, Validators.maxLength(80)], [this.validateNameSimbolAndNumber]],
-            email: ['', [Validators.required, Validators.email, Validators.maxLength(80)]],
+            email: [],
             observation_user: ['', [Validators.required, Validators.maxLength(100)]],
             state_user: [],
             creation_date_user: [],
-            password: [],
+            password: ['',[Validators.required]],
+            name_role: ['',[Validators.required]],
+            id_card_employee: ['',[Validators.required]]
+
         });
 
         if (this.viewMode == 'print') {
@@ -68,15 +111,49 @@ export class UserDetailComponent implements OnInit {
 
         if (this.viewMode == 'edit') {
             this.id_user.disable();
-            this.id_role.disable();
-            this.id_employee.disable();
+
         }
 
         if (this.viewMode != 'new') {
             this.getUserByID(id);
+           
+            this.id_card_employee.disable();
         }
 
     }
+
+    //Recibe el rolId y busca el nombre del rol en la lista de roles
+    getRoleName(roleId: number) {
+        const role = this.listRoles.find(role => role.id_role === roleId);
+        this.roleName = role ? role.name_role : '';
+    }
+
+    getCardId(card: string) {
+
+    }
+
+    //Cargar la lista de roles 
+    loadRoles() {
+        this.usersService.getAllRoles().subscribe(
+            (data) => {
+                this.listRoles = data;
+                const roleIdString = this.route.snapshot.paramMap.get('id_role');
+                const roleId = Number(roleIdString);
+                this.getRoleName(roleId);
+            },
+            (error) => {
+                console.error('Error al obtener los roles: ', error);
+            }
+
+
+        )
+    }
+
+
+
+
+
+
 
     private getUserByID(id: number): void {
         this.loading = true;
@@ -98,8 +175,9 @@ export class UserDetailComponent implements OnInit {
     private setDataUser(): void {
         if (this.userData) {
             this.id_user.setValue(this.userData.id_user),
-                this.id_role.setValue(this.userData.id_role),
-                this.id_employee.setValue(this.userData.id_employee),
+                this.name_role.setValue(this.userData.name_role),
+                this.id_card_employee.setValue(this.userData.id_card_employee),
+
                 this.username.setValue(this.userData.username),
                 this.email.setValue(this.userData.email),
                 this.password.setValue(this.userData.password),
@@ -302,11 +380,11 @@ export class UserDetailComponent implements OnInit {
         return this.userForm.get('id_user');
     }
 
-    get id_role() {
-        return this.userForm.get('id_role');
+    get name_role() {
+        return this.userForm.get('name_role');
     }
-    get id_employee() {
-        return this.userForm.get('id_employee');
+    get id_card_employee() {
+        return this.userForm.get('id_card_employee');
     }
     get username() {
         return this.userForm.get('username');
@@ -324,6 +402,8 @@ export class UserDetailComponent implements OnInit {
     get password() {
         return this.userForm.get('password');
     }
+
+
 
 
 

@@ -17,7 +17,7 @@
             </div>
             <div class="col-md-6 text-end">
                 <div class="form-group">
-                    <input id="purchase" placeholder="Buscar Compra" [formControl]="searchControl" class="form-control" type="text"(keyup)="searchPurchases($event)">
+                    <input id="purchase" placeholder="Buscar Compra" [formControl]="searchControl" class="form-control" type="text"(keyup)="searchPurchase($event)">
                 </div>
             </div>
         </div>
@@ -25,25 +25,21 @@
 
     <div class="col-md-12">
         <div class="card o-hidden">
-            <ngx-datatable
-                class="material fullscreen"
-                style="height: 460px;"
-              
-                [columnMode]="'force'"
-                [headerHeight]="50"
+            <ngx-datatable class="material fullscreen" 
+            style="height: 460px;" 
+            [columnMode]="'force'"
+             [headerHeight]="50"
                 [footerHeight]="50"
-                [rowHeight]="'auto'"
-                [rowHeight]="60"
-                [scrollbarV]="true"
-                [scrollbarH]="false"
-                [rows]="filteredPurchases"
-                [externalPaging]="true"
+                 [rowHeight]="60" 
+                 [scrollbarV]="true" 
+                 [rows]="filteredPurchases" 
+                 [externalPaging]="true"
                 [count]="filteredPurchases.length"
-                [limit]="itemsPerPage"
-                [offset]="(currentPage - 1) * itemsPerPage"
-                (page)="onPageChange($event)"
-            >
-           
+                 [limit]="itemsPerPage" 
+                 [offset]="(currentPage - 1) * itemsPerPage"
+                (page)="onPageChange($event)">
+                
+
                 <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
                         # Factura
@@ -61,7 +57,10 @@
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         <ng-container *ngIf="row && row.id_purchase" class="long-text">
-                            {{ providers[row.id_provider] }}
+                          
+                            <div style="white-space: pre-line;">
+                                {{ providers[row.id_provider] }}
+                            </div>
                         </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
@@ -102,11 +101,11 @@
                        
                             
                         
-                        <button class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]" >
+                        <button  ngbTooltip="Ver Detalle"  class="btn btn-dark m-1" [routerLink]="['/purchases/detail', row.id_purchase]" >
                             <i class="i-Eye"></i>
                         </button>
      
-                        <button class="btn btn-danger " name="state" (click)="modalStatus(row.id_purchase, $event)"*ngIf="row.state_purchase == true" >
+                        <button  ngbTooltip="Anular"  class="btn btn-danger " name="state" (click)="modalStatus(row.id_purchase, $event)" [disabled]="!row.state_purchase" >
                             <i class="i-Close"></i> 
                         </button>
                     

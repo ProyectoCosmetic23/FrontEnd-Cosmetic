@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -16,8 +16,9 @@ export class ProvidersService {
     return this.http.post(this.baseUrl, providerData);
   }
   
-  getAllProviders(): Observable<any> {
-    return this.http.get(this.baseUrl);
+  getAllProviders(token?: string): Observable<any[]> {
+    const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
+    return this.http.get<any[]>(this.baseUrl, { headers });
   }
 
   getProviderById(providerId: number): Observable<any> {

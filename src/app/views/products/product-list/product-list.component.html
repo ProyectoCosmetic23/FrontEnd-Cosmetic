@@ -19,22 +19,25 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <input id="role" placeholder="Buscar Productos" [formControl]="searchControl" class="form-control"
-                            type="role">
+                            type="role" (keyup)="searchProduct($event)">
                     </div>
                 </div>
             </div>
         <div class="col-md-12">
             <div class="card o-hidden no-scroll-table">
-                <ngx-datatable
-                    style="height: 460px;"
-                    class="material"
-                    [columnMode]="'force'"
-                    [headerHeight]="50"
+                <ngx-datatable class="material fullscreen" 
+                style="height: 460px;" 
+                [columnMode]="'force'"
+                 [headerHeight]="50"
                     [footerHeight]="50"
-                    [rowHeight]="60"
-                    [scrollbarV]="true"
-                    [scrollbarH]="false"
-                    [rows]="filteredProducts">
+                     [rowHeight]="60" 
+                     [scrollbarV]="true" 
+                     [rows]="filteredProducts" 
+                     [externalPaging]="true"
+                    [count]="filteredProducts.length"
+                     [limit]="itemsPerPage" 
+                     [offset]="(currentPage - 1) * itemsPerPage"
+                    (page)="onPageChange($event)">
 
 
                 <ngx-datatable-column name="id_category" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
@@ -50,8 +53,10 @@
                     <ng-template ngx-datatable-header-template>
                         Nombre
                     </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.name_product }}
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" style="white-space: pre-line;">
+                        <div style="white-space: pre-line;">
+                            {{ row.name_product }}
+                        </div>
                     </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
@@ -59,7 +64,7 @@
                         Precio de costo
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.cost_price }}
+                        {{ row.cost_price | currency:'':'symbol':'1.0-0' }}
                     </ng-template>
                 </ngx-datatable-column>
                 
@@ -86,7 +91,7 @@
                         <button ngbTooltip="Ver Estado" class="btn btn-dark m-1" [routerLink]="['/products/print', row.id_product]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/products/edit', row.id_product]">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_product]" [disabled]="row.state_product == 'Inactivo'"  >
                             <i class="i-Pen-4"></i>
                         </button>
                         <label ngbTooltip="Cambiar estado" class="switch switch-success me-3 btn-custom" (click)="openModal(row.id_product)">

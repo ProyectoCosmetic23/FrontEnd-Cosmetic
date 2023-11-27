@@ -28,26 +28,28 @@
         <div class="card o-hidden">
             <div class="col-md-12">
                 <div class="card o-hidden">
-                    <ngx-datatable
-                        class="material fullscreen"
-                        style="height: 460px;"
-                        [columnMode]="'force'"
-                        [headerHeight]="50"
+                    <ngx-datatable class="material fullscreen" 
+                    style="height: 460px;" 
+                    [columnMode]="'force'"
+                     [headerHeight]="50"
                         [footerHeight]="50"
-                        [rowHeight]="60"
-                        [scrollbarV]="true"
-                        [rows]="filteredProviders"
-                        [externalPaging]="true"
-                        [count]="listProviders.length"
-                        [limit]="itemsPerPage"
-                        [offset]="(currentPage - 1) * itemsPerPage"
+                         [rowHeight]="60" 
+                         [scrollbarV]="true" 
+                         [rows]="filteredProviders" 
+                         [externalPaging]="true"
+                        [count]="filteredProviders.length"
+                         [limit]="itemsPerPage" 
+                         [offset]="(currentPage - 1) * itemsPerPage"
                         (page)="onPageChange($event)">
                         <ngx-datatable-column name="name_provider">
                             <ng-template ngx-datatable-header-template>
                                 Nombre proveedor
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.name_provider }}
+                  
+                                <div style="white-space: pre-line;">
+                                    {{ row.name_provider }}
+                                </div>
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column name="phone_provider">
@@ -55,7 +57,10 @@
                                 Teléfono
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.phone_provider }}
+                                
+                                <div style="white-space: pre-line;">
+                                    {{ row.phone_provider }}
+                                </div>
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column name="name_contact">
@@ -63,7 +68,9 @@
                                 Nombre contacto
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.name_contact }}
+                                <div style="white-space: pre-line;">
+                                    {{ row.name_contact }}
+                                </div>
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column name="state_provider">
@@ -82,7 +89,7 @@
                                 <button class="btn btn-dark m-1 me-3" [routerLink]="['/proveedores/detalle', row.id_provider]">
                                     <i class="i-Eye"></i> 
                                 </button>
-                                <button class="btn btn-info m-1 me-3" [routerLink]="['/proveedores/editar', row.id_provider]">
+                                <button class="btn btn-info m-1 me-3" [routerLink]="['/proveedores/editar', row.id_provider]" [disabled]="row.state_provider == 'Inactivo'" >
                                     <i class="i-Pen-4"></i> 
                                 </button>
                                 <label class="switch switch-success me-3" (click)="openModal(row.id_provider)">
@@ -98,20 +105,11 @@
     </div>
 </div>
 
-<!-- Agrega los controles de paginación justo debajo de la tabla -->
-<pagination-template
-    (pageChange)="pageChanged($event)"
-    [id]="paginationId"
-    
-></pagination-template>
+
 
 <ng-template #changeStateModal let-modal>
     <div class="modal-header">
         <h4 class="Cambiar estado" id="modal-title">Cambiar Estado del Proveedor</h4>
-        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
-            (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea inhabilitar este proveedor?</strong></p>

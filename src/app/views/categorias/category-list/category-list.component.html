@@ -39,6 +39,7 @@
                  [limit]="itemsPerPage" 
                  [offset]="(currentPage - 1) * itemsPerPage"
                 (page)="onPageChange($event)">
+                
                 <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
                         Nombre 
@@ -65,13 +66,13 @@
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_category">
-                            <button class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
+                            <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
+                            <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label class="switch switch-success me-3">
+                            <label ngbTooltip="Cambiar Estado"  class="switch switch-success me-3">
                                 <input type="checkbox"  [checked]="row.state_category" (click)="modalStatus(row.id_category, $event) ">
                                 <span class="slider"></span>
                             </label>

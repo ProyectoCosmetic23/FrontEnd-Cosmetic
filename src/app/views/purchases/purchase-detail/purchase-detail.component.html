@@ -165,7 +165,7 @@
                             <div class="col-md-3 align-self-end">
                               <div class="form-group">
                                 <label for="id_product"></label>
-                                <button class="btn btn-secondary" (click)="openCreateProductModal(createProductModal)"><i class="i-Add"></i></button>
+                                <button  ngbTooltip="Crear Producto"  class="btn btn-secondary" (click)="openCreateProductModal(createProductModal)"><i class="i-Add"></i></button>
 
                               </div>
                             </div>
@@ -255,8 +255,8 @@
                       <tbody>
                         <tr *ngFor="let item of purchaseDetailArray; let i = index">
                           <td><i>{{ i + 1 }}</i></td>
-                          <td>{{ item.name_category }}</td>                       
-                          <td>{{  item.name_product }}</td>
+                          <td><div style="white-space: pre-line;">{{ item.name_category }}</div></td>                       
+                          <td><div style="white-space: pre-line;">{{  item.name_product }}</div></td>
                           <td>{{ item.cost_price | currency:'':'symbol':'1.0-0' }}</td>
                           <td>{{ item.selling_price | currency:'':'symbol':'1.0-0' }}</td>
                           <td>{{ item.vat | currency:'':'symbol':'1.0-0' }}</td>

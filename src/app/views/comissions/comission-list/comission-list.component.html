@@ -117,10 +117,11 @@
         <form [formGroup]="formBasic" (ngSubmit)="submit()">
             <div class="row">
                 <div class="col-md-5 form-group mb-3">
-                    <label for="commission_percentage">Porcentaje de comisión</label>
+                    <label for="commission_percentage">Porcentaje de comisión<span class="text-danger">*</span></label>
 
                     <select class="form-control" id="commission_percentage"
                         (change)="handlePerccentageSelection($event)">
+                        <option value="0">Elija el porcentaje</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -136,8 +137,9 @@
 
 
                 <div class="col-md-5 form-group mb-3">
-                    <label for="month_commission">Mes comisión</label>
+                    <label for="month_commission">Mes comisión<span class="text-danger">*</span></label>
                     <select class="form-control" id="commission_percentage" (change)="handleMonth($event)">
+                        <option value="0">Elija el mes</option>
                         <option value="1">Enero</option>
                         <option value="2">Febrero</option>
                         <option value="3">Marzo</option>
