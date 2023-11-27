@@ -46,6 +46,7 @@ export class OrdersListComponent implements OnInit {
   formBasic: FormGroup;
   order_type: string = "Todos";
   modal_message: string;
+  message_observation: any = "";
 
   constructor(
     private _ordersService: OrdersService,
@@ -251,7 +252,7 @@ export class OrdersListComponent implements OnInit {
       subscribe_method = this._ordersService.updateOrderStatus(idOrder);
     } else if (usage === "Anular") {
       this.modal_message = "¿Está seguro de que desea anular el pedido?";
-      subscribe_method = this._ordersService.AnulateOrder(idOrder);
+      subscribe_method = this._ordersService.AnulateOrder(idOrder, { observation: this.message_observation });
     }
     this._ordersService.getOrderById(idOrder).subscribe(
       (data) => {
@@ -262,31 +263,42 @@ export class OrdersListComponent implements OnInit {
             .result.then(
               (result) => {
                 if (result === "Ok") {
-                  subscribe_method.subscribe(
-                    (data) => {
-                      this.toastr.success(
-                        "Cambio de estado realizado con éxito.",
-                        "Proceso Completado",
-                        {
-                          progressBar: true,
-                          timeOut: 2000,
-                        }
-                      );
-                      this.getOrders(this.order_type);
-                    },
-                    (error) => {
-                      this.loading = false;
-                      this.toastr.error(
-                        "Fallo al realizar el cambio de estado.",
-                        "Error",
-                        {
-                          progressBar: true,
-                          timeOut: 2000,
-                        }
-                      );
-                      console.error("Error al cambiar de estado:", error);
-                    }
-                  );
+                  if (this.message_observation == "") {
+                    this.toastr.warning(
+                      "Debe indicar el motivo por el que se anula el pedido.",
+                      "Advertencia",
+                      {
+                        progressBar: true,
+                        timeOut: 1000,
+                      }
+                    );
+                  } else {
+                    subscribe_method.subscribe(
+                      (data) => {
+                        this.toastr.success(
+                          "Cambio de estado realizado con éxito.",
+                          "Proceso Completado",
+                          {
+                            progressBar: true,
+                            timeOut: 2000,
+                          }
+                        );
+                        this.getOrders(this.order_type);
+                      },
+                      (error) => {
+                        this.loading = false;
+                        this.toastr.error(
+                          "Fallo al realizar el cambio de estado.",
+                          "Error",
+                          {
+                            progressBar: true,
+                            timeOut: 2000,
+                          }
+                        );
+                        console.error("Error al cambiar de estado:", error);
+                      }
+                    );
+                  }
                 } else if (result === "Cancel") {
                   this.modalAbierto = false;
                 }

@@ -67,7 +67,7 @@ export class OrdersService {
     return this.http.put(this.url + '/api/orders/updateStatus/' + id, {});
   }
 
-  AnulateOrder(id: any): Observable<any> {
-    return this.http.put(this.url + '/api/orders/anulate/' + id, {});
+  AnulateOrder(id: any, orderData: any): Observable<any> {
+    return this.http.put(this.url + '/api/orders/anulate/' + id, orderData);
   }
 }
