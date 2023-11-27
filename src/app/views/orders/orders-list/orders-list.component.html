@@ -161,7 +161,7 @@
                 <p
                   style="font-size: 10px; text-align: center; margin-top: 12px"
                 >
-                  {{ row.order_date }}
+                  {{ row.order_date.split("T")[0] }}
                 </p>
               </ng-container>
             </ng-template>
@@ -265,7 +265,7 @@
             [canAutoResize]="true"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px">Acciones</p>
+              <p style="font-size: 12px; text-align: center">Acciones</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -298,7 +298,10 @@
                     data-placement="top"
                     title="Realizar pago"
                     (click)="openPayments(row.id_order)"
-                    [disabled]="row.payment_state == 'Pagado' || row.order_state == 'Anulado'"
+                    [disabled]="
+                      row.payment_state == 'Pagado' ||
+                      row.order_state == 'Anulado'
+                    "
                   >
                     <i class="i-Financial" style="font-size: 15px"></i>
                   </button>
@@ -323,7 +326,10 @@
                     (click)="
                       openModal(row.id_order, 'Enviar', row.delivery_state)
                     "
-                    [disabled]="row.delivery_state == 'Entregado' || row.order_state == 'Anulado'"
+                    [disabled]="
+                      row.delivery_state == 'Entregado' ||
+                      row.order_state == 'Anulado'
+                    "
                   >
                     <i class="i-Jeep" style="font-size: 15px"></i>
                   </button>
@@ -339,9 +345,13 @@
                   >
                     <i class="i-Close" style="font-size: 15px"></i>
                   </button>
-                  <button class="btn btn-warning m-1" [routerLink]="['returns/', row.id_order]" title="Devolver"  >
-                    <i class="i-Close" style="font-size: 15px;"></i>
-                </button>
+                  <!-- <button
+                    class="btn btn-warning m-1"
+                    [routerLink]="['returns/', row.id_order]"
+                    title="Devolver"
+                  >
+                    <i class="i-Close" style="font-size: 15px"></i>
+                  </button> -->
                 </div>
               </ng-container>
             </ng-template>

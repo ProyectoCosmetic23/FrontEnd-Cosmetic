@@ -4,11 +4,9 @@
 
 export const environment = {
   production: false,
-  //url:'https://api-cosmetic-qqce.onrender.com',
-  //url: 'https://api-cosmetic-qqce.onrender.com'
-  url:'http://localhost:8080'
-
+  url: "https://api-cosmetic-qqce.onrender.com",
 };
+
 // http://localhost:8080
 /*
  * For easier debugging in development mode, you can import the following file

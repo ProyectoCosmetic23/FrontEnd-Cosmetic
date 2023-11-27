@@ -35,26 +35,12 @@ export class ClientListComponent implements OnInit {
     }
 
     getClients() {
-<<<<<<< HEAD
-        this._clientService.getAllClients().subscribe(
-            (data) => {
-                this.listClients = data;
-                this.filteredClients =this.listClients;
-                this.sortListClientsById();
-                this.refreshListClients();
-            },
-            (error) => {
-                console.error('Error al obtener Categorías:', error);
-            }
-        );
-=======
         this._clientService.getAllClients().subscribe(data => {
             this.listClients = data.sort((a, b) => a.id_client - b.id_client);
             this.filteredClients = [...this.listClients];
         }, error => {
             console.log(error);
         }); 
->>>>>>> 69959d590f5c8d26885c9c3eb1df051a7f70541e
     }
 
     @ViewChild(DatatableComponent)
