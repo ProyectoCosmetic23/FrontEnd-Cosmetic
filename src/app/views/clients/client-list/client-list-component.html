@@ -16,7 +16,7 @@
                 <div class="col-md-6 d-flex justify-content-end">
                     <input _ngcontent-vet-c167="" id="search" placeholder="Buscar cliente" type="text"
                         class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
-                        style="width: 50%;">
+                        style="width: 50%;" (keyup)="searchClient($event)">
                 </div>
             </div>
         </div>
@@ -26,8 +26,20 @@
         
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
-                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"[rows]="filteredClients">
+                <ngx-datatable class="material fullscreen" 
+                style="height: 460px;" 
+                [columnMode]="'force'"
+                 [headerHeight]="50"
+                    [footerHeight]="50"
+                     [rowHeight]="60" 
+                     [scrollbarV]="true" 
+                     [rows]="filteredClients" 
+                     [externalPaging]="true"
+                    [count]="filteredClients.length"
+                     [limit]="itemsPerPage" 
+                     [offset]="(currentPage - 1) * itemsPerPage"
+                    (page)="onPageChange($event)">
+
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
                         Cédula o nit
@@ -41,7 +53,9 @@
                         Nombres
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.name_client}} {{ row.last_name_client}}
+                        <div style="white-space: pre-line;">
+                            {{ row.name_client }} {{ row.last_name_client}}
+                        </div>
                     </ng-template>
                 </ngx-datatable-column>
                 <ngx-datatable-column name="email_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
@@ -70,7 +84,7 @@
                         <button class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]">
+                        <button class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
                         <label class="switch switch-success me-3" (click)="openModal(row.id_client)">

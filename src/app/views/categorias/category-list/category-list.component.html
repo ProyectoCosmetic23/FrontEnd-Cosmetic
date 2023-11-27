@@ -39,6 +39,7 @@
                  [limit]="itemsPerPage" 
                  [offset]="(currentPage - 1) * itemsPerPage"
                 (page)="onPageChange($event)">
+                
                 <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
                         Nombre 
