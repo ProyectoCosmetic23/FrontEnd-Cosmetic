@@ -86,10 +86,12 @@ export class ProductListComponent implements OnInit {
 
             return nombreMatch || cost_priceMatch || estadoMatch;
         });
+        
 
         this.currentPage = 1;
     }
 
+    
     openRetireModal(productId: number, productValue: number, content: any): void {
         this.selectedProductId = productId;
         this.selectedProductValue = productValue;
@@ -101,7 +103,7 @@ export class ProductListComponent implements OnInit {
     
         
     retireProduct(): void {
-        if (this.selectedProductId && this.returnQuantity) {    
+        if (this.selectedProductId && this.returnQuantity) {
             const data = {
                 return_quantity: this.returnQuantity,
                 return_reason: this.returnReason,
