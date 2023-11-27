@@ -19,7 +19,7 @@ export class UserDetailComponent implements OnInit {
 
     userForm: FormGroup;
     userFormSub: Subscription;
-    loading: boolean = false;
+    loading: boolean ;
     viewMode: 'new' | 'edit' | 'print' = 'new';
     id: string;
     isNew: boolean;
@@ -102,7 +102,7 @@ export class UserDetailComponent implements OnInit {
           id_card_employee: ['', [Validators.required]],
         });
     
-        if (this.viewMode == 'print' || this.viewMode == 'edit') {
+        if (this.viewMode == 'print' /*|| this.viewMode == 'edit'*/) {
           this.userForm.disable();
         }
     
@@ -172,7 +172,7 @@ export class UserDetailComponent implements OnInit {
     }
 
     private setDataUser(): void {
-        this.loading=true;
+      //  this.loading=true;
         if (this.userData) {
                 this.id_role.setValue(this.userData.id_role),
                 
