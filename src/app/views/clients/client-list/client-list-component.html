@@ -25,6 +25,7 @@
         <div class="row mb-3">
         
         <div class="col-md-12">
+<<<<<<< HEAD
             <div class="card o-hidden">
                 <ngx-datatable class="material fullscreen" 
                 style="height: 460px;" 
@@ -40,6 +41,11 @@
                      [offset]="(currentPage - 1) * itemsPerPage"
                     (page)="onPageChange($event)">
 
+=======
+            <div class="card o-hidden"> 
+                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
+                [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"[rows]="filteredClients">
+>>>>>>> 69959d590f5c8d26885c9c3eb1df051a7f70541e
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
                         Cédula o nit
