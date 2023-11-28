@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+ import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormArray,UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { UsersService } from 'src/app/shared/services/user.service';
 import { UserFormModel } from '../models/user-model';
+import { RolesService } from 'src/app/shared/services/roles.service';
 
 
 
@@ -15,23 +16,22 @@ import { UserFormModel } from '../models/user-model';
     styleUrls: ['./user-detail.component.scss']
 })
 export class UserDetailComponent implements OnInit {
-    
+
     userForm: FormGroup;
     userFormSub: Subscription;
-    loading: boolean;
-    formBasic: FormGroup;
+    loading: boolean ;
     viewMode: 'new' | 'edit' | 'print' = 'new';
     id: string;
     isNew: boolean;
-    invoice: any = {};
-    invoiceForm: UntypedFormGroup;
-    invoiceFormSub: Subscription;
-    subTotal: number;
-    saving: boolean;
+    employeeNotFoundMessage: string = '';
     userData: UserFormModel;
     listRoles: any[];
     roleName: string;
-    
+    formBasic: FormGroup;
+    invoice: any = {};
+    rolesFormArray: FormArray;
+    invoiceForm: UntypedFormGroup;
+    invoiceFormSub: Subscription;
 
 
     constructor(
@@ -41,7 +41,9 @@ export class UserDetailComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
         private usersService: UsersService,
-       
+    
+        private rolesService: RolesService,
+
     ) {
 
     }
@@ -49,20 +51,14 @@ export class UserDetailComponent implements OnInit {
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id_user'];
-
+    
         this.isNew = !this.id;
         this.setViewMode();
         this.inicializateForm(Number(this.id));
         this.loadRoles();
-
-        // this.userForm.get('id_card_employee').valueChanges.subscribe(() => {
-        //     this.searchEmployeeByEmail();
-        // });
-
-
-    }
-    employeeNotFoundMessage: string = '';
-
+    
+      }
+    
     searchEmployeeByEmail() {
         const idCard = this.userForm.get('id_card_employee').value;
 
@@ -70,8 +66,12 @@ export class UserDetailComponent implements OnInit {
             this.usersService.getEmployeeByEmail(idCard).subscribe(
                 (data: any) => {
                     this.userForm.patchValue({
-                        email: data.email // Actualiza el campo de correo electrónico con el valor obtenido
+                        email: data.email,  // Actualiza el campo de correo electrónico con el valor obtenido
+                        id_employee:data.id_employee
                     });
+                    console.log(data.email);
+                     console.log(data.id_employee);
+
                     this.employeeNotFoundMessage = ''; // Reinicia el mensaje si se encontró el empleado
                 },
                 (error: any) => {
@@ -89,38 +89,32 @@ export class UserDetailComponent implements OnInit {
 
     private inicializateForm(id: number): void {
         this.userForm = this.formBuilder.group({
-
-
-            id_user: [],
-            id_role: [],
-            id_employee: [],
-            username: ['', [Validators.required, Validators.maxLength(80)], [this.validateNameSimbolAndNumber]],
-            email: [],
-            observation_user: ['', [Validators.required, Validators.maxLength(100)]],
-            state_user: [],
-            creation_date_user: [],
-            password: ['',[Validators.required]],
-            name_role: ['',[Validators.required]],
-            id_card_employee: ['',[Validators.required]]
-
+          id_user: [],
+          id_role: ['', [Validators.required]],
+          id_employee: [],
+          username: ['', [Validators.required, Validators.maxLength(80)]],
+          email: [],
+          observation_user: ['', [Validators.required, Validators.maxLength(100)]],
+          state_user: [],
+          creation_date_user: [],
+          password: ['', [Validators.required]],
+          name_role: ['', []],
+          id_card_employee: ['', [Validators.required]],
         });
-
-        if (this.viewMode == 'print') {
-            this.userForm.disable();
+    
+        if (this.viewMode == 'print' /*|| this.viewMode == 'edit'*/) {
+          this.userForm.disable();
         }
-
-        if (this.viewMode == 'edit') {
-            this.id_user.disable();
-
-        }
-
+    
         if (this.viewMode != 'new') {
-            this.getUserByID(id);
-           
-            this.id_card_employee.disable();
+          this.getUserByID(id);
+          this.email.disable();
+          this.id_card_employee.disable();
+          
+          
         }
-
-    }
+      }
+    
 
     //Recibe el rolId y busca el nombre del rol en la lista de roles
     getRoleName(roleId: number) {
@@ -149,6 +143,11 @@ export class UserDetailComponent implements OnInit {
         )
     }
 
+    //ROLES
+    getRolesName(employee_id: string):string{
+        return this.listRoles.find(x => x.id_employee==employee_id).name_role
+    }
+
 
 
 
@@ -173,10 +172,12 @@ export class UserDetailComponent implements OnInit {
     }
 
     private setDataUser(): void {
+      //  this.loading=true;
         if (this.userData) {
-            this.id_user.setValue(this.userData.id_user),
-                this.name_role.setValue(this.userData.name_role),
-                this.id_card_employee.setValue(this.userData.id_card_employee),
+                this.id_role.setValue(this.userData.id_role),
+                
+               // this.id_card_employee.setValue(this.userData.id_card_employee),
+                this.id_employee.setValue(this.userData.id_employee)
 
                 this.username.setValue(this.userData.username),
                 this.email.setValue(this.userData.email),
@@ -379,6 +380,15 @@ export class UserDetailComponent implements OnInit {
     get id_user() {
         return this.userForm.get('id_user');
     }
+
+    get id_role() {
+        return this.userForm.get('id_role');
+    }
+
+    get id_employee() {
+        return this.userForm.get('id_employee');
+    }
+
 
     get name_role() {
         return this.userForm.get('name_role');

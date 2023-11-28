@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { OrdersDetailComponent } from './orders-detail/orders-detail.component';
+import { ReturnsDetailComponent } from '../returns/returns-detail/returns-detail.component';
 import { AuthGuard } from 'src/app/shared/services/auth.guard';
 
 const routes: Routes = [
@@ -20,6 +21,10 @@ const routes: Routes = [
         path: 'detail/:id_order',
         canActivate: [AuthGuard],
         component: OrdersDetailComponent
+    },
+    {
+        path: 'returns/:id_order',
+        component: ReturnsDetailComponent
     }
 ]
 

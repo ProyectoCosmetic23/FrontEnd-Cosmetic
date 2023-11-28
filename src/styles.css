@@ -109,21 +109,18 @@ table th:last-child {
   flex-direction: column;
 }
 
-/* Estilos para los botones por defecto
-.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
-  text-align: left;
-  padding: 0.6rem 0rem;
-  vertical-align: top;
-  border-top: 0;
-  color: rgba(0, 0, 0, 0.87);
-  transition: width 0.3s ease;
-  font-size: 14px;
-  font-weight: 400;
-} */
-
 /* Media query para hacer los botones más pequeños en pantallas más pequeñas */
 @media (max-width: 1080px) {
   button {
     font-size: 5px; /* Tamaño de fuente más pequeño para pantallas más pequeñas */
   }
+}
+
+/* .tab-content {
+  display: none !important;
+} */
+
+.custom-tab {
+  border: 2px solid #3498db; /* Puedes ajustar el color según tus preferencias */
+  border-radius: 5px; /* Ajusta el radio del borde si lo deseas */
 }
