@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ReturnsService } from "src/app/shared/services/returns.service";
-import { ProductService } from 'src/app/shared/services/product.service';
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
-import { CommonModule } from '@angular/common';
+
 import { PaymentsService } from 'src/app/shared/services/payment.service';
+
 
 // import { CookieService } from "ngx-cookie-service";
 
@@ -27,7 +27,7 @@ export class ReturnsDetailComponent implements OnInit {
   productsFormArray: FormArray;
 
   // Propiedades para el modo de vista
-  viewMode: "detaild";
+  viewMode:  "detaild"= "detaild";
 
   // Otras propiedades
   id: string;
@@ -49,19 +49,15 @@ export class ReturnsDetailComponent implements OnInit {
   error_client: boolean = false;
   listPayments: any[] = [];
 
-  listProductsDevol: any[] = [];
-  
-
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private _returnsService: ReturnsService,
-    private cookieService: CookieService,
-    private toastr: ToastrService,
-    private productsService: ProductService,
     private _ordersService: OrdersService,
+    private _returnsService: ReturnsService,
     private _paymentService: PaymentsService,
+    private cookieService: CookieService,
+    private toastr: ToastrService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
   }
@@ -76,27 +72,22 @@ export class ReturnsDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    // this.getproductByIdOrder();
     this.formBasic = this.formBuilder.group({});
     this.formBasic.addControl("products", this.productsFormArray);
     this.getPaymentsForOrder();
-
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
- 
 
-  // Método que determina el modo de vista (nuevo o detalle) según la ruta actual
+  // Método que determina el modo de vista (detalle) según la ruta actual
   setViewMode() {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/detaild/")) {
       this.viewMode = "detaild";
     }
   }
-
+  
   // -------------- INICIO: Métodos para obtener datos -------------- //
-
-   //pagos 
   getPaymentsForOrder() {
     if (this.viewMode === 'detaild') {
       // Convertir this.id a número usando parseInt
@@ -116,14 +107,12 @@ export class ReturnsDetailComponent implements OnInit {
       );
     }
   }
-
-  // Método para obtener un pedido y sus detalles
   // Método para obtener un pedido y sus detalles
   getOrder() {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/orders/returns/")) {
       // Antes de cargar los datos, establece loadingData en true
-      this._ordersService.getOrderById(this.id).subscribe(
+      this._returnsService.getOrderById(this.id).subscribe(
         (data) => {
           this.order = data;
           const idClient = this.order.order.id_client;
@@ -169,7 +158,6 @@ export class ReturnsDetailComponent implements OnInit {
     }
   }
 
-
   // Método para encontrar información relacionada con el pedido (cliente, empleado, productos)
   findOrderData(clientId: number, employeeId: number, products: any) {
     console.log(clientId + " " + employeeId + " " + products.id_product);
@@ -203,7 +191,7 @@ export class ReturnsDetailComponent implements OnInit {
     this._returnsService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
-        //console.log(this.listClients);
+       
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -216,7 +204,7 @@ export class ReturnsDetailComponent implements OnInit {
     this._returnsService.getAllEmployees().subscribe(
       (data) => {
         this.listEmployees = data;
-        //console.log(this.listEmployees);
+        
       },
       (error) => {
         console.error("Error al obtener Empleados:", error);
@@ -224,14 +212,12 @@ export class ReturnsDetailComponent implements OnInit {
     );
   }
 
-
-
   // Método para obtener todos los productos
   getProducts() {
     this._returnsService.getAllProducts().subscribe(
       (data) => {
         this.listProducts = data;
-        console.log(this.listProducts);
+      
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
@@ -239,29 +225,64 @@ export class ReturnsDetailComponent implements OnInit {
     );
   }
 
-  // // Método para obtener todos los productos
-  // getproductByIdOrder() {
-  //   const currentRoute = this.router.url;
-  //   if (currentRoute.includes("/orders/returns/")) {
-  //     this._returnsService.getProductByIdOrder(this.id).subscribe(
-  //       (data) => {
-  //         this.listProductsDevol = data;
-         
-  //        // console.log(this.listProductsDevol);
-  //       },
-  //       (error) => {
-  //         console.error("Error al obtener Productos:", error);
-  //       }
-  //     );
-  //   }
-  // }
-
   // Método para obtener el precio unitario de un producto por su ID
   getProductPrice(idProduct: number): number | undefined {
     const product = this.listProducts.find((p) => p.id_product === idProduct);
     return product ? product.product_price : undefined;
   }
 
+  onClientSelected(event: any): void {
+    this.selected_client_id = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el nombre del cliente" ||
+      event.target.value == undefined
+    ) {
+      this.error_client = true;
+    } else {
+      this.error_client = false;
+    }
+
+    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
+    console.log("Cliente seleccionado:", this.selected_client_id);
+  }
+
+  onEmployeeSelected(event: any): void {
+    // Accede al valor seleccionado
+    this.selected_employee_id = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el nombre del empleado" ||
+      event.target.value == undefined
+    ) {
+      this.error_employee = true;
+    } else {
+      this.error_employee = false;
+    }
+
+    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
+    console.log("Empleado seleccionado:", this.selected_employee_id);
+  }
+
+  onPaymentTypeSelected(event: any): void {
+    // Accede al valor seleccionado
+    this.selected_payment_type = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el tipo de pago" ||
+      event.target.value == undefined
+    ) {
+      this.error_payment_type = true;
+    } else {
+      this.error_payment_type = false;
+    }
+
+    // Ahora `selectedPaymentType` contiene el tipo de pago seleccionado
+    console.log("Tipo de pago seleccionado:", this.selected_payment_type);
+  }
 
   // -------------- INICIO: Funciones para manipular Productos -------------- //
 
@@ -365,7 +386,7 @@ export class ReturnsDetailComponent implements OnInit {
       products: this.productsFormArray.value,
     };
 
-
+    this.submitOrder(newOrder);
   }
 
   checkProducts() {
@@ -437,6 +458,17 @@ export class ReturnsDetailComponent implements OnInit {
     this.toastr.warning(message, "Advertencia");
   }
 
+  submitOrder(newOrder) {
+    this._returnsService.createOrder(newOrder).subscribe(
+      (response) => {
+        this.showSuccessMessage("Pedido creado exitosamente");
+        this.router.navigate(["/orders"]);
+      },
+      (error) => {
+        this.handleError("Error al crear el pedido:", error);
+      }
+    );
+  }
 
 
   showSuccessMessage(message: string) {

@@ -1,27 +1,19 @@
-<div class="row" *ngIf="!loading" style="width: 100%">
+<div class="row" style="width: 100%">
   <div class="breadcrumb">
-
-    <h1 *ngIf="viewMode === 'detaild'">Devolver</h1>
+    <h1 *ngIf="viewMode === 'detaild'">Devolución</h1>
     <ul>
-
-
-      <li *ngIf="viewMode === 'detaild'">Devolver</li>
+      <li *ngIf="viewMode === 'detaild'">Devolución</li>
     </ul>
   </div>
 </div>
-
-
-
-
 
 <div class="row">
   <div class="col-md-12">
     <div class="card mb-4">
       <div class="card-body">
-        <div class="card-title mb-3">Formulario de Devolucion</div>
+        <div class="card-title mb-3">Formulario de Devolución</div>
 
-        <form action="">
-        
+        <form [formGroup]="formBasic" (ngSubmit)="createOrder()">
           <div class="row">
             <div class="col-md-5 form-group mb-3">
               <label for="id_client">Cliente</label>
@@ -29,11 +21,11 @@
                 class="form-control"
                 id="id_client"
                 [disabled]="viewMode === 'detaild'"
-                *ngIf="viewMode === 'detaild'"
+               
+              
               >
                 <option>{{ selected_client }}</option>
               </select>
-
             </div>
 
             <div class="col-md-5 form-group mb-3">
@@ -41,12 +33,12 @@
               <select
                 class="form-control"
                 id="id_employee"
-                [disabled]="viewMode === 'detaild'"
-                *ngIf="viewMode === 'detaild'"
+                disabled
+                
+                
               >
                 <option>{{ selected_employee }}</option>
               </select>
-              
             </div>
 
             <div class="col-md-2 form-group mb-3">
@@ -54,20 +46,13 @@
               <select
                 class="form-control"
                 id="payment_type"
-                [disabled]="viewMode === 'detaild'"
-                *ngIf="viewMode === 'detaild'"
+                disabled
+                
               >
                 <option>{{ selected_payment_type }}</option>
               </select>
-
-   
             </div>
           </div>
-
-
-       
-
-
 
           <div class="col-md-12 mt-4 table-border">
             <table class="table table-hover mb-4">
@@ -78,78 +63,86 @@
                   <th scope="col">Precio Unitario</th>
                   <th scope="col">Unidades</th>
                   <th scope="col">Subtotal</th>
-                  <th *ngIf="viewMode === 'detaild'" scope="col">Acciones</th>
+                  <th scope="col">Acciones</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody formArrayName="products">
                 
-                  <tr *ngFor="let product of listProductsDevol">
+                  <tr
+                    *ngFor="let product of order_detail_products; let i = index"
+                  >
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td scope="row">{{ product.product_name }}</td>
+                    <td scope="row">{{ product.product_price }}</td>
+                    <td >{{ product.product_quantity }}</td>
                     <td>
-                      <select
-                        class="form-control"
-                        id="id_product"
-                        formControlName="id_product"
-                        (change)="handleProductSelection($event, i)"
-                      >
-                        <option
-                          *ngFor="let product of listProducts"
-                          [value]="product.id_product"
+                      {{
+                        product.product_subtotal
+                          | currency : "" : "symbol" : "1.2"
+                      }}
+                    </td>
+
+                    <td>
+                      <div>
+                       
+                        <button  class="btn btn-danger"
+                        ngbTooltip="Devolver producto" 
+                        
+                        
                         >
-                          {{ product.name_product}}
-                        </option>
-                      </select>
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        name="product_price"
-                        id="product_price"
-                        class="form-control"
-                        formControlName="product_price"
-                        [readonly]="true"
-                        *ngIf="viewMode === 'new'"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        class="form-control"
-                        formControlName="product_quantity"
-                        (change)="handleProductSelection($event, i)"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        class="form-control"
-                        formControlName="subtotal"
-                        [readonly]="true"
-                      />
-                    </td>
-                    <td
-                      *ngIf="viewMode == 'new'"
-                      class="d-flex justify-content-between"
-                    >
-                      <button
-                        *ngIf="numberOfProducts > 1"
-                        class="btn btn-danger"
-                        (click)="removeProduct(i)"
-                      >
-                        <i class="i-Remove-Cart"></i>
-                      </button>
-                      <div
-                        class="button_container"
-                        *ngIf="i === productsFormArray.controls.length - 1"
-                      >
-                        <button class="btn btn-primary" (click)="addProduct()">
-                          +
+                          <i class="i-Remove "></i>
                         </button>
+
+                        
                       </div>
+
+                     
+
                     </td>
+                    
                   </tr>
+                
+
+                
+               
+                
+               
+                
+
               </tbody>
             </table>
+            <div class="table-footer">
+              <div class="col-md-8"></div>
+              <div class="col-md-8">
+                <div class="total">
+                  Total:
+                  {{
+                    
+                      
+                        (order?.order?.total_order
+                        | currency : "" : "symbol" : "1.2")
+                  }}
+                  
+                </div>
+              </div>
+            </div>
+
             
+
+            <div class="col-md-12" style="margin-top: 20px">
+              <div class="d-flex justify-content-end">
+                <button
+                  class="btn btn-danger float-right"
+                  [routerLink]="['/orders']"
+                >
+                  Volver
+                </button>
+               
+                
+              </div>
+            </div>
+
+
           </div>
         </form>
       </div>

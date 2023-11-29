@@ -18,7 +18,7 @@ export class UserFormModel {
         this.id_user = response.id_user;
         this.id_role=response.id_role;
         this.id_employee=response.id_employee;
-      //  this.id_card_employee = response.id_card_employee;
+      // this.id_card_employee = response.id_card_employee;
         this.creation_date_user = response.creation_date_user;
         this.username = response.username;
         this.email = response.email;
