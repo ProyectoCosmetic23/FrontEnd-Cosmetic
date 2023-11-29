@@ -44,6 +44,7 @@ export class OrdersDetailComponent implements OnInit {
   error_client: boolean = false;
   listPayments: any[] = [];
   showLoadingScreen: boolean = false;
+  directSale: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,7 +52,6 @@ export class OrdersDetailComponent implements OnInit {
     private router: Router,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
-    private cookieService: CookieService,
     private toastr: ToastrService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
@@ -67,7 +67,9 @@ export class OrdersDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    this.formBasic = this.formBuilder.group({});
+    this.formBasic = this.formBuilder.group({
+      directSale: false,
+    });
     this.formBasic.addControl("products", this.productsFormArray);
     this.getPaymentsForOrder();
   }
@@ -125,6 +127,7 @@ export class OrdersDetailComponent implements OnInit {
 
           // Después de cargar los datos, establece loadingData en false
           this.showLoadingScreen = false;
+          console.log(this.order);
         },
         (error) => {
           console.error("Error al obtener el pedido:", error);
@@ -325,6 +328,7 @@ export class OrdersDetailComponent implements OnInit {
       product_price: [""],
       product_quantity: [""],
       subtotal: [""],
+      quantityOnhand: [""],
     });
   }
 
@@ -337,6 +341,8 @@ export class OrdersDetailComponent implements OnInit {
     const selectedProduct = this.listProducts.find(
       (product) => product.id_product == selectedProductId
     );
+
+    console.log(selectedProduct.quantity);
 
     if (selectedProduct) {
       this.productsFormArray
@@ -353,6 +359,8 @@ export class OrdersDetailComponent implements OnInit {
       if (unitValue != null && unitValue !== undefined) {
         // Calcula el subtotal en función de la cantidad y el precio unitario
         const subtotal = selectedProduct.selling_price * unitValue;
+
+        this.productsFormArray.at(i).get("quantityOnhand").setValue(selectedProduct.quantity);
 
         // Asigna el subtotal al campo "subtotal" del formulario
         this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
@@ -392,6 +400,8 @@ export class OrdersDetailComponent implements OnInit {
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
   createOrder() {
+    console.log(this.directSale);
+
     if (!this.formBasic.valid) {
       this.showFormWarning("Completa el formulario correctamente");
       return;
@@ -440,6 +450,7 @@ export class OrdersDetailComponent implements OnInit {
       payment_type: this.selected_payment_type,
       total_order: total_order,
       products: products,
+      directSale: this.directSale
     };
 
     this.submitOrder(newOrder);

@@ -47,6 +47,8 @@ export class OrdersListComponent implements OnInit {
   order_type: string = "Todos";
   modal_message: string;
   message_observation: any = "";
+  activeTab: string = "Todos los Pedidos";
+  usage: string;
 
   constructor(
     private _ordersService: OrdersService,
@@ -75,31 +77,38 @@ export class OrdersListComponent implements OnInit {
 
   onTabSelect(tabName: string) {
     if (tabName === "Todos los Pedidos") {
+      this.activeTab = "Todos los Pedidos";
       this.order_type = "Todos";
       this.getOrders(this.order_type);
     } else if (tabName === "Pedidos Por Entregar") {
+      this.activeTab = "Pedidos Por Entregar";
       this.order_type = "Por entregar";
       this.getOrders(this.order_type);
     } else if (tabName === "Pedidos Entregados") {
+      this.activeTab = "Pedidos Entregados";
       this.order_type = "Entregado";
-      console.log(this.order_type);
       this.getOrders(this.order_type);
     } else if (tabName === "Pedidos Por Pagar") {
+      this.activeTab = "Pedidos Por Pagar";
       this.order_type = "Por pagar";
-      console.log(this.order_type);
       this.getOrders(this.order_type);
     } else if (tabName === "Pedidos Pagados") {
+      this.activeTab = "Pedidos Pagados";
       this.order_type = "Pagado";
-      console.log(this.order_type);
+      this.getOrders(this.order_type);
+    } else if (tabName === "Ventas Realizadas") {
+      this.activeTab = "Ventas Realizadas";
+      this.order_type = "Ventas";
       this.getOrders(this.order_type);
     } else if (tabName === "Pedidos Anulados") {
+      this.activeTab = "Pedidos Anulados";
       this.order_type = "Anulado";
-      console.log(this.order_type);
       this.getOrders(this.order_type);
     }
   }
 
   getOrders(order_type: string) {
+    console.log(this.activeTab);
     this.showLoadingScreen = true;
     let orderService;
     if (order_type == "Todos") {
@@ -112,6 +121,8 @@ export class OrdersListComponent implements OnInit {
       orderService = this._ordersService.getAllUnpaidOrders();
     } else if (order_type == "Pagado") {
       orderService = this._ordersService.getAllPaidOrders();
+    } else if (order_type == "Ventas") {
+      orderService = this._ordersService.getAllSales();
     } else if (order_type == "Anulado") {
       orderService = this._ordersService.getAllAnulatedOrders();
     }
@@ -149,7 +160,6 @@ export class OrdersListComponent implements OnInit {
                 console.log("Inner text de .page-count:", innerText);
               }
             });
-            this.sortListOrdersById();
             this.adjustListOrders();
             this.showLoadingScreen = false;
           },
@@ -198,18 +208,6 @@ export class OrdersListComponent implements OnInit {
     this.loadData();
   }
 
-  sortListOrdersById() {
-    this.listOrders.sort((a, b) => {
-      if (a.order_number < b.order_number) {
-        return -1;
-      }
-      if (a.order_number > b.order_number) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
   loadData() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     let endIndex = startIndex + this.itemsPerPage;
@@ -241,18 +239,20 @@ export class OrdersListComponent implements OnInit {
 
   openModal(idOrder: number, usage: string, state: string) {
     let subscribe_method = this._ordersService.updateOrderStatus(idOrder);
+    this.usage = usage;
     if (usage === "Enviar") {
       if (state === "En proceso") {
-        this.modal_message =
-          '¿Desea cambiar el estado de "En proceso" a "Por entregar"?';
+        this.modal_message = '¿Marcar este pedido como "Listo para entrega"?';
       } else if (state === "Por entregar") {
         this.modal_message =
-          '¿Desea cambiar el estado de "Por entregar" a "Entregado"?';
+          "¿Confirma que el pedido ha sido entregado con éxito?";
       }
       subscribe_method = this._ordersService.updateOrderStatus(idOrder);
     } else if (usage === "Anular") {
       this.modal_message = "¿Está seguro de que desea anular el pedido?";
-      subscribe_method = this._ordersService.AnulateOrder(idOrder, { observation: this.message_observation });
+      subscribe_method = this._ordersService.AnulateOrder(idOrder, {
+        observation: this.message_observation,
+      });
     }
     this._ordersService.getOrderById(idOrder).subscribe(
       (data) => {
@@ -263,7 +263,7 @@ export class OrdersListComponent implements OnInit {
             .result.then(
               (result) => {
                 if (result === "Ok") {
-                  if (this.message_observation == "") {
+                  if (usage === "Anular" && this.message_observation == "") {
                     this.toastr.warning(
                       "Debe indicar el motivo por el que se anula el pedido.",
                       "Advertencia",
@@ -272,38 +272,45 @@ export class OrdersListComponent implements OnInit {
                         timeOut: 1000,
                       }
                     );
-                  } else {
-                    subscribe_method.subscribe(
-                      (data) => {
-                        this.toastr.success(
-                          "Cambio de estado realizado con éxito.",
-                          "Proceso Completado",
-                          {
-                            progressBar: true,
-                            timeOut: 2000,
-                          }
-                        );
-                        this.getOrders(this.order_type);
-                      },
-                      (error) => {
-                        this.loading = false;
-                        this.toastr.error(
-                          "Fallo al realizar el cambio de estado.",
-                          "Error",
-                          {
-                            progressBar: true,
-                            timeOut: 2000,
-                          }
-                        );
-                        console.error("Error al cambiar de estado:", error);
-                      }
-                    );
+                    this.message_observation = "";
+                    this.modalAbierto = false;
                   }
+                  subscribe_method.subscribe(
+                    (data) => {
+                      this.toastr.success(
+                        "Cambio de estado realizado con éxito.",
+                        "Proceso Completado",
+                        {
+                          progressBar: true,
+                          timeOut: 2000,
+                        }
+                      );
+                      this.getOrders(this.order_type);
+                      this.message_observation = "";
+                      this.modalAbierto = false;
+                    },
+                    (error) => {
+                      this.loading = false;
+                      this.toastr.error(
+                        "Fallo al realizar el cambio de estado.",
+                        "Error",
+                        {
+                          progressBar: true,
+                          timeOut: 2000,
+                        }
+                      );
+                      this.modalAbierto = false;
+                      this.message_observation = "";
+                      console.error("Error al cambiar de estado:", error);
+                    }
+                  );
                 } else if (result === "Cancel") {
+                  this.message_observation = "";
                   this.modalAbierto = false;
                 }
               },
               (reason) => {
+                this.message_observation = "";
                 this.modalAbierto = false;
               }
             );

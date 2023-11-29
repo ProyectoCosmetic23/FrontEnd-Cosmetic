@@ -57,9 +57,9 @@ table th:last-child {
 
 .total {
   float: right;
-  font-size: 13px;
+  font-size: 18px;
   font-weight: bold;
-  margin-right: 4%;
+  margin-right: 7%;
 }
 
 .button_container {
@@ -116,11 +116,37 @@ table th:last-child {
   }
 }
 
-/* .tab-content {
-  display: none !important;
-} */
+
 
 .custom-tab {
-  border: 2px solid #3498db; /* Puedes ajustar el color según tus preferencias */
-  border-radius: 5px; /* Ajusta el radio del borde si lo deseas */
+  font-size: var(--bs-nav-link-font-size);
+  font-weight: var(--bs-nav-link-font-weight);
+  color: var(--bs-nav-link-color);
+  text-decoration: none;
+  margin-right: 3px;
+  border-bottom: 0.5px solid transparent;
+  border-top-left-radius: var(--bs-nav-tabs-border-radius);
+  border-top-right-radius: var(--bs-nav-tabs-border-radius);
+  cursor: pointer;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  border-bottom: 2px solid #663399;
+  background: rgba(102, 51, 153, 0.1);
 }
+
+
+/* Estilos para las no seleccionadas */
+
+
+.custom-tab-unselected {
+  font-size: var(--bs-nav-link-font-size);
+  font-weight: var(--bs-nav-link-font-weight);
+  color: var(--bs-nav-link-color);
+  margin-right: 3px;
+  text-decoration: none;
+  border-top-left-radius: var(--bs-nav-tabs-border-radius);
+  border-top-right-radius: var(--bs-nav-tabs-border-radius);
+  cursor: pointer;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  background: rgba(171, 166, 174, 0.1);
+}
+
