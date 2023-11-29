@@ -16,14 +16,13 @@
 <div class="form-container">
   <!-- Vista de crear empleados -->
   <div class="row">
-    <div class="col-md-8"> <!-- Cambiado a 8 columnas -->
+    <div class="col-md-7"> <!-- Cambiado a 8 columnas -->
       <div class="card mb-4">
         <div class="card-body">
           <div class="card-title mb-3">Formulario de Categorías</div>
           <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
-            
+            <label for="name_category">Nombre de Categoría<span class="text-danger" *ngIf="viewMode == 'new' || viewMode == 'edit'">*</span></label>
               <div class="col-md-6 form-group mb-3">
-                <label for="name_category">Nombre de Categoría<span class="text-danger" *ngIf="viewMode == 'new' || viewMode == 'edit'">*</span></label>
                 <input type="text" class="form-control" id="name_category"  formControlName="name_category" required>
                 <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
                   El campo nombre es obligatorio.
@@ -41,19 +40,37 @@
               </div>
               
               </div>
-
+              <label for="state_category" *ngIf="viewMode == 'print'">Estado</label>
               <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
-                <label for="state_category">Estado<span class="text-danger" *ngIf="viewMode == 'new' ">*</span></label>
-                <input class="form-control" id="state_category"  formControlName="state_category">
+                <input type="text"
+                class="form-control text-right"
+                value="{{categoryForm.get('state_category').value  ? 'Activo' : 'Inactivo'}}"
+                [disabled]="viewMode === 'print'"
+              >
             
               </div>
-
-              <div class="col-md-6 form-group mb-3">
-                <label for="observation">Observación</label>
-                <textarea class="form-control" id="observation_category"  formControlName="observation_category"></textarea>
+              <label for="observation" *ngIf="viewMode === 'new' || viewMode === 'edit'">Observación</label>
+              <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'new' || viewMode === 'edit'">
+                <textarea class="form-control" id="observation_category"  formControlName="observation_category"  [style.resize]="'none'"></textarea>
                 <div *ngIf="categoryForm.get('observation_category').hasError('maxlength')"class="error-message">
                   El campo Observación no puede superar los 100 caracteres.
               </div>
+              </div>
+
+              <div class=""  *ngIf="viewMode === 'print'">
+                <label for="observation">Observación</label>
+                <div class="col-md-6 form-group mb-3">
+                  <div >
+                    <textarea class="form-control" id="observation_category"  formControlName="observation_category"  [style.resize]="'none'"></textarea>
+                  </div>
+                </div>
+                <label for="reason_anulate" *ngIf=" categoryForm.get('state_category').value === false">Motivo cambio estado </label>
+                <div class="col-md-6 form-group mb-3" *ngIf="categoryForm.get('state_category').value === false ">
+                  <div  >
+                    <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"  [style.resize]="'none'" ></textarea>
+                  </div>
+                </div>
+              
               </div>
 
              

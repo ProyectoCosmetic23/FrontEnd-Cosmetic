@@ -47,8 +47,8 @@ export class CategoriesService {
   
 
 
-  CategoryChangeStatus(id: any, state:boolean): Observable<any> {
-    return this.http.put(this.url + '/change-status/' + id, {newState: state});
+  CategoryChangeStatus(id: any,  reason: any, state:boolean,): Observable<any> {
+    return this.http.put(this.url + '/change-status/' + id, { reasonAnulate: reason , newState: state});
   }
 
 
