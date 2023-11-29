@@ -229,8 +229,8 @@ export class ComissionListComponent implements OnInit {
                   console.log(data);
       
                   setTimeout(() => {
-                    location.reload();
-                  }, 2000);
+
+                  }, 1000);
                 }, (error) => {
                   this.loading = false;
                   this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });

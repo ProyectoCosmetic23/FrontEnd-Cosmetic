@@ -20,7 +20,7 @@ export class ProviderListComponent implements OnInit {
     openedModal = false;
     searchControl: UntypedFormControl = new UntypedFormControl();
     providers;
-    filteredProviders;
+    filteredProviders: any[] = [];
     paginationId: string = 'providers-pagination';
 
     currentPage: number = 1;
@@ -144,19 +144,19 @@ export class ProviderListComponent implements OnInit {
                                 this.loading = false;
                                 this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
                                 console.log(data);
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 2000);
+                                this.getProviders();
+                                this.openedModal = false;
                             },
                             (error) => {
                                 this.loading = false;
                                 this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
                                 console.error('Error al cambiar de estado:', error);
+                                this.openedModal = false;
                             }
                         );
-                    } else if (result === 'Cancel') {
+                    } else if (result === 'cancel') {
                         this.openedModal = false;
-                       
+                        location.reload();
                     }
                 },
                 (reason) => {

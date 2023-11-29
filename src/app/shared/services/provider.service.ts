@@ -25,12 +25,22 @@ export class ProvidersService {
     return this.http.get(`${this.baseUrl}/${providerId}`);
   }
 
-  updateProviderStatus(providerId: any): Observable<any> {
+  updateProviderStatus(providerId: any, ): Observable<any> {
     return this.http.put(`${this.baseUrl}/state/${providerId}`, null);
   }
 
   updateProvider(providerId: any, updatedProviderData: any):
   Observable<any> {
     return this.http.put(`${this.baseUrl}/${providerId}`, updatedProviderData);
+  }
+
+  checkCedulaAvailability(cedula: string): Observable<boolean> {
+    const url = `${this.baseUrl}-check-cedula?cedula=${cedula}`;
+    return this.http.get<boolean>(url);
+  }
+
+  checkEmailAvailability(email: string): Observable<boolean> {
+    const url = `${this.baseUrl}-check-email?email=${email}`;
+    return this.http.get<boolean>(url);
   }
 }

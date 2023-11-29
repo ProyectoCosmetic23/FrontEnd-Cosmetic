@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validator } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validator, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { ToastrService } from 'ngx-toastr';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 interface Provider {
@@ -66,26 +68,64 @@ export class ProvidersDetailComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
     this.isNew = !this.id;
     this.buildProvidersForm(this.provider);
+    console.log('Formulario construido:', this.formBasic); // Agrega esta línea
     this.setViewMode();
     this.getProvider();
     if (!this.isNew) {
       this.getProvider();
     }
+    this.formBasic.get('nit_cedula').setAsyncValidators(this.checkCedulaAvailability.bind(this));
   }
+  checkCedulaAvailability(control: AbstractControl): Observable<{ [key: string]: any } | null> {
+    const cedula = control.value;
 
+    // Si el valor es el mismo que la cédula actual, no se realiza la verificación
+    if (this.provider && cedula === this.provider.nit_cedula) {
+      return of(null);
+    }
+
+    // Realiza la verificación llamando al servicio
+    return this._providersService.checkCedulaAvailability(cedula).pipe(
+      map(isAvailable => (isAvailable ? null : { cedulaNotAvailable: true }))
+    );
+  }
   updatedFields: any = {};
 
   buildProvidersForm(i: any = {}) {
     this.formBasic = this.formBuilder.group({
-      id: [i.id_provider],
-      name_provider: [i.name_provider],
-      nit_cedula: [i.nit_cedula],
-      email_provider: [i.email_provider],
-      address_provider: [i.address_provider],
-      phone_provider: [i.phone_provider],
+      name_provider: [i.name_provider, [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(50)
+      ]],
+      nit_cedula: [i.nit_cedula, [
+        Validators.required,
+        Validators.minLength(7),
+        Validators.maxLength(10),
+        Validators.pattern('^[0-9]+$')
+      ]],
+      email_provider: [i.email_provider, [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(80)
+    ]],
+      address_provider: [i.address_provider, [
+        Validators.required,
+        Validators.maxLength(80)
+      ]],
+      phone_provider: [i.phone_provider, [
+        Validators.required,
+        Validators.maxLength(80),
+        Validators.pattern(/^[0-9\s]+$/)
+      ]],
       state_provider: [i.state_provider],
       observation_provider: [i.observation_provider],
-      name_contact: [i.name_contact],
+      name_contact: [i.name_contact, [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+$'), // Permite solo letras y espacios
+        Validators.minLength(3),
+        Validators.maxLength(50)
+    ]],
       creation_date_provider: [i.creation_date_provider],
     });
   }
@@ -140,6 +180,7 @@ export class ProvidersDetailComponent implements OnInit {
   handleAddressSelection(event: any) {
     this.new_provider.address_provider = event.target.value;
     this.updatedFields.address_provider = event.target.value;
+    console.log('Address Value:', event.target.value);
   }
   handleObservationSelection(event: any) {
     this.new_provider.observation_provider = event.target.value;
@@ -149,26 +190,21 @@ export class ProvidersDetailComponent implements OnInit {
     this.new_provider.phone_provider = event.target.value;
     this.updatedFields.phone_provider = event.target.value;
   }
-  
 
   createProvider() {
     const currentRoute = this.router.url;
     console.log(currentRoute);
-  
+
     if (currentRoute.includes('/registrar')) {
       console.log(this.new_provider);
-      
+
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
           console.log(data);
           this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
-            setTimeout(() => {
-              this.router.navigate(['/proveedores']);
-            }, 3000);
-          }, 3000);
+          this.loading = false;
+          this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+          this.router.navigate(['/proveedores'])
         },
         (error) => {
           this.loading = false;
@@ -187,13 +223,9 @@ export class ProvidersDetailComponent implements OnInit {
         (data) => {
           console.log(data);
           this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.toastr.success('Proveedor actualizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
-            setTimeout(() => {
-              this.router.navigate(['/proveedores']);
-            }, 3000);
-          }, 3000);
+          this.loading = false;
+          this.toastr.success('Proveedor actualizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+          this.router.navigate(['/proveedores']);
         },
         (error) => {
           this.loading = false;

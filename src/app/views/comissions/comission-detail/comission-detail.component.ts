@@ -202,13 +202,13 @@ export class ComissionsDetailComponent implements OnInit {
     this._comissionsService.getSalesByEmployeeAndMonth(idEmployee, this.month).subscribe(
       (data) => {
         this.sales = data;
-        // console.log(this.sales);
+        console.log(this.sales);
         // Inicializar totalSale antes de la iteración
         this.totalSale = 0;
         // Iterar sobre los valores usando for...of
         for (let sale of this.sales) {
           // Convertir el total_sale a número antes de sumarlo
-          this.totalSale += parseFloat(sale.total_sale);
+          this.totalSale += parseFloat(sale.total_order);
         }
         //Calcular el total
         this.totalCommissions = this.totalSale * (this.commissionPercentage/100);
@@ -252,10 +252,10 @@ export class ComissionsDetailComponent implements OnInit {
     selectedId = Number(selectedId);
     const selectedCommission = this.listComisionDetail.find((commission) => commission.id_commission_detail === selectedId);
     if (selectedCommission) {
-      this.commissionPercentage = selectedCommission.commission_percentage
-
+      this.commissionPercentage = selectedCommission.commission_percentage;
       this.formBasic.get('commission_percentage')?.setValue(selectedCommission.commission_percentage);
     } else {
+      this.commissionPercentage = 0; // O el valor predeterminado que desees asignar
       this.formBasic.get('commission_percentage')?.setValue(0);
     }
   }
@@ -293,13 +293,9 @@ export class ComissionsDetailComponent implements OnInit {
         (data) => {
           console.log(data);
           this.loading = true;
-          setTimeout(() => {
             this.loading = false;
             this.toastr.success('Comisión creada con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
-            setTimeout(() => {
-              this.router.navigate(['/comisiones']);
-            }, 3000);
-          }, 3000);
+            this.router.navigate(['/comisiones']);
         },
         (error) => {
           this.loading = false;
