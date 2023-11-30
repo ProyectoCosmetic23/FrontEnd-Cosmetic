@@ -39,9 +39,10 @@
                  [limit]="itemsPerPage" 
                  [offset]="(currentPage - 1) * itemsPerPage"
                 (page)="onPageChange($event)">
+                
                 <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
-                        Nombre 
+                        <p style="font-size:15px;">Nombre</p> 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
                         <ng-container *ngIf="row && row.id_category">
@@ -51,7 +52,7 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="state_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
-                        Estado 
+                        <p style="font-size:15px;">Estado</p> 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_category">
@@ -61,7 +62,7 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="250">
                     <ng-template ngx-datatable-header-template>
-                        Acciones
+                        <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_category">
@@ -93,7 +94,15 @@
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea cambiar el estado de  esta categoría?</strong></p>
-
+        <form [formGroup]="reasonForm">
+            <div class="col-md-6 form-group mb-3">
+                <label for="reason_anulate">Motivo de Cambio de Estado</label>
+                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
+                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
+                  El campo superar los 100 caracteres.
+              </div>
+              </div>
+        </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary btn"

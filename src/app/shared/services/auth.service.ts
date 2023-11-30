@@ -41,7 +41,6 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = this.cookieService.get("token");
-    console.log(token);
     return !!token; 
   }
 
@@ -71,11 +70,6 @@ export class AuthService {
 
     // Establecer el estado de autenticación
     this._authStatus.next(AuthStatus.authenticated);
-
-    console.log(
-      "Token insertado en las cookies:",
-      this.cookieService.get("token")
-    );
 
     return true;
   }
@@ -127,7 +121,6 @@ export class AuthService {
     return this.http.post<LoginResponse>(url, body).pipe(
       map(({ user, token }) => {
         this.setAuthentication(user, token);
-        console.log("Token:", token); // Imprime el token
         this.checkAuthStatusAfterLogin();
         // Llamar al nuevo método para verificar el estado de autenticación después de iniciar sesión
         return true;
@@ -145,7 +138,6 @@ export class AuthService {
     this._currentUser.next(null);
     this._authStatus.next(AuthStatus.notAuthenticated);
     this.cookieService.deleteAll("token");
-    console.log("Token eliminado:", this.cookieService.get("token"));
     sessionStorage.removeItem(this.userSessionStorageKey);
   }
 }

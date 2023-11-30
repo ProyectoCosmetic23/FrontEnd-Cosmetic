@@ -1,14 +1,47 @@
 <div class="">
     <div class="breadcrumb">
-        <h1>Version 1</h1>
+        <h1>Indicadores de Rendimiento</h1>
         <ul>
             <li><a href="">Dashboard</a></li>
-            <li>Version fff</li>
+            <li>CosmeTIC</li>
         </ul>
     </div>
 
     <div class="separator-breadcrumb border-top"></div>
+    <form [formGroup]="top_productForm">
+        <div class="row justify-content-end">
+            <div class="col-lg-3 col-md-3">
+                <div class="bold-text text-primary card-title text-right" style="font-size: 15px;" for="selectedMonth">Mes</div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <select class="form-control text-primary select-arrow select-month" name="mesSelector" formControlName="selectedMonth" (change)="onMonthChangeMonth($event)">
+                            <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-3">
+                <div class="bold-text text-primary card-title" style="font-size: 15px;">
+                    Año
+                    <input type="checkbox"  (change)="onCheckboxChange($event)">
+                  </div>
+                  
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <!-- Select para el año, con *ngIf para mostrarlo solo cuando el checkbox está seleccionado -->
+                        <select class="form-control text-primary " id="selectedYear"  formControlName="selectedYear" (change)="onMonthChangeYear($event)">
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
 
+                          </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+  
+    
     <div class="row">
         <!-- ICON BG -->
         <div class="col-lg-3 col-md-6 col-sm-6">
@@ -16,8 +49,8 @@
                 <div class="card-body text-center">
                     <i class="i-Add-User"></i>
                     <div class="content">
-                        <p class="text-muted mt-2 mb-0">New Leads</p>
-                        <p class="text-primary text-24 line-height-1 mb-2">205</p>
+                        <p class="text-muted mt-2 mb-0">Cantidad de pedidos</p>
+                        <p class="text-primary text-24 line-height-1 mb-2">{{total_number_orders}}</p>
                     </div>
                 </div>
             </div>
@@ -28,8 +61,8 @@
                 <div class="card-body text-center">
                     <i class="i-Financial"></i>
                     <div class="content">
-                        <p class="text-muted mt-2 mb-0">Sales</p>
-                        <p class="text-primary text-24 line-height-1 mb-2">4021</p>
+                        <p class="text-muted mt-2 mb-0">Cantidad de compras</p>
+                        <p class="text-primary text-24 line-height-1 mb-2">{{total_number_purchases}}</p>
                     </div>
                 </div>
             </div>
@@ -40,8 +73,8 @@
                 <div class="card-body text-center">
                     <i class="i-Checkout-Basket"></i>
                     <div class="content">
-                        <p class="text-muted mt-2 mb-0">Orders</p>
-                        <p class="text-primary text-24 line-height-1 mb-2">80</p>
+                        <p class="text-muted mt-2 mb-0">Cuentas por cobrar</p>
+                        <p class="text-primary text-24 line-height-1 mb-2">{{total_debts}}</p>
                     </div>
                 </div>
             </div>
@@ -52,8 +85,8 @@
                 <div class="card-body text-center">
                     <i class="i-Money-2"></i>
                     <div class="content">
-                        <p class="text-muted mt-2 mb-0">Expense</p>
-                        <p class="text-primary text-24 line-height-1 mb-2">120</p>
+                        <p class="text-muted mt-2 mb-0">Cuentas pagadas</p>
+                        <p class="text-primary text-24 line-height-1 mb-2">{{total_paid}}</p>
                     </div>
                 </div>
             </div>
@@ -62,194 +95,75 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8 col-md-12">
+        <div class="col-lg-12 col-md-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="card-title">This Year Sales</div>
-                    <div echarts [options]="salesChartBar" [autoResize]="true" style="height: 300px;"></div>
+                    <div class="card-title">Total de ventas por tipo de pago</div>
+                    <div echarts [options]="salesChartBar" [autoResize]="true" style="height: 400px;"></div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-sm-12">
+        <div class="col-lg-12 col-sm-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="card-title">Sales by Countries</div>
+                    <div class="card-title">Top 5 de Productos más vendidos {{year_data}}
+
+                    </div>
                     <div echarts [options]="salesChartPie" [autoResize]="true" style="height: 300px;"></div>
                 </div>
+
             </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-6 col-md-12">
-
-            <div class="row">
-                <div class="col-lg-6 col-md-12">
-                    <div class="card card-chart-bottom o-hidden mb-4">
-                        <div class="card-body">
-                            <div class="text-muted">Last Month Sales</div>
-                            <p class="mb-4 text-primary text-24">$40250</p>
-                        </div>
-                        <div echarts [options]="chartLineOption1" [autoResize]="true" style="height: 260px;"></div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <div class="card card-chart-bottom o-hidden mb-4">
-                        <div class="card-body">
-                            <div class="text-muted">Last Week Sales</div>
-                            <p class="mb-4 text-warning text-24">$10250</p>
-                        </div>
-                        <div echarts [options]="chartLineOption2" [autoResize]="true" style="height: 260px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="mb-2 text-muted">iPhone x Stock</h6>
-                            <p class="mb-1 text-24 font-weight-light text-title">50%</p>
-                            <p class="mb-1">
-                                <ngb-progressbar type="success" [value]="50" height="4px"></ngb-progressbar>
-                            </p>
-                            <small class="text-muted">Most sold in last 3 days</small>
-                        </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="mb-2 text-muted">iPhone 6 Stock</h6>
-                            <p class="mb-1 text-24 font-weight-light text-title">90%</p>
-                            <p class="mb-1">
-                                <ngb-progressbar type="danger" [value]="90" height="4px"></ngb-progressbar>
-                            </p>
-                            <small class="text-muted">Most sold in last 7 days</small>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="col-lg-6 col-md-12">
-
+        <div class="col-lg-12 col-md-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="card-title">Top Selling Products</div>
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3">
-                        <img class="avatar-lg mb-3 mb-sm-0 rounded me-sm-3" src="./assets/images/products/headphone-4.jpg" alt="">
-                        <div class="flex-grow-1">
-                            <h5 class=""><a href="">Wireless Headphone E23</a></h5>
-                            <p class="m-0 text-small text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                            <p class="text-small text-danger m-0">$450 <del class="text-muted">$500</del></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-primary mt-3 mb-3 m-sm-0 btn-rounded btn-sm">View details</button>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3">
-                        <img class="avatar-lg mb-3 mb-sm-0 rounded me-sm-3" src="./assets/images/products/headphone-2.jpg" alt="">
-                        <div class="flex-grow-1">
-                            <h5 class=""><a href="">Wireless Headphone Y902</a></h5>
-                            <p class="m-0 text-small text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                            <p class="text-small text-danger m-0">$550 <del class="text-muted">$600</del></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-primary mt-3 mb-3 m-sm-0 btn-sm btn-rounded">View details</button>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3">
-                        <img class="avatar-lg mb-3 mb-sm-0 rounded me-sm-3" src="./assets/images/products/headphone-3.jpg" alt="">
-                        <div class="flex-grow-1">
-                            <h5 class=""><a href="">Wireless Headphone E09</a></h5>
-                            <p class="m-0 text-small text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                            <p class="text-small text-danger m-0">$250 <del class="text-muted">$300</del></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-primary mt-3 mb-3 m-sm-0 btn-sm btn-rounded">View details</button>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3">
-                        <img class="avatar-lg mb-3 mb-sm-0 rounded me-sm-3" src="./assets/images/products/headphone-4.jpg" alt="">
-                        <div class="flex-grow-1">
-                            <h5 class=""><a href="">Wireless Headphone X89</a></h5>
-                            <p class="m-0 text-small text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                            <p class="text-small text-danger m-0">$450 <del class="text-muted">$500</del></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-primary mt-3 mb-3 m-sm-0 btn-sm btn-rounded">View details</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-body p-0">
-                    <div class="card-title border-bottom d-flex align-items-center m-0 p-3">
-                        <span>User activity</span>
-                        <span class="flex-grow-1"></span>
-                        <span class="badge badge-pill badge-warning">Updated daily</span>
-                    </div>
-                    <div class="d-flex border-bottom justify-content-between p-3">
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">Pages / Visit</span>
-                            <h5 class="m-0">2065</h5>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">New user</span>
-                            <h5 class="m-0">465</h5>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">Last week</span>
-                            <h5 class="m-0">23456</h5>
-                        </div>
-                    </div>
-                    <div class="d-flex border-bottom justify-content-between p-3">
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">Pages / Visit</span>
-                            <h5 class="m-0">1829</h5>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">New user</span>
-                            <h5 class="m-0">735</h5>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">Last week</span>
-                            <h5 class="m-0">92565</h5>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between p-3">
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">Pages / Visit</span>
-                            <h5 class="m-0">3165</h5>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">New user</span>
-                            <h5 class="m-0">165</h5>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="text-small text-muted">Last week</span>
-                            <h5 class="m-0">32165</h5>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-body p-0">
-                    <h5 class="card-title m-0 p-3">Last 20 Days Sales</h5>
-                    <div echarts [options]="chartLineOption3"></div>
+                    <div class="card-title">Rendimiento de Empleados</div>
+                    <div echarts [options]="employeesChartBar" [autoResize]="true" style="height: 300px;"></div>
                 </div>
             </div>
         </div>
-
     </div>
+    <!-- Agrega la directiva ngSubmit para manejar la acción del formulario -->
+
 </div>
+<!-- Agrega este script en línea después del final de tu HTML o dentro de un bloque script -->
+<!-- Agrega este script en línea después del final de tu HTML o dentro de un bloque script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtén el elemento select
+        var selectYear = document.querySelector(".select-year");
+
+        // Obtén el año actual
+        var currentYear = new Date().getFullYear();
+
+        // Agrega opciones para los próximos 10 años (puedes ajustar según sea necesario)
+        for (var i = 0; i < 10; i++) {
+            var option = document.createElement("option");
+            option.value = currentYear + i;
+            option.textContent = currentYear + i;
+            selectYear.appendChild(option);
+        }
+    });
+</script>
+
+<!-- Script para generar opciones de meses -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtén el elemento select
+        var selectMonth = document.querySelector(".select-month");
+
+        // Lista de meses
+        var months = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        // Agrega opciones para los meses
+        months.forEach(function (month, index) {
+            var option = document.createElement("option");
+            option.value = index + 1; // Los meses comienzan desde 1
+            option.textContent = month;
+            selectMonth.appendChild(option);
+        });
+    });
+</script>

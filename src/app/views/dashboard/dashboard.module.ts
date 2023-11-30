@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { ReactiveFormsModule } from '@angular/forms'; 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboadDefaultComponent } from './dashboad-default/dashboad-default.component';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -19,7 +19,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     }),
     NgxDatatableModule,
     NgbModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    ReactiveFormsModule
+    
   ],
   declarations: [DashboadDefaultComponent]
 })

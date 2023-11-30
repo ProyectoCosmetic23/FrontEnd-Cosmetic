@@ -62,17 +62,17 @@ export class NavigationService {
 
             ]
         },
-        {
-            name: 'Sessions',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-            type: 'dropDown',
-            icon: 'i-Administrator',
-            sub: [
-                { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
-                { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
-            ]
-        },
+        // {
+        //     name: 'Sessions',
+        //     description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+        //     type: 'dropDown',
+        //     icon: 'i-Administrator',
+        //     sub: [
+        //         { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
+        //         { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
+        //         { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
+        //     ]
+        // },
         {
             name: 'Compras',
             description: 'Gestión de Compras',
@@ -80,27 +80,26 @@ export class NavigationService {
             icon: 'i-Full-Cart',
             sub: [
                 { icon: 'i-Administrator', name: 'Proveedores', state: '/proveedores', type: 'link' },
-                { icon: 'i-Tag-3', name: 'Categorias', state: '/categories', type: 'link' },
+                { icon: 'i-Tag-3', name: 'Categorías', state: '/categories', type: 'link' },
                 { icon: 'i-File-Clipboard-Text--Image', name: 'Productos', state: '/products', type: 'link' },
                 { icon: 'i-Full-Cart', name: 'Compras', state: '/purchases', type: 'link' },
             ]
         },
         {
             name: 'Ventas',
-            description: 'Gestión de Compras',
+            description: 'Gestión de Ventas',
             type: 'dropDown',
             icon: 'i-Cash-register-2',
             sub: [
                 { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
-                { icon: 'i-Money1', name: 'Ventas', state: '/sales', type: 'link' },
                 { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/defective-products', type: 'link' },
                 { icon: 'i-Conference', name: 'Clientes', state: '/clients', type: 'link' },
-                { icon: 'i-Financial', name: 'Pagos', state: '/pagos', type: 'link' },
+             
             ]
         },
         {
             name: 'Servicios',
-            description: 'Este apartado se encuentra el modulo de Empleados,Comisiones y Usuarios',
+            description: 'Gestión de Empleados y Gestión de Comisiones',
             type: 'dropDown',
             icon: 'i-Files',
             sub: [
@@ -112,7 +111,7 @@ export class NavigationService {
         },
         {
             name: 'Configuraciones',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            description: 'Gestión de Configuraciones ',
             type: 'dropDown',
             icon: 'i-Gear',
             sub: [

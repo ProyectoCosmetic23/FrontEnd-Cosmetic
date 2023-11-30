@@ -3,6 +3,10 @@ import { EChartsOption } from "echarts";
 import { echartStyles } from "../../../shared/echart-styles";
 import { AuthService } from "src/app/shared/services/auth.service";
 import { User } from "src/app/shared/interfaces";
+import { ReportService } from "src/app/shared/services/reports.service";
+import { map } from "rxjs/operators";
+import { verify } from "crypto";
+import { FormBuilder, FormControl, FormGroup, FormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-dashboad-default",
@@ -14,249 +18,434 @@ export class DashboadDefaultComponent implements OnInit {
   chartLineOption2: EChartsOption;
   chartLineOption3: EChartsOption;
   salesChartBar: EChartsOption;
+  employeesChartBar: EChartsOption;
   salesChartPie: EChartsOption;
-
+  year_data: 0;
+  top_productForm: FormGroup;
+  total_number_orders: number = 0;
+  total_number_purchases: number = 0;
+  total_debts: number = 0;
+  total_paid: number = 0;
   user: User | null;
+  months = [
+    { name: 'Enero', value: 1 },
+    { name: 'Febrero', value: 2 },
+    { name: 'Marzo', value: 3 },
+    { name: 'Abril', value: 4 },
+    { name: 'Mayo', value: 5 },
+    { name: 'Junio', value: 6 },
+    { name: 'Julio', value: 7 },
+    { name: 'Agosto', value: 8 },
+    { name: 'Septiembre', value: 9 },
+    { name: 'Octubre', value: 10 },
+    { name: 'Noviembre', value: 11 },
+    { name: 'Diciembre', value: 12 },
+  ];
+  startYear = 2023;
+  endYear = 2025;
+  years = Array.from({ length: this.endYear - this.startYear + 1 }, (_, index) => this.startYear + index);
+ // Puedes establecer el año inicial según tus necesidades
+  isChecked: boolean = false;
+  selectedMonth: number 
+  ;
+  selectedYear: number = this.startYear;
+ 
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private reportService: ReportService) { }
+  private fb: FormBuilder;
 
-  ngOnInit() {
-    this.user = this.authService.getStoredUser();
-    this.chartLineOption1 = {
-      ...echartStyles.lineFullWidth,
-      ...{
-        series: [
-          {
-            type: "line",
-            data: [30, 40, 20, 50, 40, 80, 90],
-            smooth: true,
-            markArea: {
-              label: {
-                show: true,
-              },
-            },
-            areaStyle: {
-              color: "rgba(102, 51, 153, .2)",
-              origin: "start",
-            },
-            lineStyle: {
-              color: "#663399",
-            },
-            itemStyle: {
-              color: "#663399",
-            },
-          },
+
+  
+      ngOnInit() {
+        const currentMonth = new Date().getMonth() + 1;
+
+    // Establece el mes actual como valor predeterminado
+    this.selectedMonth = currentMonth;
+     // Llama a las funciones para cargar los datos iniciales
+  this.getReportProducts();
+  this.getReportCreditSales();
+  this.getReportCards();
+  this.getReportEmployees();
+
+}
+
+
+
+onCheckboxChange(event: any) {
+  this.isChecked = event.target.checked;
+  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
+  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
+  console.log('Checkbox state changed. isChecked:', this.isChecked);
+  // Resto del código...
+  this.getReportProducts();
+  this.getReportCreditSales();
+  this.getReportCards();
+  this.getReportEmployees();
+}
+
+
+onMonthChangeYear(event: any) {
+  this.selectedYear = event.target.value;
+  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
+  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
+  console.log("Año seleccionado:", this.selectedYear);
+  // Resto del código...
+  this.getReportProducts();
+  this.getReportCreditSales();
+  this.getReportCards();
+  this.getReportEmployees();
+}
+
+onMonthChangeMonth(event: any) {
+  this.selectedMonth = event.target.value;
+  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
+  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
+  console.log("Mes seleccionado:", this.selectedMonth);
+  // Resto del código...
+  this.getReportProducts();
+  this.getReportCreditSales();
+  this.getReportCards();
+  this.getReportEmployees();
+}
+
+
+
+getReportCards() {
+
+  this.reportService.getReportCards(this.isChecked, this.selectedYear, this.selectedMonth).subscribe({
+    next: (response: any) => {
+
+      this.total_number_orders = response[0].total_number_orders;
+      this.total_number_purchases = response[0].total_number_purchases;
+      this.total_debts = response[0].total_debts;
+      this.total_paid = response[0].total_paid;
+    },
+    error: (err) => {
+      console.log('err', err);
+    },
+    complete: () => {
+    },
+  });
+
+}
+
+
+
+
+getReportCreditSales() {
+
+  this.reportService.getReportSales(this.selectedYear).subscribe({
+    next: (response: any) => {
+      const totalOrderFinalArrayCredit = response.resultCredit.map(item => Number(item.total_order_final));
+      const totalOrderFinalArrayCounted = response.resultCounted.map(item => Number(item.total_order_final));
+      this.buildReportCreditSalesChartBar(totalOrderFinalArrayCredit, totalOrderFinalArrayCounted, this.getMonths(null));
+    },
+    error: (err) => {
+      console.log('err', err);
+    },
+    complete: () => {
+    },
+  });
+
+}
+
+buildReportCreditSalesChartBar(dataCredits: any, dataCounted: any, months: any) {
+
+  // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
+
+  const maxValue1 = Math.max(...dataCredits);
+  const maxValue2 = Math.max(...dataCounted);
+  this.salesChartBar = {
+    legend: {
+      borderRadius: 0,
+      orient: "horizontal",
+      // x: 'right',
+      data: ["Crédito", "Contado"],
+    },
+    grid: {
+      left: "8px",
+      right: "8px",
+      bottom: "0",
+      containLabel: true,
+    },
+    tooltip: {
+      show: true,
+      backgroundColor: "rgba(0, 0, 0, .8)",
+      textStyle: {
+        color: "white",
+      },
+    },
+    xAxis: [
+      {
+        type: "category",
+        data: [
+          "Ene",
+          "Feb",
+          "Mar",
+          "Abr",
+          "May",
+          "Jun",
+          "Jul",
+          "Ago",
+          "Sept",
+          "Oct",
+          "Nov",
+          "Dic",
         ],
-      },
-    };
-    this.chartLineOption2 = {
-      ...echartStyles.lineFullWidth,
-      ...{
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        axisTick: {
+          alignWithLabel: true,
         },
-        series: [
-          {
-            type: "line",
-            data: [30, 10, 40, 10, 40, 20, 90],
-            smooth: true,
-            markArea: {
-              label: {
-                show: true,
-              },
-            },
-            areaStyle: {
-              color: "rgba(255, 193, 7, 0.2)",
-              origin: "start",
-            },
-            lineStyle: {
-              color: "#FFC107",
-            },
-            itemStyle: {
-              color: "#FFC107",
-            },
-          },
-        ],
+        splitLine: {
+          show: false,
+        },
+        axisLine: {
+          show: true,
+        },
       },
-    };
+    ],
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: {
+          formatter: "${value}",
+        },
+        min: 0,
+        max: maxValue1 > maxValue2 ? maxValue1 : maxValue2,
+        interval: 2000000,
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: true,
+          interval: "auto",
+        },
+      },
+    ],
 
-    this.chartLineOption3 = {
-      ...echartStyles.lineNoAxis,
-      ...{
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        },
-        series: [
-          {
-            data: [
-              40, 80, 20, 90, 30, 80, 40, 90, 20, 80, 30, 45, 50, 110, 90, 145,
-              120, 135, 120, 140,
-            ],
-            lineStyle: {
-              color: "rgba(102, 51, 153, 0.86)",
-              width: 3,
-              ...echartStyles.lineShadow,
-            },
-            label: { show: true, color: "#212121" },
-            type: "line",
-            smooth: true,
-            itemStyle: {
-              borderColor: "rgba(102, 51, 153, 1)",
-            },
-          },
-        ],
+    series: [
+      {
+        name: "Crédito",
+        data: dataCredits,
+        label: { show: false, color: "#0168c1" },
+        type: "bar",
+        barGap: 0,
+        color: "#bcbbdd",
+        // smooth: true,
       },
-    };
-    // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
-    this.salesChartBar = {
-      legend: {
-        borderRadius: 0,
-        orient: "horizontal",
-        // x: 'right',
-        data: ["Online", "Offline"],
+      {
+        name: "Contado",
+        data: dataCounted,
+        label: { show: false, color: "#639" },
+        type: "bar",
+        color: "#7569b3",
+        // smooth: true
       },
-      grid: {
-        left: "8px",
-        right: "8px",
-        bottom: "0",
-        containLabel: true,
-      },
-      tooltip: {
-        show: true,
-        backgroundColor: "rgba(0, 0, 0, .8)",
-        textStyle: {
-          color: "white",
-        },
-      },
-      xAxis: [
-        {
-          type: "category",
-          data: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sept",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
-          axisTick: {
-            alignWithLabel: true,
-          },
-          splitLine: {
-            show: false,
-          },
-          axisLine: {
-            show: true,
-          },
-        },
-      ],
-      yAxis: [
-        {
-          type: "value",
-          axisLabel: {
-            formatter: "${value}",
-          },
-          min: 0,
-          max: 100000,
-          interval: 25000,
-          axisLine: {
-            show: false,
-          },
-          splitLine: {
-            show: true,
-            interval: "auto",
-          },
-        },
-      ],
+    ],
+  };
+}
 
-      series: [
-        {
-          name: "Online",
-          data: [
-            35000, 69000, 22500, 60000, 50000, 50000, 30000, 80000, 70000,
-            60000, 20000, 30005,
-          ],
-          label: { show: false, color: "#0168c1" },
-          type: "bar",
-          barGap: 0,
-          color: "#bcbbdd",
-          // smooth: true,
-        },
-        {
-          name: "Offline",
-          data: [
-            45000, 82000, 35000, 93000, 71000, 89000, 49000, 91000, 80200,
-            86000, 35000, 40050,
-          ],
-          label: { show: false, color: "#639" },
-          type: "bar",
-          color: "#7569b3",
-          // smooth: true
-        },
-      ],
-    };
+getReportProducts() {
+  this.reportService.getReportProducts(this.isChecked, this.selectedYear, this.selectedMonth).subscribe({
+    next: (response: any) => {
+      let data = response.map((datos) => {
+        return {
+          value: datos.order_detail_count,
+          name: datos.name_product,
+          // Agrega o modifica propiedades según sea necesario
+        };
+      })
 
-    this.salesChartPie = {
-      color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
-      tooltip: {
-        show: true,
-        backgroundColor: "rgba(0, 0, 0, .8)",
-        textStyle: {
-          color: "white",
+      this.buildReportProductsChartPie(data);
+    },
+    error: (err) => {
+      console.log('err', err);
+    },
+    complete: () => {
+    },
+  });
+
+}
+
+buildReportProductsChartPie(data: any) {
+
+  this.salesChartPie = {
+    color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
+    tooltip: {
+      show: true,
+      backgroundColor: "rgba(0, 0, 0, .8)",
+      textStyle: {
+        color: "white",
+      },
+    },
+
+    xAxis: [
+      {
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
         },
       },
+    ],
+    yAxis: [
+      {
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+    ],
+    series: [
+      {
+        name: "Productos más vendidos",
+        type: "pie",
+        radius: "75%",
+        center: ["50%", "50%"],
+        data: data,
+        label: {
+          formatter: '{b}: {@[' + "" + ']} ({d}%)'
+        },
+        itemStyle: {
+          // emphasis: {
+          //     shadowBlur: 10,
+          //     shadowOffsetX: 0,
+          //     shadowColor: 'rgba(0, 0, 0, 0.5)'
+          // }
+        },
+      },
+    ],
+  };
+}
 
-      xAxis: [
-        {
-          axisLine: {
-            show: false,
-          },
-          splitLine: {
-            show: false,
-          },
-        },
-      ],
-      yAxis: [
-        {
-          axisLine: {
-            show: false,
-          },
-          splitLine: {
-            show: false,
-          },
-        },
-      ],
-      series: [
-        {
-          name: "Sales by Country",
-          type: "pie",
-          radius: "75%",
-          center: ["50%", "50%"],
-          data: [
-            { value: 535, name: "USA" },
-            { value: 310, name: "Brazil" },
-            { value: 234, name: "France" },
-            { value: 155, name: "Germany" },
-            { value: 130, name: "UK" },
-            { value: 348, name: "India" },
-          ],
-          itemStyle: {
-            // emphasis: {
-            //     shadowBlur: 10,
-            //     shadowOffsetX: 0,
-            //     shadowColor: 'rgba(0, 0, 0, 0.5)'
-            // }
-          },
-        },
-      ],
-    };
+getReportEmployees() {
+  this.reportService.getReportEmployees(this.isChecked, this.selectedYear, this.selectedMonth).subscribe({
+    next: (response: any) => {
+      const totalFinalArrayName = response.map(item => item.name);
+      const totalFinalArrayValue = response.map(item => item.total_sales);
+      const totalFinalArrayValueCommision = response.map(item => item.total_commission);
+      this.buildReportEmployeesChartBar(totalFinalArrayName, totalFinalArrayValue,totalFinalArrayValueCommision);
+    },
+    error: (err) => {
+      console.log('err', err);
+    },
+    complete: () => {
+    },
+  });
+
+}
+
+getMonths(month) {
+  let finalsMonth = [];
+  let months: [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dic",
+  ]
+
+  if (month != null) {
+    finalsMonth = [months[month - 1]]
+  } else {
+    finalsMonth = months;
   }
+
+  return finalsMonth;
+}
+
+
+buildReportEmployeesChartBar(dataNames: any, dataValues: any, dataCommissions: any) {
+
+  // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
+
+  const maxValue = Math.max(...dataValues);
+this.employeesChartBar = {
+  legend: {
+    borderRadius: 0,
+    orient: "horizontal",
+    data: ["Total Ventas", "Comisiones"],
+  },
+  grid: {
+    left: "18px",
+    right: "94px",
+    bottom: "1px",
+    containLabel: true,
+  },
+  tooltip: {
+    show: true,
+    backgroundColor: "rgba(0, 0, 0, .8)",
+    textStyle: {
+      color: "white",
+    },
+  },
+  xAxis: [
+    {
+      type: "value",
+      name: "",
+      interval: 0,
+      max: maxValue,
+      splitLine: {
+        show: false,
+      },
+      axisLine: {
+        show: true,
+      },
+    },
+  ],
+  yAxis: [
+    {
+      type: "category",
+      data: dataNames,
+      min: 0,
+      axisLine: {
+        show: false,
+      },
+      splitLine: {
+        show: true,
+        interval: "auto",
+      },
+    },
+  ],
+  series: [
+    {
+      name: "Total Ventas",
+      data: dataValues ,
+      type: "bar",
+      barGap: 0,
+      color: "#bcbbdd",
+      label: {
+        show: true,
+        position: 'right',
+        valueAnimation: true,
+        color: "#0168c1",
+      },
+    },
+    {
+      name: "Comisiones",
+      data: dataCommissions,
+      type: "bar",
+      barGap: 0,
+      color: "#639",
+      label: {
+        show: true,
+        position: 'right',
+        valueAnimation: true,
+        color: "#0168c1",
+      },
+    },
+  ],
+};
+}
 }
