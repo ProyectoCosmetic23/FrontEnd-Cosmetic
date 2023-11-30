@@ -83,21 +83,20 @@ export class AuthService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 401) {
       // Credenciales incorrectas
-      return throwError(
-        "Credenciales incorrectas. Por favor, inténtelo de nuevo."
-      );
+      return throwError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
     } else if (error.status === 0) {
       // No se puede conectar al servidor
-      return throwError(
-        "No se puede conectar al servidor. Por favor, inténtelo más tarde."
-      );
+      return throwError("No se puede conectar al servidor. Por favor, inténtelo más tarde.");
     } else {
       // Otro tipo de error
-      return throwError(
-        "Error desconocido. Por favor, contacte al soporte técnico."
-      );
+      let errorMessage = "Error desconocido. Por favor, contacte al soporte técnico.";
+      if (error.error && error.error.error) {
+        errorMessage = error.error.error;
+      }
+      return throwError(errorMessage);
     }
   }
+  
 
   private checkAuthStatusAfterLogin(): Observable<boolean> {
     return this._authStatus.pipe(
@@ -149,18 +148,24 @@ export class AuthService {
 
 
   changePassword(token: string, newPassword: string): Observable<any> {
-    const url = `${this.baseUrl}/api/change-password`;
+    const url = `${this.baseUrl}/api/change-password/${token}`;
+    console.log(url);
     const body = { token, newPassword };
-
+  
     return this.http.post(url, body).pipe(
       map((response) => {
         // Puedes realizar acciones adicionales después de cambiar la contraseña, si es necesario
         console.log("Contraseña cambiada exitosamente:", response);
         return response;
       }),
-      catchError(this.handleError)
+      catchError((error) => {
+        // Imprime el error completo en la consola
+        console.error('Error al cambiar la contraseña:', error);
+        return throwError(error);
+      })
     );
   }
+  
 
   logout() {
     this._currentUser.next(null);

@@ -53,7 +53,7 @@
 
                 <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        Proveedor
+                        <p style="font-size:10px;">Proveedor</p>                        
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         <ng-container *ngIf="row && row.id_purchase" class="long-text">

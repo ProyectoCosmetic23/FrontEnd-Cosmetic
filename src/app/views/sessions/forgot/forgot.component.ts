@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { SharedAnimations } from "src/app/shared/animations/shared-animations";
-
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router'; // Asegúrate de importar Router desde '@angular/router'
+import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 
 @Component({
   selector: 'app-forgot',
@@ -13,7 +14,7 @@ import { SharedAnimations } from "src/app/shared/animations/shared-animations";
 export class ForgotComponent implements OnInit {
   @ViewChild('resetForm', { static: false }) resetForm: NgForm;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private toastr: ToastrService, private router: Router) {}
 
   ngOnInit() {}
 
@@ -24,12 +25,17 @@ export class ForgotComponent implements OnInit {
     // Llama al servicio para enviar la solicitud de recuperación de contraseña
     this.authService.forgotPassword(email).subscribe(
       (response) => {
-        console.log('Recuperación de contraseña exitosa:', response);
-        // Puedes manejar la respuesta del servidor según tus necesidades
+        this.toastr.success('Link de recuperación enviado satisfactoriamente', 'Éxito', {
+          progressBar: true,
+          timeOut: 3000,
+        });
+        this.router.navigate(['/login']);
       },
       (error) => {
-        console.error('Error al recuperar la contraseña:', error);
-        // Puedes manejar el error según tus necesidades
+        this.toastr.error('El Correo ingresado no es válido', 'Error', {
+          progressBar: true,
+          timeOut: 3000,
+        });
       }
     );
   }
