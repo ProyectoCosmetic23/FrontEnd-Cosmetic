@@ -162,16 +162,16 @@
                               [searchable]="true"
                               [clearable]="false"
                               appearance="none"
-                              (open)="handleDropdownOpen($event)"
                             >
-                              <ng-template ngValue let-item>
-                                <span
-                                  [attr.disabled]="
-                                    item.isDisabled ? true : null
-                                  "
-                                  >{{ item.name_product }}</span
-                                >
-                              </ng-template>
+                              <ng-option
+                                *ngFor="let product of listProducts"
+                                [value]="product.id_product"
+                                [ngClass]="{
+                                  'disabled-option': product.isDisabled
+                                }"
+                              >
+                                {{ product.name_product }}
+                              </ng-option>
                             </ng-select>
                           </td>
                           <td>

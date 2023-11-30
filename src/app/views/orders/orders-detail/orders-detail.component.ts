@@ -343,6 +343,8 @@ export class OrdersDetailComponent implements OnInit {
       .at(i)
       .get("id_product").value;
 
+    console.log(selectedProductId);
+
     const selectedProductIndex = this.listProducts.findIndex(
       (product) => product.id_product == selectedProductId
     );
@@ -368,7 +370,6 @@ export class OrdersDetailComponent implements OnInit {
           .at(i)
           .get("quantityOnhand")
           .setValue(selectedProduct.quantity);
-
         this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
 
         // Cambia la propiedad isDisabled a true
@@ -425,9 +426,9 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   selectConfig = {
-    displayKey: 'name',
+    displayKey: "name",
     search: true,
-    placeholder: 'Selecciona un producto',
+    placeholder: "Selecciona un producto",
   };
 
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
