@@ -19,6 +19,7 @@ import { DropdownModule } from 'primeng/dropdown';
   declarations: [AppComponent],
   imports: [
     DropdownModule,
+    BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
     SharedModule,

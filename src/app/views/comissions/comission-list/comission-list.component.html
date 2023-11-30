@@ -49,7 +49,8 @@
                         (page)="onPageChange($event)">
                         <ngx-datatable-column name="id_employee">
                             <ng-template ngx-datatable-header-template>
-                                Empleado
+                                
+                                <p style="font-size:15px;">Empleado</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ employees[row.id_employee] }}
@@ -57,7 +58,8 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column name="total_commission">
                             <ng-template ngx-datatable-header-template>
-                                Total Comisión
+                               
+                                <p style="font-size:15px;"> Total Comisión</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.total_commission }}
@@ -65,7 +67,7 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column name="total_sales">
                             <ng-template ngx-datatable-header-template>
-                                Total Ventas
+                                <p style="font-size:15px;"> Total Ventas</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.total_sales }}
@@ -73,7 +75,8 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column name="month_commission">
                             <ng-template ngx-datatable-header-template>
-                                Mes Comisión
+                               
+                                <p style="font-size:15px;">  Mes Comisión</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.month_commission | date: 'yyyy-MM'}}
@@ -82,7 +85,7 @@
 
                         <ngx-datatable-column name="commission_percentage">
                             <ng-template ngx-datatable-header-template>
-                                Porcentaje Comisión
+                                <p style="font-size:15px;">  Porcentaje Comisión</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.commission_percentage }}
@@ -90,7 +93,7 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column [width]="120">
                             <ng-template ngx-datatable-header-template>
-                                Acciones
+                                <p style="font-size:15px;">Acciones</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 <button class="btn btn-dark m-1 me-3"

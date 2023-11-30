@@ -153,7 +153,7 @@ export class ProductListComponent implements OnInit {
     
         
     retireProduct(): void {
-        if (this.selectedProductId && this.returnQuantity) {    
+        if (this.selectedProductId && this.returnQuantity) {
             const data = {
                 return_quantity: this.returnQuantity,
                 return_reason: this.returnReason,
