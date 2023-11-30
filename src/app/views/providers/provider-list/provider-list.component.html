@@ -15,7 +15,8 @@
                 <button class="btn btn-primary float-right" [routerLink]="['/proveedores/registrar']">Crear nuevo proveedor</button>
             </div>
             <div class="col-md-6 d-flex justify-content-end">
-                <input [formControl]="searchControl" id="email" placeholder="Buscar Proveedores" type="text" class="form-control">
+                <input [formControl]="searchControl" (input)="searchProvider($event)" id="email" placeholder="Buscar Proveedores" type="text" class="form-control">
+
             </div>
         </div>
     </div>

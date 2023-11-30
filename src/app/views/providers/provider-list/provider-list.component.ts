@@ -113,18 +113,22 @@ export class ProviderListComponent implements OnInit {
         this.currentPage = event.offset + 1;
         this.loadData();
     }
-
-    searchProvider($event){
-        
-        const value = ($event.target as HTMLInputElement).value;
-        if(value !==null && value !== undefined && value !== '')
-        {
-            this.filteredProviders = this.listProviders.filter(c => c.name_provider.toLowerCase().indexOf(value.toLowerCase()) !== -1
-            || this.changeProviderStateDescription(c.state_provider).toLowerCase().indexOf(value.toLowerCase()) !== -1)
-        }else{
+    searchProvider(event: Event) {
+        const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    
+        if (searchTerm !== null && searchTerm !== undefined && searchTerm !== '') {
+            this.filteredProviders = this.listProviders.filter(provider =>
+                provider.name_provider.toLowerCase().includes(searchTerm) ||
+                this.changeProviderStateDescription(provider.state_provider).toLowerCase().includes(searchTerm)
+            );
+        } else {
             this.filteredProviders = this.listProviders;
         }
+    
+        this.actualizarCountLabel();
+        this.refreshListProviders();
     }
+    
 
     changeProviderStateDescription(state_provider:boolean){
         return state_provider ? 'Activo':'Inactivo';}

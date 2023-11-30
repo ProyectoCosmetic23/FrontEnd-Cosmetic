@@ -448,14 +448,6 @@ export class OrdersListComponent implements OnInit {
         this.mensaje = "El pago no puede ser mayor que el total de la venta"
         console.log("Error: El total_payment no puede ser mayor que el total de la venta")
       }
-      // Verificar si total_payment es mayor que total_remaining antes de actualizar total_remaining
-      // if (totalPayment > totalRemaining) {
-      //   console.log(
-      //     "Error: El total_payment no puede ser mayor que total_remaining"
-      //   );
-      //   return; // Detiene la ejecución de la función si hay un error
-      // }
-
       this.formBasic.patchValue({ total_remaining: totalRemaining });
 
       // Utiliza this.id_client en lugar de id_client obtenido del formulario

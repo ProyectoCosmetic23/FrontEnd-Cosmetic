@@ -343,16 +343,16 @@
 
 <ng-template #paymentModal let-modal>
   <ul class="nav nav-tabs">
-    <li class="nav-item" (click)="activeTab = 'formulario'" style="cursor: pointer">
-      <a class="nav-link" [class.active]="activeTab === 'formulario'">Registrar pago</a>
+    <li class="nav-item" (click)="activTab = 'formulario'" style="cursor: pointer">
+      <a class="nav-link" [class.active]="activTab === 'formulario'">Registrar pago</a>
     </li>
-    <li class="nav-item" (click)="activeTab = 'abonos'" style="cursor: pointer">
-      <a class="nav-link" [class.active]="activeTab === 'abonos'">Pagos registrados</a>
+    <li class="nav-item" (click)="activTab = 'abonos'" style="cursor: pointer">
+      <a class="nav-link" [class.active]="activTab === 'abonos'">Pagos registrados</a>
     </li>
   </ul>
 
   <div class="tab-content">
-    <div class="tab-pane" [class.active]="activeTab === 'formulario'">
+    <div class="tab-pane" [class.active]="activTab === 'formulario'">
       <form [formGroup]="formBasic" (ngSubmit)="submit()">
         <div class="row">
           <div class="col-md-6 form-group mb-3">
@@ -422,8 +422,8 @@
         </div>
       </form>
     </div>
-    <div class="tab-pane" [class.active]="activeTab === 'abonos'">
-      <div class="tab-pane" [class.active]="activeTab === 'abonos'">
+    <div class="tab-pane" [class.active]="activTab === 'abonos'">
+      <div class="tab-pane" [class.active]="activTab === 'abonos'">
         <h1 class="text-center">
           Pagos del pedido {{ currentOrder?.order_number }}
         </h1>

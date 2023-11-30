@@ -53,6 +53,7 @@ export class ComissionListComponent implements OnInit {
     employees: any = {};
     comissionDetails: any = {};
     currentYear: number;
+    allCommissions: any[] = [];
     openedModal = false;
     searchControl: UntypedFormControl = new UntypedFormControl();
     filteredComissions;
@@ -89,15 +90,29 @@ export class ComissionListComponent implements OnInit {
     }
     getComsission() {
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
-            this.listComissions = res;
+            // Cargar todas las comisiones en una variable nueva
+            this.allCommissions = res;
+    
             this._comissionsService.getAllEmployees().subscribe((employees: any[]) => {
                 employees.forEach(employee => {
                     this.employees[employee.id_employee] = employee.name_employee;
                 });
-
+    
                 this._comissionsService.getAllComsDetail().subscribe((details: any[]) => {
                     console.log('Detalles de comisiones recibidos:', details);
                     this.details = details;
+    
+                    // Obtener IDs de empleados activos
+                    const activeEmployeeIds = employees
+                        .filter(employee => employee.state_employee === 'Activo')
+                        .map(activeEmployee => activeEmployee.id_employee);
+    
+                    // Filtrar las comisiones para incluir solo las asociadas a empleados activos
+                    this.listComissions = this.allCommissions.filter(commission =>
+                        activeEmployeeIds.includes(commission.id_employee)
+                    );
+    
+                    // Asignar detalles de comisiones a cada comisión en la lista
                     this.listComissions.forEach(comission => {
                         const detail = details.find(detail => detail.id_commission_detail === comission.id_commission_detail);
                         if (detail) {
@@ -105,16 +120,19 @@ export class ComissionListComponent implements OnInit {
                             comission.commission_percentage = detail.commission_percentage;
                         }
                     });
-                    this.originalListComissions = res;
+    
+                    this.originalListComissions = this.listComissions;
                     console.log('this.selectedMonth:', this.selectedMonth);
                     console.log('this.details:', this.details);
                     this.filterByMonth();
-                    this.calculateTotalCommission();  // Llamada a la función para calcular el total
-                    console.log(this.originalListComissions)
+                    this.calculateTotalCommission();
+                    console.log(this.originalListComissions);
                 });
             });
         });
     }
+    
+    
     filterComissionsByMonth() {
         console.log("actualizar por mes")
         const currentYear = new Date().getFullYear();
