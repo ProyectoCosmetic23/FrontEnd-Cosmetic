@@ -7,6 +7,9 @@ import { environment } from "src/environments/environment";
   providedIn: "root",
 })
 export class UsersService {
+  getEmployeeById(id: number) {
+      throw new Error("Method not implemented.");
+  }
   url = environment.url + "/api/Users";
   url2 = environment.url + "/api/roles";
   url3 = environment.url + "/api/employees";
@@ -64,5 +67,10 @@ export class UsersService {
         return throwError("Ocurrió un error al buscar el correo del empleado.");
       })
     );
+  }
+
+  getEmployeesById(id: number, token?: string): Observable<any> {
+    const url = `${this.url3}/${id}`;
+    return this.http.get<any>(url);
   }
 }

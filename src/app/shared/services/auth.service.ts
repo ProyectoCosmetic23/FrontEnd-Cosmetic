@@ -134,6 +134,27 @@ export class AuthService {
     return storedUser ? JSON.parse(storedUser) : null;
   }
 
+
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/users/recover`, { email });
+  }
+
+
+  changePassword(token: string, newPassword: string): Observable<any> {
+    const url = `${this.baseUrl}/api/change-password`;
+    const body = { token, newPassword };
+
+    return this.http.post(url, body).pipe(
+      map((response) => {
+        // Puedes realizar acciones adicionales después de cambiar la contraseña, si es necesario
+        console.log("Contraseña cambiada exitosamente:", response);
+        return response;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   logout() {
     this._currentUser.next(null);
     this._authStatus.next(AuthStatus.notAuthenticated);

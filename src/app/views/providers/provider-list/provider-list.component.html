@@ -43,7 +43,7 @@
                         (page)="onPageChange($event)">
                         <ngx-datatable-column name="name_provider">
                             <ng-template ngx-datatable-header-template>
-                                Nombre proveedor
+                                <p style="font-size:15px;"> Nombre Proveedor</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                   
@@ -54,7 +54,8 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column name="phone_provider">
                             <ng-template ngx-datatable-header-template>
-                                Teléfono
+                                <p style="font-size:15px;">Teléfono</p>
+                                
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 
@@ -65,7 +66,7 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column name="name_contact">
                             <ng-template ngx-datatable-header-template>
-                                Nombre contacto
+                                <p style="font-size:15px;">Nombre Contacto</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 <div style="white-space: pre-line;">
@@ -75,7 +76,7 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column name="state_provider">
                             <ng-template ngx-datatable-header-template>
-                                Estado
+                                <p style="font-size:15px;">Estado</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 {{ row.state_provider }}
@@ -83,7 +84,7 @@
                         </ngx-datatable-column>
                         <ngx-datatable-column [width]="120">
                             <ng-template ngx-datatable-header-template>
-                                Acciones
+                                <p style="font-size:15px;">Acciones</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 <button class="btn btn-dark m-1 me-3" [routerLink]="['/proveedores/detalle', row.id_provider]">

@@ -37,7 +37,8 @@
                     </ngx-datatable-column> -->
                     <ngx-datatable-column name="username" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
                         <ng-template ngx-datatable-header-template>
-                            Nombre usuario
+                           
+                            <p style="font-size:15px;"> Nombre usuario</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.username }}
@@ -45,7 +46,7 @@
                     </ngx-datatable-column>
                     <ngx-datatable-column name="email" [resizeable]="false" [canAutoResize]="true" [minWidth]="180">
                         <ng-template ngx-datatable-header-template>
-                            Correo
+                            <p style="font-size:15px;">Correo</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.email }}
@@ -54,7 +55,7 @@
 
                     <ngx-datatable-column name="state_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="20">
                         <ng-template ngx-datatable-header-template>
-                            Estado
+                            <p style="font-size:15px;">Estado</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.state_user }}
@@ -63,13 +64,13 @@
 
                     <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="50">
                         <ng-template ngx-datatable-header-template>
-                            Acciones
+                               <p style="font-size:15px;">Acciones</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             <button class="btn btn-dark m-1" [routerLink]="['/users/print', row.id_user]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]">
+                            <button class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]" [disabled]="row.state_user === 'Inactivo'"  >
                                 <i class="i-Pen-4"></i>
                             </button>
                             <label class="switch switch-success me-3" (click)="openModal(row.id_user)">

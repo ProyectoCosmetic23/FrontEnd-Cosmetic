@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
-import { CookieService } from "ngx-cookie-service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
+import { NgSelectConfig } from '@ng-select/ng-select';
 
 @Component({
   selector: "app-orders-detail",
@@ -44,6 +44,7 @@ export class OrdersDetailComponent implements OnInit {
   error_client: boolean = false;
   listPayments: any[] = [];
   showLoadingScreen: boolean = false;
+  directSale: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,9 +52,10 @@ export class OrdersDetailComponent implements OnInit {
     private router: Router,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
-    private cookieService: CookieService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private ngSelectConfig: NgSelectConfig
   ) {
+    this.ngSelectConfig.notFoundText = 'No se encontraron resultados';
     this.productsFormArray = this.formBuilder.array([]);
   }
 
@@ -67,7 +69,9 @@ export class OrdersDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    this.formBasic = this.formBuilder.group({});
+    this.formBasic = this.formBuilder.group({
+      directSale: false,
+    });
     this.formBasic.addControl("products", this.productsFormArray);
     this.getPaymentsForOrder();
   }
@@ -125,6 +129,7 @@ export class OrdersDetailComponent implements OnInit {
 
           // Después de cargar los datos, establece loadingData en false
           this.showLoadingScreen = false;
+          console.log(this.order);
         },
         (error) => {
           console.error("Error al obtener el pedido:", error);
@@ -258,7 +263,12 @@ export class OrdersDetailComponent implements OnInit {
   getProducts() {
     this._ordersService.getAllProducts().subscribe(
       (data) => {
-        this.listProducts = data;
+        // Inicializa la propiedad isDisabled en false para cada producto
+        this.listProducts = data.map((product) => ({
+          ...product,
+          isDisabled: false,
+        }));
+        console.log(this.listProducts);
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
@@ -325,6 +335,7 @@ export class OrdersDetailComponent implements OnInit {
       product_price: [""],
       product_quantity: [""],
       subtotal: [""],
+      quantityOnhand: [""],
     });
   }
 
@@ -334,28 +345,37 @@ export class OrdersDetailComponent implements OnInit {
       .at(i)
       .get("id_product").value;
 
-    const selectedProduct = this.listProducts.find(
+    console.log(selectedProductId);
+
+    const selectedProductIndex = this.listProducts.findIndex(
       (product) => product.id_product == selectedProductId
     );
 
-    if (selectedProduct) {
+    const selectedProduct = this.listProducts[selectedProductIndex];
+
+    console.log(selectedProduct);
+
+    if (selectedProductIndex !== -1) {
       this.productsFormArray
         .at(i)
         .get("product_price")
         .setValue(selectedProduct.selling_price);
 
-      // Obtén el valor del campo "unit"
       const unitValue = this.productsFormArray
         .at(i)
         .get("product_quantity").value;
 
-      // Verifica que "unitValue" no sea null ni undefined
       if (unitValue != null && unitValue !== undefined) {
-        // Calcula el subtotal en función de la cantidad y el precio unitario
         const subtotal = selectedProduct.selling_price * unitValue;
 
-        // Asigna el subtotal al campo "subtotal" del formulario
+        this.productsFormArray
+          .at(i)
+          .get("quantityOnhand")
+          .setValue(selectedProduct.quantity);
         this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
+
+        // Cambia la propiedad isDisabled a true
+        this.listProducts[selectedProductIndex].isDisabled = true;
       } else {
         console.log("La cantidad del producto no está definida.");
       }
@@ -374,7 +394,25 @@ export class OrdersDetailComponent implements OnInit {
 
   // Función para eliminar un producto del FormArray
   removeProduct(index: number) {
+    // Obtén el id_product del producto que se va a eliminar
+    const productIdToRemove = this.productsFormArray
+      .at(index)
+      .get("id_product").value;
+
+    // Encuentra el producto en listProducts
+    const productIndexToRemove = this.listProducts.findIndex(
+      (product) => product.id_product == productIdToRemove
+    );
+
+    // Cambia el estado isDisabled a false
+    if (productIndexToRemove !== -1) {
+      this.listProducts[productIndexToRemove].isDisabled = false;
+    }
+
+    // Elimina el producto del FormArray
     this.productsFormArray.removeAt(index);
+
+    // Actualiza la cantidad de productos
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
   }
 
@@ -389,66 +427,79 @@ export class OrdersDetailComponent implements OnInit {
     return total;
   }
 
+  selectConfig = {
+    displayKey: "name",
+    search: true,
+    placeholder: "Selecciona un producto",
+  };
+
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
   createOrder() {
-    if (!this.formBasic.valid) {
-      this.showFormWarning("Completa el formulario correctamente");
-      return;
-    }
-
-    this.checkProducts();
-
-    this.checkConditions();
-
-    const productsArray = this.productsFormArray.value;
-
-    const productQuantityMap = new Map();
-
-    for (const product of productsArray) {
-      const idProduct = product.id_product;
-
-      if (productQuantityMap.has(idProduct)) {
-        productQuantityMap.set(
-          idProduct,
-          productQuantityMap.get(idProduct) + product.product_quantity
-        );
-      } else {
-        productQuantityMap.set(idProduct, product.product_quantity);
+    try {
+      if (!this.formBasic.valid) {
+        this.showFormWarning("Completa el formulario correctamente");
+        return;
       }
-    }
 
-    const uniqueProducts = productsArray.filter((product) => {
-      const idProduct = product.id_product;
-      if (productQuantityMap.has(idProduct)) {
-        product.product_quantity = productQuantityMap.get(idProduct);
-        productQuantityMap.delete(idProduct); 
-        return true; 
+      // Llamada a checkProducts antes de realizar la solicitud
+      if (this.checkConditions() && this.checkProducts()) {
+        const productsArray = this.productsFormArray.value;
+        const productQuantityMap = new Map();
+
+        for (const product of productsArray) {
+          const idProduct = product.id_product;
+
+          if (productQuantityMap.has(idProduct)) {
+            productQuantityMap.set(
+              idProduct,
+              productQuantityMap.get(idProduct) + product.product_quantity
+            );
+          } else {
+            productQuantityMap.set(idProduct, product.product_quantity);
+          }
+        }
+
+        const uniqueProducts = productsArray.filter((product) => {
+          const idProduct = product.id_product;
+          if (productQuantityMap.has(idProduct)) {
+            product.product_quantity = productQuantityMap.get(idProduct);
+            productQuantityMap.delete(idProduct);
+            return true;
+          }
+          return false;
+        });
+
+        const products = uniqueProducts;
+
+        const order_date = new Date();
+        const total_order = this.calculateTotal();
+
+        const newOrder = {
+          id_client: this.selected_client_id,
+          id_employee: this.selected_employee_id,
+          order_date: order_date,
+          payment_type: this.selected_payment_type,
+          total_order: total_order,
+          products: products,
+          directSale: this.directSale,
+        };
+
+        this.submitOrder(newOrder);
       }
-      return false; 
-    });
-
-    const products = uniqueProducts;
-
-    const order_date = new Date();
-    const total_order = this.calculateTotal();
-
-    const newOrder = {
-      id_client: this.selected_client_id,
-      id_employee: this.selected_employee_id,
-      order_date: order_date,
-      payment_type: this.selected_payment_type,
-      total_order: total_order,
-      products: products,
-    };
-
-    this.submitOrder(newOrder);
+      // Si alguna de las condiciones no se cumple, la ejecución no llegará aquí
+    } catch (error) {
+      // Manejar el error, puedes agregar lógica adicional si es necesario
+      console.error(error);
+    }
   }
 
-  checkProducts() {
+  checkProducts(): boolean {
+    let allConditionsMet = true;
+
     if (this.productsFormArray.length === 0) {
       this.showFormWarning("Agrega al menos un producto al pedido");
-      throw new Error("Productos insuficientes");
+      allConditionsMet = false;
     }
 
     const productsArray = this.productsFormArray.value;
@@ -459,12 +510,30 @@ export class OrdersDetailComponent implements OnInit {
         !product.product_quantity
       ) {
         this.showFormWarning("Completa todos los campos del producto");
-        throw new Error("Campos de producto incompletos");
+        allConditionsMet = false;
+      }
+
+      // Encuentra el producto en listProducts por id_product
+      const selectedProduct = this.listProducts.find(
+        (p) => p.id_product === product.id_product
+      );
+
+      if (
+        selectedProduct &&
+        product.product_quantity > selectedProduct.quantity
+      ) {
+        // Si la cantidad en productsFormArray es mayor que la cantidad disponible en listProducts, muestra una advertencia
+        this.showFormWarning(
+          "La cantidad de productos supera el stock disponible"
+        );
+        allConditionsMet = false;
       }
     }
+
+    return allConditionsMet;
   }
 
-  checkConditions() {
+  checkConditions(): boolean {
     const conditions = [
       {
         variable: "error_client",
@@ -472,7 +541,7 @@ export class OrdersDetailComponent implements OnInit {
           this.selected_client === "Seleccione el nombre del cliente" ||
           this.selected_client_id == null ||
           this.selected_client_id == undefined,
-        errorMessage: "Seleccione un cliente",
+        errorMessage: "Seleccione un cliente. ",
       },
       {
         variable: "error_employee",
@@ -480,7 +549,7 @@ export class OrdersDetailComponent implements OnInit {
           this.selected_employee === "Seleccione el nombre del empleado" ||
           this.selected_employee_id == null ||
           this.selected_employee_id == undefined,
-        errorMessage: "Seleccione un empleado",
+        errorMessage: "Seleccione un empleado. ",
       },
       {
         variable: "error_payment_type",
@@ -488,26 +557,27 @@ export class OrdersDetailComponent implements OnInit {
           this.selected_payment_type === "Seleccione el tipo de pago" ||
           this.selected_payment_type == null ||
           this.selected_payment_type == undefined,
-        errorMessage: "Seleccione un tipo de pago",
+        errorMessage: "Seleccione un tipo de pago. ",
       },
     ];
+
+    let allConditionsMet = true;
+    const errorMessages = [];
 
     conditions.forEach((condition) => {
       this[condition.variable] =
         this[condition.variable] || condition.condition;
 
       if (this[condition.variable]) {
-        this.showFormWarning(condition.errorMessage);
-        throw new Error(`${condition.variable} no seleccionado`);
+        allConditionsMet = false;
       }
     });
 
-    // Reset errors if all conditions are false
-    if (!conditions.some((condition) => this[condition.variable])) {
-      conditions.forEach((condition) => {
-        this[condition.variable] = false;
-      });
+    if (!allConditionsMet) {
+      throw new Error("Algunas condiciones no se cumplieron");
     }
+
+    return allConditionsMet;
   }
 
   showFormWarning(message: string) {
@@ -525,7 +595,6 @@ export class OrdersDetailComponent implements OnInit {
       }
     );
   }
-
 
   showSuccessMessage(message: string) {
     this.toastr.success(message, "Éxito");

@@ -23,8 +23,11 @@
         <div class="card-body" style="padding-top: 0 !important">
           <div class="card-title mb-3"></div>
           <tabset>
-            <tab id="orderDetails" [heading]="viewMode === 'new' ? 'Nuevo Pedido' : 'Detalle Pedido'">
-              <br>
+            <tab
+              id="orderDetails"
+              [heading]="viewMode === 'new' ? 'Nuevo Pedido' : 'Detalle Pedido'"
+            >
+              <br />
               <form [formGroup]="formBasic" (ngSubmit)="createOrder()">
                 <div class="row">
                   <div class="col-md-4 form-group mb-3">
@@ -148,19 +151,35 @@
                         >
                           <th scope="row">{{ i + 1 }}</th>
                           <td>
-                            <select
+                            <ng-select
                               class="form-control"
-                              id="id_product"
                               formControlName="id_product"
+                              notFoundText="Producto no encontrado..."
+                              [items]="listProducts"
+                              bindLabel="name_product"
+                              bindValue="id_product"
+                              [hideSelected]="true"
+                              [disabled]="false"
                               (change)="handleProductSelection($event, i)"
+                              [searchable]="true"
+                              [clearable]="false"
+                              appearance="none"
                             >
-                              <option
+                              <ng-container
                                 *ngFor="let product of listProducts"
-                                [value]="product.id_product"
                               >
-                                {{ product.name_product }}
-                              </option>
-                            </select>
+                                <ng-option
+                                  [ngModelOptions]="{ standalone: true }"
+                                  *ngIf="!product.isDisabled"
+                                  [value]="product.id_product"
+                                  [ngClass]="{
+                                    'disabled-option': product.isDisabled
+                                  }"
+                                >
+                                  {{ product.name_product }}
+                                </ng-option>
+                              </ng-container>
+                            </ng-select>
                           </td>
                           <td>
                             <input
@@ -177,6 +196,11 @@
                             <input
                               type="number"
                               class="form-control"
+                              [placeholder]="
+                                'Stock: ' +
+                                productsFormArray.at(i).get('quantityOnhand')
+                                  .value
+                              "
                               formControlName="product_quantity"
                               (change)="handleProductSelection($event, i)"
                             />
@@ -237,14 +261,15 @@
                       </ng-template>
                     </tbody>
                   </table>
-                  <div class="table-footer" style="margin-bottom: 0 !important;">
+                  <div class="table-footer" style="margin-bottom: 0 !important">
                     <div class="col-md-8"></div>
                     <div class="col-md-8">
                       <div class="total">
                         Total:
                         {{
                           viewMode == "new"
-                            ? calculateTotal()
+                            ? (calculateTotal()
+                              | currency : "" : "symbol" : "1.2")
                             : (order?.order?.total_order
                               | currency : "" : "symbol" : "1.2")
                         }}
@@ -254,6 +279,17 @@
                 </div>
                 <div class="col-md-12" style="margin-top: 20px">
                   <div class="d-flex justify-content-end">
+                    <div *ngIf="viewMode == 'new'" class="col md-12">
+                      <label class="checkbox checkbox-primary me-3">
+                        <span>Venta directa</span>
+                        <input
+                          type="checkbox"
+                          [checked]="directSale"
+                          (change)="directSale = !directSale"
+                        />
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
                     <button
                       class="btn btn-danger float-right"
                       [routerLink]="['/orders']"
@@ -315,33 +351,41 @@
                     <thead class="bg-gray-300">
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Fecha de paog</th>
-                        <th scope="col">Total pago</th>
+                        <th scope="col">Fecha pago</th>
+                        <th scope="col">Pago realizado</th>
                         <th scope="col">Total restante</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let payment of listPayments; let i = index">
-                        <td>{{ i + 1 }}</td>
-                        <td>
-                          {{ payment.payment_date | date : "yyyy-MM-dd" }}
-                        </td>
-                        <td>
-                          {{
-                            payment.total_payment
-                              | currency : "" : "symbol" : "1.2-2"
-                          }}
-                        </td>
-                        <td>
-                          {{
-                            payment.total_remaining
-                              | currency : "" : "symbol" : "1.2-2"
-                          }}
-                        </td>
+                      <tr
+                        *ngIf="listPayments.length === 0; else paymentsList"
+                        class="text-center"
+                      >
+                        <td colspan="4">No hay pagos registrados</td>
                       </tr>
+                      <ng-template #paymentsList>
+                        <tr *ngFor="let payment of listPayments; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                            {{ payment.payment_date | date : "yyyy-MM-dd" }}
+                          </td>
+                          <td>
+                            {{
+                              payment.total_payment
+                                | currency : "" : "symbol" : "1.2-2"
+                            }}
+                          </td>
+                          <td>
+                            {{
+                              payment.total_remaining
+                                | currency : "" : "symbol" : "1.2-2"
+                            }}
+                          </td>
+                        </tr>
+                      </ng-template>
                     </tbody>
                   </table>
-                  <div class="table-footer" style="margin-bottom: 0 !important;">
+                  <div class="table-footer" style="margin-bottom: 0 !important">
                     <div class="col-md-8"></div>
                     <div class="col-md-8">
                       <div class="total">

@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  url: "https://api-cosmetic-qqce.onrender.com",
+  url:'https://api-cosmetic-qqce.onrender.com',
+ //url:'http://localhost:8080'
 };
 
 // http://localhost:8080

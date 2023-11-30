@@ -13,9 +13,7 @@ import {PurchaseRoutingModule } from './purchase-routing.module';
   imports: [
     CommonModule,
     NgxDatatableModule,
-    
     ReactiveFormsModule, // Solo importa ReactiveFormsModule
-
     NgbModule,
    PurchaseRoutingModule,
     

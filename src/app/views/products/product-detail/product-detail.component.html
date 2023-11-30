@@ -20,121 +20,160 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="card-title mb-3">Formulario de Productos</div>
-                    <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
-                        <div class="row">
-
-
-
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="id_category">Categoría</label>
-                                <select class="form-control" id="id_category" (change)="handleCategorySelection($event)"
-                                    [formControl]="productForm.get('id_category')">
-
-                                    <option *ngFor="let category of listCategories" [value]="category.id_category">
-                                        {{ category.name_category }}
-                                    </option>
-                                </select>
-                                <div *ngIf="productForm.get('id_category').touched && productForm.get('id_category').hasError('required')"
-                                    class="error-message">
-                                    El campo Categoria es obligatorio.
+                    <div class="row">
+                        <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
+                            <div class="row">
+                                <div class="col-md-8 form-group mb-3">
+                                    <label>Formulario de Productos </label>
                                 </div>
-                            </div>
-
-
-                            <div class="col-md-6 form-group mb-3">
-                                <label for="name_product">Nombre de producto<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="name_product" formControlName="name_product"
-                                    required>
-
-                                <div *ngIf="productForm.get('name_product').touched && productForm.get('name_product').hasError('required')"
-                                    class="error-message">
-                                    El campo Nombre es obligatorio.
+                                
+                               
+                                <div *ngIf="viewMode == 'new'" class="row">
+                                    <label  class="col-md-6 form-group mb-3 checkbox checkbox-primary">
+                                        <input  type="checkbox" formControlName="enableFields"
+                                            (change)="toggleEnableFields()">
+                                        <span>Click si desea agregar un producto Existente </span>
+                                        <span class="checkmark"></span>
+                                        
+                                    </label>
+                                    <div *ngIf="enableFields.value" class="col-md-6 form-group mb-3">
+                                        <label for="id_product">Seleccionar producto</label>
+                                        <select class="form-control" id="id_product"
+                                            (change)="handleProductSelection($event)"
+                                            [formControl]="productForm.get('id_product')">
+    
+                                            <option *ngFor="let product of listProducts" [value]="product.id_product">
+                                                {{ product.name_product }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="productForm.get('id_product').touched && productForm.get('id_product').hasError('required')"
+                                            class="error-message">
+                                            El campo Producto es obligatorio.
+                                        </div>
+                                    </div>
                                 </div>
                         
-                            <div *ngIf="productForm.get('name_product').hasError('invalidName')" class="error-message">
-                                El campo Nombre no puede tener simbolos y solo puede tener 1 numero.
                             </div>
-                        </div>
-                            <div class="col-md-2 form-group mb-3">
-                                <label for="quantity">Cantidad<span class="text-danger">*</span></label>
-                                <input type="number" class="form-control small-input" id="quantity"
-                                    formControlName="quantity">
-                        </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group mb-3">
+                                    <label for="id_category">Categoría</label>
+                                    <select class="form-control" id="id_category"
+                                        (change)="handleCategorySelection($event)"
+                                        [formControl]="productForm.get('id_category')">
 
-                            <div class="col-md-2 form-group mb-3">
-                                <label for="max_stock">Stock Maximo<span class="text-danger">*</span></label>
-                                <input type="number" class="form-control small-input" id="max_stock"
-                                    formControlName="max_stock" required>
-
-                                <div *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
-                                    class="error-message">
-                                    El campo Stock Maxino es obligatorio.
+                                        <option *ngFor="let category of listCategories" [value]="category.id_category">
+                                            {{ category.name_category }}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="productForm.get('id_category').touched && productForm.get('id_category').hasError('required')"
+                                        class="error-message">
+                                        El campo Categoria es obligatorio.
+                                    </div>
                                 </div>
 
 
-                            </div>
+                                <div class="col-md-6 form-group mb-3">
+                                    <label for="name_product">Nombre de producto<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="name_product"
+                                        formControlName="name_product" required>
 
-                            <div class="col-md-2 form-group mb-3">
-                                <label for="min_stock">Stock Minimo<span class="text-danger">*</span></label>
-                                <input type="number" class="form-control small-input" id="min_stock"
-                                    formControlName="min_stock" required>
+                                    <div *ngIf="productForm.get('name_product').touched && productForm.get('name_product').hasError('required')"
+                                        class="error-message">
+                                        El campo Nombre es obligatorio.
+                                    </div>
 
-                                <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
-                                    class="error-message">
-                                    El campo Stock minimo es obligatorio.
+                                    <div *ngIf="productForm.get('name_product').hasError('invalidName')"
+                                        class="error-message">
+                                        El campo Nombre no puede tener simbolos y solo puede tener 1 numero.
+                                    </div>
+                                </div>
+                                <div class="col-md-2 form-group mb-3">
+                                    <label for="quantity">Cantidad<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="quantity"
+                                        formControlName="quantity">
                                 </div>
 
+                                <div class="col-md-2 form-group mb-3">
+                                    <label for="max_stock">Stock Maximo<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="max_stock"
+                                        formControlName="max_stock">
+
+                                    <div *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
+                                        class="error-message">
+                                        El campo Stock Maxino es obligatorio.
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-md-2 form-group mb-3">
+                                    <label for="min_stock">Stock Minimo<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="min_stock"
+                                        formControlName="min_stock">
+
+                                    <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
+                                        class="error-message">
+                                        El campo Stock minimo es obligatorio.
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-2 form-group mb-3">
+                                    <label for="cost_price">Precio Costo<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="cost_price"
+                                        formControlName="cost_price">
+
+                                </div>
+
+                                <div class="col-md-2 form-group mb-3">
+                                    <label for="selling_price">Precio Venta<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="selling_price"
+                                        formControlName="selling_price">
+
+                                </div>
+
+                                <div *ngIf="viewMode == 'print'" class="col-md-4 form-group mb-3">
+                                    <label for="state_product">Estado<span class="text-danger">*</span></label>
+                                    <input class="form-control" id="state_product" formControlName="state_product">
+                                </div>
+                                <div *ngIf="viewMode == 'print'"class="col-md-4 form-group mb-3">
+                                    <label for="profit">Ganancia<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="profit"
+                                        formControlName="profit">
+
+                                </div>
+                                <div *ngIf="viewMode == 'print'" class="col-md-4 form-group mb-3">
+                                    <label for="creation_date_product">Fecha de creacion<span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" id="creation_date_product"
+                                        formControlName="creation_date_product">
+
+
+                                </div>
+
+
+                                <div class="col-md-12 form-group mb-3">
+                                    <label for="observation">Observación<span class="text-danger"></span></label>
+                                    <textarea class="form-control" id="observation" placeholder="Observación"
+                                        formControlName="observation" style="resize:none" rows="5"></textarea>
+
+                                </div>
+                                
+
+                                <div class="form-group text-right" style="text-align: right;">
+                                    <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
+                                    <btn-loading *ngIf="viewMode !== 'print'"
+                                        btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode ==
+                                        'new' ? 'Registrar Producto' : 'Editar Producto'
+                                        }}
+                                    </btn-loading>
+
+                                </div>
                             </div>
-
-                            <div class="col-md-2 form-group mb-3">
-                                <label for="cost_price">Precio Costo<span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="cost_price" formControlName="cost_price"
-                                    required>
-
-                            </div>
-
-                            <div class="col-md-2 form-group mb-3">
-                                <label for="selling_price">Precio Venta<span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="selling_price"
-                                    formControlName="selling_price" required>
-
-                            </div>
-
-                            <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
-                                <label for="state_product">Estado<span class="text-danger">*</span></label>
-                                <input class="form-control" id="state_product" formControlName="state_product">
-                            </div>
-
-
-                            <div class="col-md-12 form-group mb-3">
-                                <label for="observation">Observación<span class="text-danger"></span></label>
-                                <textarea class="form-control" id="observation" placeholder="Observación"
-                                    formControlName="observation" style="resize:none" rows="5"></textarea>
-
-                            </div>
-                            <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
-                                <label for="creation_date_product">Fecha de creacion<span
-                                        class="text-danger">*</span></label>
-                                <input class="form-control" id="creation_date_product"
-                                    formControlName="creation_date_product">
-
-
-                            </div>
-
-                            <div class="form-group text-right" style="text-align: right;">
-                                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
-                                <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button"
-                                    [loading]="loading"> {{viewMode == 'new' ? 'Registrar Producto' : 'Editar Producto'
-                                    }}
-                                </btn-loading>
-
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-    </div>
