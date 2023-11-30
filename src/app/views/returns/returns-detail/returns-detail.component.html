@@ -21,8 +21,6 @@
                 class="form-control"
                 id="id_client"
                 [disabled]="viewMode === 'detaild'"
-               
-              
               >
                 <option>{{ selected_client }}</option>
               </select>
@@ -30,25 +28,14 @@
 
             <div class="col-md-5 form-group mb-3">
               <label for="id_employee">Empleado</label>
-              <select
-                class="form-control"
-                id="id_employee"
-                disabled
-                
-                
-              >
+              <select class="form-control" id="id_employee" disabled>
                 <option>{{ selected_employee }}</option>
               </select>
             </div>
 
             <div class="col-md-2 form-group mb-3">
               <label for="payment_type">Tipo de Pago</label>
-              <select
-                class="form-control"
-                id="payment_type"
-                disabled
-                
-              >
+              <select class="form-control" id="payment_type" disabled>
                 <option>{{ selected_payment_type }}</option>
               </select>
             </div>
@@ -67,48 +54,31 @@
                 </tr>
               </thead>
               <tbody formArrayName="products">
-                
-                  <tr
-                    *ngFor="let product of order_detail_products; let i = index"
-                  >
-                    <th scope="row">{{ i + 1 }}</th>
-                    <td scope="row">{{ product.product_name }}</td>
-                    <td scope="row">{{ product.product_price }}</td>
-                    <td >{{ product.product_quantity }}</td>
-                    <td>
-                      {{
-                        product.product_subtotal
-                          | currency : "" : "symbol" : "1.2"
-                      }}
-                    </td>
+                <tr
+                  *ngFor="let product of order_detail_products; let i = index"
+                >
+                  <th scope="row">{{ i + 1 }}</th>
+                  <td scope="row">{{ product.product_name }}</td>
+                  <td scope="row">{{ product.product_price }}</td>
+                  <td>{{ product.product_quantity }}</td>
+                  <td>
+                    {{
+                      product.product_subtotal
+                        | currency : "" : "symbol" : "1.2"
+                    }}
+                  </td>
 
-                    <td>
-                      <div>
-                       
-                        <button  class="btn btn-danger"
-                        ngbTooltip="Devolver producto" 
-                        
-                        
-                        >
-                          <i class="i-Remove "></i>
-                        </button>
-
-                        
-                      </div>
-
-                     
-
-                    </td>
+                  <td>
+                    <div>
                     
-                  </tr>
-                
 
-                
-               
-                
-               
-                
-
+                      <button ngbTooltip="Devolver producto" class="btn btn-danger" (click)="openRetireModal(product.id_product, product.product_value, retireModal)">
+                        <i class="i-Remove"></i>
+                      </button>
+                      
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
             <div class="table-footer">
@@ -117,17 +87,11 @@
                 <div class="total">
                   Total:
                   {{
-                    
-                      
-                        (order?.order?.total_order
-                        | currency : "" : "symbol" : "1.2")
+                    order?.order?.total_order | currency : "" : "symbol" : "1.2"
                   }}
-                  
                 </div>
               </div>
             </div>
-
-            
 
             <div class="col-md-12" style="margin-top: 20px">
               <div class="d-flex justify-content-end">
@@ -137,15 +101,92 @@
                 >
                   Volver
                 </button>
-               
-                
+
+                <div>
+                  <button type="button" class="btn btn-primary" >
+                    Guardar devolución
+                    </button>
+                </div>
+
+
               </div>
             </div>
-
-
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #retireModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Devolver producto</h4>
+  </div>
+  <div class="modal-body">
+    <!-- Formulario para la cantidad, motivo y valor de la baja -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="selectedProductId">Producto:</label>
+        <input
+          type="text"
+          id="selectedProductId"
+          class="form-control readonly-input"
+          readonly
+          [value]="getProductNameById(selectedProductId)"
+        />
+      </div>
+      <div class="col-md-4">
+        <label for="returnQuantity">Cantidad:</label>
+        <input
+          type="number"
+          id="returnQuantity"
+          class="form-control"
+          [(ngModel)]="returnQuantity"
+          (ngModelChange)="
+            returnValue = calculateUpdatedValue(selectedProductValue)
+          "
+        />
+      </div>
+
+      <div class="col-md-4">
+        <label for="selectedProductValue">Valor del producto:</label>
+        <input
+          type="number"
+          id="returnValue"
+          class="form-control"
+          disabled="true"
+          [(ngModel)]="returnValue"
+        />
+      </div>
+
+      <div class="col-md-12">
+        <label>
+          <input type="checkbox" [(ngModel)]="wishToRetire" />
+          ¿Desea dar de baja el producto?
+        </label>
+      </div>
+
+
+
+
+     
+      <div class="col-md-12">
+        <label for="returnReason">Motivo:</label>
+        <textarea
+          type="textarea"
+          id="returnReason"
+          class="form-control"
+          [(ngModel)]="returnReason"
+        ></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="retireProduct()">
+        Devolver producto
+      </button>
+    </div>
+  </div>
+</ng-template>

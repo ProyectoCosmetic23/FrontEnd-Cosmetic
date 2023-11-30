@@ -5,8 +5,10 @@ import { ToastrService } from "ngx-toastr";
 import { ReturnsService } from "src/app/shared/services/returns.service";
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
-
 import { PaymentsService } from 'src/app/shared/services/payment.service';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProductService } from 'src/app/shared/services/product.service';
 
 
 // import { CookieService } from "ngx-cookie-service";
@@ -49,6 +51,17 @@ export class ReturnsDetailComponent implements OnInit {
   error_client: boolean = false;
   listPayments: any[] = [];
 
+  modalAbierto = false;
+  selectedProductId: number;
+  selectedProductValue: number;
+  returnQuantity: number = 0;
+  calculatedValue: number = 0;
+  returnReason: string = '';
+  returnValue: number ;
+
+  filteredProducts: any[];
+
+
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -57,7 +70,11 @@ export class ReturnsDetailComponent implements OnInit {
     private _returnsService: ReturnsService,
     private _paymentService: PaymentsService,
     private cookieService: CookieService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+
+
+    private _productService: ProductService,
+    private modalService: NgbModal
   ) {
     this.productsFormArray = this.formBuilder.array([]);
   }
@@ -75,6 +92,8 @@ export class ReturnsDetailComponent implements OnInit {
     this.formBasic = this.formBuilder.group({});
     this.formBasic.addControl("products", this.productsFormArray);
     this.getPaymentsForOrder();
+    this.getProducts();
+
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
@@ -85,6 +104,7 @@ export class ReturnsDetailComponent implements OnInit {
     if (currentRoute.includes("/detaild/")) {
       this.viewMode = "detaild";
     }
+ 
   }
   
   // -------------- INICIO: Métodos para obtener datos -------------- //
@@ -479,4 +499,100 @@ export class ReturnsDetailComponent implements OnInit {
     console.error(errorMessage, error);
     this.toastr.error("Error al crear el pedido", "Error");
   }
+
+
+
+
+
+ // Modal paraa el manejo de devolucion 
+
+ openRetireModal(productId: number, productValue: number, content: any): void {
+  this.selectedProductId = productId;
+  this.selectedProductValue = productValue;
+  // Resto del código...
+  this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 }
+
+
+    
+retireProduct(): void {
+    if (this.selectedProductId && this.returnQuantity) {    
+        const data = {
+            return_quantity: this.returnQuantity,
+            return_reason: this.returnReason,
+            return_value: this.returnValue,
+        };
+
+        // Llamada a la API para dar de baja el producto
+        this._productService.retireProduct(this.selectedProductId, data).subscribe(
+            (response) => {
+                this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
+                this.toastr.success('Producto dado de baja exitosamente.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                this.modalService.dismissAll();
+
+                console.log('Producto dado de baja exitosamente', response);
+            },
+            (error) => {
+                console.error('Error al dar de baja el producto', error);
+                this.toastr.error('Fallo al dar de baja el producto.', 'Error', { progressBar: true, timeOut: 2000 });
+            }
+        );
+    }
+}
+
+
+updateProductQuantity(productId: number, quantityToSubtract: number): void {
+    // Encuentra el producto en tu lista local y resta la cantidad
+    const productToUpdate = this.filteredProducts.find(product => product.id_product === productId);
+
+    if (productToUpdate) {
+        productToUpdate.quantity -= quantityToSubtract;
+    }
+}
+
+
+
+
+
+//PRODUCTOS 
+getProductNameById(productId: number): string {
+  const product = this.listProducts.find(p => p.id_product === productId);
+  return product ? product.name_product : '';
+  }
+
+calculateUpdatedValue(originalValue: number): number {
+  // Asegúrate de que returnQuantity esté definido en tu componente
+  return this.returnQuantity * originalValue;
+  }
+  
+  
+  
+
+
+
+filterData(value: string) {
+  if (value) {
+      value = value.toLowerCase();
+  } else {
+      this.filteredProducts = [...this.listProducts];
+      return;
+  }
+
+  this.filteredProducts = this.listProducts.filter(productc => {
+      const nombreMatch = productc.name_product.toLowerCase().includes(value);
+      const cost_priceMatch = productc.cost_price.toLowerCase().includes(value);
+      const estadoMatch = productc.state_product.toLowerCase().includes(value);
+
+      return nombreMatch || cost_priceMatch || estadoMatch;
+  });
+
+
+}
+
+
+
+
+
+}
+
+
