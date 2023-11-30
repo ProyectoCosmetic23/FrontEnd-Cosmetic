@@ -1,14 +1,47 @@
 <div class="">
     <div class="breadcrumb">
-        <h1>Version 1</h1>
+        <h1>Indicadores de Rendimiento</h1>
         <ul>
             <li><a href="">Dashboard</a></li>
-            <li>Version fff</li>
+            <li>CosmeTIC</li>
         </ul>
     </div>
 
     <div class="separator-breadcrumb border-top"></div>
+    <form [formGroup]="top_productForm">
+        <div class="row justify-content-end">
+            <div class="col-lg-3 col-md-3">
+                <div class="bold-text text-primary card-title text-right" style="font-size: 15px;" for="selectedMonth">Mes</div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <select class="form-control text-primary select-arrow select-month" name="mesSelector" formControlName="selectedMonth" (change)="onMonthChangeMonth($event)">
+                            <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-3 col-md-3">
+                <div class="bold-text text-primary card-title" style="font-size: 15px;">
+                    Año
+                    <input type="checkbox"  (change)="onCheckboxChange($event)">
+                  </div>
+                  
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <!-- Select para el año, con *ngIf para mostrarlo solo cuando el checkbox está seleccionado -->
+                        <select class="form-control text-primary " id="selectedYear"  formControlName="selectedYear" (change)="onMonthChangeYear($event)">
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
 
+                          </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+  
+    
     <div class="row">
         <!-- ICON BG -->
         <div class="col-lg-3 col-md-6 col-sm-6">
@@ -16,7 +49,7 @@
                 <div class="card-body text-center">
                     <i class="i-Add-User"></i>
                     <div class="content">
-                        <p class="text-muted mt-2 mb-0">Cantidad de ordenes</p>
+                        <p class="text-muted mt-2 mb-0">Cantidad de pedidos</p>
                         <p class="text-primary text-24 line-height-1 mb-2">{{total_number_orders}}</p>
                     </div>
                 </div>
@@ -66,19 +99,19 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="card-title">Total de ventas por tipo de pago</div>
-                    <div echarts [options]="salesChartBar" [autoResize]="true" style="height: 600px;"></div>
+                    <div echarts [options]="salesChartBar" [autoResize]="true" style="height: 400px;"></div>
                 </div>
             </div>
         </div>
         <div class="col-lg-12 col-sm-12">
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="card-title">Top 5 de Productos mas vendidos {{year_data}}
-            
+                    <div class="card-title">Top 5 de Productos más vendidos {{year_data}}
+
                     </div>
                     <div echarts [options]="salesChartPie" [autoResize]="true" style="height: 300px;"></div>
                 </div>
-                
+
             </div>
         </div>
         <div class="col-lg-12 col-md-12">
@@ -90,6 +123,47 @@
             </div>
         </div>
     </div>
-<!-- Agrega la directiva ngSubmit para manejar la acción del formulario -->
+    <!-- Agrega la directiva ngSubmit para manejar la acción del formulario -->
 
 </div>
+<!-- Agrega este script en línea después del final de tu HTML o dentro de un bloque script -->
+<!-- Agrega este script en línea después del final de tu HTML o dentro de un bloque script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtén el elemento select
+        var selectYear = document.querySelector(".select-year");
+
+        // Obtén el año actual
+        var currentYear = new Date().getFullYear();
+
+        // Agrega opciones para los próximos 10 años (puedes ajustar según sea necesario)
+        for (var i = 0; i < 10; i++) {
+            var option = document.createElement("option");
+            option.value = currentYear + i;
+            option.textContent = currentYear + i;
+            selectYear.appendChild(option);
+        }
+    });
+</script>
+
+<!-- Script para generar opciones de meses -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtén el elemento select
+        var selectMonth = document.querySelector(".select-month");
+
+        // Lista de meses
+        var months = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        // Agrega opciones para los meses
+        months.forEach(function (month, index) {
+            var option = document.createElement("option");
+            option.value = index + 1; // Los meses comienzan desde 1
+            option.textContent = month;
+            selectMonth.appendChild(option);
+        });
+    });
+</script>

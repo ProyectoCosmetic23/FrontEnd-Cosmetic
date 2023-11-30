@@ -3,8 +3,8 @@ import { CategoriesService } from 'src/app/shared/services/category.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { UntypedFormControl } from '@angular/forms';
-
+import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import * as flatted from 'flatted';
 @Component({
     selector: 'app-category-list',
     templateUrl: './category-list.component.html',
@@ -19,14 +19,17 @@ export class CategoryListComponent {
     currentPage = 1; // Propiedad para rastrear la página actual
     itemsPerPage = 6; // El número de filas por página
     countLabel: number;
-
+    reasonForm: FormGroup;
+    reasonAnulate = {}
     constructor(
         private _categoriesService: CategoriesService,
         private modalService: NgbModal,
-        private toastr: ToastrService
+        private toastr: ToastrService,
+        private formBuilder: FormBuilder,
     ) { }
 //inicializa el get
     ngOnInit(): void {
+        this.reasoniniForm();
         this.getCategories();
     }
 //CONSULTA TODAS LAS CATEGORIAS
@@ -119,6 +122,15 @@ export class CategoryListComponent {
         return state_category ? 'Activo':'Inactivo';}
 
 
+        private reasoniniForm(): void {
+            this.reasonForm = this.formBuilder.group({
+              reason_anulate: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(220)]],
+        
+            });
+        
+          }
+            
+
     //CAMBIAR ESTADO
 
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
@@ -129,7 +141,9 @@ export class CategoryListComponent {
                 (result) => {
                     if (result === 'Ok') {
                         const isChecked = ($event.target as HTMLInputElement).checked;
-                        this._categoriesService.CategoryChangeStatus(IdCategory,isChecked).subscribe(
+                        const reasonAnulate = this.reasonForm.get('reason_anulate').value;
+                        const serializedReason = flatted.stringify(reasonAnulate);
+                        this._categoriesService.CategoryChangeStatus(IdCategory, reasonAnulate,isChecked).subscribe(
                             (data) => {
                                 this.loading = false;
                                 this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', {
@@ -138,7 +152,7 @@ export class CategoryListComponent {
                                 });
                                 this.getCategories();
                                 this.modalAbierto = false;
-
+                                this.reasonForm.get('reason_anulate').setValue(null)
                                
                             },
                             (error) => {
