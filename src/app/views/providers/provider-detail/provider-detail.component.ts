@@ -144,20 +144,24 @@ export class ProvidersDetailComponent implements OnInit {
     console.log('viewMode:', this.viewMode);
   }
   getProvider() {
-    this.id = this.route.snapshot.params['id_provider'];
-    console.log(this.id);
+    if (this.viewMode == "print" || this.viewMode == "edit") {
+      this.id = this.route.snapshot.params["id_provider"];
+      console.log(this.id);
 
-    const providerId = parseInt(this.id, 10); // Convierte this.id a un número
+      const providerId = parseInt(this.id, 10); // Convierte this.id a un número
 
-    this._providersService.getProviderById(providerId).subscribe(
-      (data) => {
-        this.provider = data;
-        console.log(this.provider);
-      },
-      (error) => {
-        console.error('Error al obtener proveedor:', error);
-      }
-    );
+      this._providersService.getProviderById(providerId).subscribe(
+        (data) => {
+          this.provider = data;
+          console.log(this.provider);
+        },
+        (error) => {
+          console.error("Error al obtener proveedor:", error);
+        }
+      );
+    }else if(this.viewMode === "new"){
+      
+    }
   }
   handleStateSelection(event: any) {
     this.new_provider.state_provider = event.target.value;
