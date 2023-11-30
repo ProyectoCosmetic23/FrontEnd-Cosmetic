@@ -4,8 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
-import { PaymentsService } from 'src/app/shared/services/payment.service';
-
+import { PaymentsService } from "src/app/shared/services/payment.service";
 
 @Component({
   selector: "app-orders-detail",
@@ -44,6 +43,8 @@ export class OrdersDetailComponent implements OnInit {
   selected_client_id: number;
   error_client: boolean = false;
   listPayments: any[] = [];
+  showLoadingScreen: boolean = false;
+  directSale: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,7 +52,6 @@ export class OrdersDetailComponent implements OnInit {
     private router: Router,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
-    private cookieService: CookieService,
     private toastr: ToastrService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
@@ -67,7 +67,9 @@ export class OrdersDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    this.formBasic = this.formBuilder.group({});
+    this.formBasic = this.formBuilder.group({
+      directSale: false,
+    });
     this.formBasic.addControl("products", this.productsFormArray);
     this.getPaymentsForOrder();
   }
@@ -86,26 +88,27 @@ export class OrdersDetailComponent implements OnInit {
 
   // -------------- INICIO: Métodos para obtener datos -------------- //
   getPaymentsForOrder() {
-    if (this.viewMode === 'detail') {
+    if (this.viewMode === "detail") {
       // Convertir this.id a número usando parseInt
       const orderId = parseInt(this.id, 10);
-  
+
       // O alternativamente, usando Number
       // const orderId = Number(this.id);
-  
+
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
           // Puedes almacenar los pagos en una propiedad del componente
           this.listPayments = payments;
         },
         (error) => {
-          console.error('Error al obtener pagos:', error);
+          console.error("Error al obtener pagos:", error);
         }
       );
     }
   }
   // Método para obtener un pedido y sus detalles
   getOrder() {
+    this.showLoadingScreen = true;
     const currentRoute = this.router.url;
     if (currentRoute.includes("/detail/")) {
       // Antes de cargar los datos, establece loadingData en true
@@ -116,7 +119,64 @@ export class OrdersDetailComponent implements OnInit {
           const idEmployee = this.order.order.id_employee;
           const orderDetail = this.order.order_detail;
 
-          orderDetail.forEach((detail) => {
+          this.selected_payment_type = this.order.order.payment_type;
+
+          this.showLoadingScreen = true;
+
+          this.findOrderData(idClient, idEmployee, orderDetail);
+
+          // Después de cargar los datos, establece loadingData en false
+          this.showLoadingScreen = false;
+          console.log(this.order);
+        },
+        (error) => {
+          console.error("Error al obtener el pedido:", error);
+          this.showLoadingScreen = false;
+        }
+      );
+    }
+  }
+
+  // Método para encontrar información relacionada con el pedido (cliente, empleado, productos)
+  async findOrderData(clientId: number, employeeId: number, products: any) {
+    this.showLoadingScreen = true;
+
+    // Función para verificar si todos los datos están cargados
+    const checkDataLoaded = () => {
+      return (
+        this.selected_client !== undefined &&
+        this.selected_employee !== undefined &&
+        !retry
+      );
+    };
+
+    let retry = false;
+
+    do {
+      // Función para cargar los datos del cliente
+      const loadClientData = async () => {
+        const client = this.listClients.find(
+          (client) => client.id_client === clientId
+        );
+        if (client) {
+          this.selected_client = client.name_client;
+        }
+      };
+
+      // Función para cargar los datos del empleado
+      const loadEmployeeData = async () => {
+        const employee = this.listEmployees.find(
+          (employee) => employee.id_employee === employeeId
+        );
+        if (employee) {
+          this.selected_employee = employee.name_employee;
+        }
+      };
+
+      // Función para cargar los datos de los productos
+      const loadProductData = async () => {
+        this.order_detail_products = await Promise.all(
+          products.map(async (detail) => {
             let product_name;
             let product = this.listProducts.find(
               (product) => product.id_product === detail.id_product
@@ -126,7 +186,8 @@ export class OrdersDetailComponent implements OnInit {
             }
             let product_subtotal =
               detail.product_price * detail.product_quantity;
-            detail = {
+
+            return {
               id_order: 1,
               id_order_detail: 1,
               id_product: detail.id_product,
@@ -135,52 +196,41 @@ export class OrdersDetailComponent implements OnInit {
               product_quantity: detail.product_quantity,
               product_subtotal: product_subtotal,
             };
-            if (this.order_detail_products) {
-              this.order_detail_products.push(detail);
-            }
-            console.log(this.order_detail_products);
-          });
-          this.selected_payment_type = this.order.order.payment_type;
+          })
+        );
 
-          this.findOrderData(idClient, idEmployee, orderDetail);
-
-          // Después de cargar los datos, establece loadingData en false
-          this.loadingData = false;
-        },
-        (error) => {
-          console.error("Error al obtener el pedido:", error);
-          this.loadingData = false; // En caso de error, asegúrate de desactivar la pantalla de carga
+        // Validación de nombres de productos
+        if (
+          this.order_detail_products.some(
+            (product) => product.product_name === undefined
+          )
+        ) {
+          console.log(
+            "Error: No se cargaron todos los nombres de productos correctamente. Reintentando..."
+          );
+          retry = true;
+        } else {
+          retry = false;
         }
-      );
-    }
+      };
+
+      // Cargar datos de forma asíncrona
+      await Promise.all([
+        loadClientData(),
+        loadEmployeeData(),
+        loadProductData(),
+      ]);
+
+      // Puedes agregar un pequeño retraso antes de la próxima iteración
+      await this.delay(100);
+    } while (!checkDataLoaded());
+
+    this.showLoadingScreen = false;
   }
 
-  // Método para encontrar información relacionada con el pedido (cliente, empleado, productos)
-  findOrderData(clientId: number, employeeId: number, products: any) {
-    console.log(clientId + " " + employeeId + " " + products.id_product);
-
-    // Busca el nombre del cliente
-    const client = this.listClients.find(
-      (client) => client.id_client === clientId
-    );
-    if (client) {
-      this.selected_client = client.name_client;
-    }
-
-    // Busca el nombre del empleado
-    const employee = this.listEmployees.find(
-      (employee) => employee.id_employee === employeeId
-    );
-    if (employee) {
-      this.selected_employee = employee.name_employee;
-    }
-    // Si falta información esencial, recarga la página
-    if (
-      this.selected_employee === undefined ||
-      this.selected_client === undefined
-    ) {
-      this.loadingData = true;
-    }
+  // Función para introducir un retraso (promesa)
+  delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // Método para obtener todos los clientes
@@ -188,7 +238,6 @@ export class OrdersDetailComponent implements OnInit {
     this._ordersService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
-        console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -201,7 +250,6 @@ export class OrdersDetailComponent implements OnInit {
     this._ordersService.getAllEmployees().subscribe(
       (data) => {
         this.listEmployees = data;
-        console.log(this.listEmployees);
       },
       (error) => {
         console.error("Error al obtener Empleados:", error);
@@ -213,7 +261,11 @@ export class OrdersDetailComponent implements OnInit {
   getProducts() {
     this._ordersService.getAllProducts().subscribe(
       (data) => {
-        this.listProducts = data;
+        // Inicializa la propiedad isDisabled en false para cada producto
+        this.listProducts = data.map((product) => ({
+          ...product,
+          isDisabled: false,
+        }));
         console.log(this.listProducts);
       },
       (error) => {
@@ -240,9 +292,6 @@ export class OrdersDetailComponent implements OnInit {
     } else {
       this.error_client = false;
     }
-
-    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
-    console.log("Cliente seleccionado:", this.selected_client_id);
   }
 
   onEmployeeSelected(event: any): void {
@@ -258,9 +307,6 @@ export class OrdersDetailComponent implements OnInit {
     } else {
       this.error_employee = false;
     }
-
-    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
-    console.log("Empleado seleccionado:", this.selected_employee_id);
   }
 
   onPaymentTypeSelected(event: any): void {
@@ -276,21 +322,18 @@ export class OrdersDetailComponent implements OnInit {
     } else {
       this.error_payment_type = false;
     }
-
-    // Ahora `selectedPaymentType` contiene el tipo de pago seleccionado
-    console.log("Tipo de pago seleccionado:", this.selected_payment_type);
   }
 
   // -------------- INICIO: Funciones para manipular Productos -------------- //
 
   // Método para crear un FormGroup para un producto
   createProductGroup(): FormGroup {
-    console.log(this.productsFormArray.value);
     return this.formBuilder.group({
       id_product: [""],
       product_price: [""],
       product_quantity: [""],
       subtotal: [""],
+      quantityOnhand: [""],
     });
   }
 
@@ -300,32 +343,39 @@ export class OrdersDetailComponent implements OnInit {
       .at(i)
       .get("id_product").value;
 
-    const selectedProduct = this.listProducts.find(
+    const selectedProductIndex = this.listProducts.findIndex(
       (product) => product.id_product == selectedProductId
     );
 
-    if (selectedProduct) {
+    const selectedProduct = this.listProducts[selectedProductIndex];
+
+    console.log(selectedProduct);
+
+    if (selectedProductIndex !== -1) {
       this.productsFormArray
         .at(i)
         .get("product_price")
         .setValue(selectedProduct.selling_price);
 
-      // Obtén el valor del campo "unit"
       const unitValue = this.productsFormArray
         .at(i)
         .get("product_quantity").value;
 
-      // Verifica que "unitValue" no sea null ni undefined
       if (unitValue != null && unitValue !== undefined) {
-        // Calcula el subtotal en función de la cantidad y el precio unitario
         const subtotal = selectedProduct.selling_price * unitValue;
 
-        // Asigna el subtotal al campo "subtotal" del formulario
+        this.productsFormArray
+          .at(i)
+          .get("quantityOnhand")
+          .setValue(selectedProduct.quantity);
+
         this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
+
+        // Cambia la propiedad isDisabled a true
+        this.listProducts[selectedProductIndex].isDisabled = true;
       } else {
         console.log("La cantidad del producto no está definida.");
       }
-      console.log(this.productsFormArray.at(i).value);
     } else {
       console.log("Producto no encontrado.");
       this.productsFormArray.at(i).get("product_price").setValue(null);
@@ -337,14 +387,30 @@ export class OrdersDetailComponent implements OnInit {
     const productGroup = this.createProductGroup();
     this.productsFormArray.push(productGroup);
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-    console.log(this.numberOfProducts);
   }
 
   // Función para eliminar un producto del FormArray
   removeProduct(index: number) {
+    // Obtén el id_product del producto que se va a eliminar
+    const productIdToRemove = this.productsFormArray
+      .at(index)
+      .get("id_product").value;
+
+    // Encuentra el producto en listProducts
+    const productIndexToRemove = this.listProducts.findIndex(
+      (product) => product.id_product == productIdToRemove
+    );
+
+    // Cambia el estado isDisabled a false
+    if (productIndexToRemove !== -1) {
+      this.listProducts[productIndexToRemove].isDisabled = false;
+    }
+
+    // Elimina el producto del FormArray
     this.productsFormArray.removeAt(index);
+
+    // Actualiza la cantidad de productos
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-    console.log(this.numberOfProducts);
   }
 
   calculateTotal() {
@@ -355,41 +421,82 @@ export class OrdersDetailComponent implements OnInit {
         total += subtotal;
       }
     }
-    console.log(this.productsFormArray);
     return total;
   }
+
+  selectConfig = {
+    displayKey: 'name',
+    search: true,
+    placeholder: 'Selecciona un producto',
+  };
 
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
   createOrder() {
-    if (!this.formBasic.valid) {
-      this.showFormWarning("Completa el formulario correctamente");
-      return;
+    try {
+      if (!this.formBasic.valid) {
+        this.showFormWarning("Completa el formulario correctamente");
+        return;
+      }
+
+      // Llamada a checkProducts antes de realizar la solicitud
+      if (this.checkConditions() && this.checkProducts()) {
+        const productsArray = this.productsFormArray.value;
+        const productQuantityMap = new Map();
+
+        for (const product of productsArray) {
+          const idProduct = product.id_product;
+
+          if (productQuantityMap.has(idProduct)) {
+            productQuantityMap.set(
+              idProduct,
+              productQuantityMap.get(idProduct) + product.product_quantity
+            );
+          } else {
+            productQuantityMap.set(idProduct, product.product_quantity);
+          }
+        }
+
+        const uniqueProducts = productsArray.filter((product) => {
+          const idProduct = product.id_product;
+          if (productQuantityMap.has(idProduct)) {
+            product.product_quantity = productQuantityMap.get(idProduct);
+            productQuantityMap.delete(idProduct);
+            return true;
+          }
+          return false;
+        });
+
+        const products = uniqueProducts;
+
+        const order_date = new Date();
+        const total_order = this.calculateTotal();
+
+        const newOrder = {
+          id_client: this.selected_client_id,
+          id_employee: this.selected_employee_id,
+          order_date: order_date,
+          payment_type: this.selected_payment_type,
+          total_order: total_order,
+          products: products,
+          directSale: this.directSale,
+        };
+
+        this.submitOrder(newOrder);
+      }
+      // Si alguna de las condiciones no se cumple, la ejecución no llegará aquí
+    } catch (error) {
+      // Manejar el error, puedes agregar lógica adicional si es necesario
+      console.error(error);
     }
-
-    this.checkProducts();
-
-    this.checkConditions();
-
-    const order_date = new Date();
-    const total_order = this.calculateTotal();
-
-    const newOrder = {
-      id_client: this.selected_client_id,
-      id_employee: this.selected_employee_id,
-      order_date: order_date,
-      payment_type: this.selected_payment_type,
-      total_order: total_order,
-      products: this.productsFormArray.value,
-    };
-
-    this.submitOrder(newOrder);
   }
 
-  checkProducts() {
+  checkProducts(): boolean {
+    let allConditionsMet = true;
+
     if (this.productsFormArray.length === 0) {
       this.showFormWarning("Agrega al menos un producto al pedido");
-      throw new Error("Productos insuficientes");
+      allConditionsMet = false;
     }
 
     const productsArray = this.productsFormArray.value;
@@ -400,12 +507,30 @@ export class OrdersDetailComponent implements OnInit {
         !product.product_quantity
       ) {
         this.showFormWarning("Completa todos los campos del producto");
-        throw new Error("Campos de producto incompletos");
+        allConditionsMet = false;
+      }
+
+      // Encuentra el producto en listProducts por id_product
+      const selectedProduct = this.listProducts.find(
+        (p) => p.id_product === product.id_product
+      );
+
+      if (
+        selectedProduct &&
+        product.product_quantity > selectedProduct.quantity
+      ) {
+        // Si la cantidad en productsFormArray es mayor que la cantidad disponible en listProducts, muestra una advertencia
+        this.showFormWarning(
+          "La cantidad de productos supera el stock disponible"
+        );
+        allConditionsMet = false;
       }
     }
+
+    return allConditionsMet;
   }
 
-  checkConditions() {
+  checkConditions(): boolean {
     const conditions = [
       {
         variable: "error_client",
@@ -413,7 +538,7 @@ export class OrdersDetailComponent implements OnInit {
           this.selected_client === "Seleccione el nombre del cliente" ||
           this.selected_client_id == null ||
           this.selected_client_id == undefined,
-        errorMessage: "Seleccione un cliente",
+        errorMessage: "Seleccione un cliente. ",
       },
       {
         variable: "error_employee",
@@ -421,7 +546,7 @@ export class OrdersDetailComponent implements OnInit {
           this.selected_employee === "Seleccione el nombre del empleado" ||
           this.selected_employee_id == null ||
           this.selected_employee_id == undefined,
-        errorMessage: "Seleccione un empleado",
+        errorMessage: "Seleccione un empleado. ",
       },
       {
         variable: "error_payment_type",
@@ -429,26 +554,27 @@ export class OrdersDetailComponent implements OnInit {
           this.selected_payment_type === "Seleccione el tipo de pago" ||
           this.selected_payment_type == null ||
           this.selected_payment_type == undefined,
-        errorMessage: "Seleccione un tipo de pago",
+        errorMessage: "Seleccione un tipo de pago. ",
       },
     ];
+
+    let allConditionsMet = true;
+    const errorMessages = [];
 
     conditions.forEach((condition) => {
       this[condition.variable] =
         this[condition.variable] || condition.condition;
 
       if (this[condition.variable]) {
-        this.showFormWarning(condition.errorMessage);
-        throw new Error(`${condition.variable} no seleccionado`);
+        allConditionsMet = false;
       }
     });
 
-    // Reset errors if all conditions are false
-    if (!conditions.some((condition) => this[condition.variable])) {
-      conditions.forEach((condition) => {
-        this[condition.variable] = false;
-      });
+    if (!allConditionsMet) {
+      throw new Error("Algunas condiciones no se cumplieron");
     }
+
+    return allConditionsMet;
   }
 
   showFormWarning(message: string) {
