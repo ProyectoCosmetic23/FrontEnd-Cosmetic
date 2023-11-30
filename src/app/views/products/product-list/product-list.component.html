@@ -35,7 +35,7 @@
                     <ngx-datatable-column name="id_category" [resizeable]="false" [canAutoResize]="true"
                         [minWidth]="100">
                         <ng-template ngx-datatable-header-template class="fixed-width-cell">
-                            <p style="font-size:10px;">Categoria</p>
+                            <p style="font-size:15px;">Categoría</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.id_category }}
@@ -46,7 +46,7 @@
                         [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
 
-                            <p style="font-size:10px;">Nombre</p>
+                            <p style="font-size:15px;">Nombre</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row"
                             style="white-space: pre-line;">
@@ -58,7 +58,7 @@
                     <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true"
                         [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
-                            <p style="font-size:10px;"> Precio de costo</p>
+                            <p style="font-size:15px;"> Precio de costo</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.cost_price | currency:'':'symbol':'1.0-0' }}
@@ -69,7 +69,7 @@
                         [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
 
-                            <p style="font-size:10px;"> Estado</p>
+                            <p style="font-size:15px;"> Estado</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                             {{ row.state_product }}
@@ -79,7 +79,7 @@
                     <!-- Puedes agregar más columnas según tus necesidades -->
                     <ngx-datatable-column name="actions" [resizeable]="true" [canAutoResize]="true" >
                         <ng-template ngx-datatable-header-template>
-                            <p style="font-size:10px;"> Acciones</p>
+                            <p style="font-size:15px;"> Acciones</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row" >
                             <button ngbTooltip="Ver Estado" class="btn btn-dark m-1"

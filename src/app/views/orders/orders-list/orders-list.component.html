@@ -62,7 +62,7 @@
             [maxWidth]="60"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 10px; text-align: center">N°</p>
+              <p style="font-size: 15px; text-align: center">N°</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -71,7 +71,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.order_number }}
                 </p>
@@ -84,7 +84,7 @@
             [canAutoResize]="true"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 10px; text-align: center">Cliente</p>
+              <p style="font-size: 15px; text-align: center">Cliente</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -93,7 +93,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.name_client }}
                 </p>
@@ -116,7 +116,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.order_date }}
                 </p>
@@ -140,7 +140,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.order_state }}
                 </p>
@@ -164,7 +164,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.delivery_state }}
                 </p>
@@ -186,7 +186,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.payment_state }}
                 </p>
@@ -209,7 +209,7 @@
             >
               <ng-container *ngIf="row && row.id_order">
                 <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                  style="font-size: 15px; text-align: center; margin-top: 12px"
                 >
                   {{ row.total_order | currency : "" : "symbol" : "1.2-2" }}
                 </p>
