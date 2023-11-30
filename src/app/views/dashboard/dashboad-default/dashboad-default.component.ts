@@ -41,13 +41,14 @@ export class DashboadDefaultComponent implements OnInit {
     { name: 'Noviembre', value: 11 },
     { name: 'Diciembre', value: 12 },
   ];
-  startYear = 2022;
+  startYear = 2023;
   endYear = 2025;
   years = Array.from({ length: this.endYear - this.startYear + 1 }, (_, index) => this.startYear + index);
  // Puedes establecer el año inicial según tus necesidades
-  isChecked: boolean ;
-  selectedMonth: number;
-  selectedYear: number;
+  isChecked: boolean = false;
+  selectedMonth: number 
+  ;
+  selectedYear: number = this.startYear;
  
 
   constructor(
@@ -58,7 +59,15 @@ export class DashboadDefaultComponent implements OnInit {
 
   
       ngOnInit() {
-        
+        const currentMonth = new Date().getMonth() + 1;
+
+    // Establece el mes actual como valor predeterminado
+    this.selectedMonth = currentMonth;
+     // Llama a las funciones para cargar los datos iniciales
+  this.getReportProducts();
+  this.getReportCreditSales();
+  this.getReportCards();
+  this.getReportEmployees();
 
 }
 

@@ -42,7 +42,7 @@
                 
                 <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
-                        Nombre 
+                        <p style="font-size:15px;">Nombre</p> 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
                         <ng-container *ngIf="row && row.id_category">
@@ -52,7 +52,7 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="state_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
-                        Estado 
+                        <p style="font-size:15px;">Estado</p> 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_category">
@@ -62,7 +62,7 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="250">
                     <ng-template ngx-datatable-header-template>
-                        Acciones
+                        <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_category">
