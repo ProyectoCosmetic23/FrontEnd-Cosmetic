@@ -1,264 +1,406 @@
-<div class="row" *ngIf="!loading" style="width: 100%">
-  <div class="breadcrumb">
-    <h1 *ngIf="viewMode === 'new'">Registrar Pedido</h1>
-    <h1 *ngIf="viewMode === 'detail'">Ver Detalle de Pedido</h1>
-    <ul>
-      <li><a [routerLink]="['/orders']">Pedidos</a></li>
-      <li *ngIf="viewMode === 'new'">Registrar Pedido</li>
-      <li *ngIf="viewMode === 'detail'">Ver Detalle de Pedido</li>
-    </ul>
+<div class="breadcrumb">
+  <h1 *ngIf="viewMode == 'new'">Registrar Pedido</h1>
+  <h1 *ngIf="viewMode === 'detail'">Ver Detalle de Pedido</h1>
+  <ul>
+    <li><a [routerLink]="['/orders']">Pedidos</a></li>
+    <li *ngIf="viewMode == 'new'">Registrar Pedido</li>
+    <li *ngIf="viewMode === 'detail'">Ver Detalle de Pedido</li>
+  </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div *ngIf="showLoadingScreen && viewMode == 'detail'" class="loading-screen">
+  <div class="loading-content">
+    <div class="spinner spinner-primary me-3"></div>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="card-title mb-3">Formulario de Pedido</div>
-        <form [formGroup]="formBasic" (ngSubmit)="createOrder()">
-          <div class="row">
-            <div class="col-md-5 form-group mb-3">
-              <label for="id_client">Cliente</label>
-              <select
-                class="form-control"
-                id="id_client"
-                [disabled]="viewMode === 'detail'"
-                *ngIf="viewMode === 'detail'; else clientNewMode"
-              >
-                <option>{{ selected_client }}</option>
-              </select>
-              <ng-template #clientNewMode>
-                <select
-                  class="form-control"
-                  (change)="onClientSelected($event)"
-                >
-                  <option [value]="">Seleccione el nombre del cliente</option>
-                  <option
-                    *ngFor="let client of listClients"
-                    [value]="client.id_client"
-                  >
-                    {{ client.name_client }}
-                  </option>
-                </select>
-              </ng-template>
-              <p *ngIf="error_client" style="color: red; margin: 3% 0 0 3%">
-                Se debe seleccionar un cliente*
-              </p>
-            </div>
+<div *ngIf="showLoadingScreen == false || viewMode == 'new'">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-body" style="padding-top: 0 !important">
+          <div class="card-title mb-3"></div>
+          <tabset>
+            <tab
+              id="orderDetails"
+              [heading]="viewMode === 'new' ? 'Nuevo Pedido' : 'Detalle Pedido'"
+            >
+              <br />
+              <form [formGroup]="formBasic" (ngSubmit)="createOrder()">
+                <div class="row">
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="id_client">Cliente</label>
+                    <select
+                      class="form-control"
+                      id="id_client"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else clientNewMode"
+                    >
+                      <option>{{ selected_client }}</option>
+                    </select>
+                    <ng-template #clientNewMode>
+                      <ng-select
+                        class="form-control"
+                        notFoundText="Cliente no encontrado..."
+                        [items]="listClients"
+                        bindLabel="name_client"
+                        [virtualScroll]="true"
 
-            <div class="col-md-5 form-group mb-3">
-              <label for="id_employee">Empleado</label>
-              <select
-                class="form-control"
-                id="id_employee"
-                [disabled]="viewMode === 'detail'"
-                *ngIf="viewMode === 'detail'; else employeeNewMode"
-              >
-                <option>{{ selected_employee }}</option>
-              </select>
-              <ng-template #employeeNewMode>
-                <select
-                  class="form-control"
-                  (change)="onEmployeeSelected($event)"
-                >
-                  <option [value]="">Seleccione el nombre del empleado</option>
-                  <option
-                    *ngFor="let employee of listEmployees"
-                    [value]="employee.id_employee"
-                  >
-                    {{ employee.name_employee }}
-                  </option>
-                </select>
-              </ng-template>
-              <p *ngIf="error_employee" style="color: red; margin: 3% 0 0 3%">
-                Se debe seleccionar un empleado*
-              </p>
-            </div>
+                        loadingText="Cargando..."
+                        bindValue="id_client"
+                        [hideSelected]="true"
+                        [disabled]="false"
+                        [searchable]="true"
+                        [clearable]="false"
+                        (change)="onClientSelected($event)"
+                        appearance="none"
+                      >
+                      </ng-select>
+                    </ng-template>
+                    <p
+                      *ngIf="error_client"
+                      style="color: red; margin: 3% 0 0 3%"
+                    >
+                      Se debe seleccionar un cliente*
+                    </p>
+                  </div>
 
-            <div class="col-md-2 form-group mb-3">
-              <label for="payment_type">Tipo de Pago</label>
-              <select
-                class="form-control"
-                id="payment_type"
-                [disabled]="viewMode === 'detail'"
-                *ngIf="viewMode === 'detail'; else paymentTypeNewMode"
-              >
-                <option>{{ selected_payment_type }}</option>
-              </select>
-              <ng-template #paymentTypeNewMode>
-                <select
-                  class="form-control"
-                  id="payment_type"
-                  (change)="onPaymentTypeSelected($event)"
-                >
-                  <option [value]="">Seleccione el tipo de pago</option>
-                  <option [value]="'Contado'">Contado</option>
-                  <option [value]="'Credito'">Crédito</option>
-                </select>
-              </ng-template>
-              <p
-                *ngIf="error_payment_type"
-                style="color: red; margin: 3% 0 0 3%"
-              >
-                Se debe seleccionar un tipo de pago*
-              </p>
-            </div>
-          </div>
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="id_employee">Empleado</label>
+                    <select
+                      class="form-control"
+                      id="id_employee"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else employeeNewMode"
+                    >
+                      <option>{{ selected_employee }}</option>
+                    </select>
+                    <ng-template #employeeNewMode>
+                      <ng-select
+                        class="form-control"
+                        notFoundText="Empleado no encontrado..."
+                        [items]="listEmployees"
+                        bindLabel="name_employee"
+                        bindValue="employee.id_employee"
+                        loadingText="Cargando..."
+                        [hideSelected]="true"
+                        [disabled]="false"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [clearable]="false"
+                        (change)="onEmployeeSelected($event)"
+                        appearance="none"
+                      >
+                      </ng-select>
+                    </ng-template>
+                    <p
+                      *ngIf="error_employee"
+                      style="color: red; margin: 3% 0 0 3%"
+                    >
+                      Se debe seleccionar un empleado*
+                    </p>
+                  </div>
 
-          <div class="col-md-12 mt-4 table-border">
-            <table class="table table-hover mb-4">
-              <thead class="bg-gray-300">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Nombre del Producto</th>
-                  <th scope="col">Precio Unitario</th>
-                  <th scope="col">Unidades</th>
-                  <th scope="col">Subtotal</th>
-                  <th *ngIf="viewMode == 'new'" scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody formArrayName="products">
-                <ng-container *ngIf="viewMode === 'new'; else detailView">
-                  <tr
-                    *ngFor="
-                      let product of productsFormArray.controls;
-                      let i = index
-                    "
-                    [formGroupName]="i"
-                  >
-                    <th scope="row">{{ i + 1 }}</th>
-                    <td>
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="payment_type">Tipo de Pago</label>
+                    <select
+                      class="form-control"
+                      id="payment_type"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else paymentTypeNewMode"
+                    >
+                      <option>{{ selected_payment_type }}</option>
+                    </select>
+                    <ng-template #paymentTypeNewMode>
                       <select
                         class="form-control"
-                        id="id_product"
-                        formControlName="id_product"
-                        (change)="handleProductSelection($event, i)"
+                        id="payment_type"
+                        (change)="onPaymentTypeSelected($event)"
                       >
-                        <option
-                          *ngFor="let product of listProducts"
-                          [value]="product.id_product"
-                        >
-                          {{ product.name_product }}
-                        </option>
+                        <option [value]="">Seleccione el tipo de pago</option>
+                        <option [value]="'Contado'">Contado</option>
+                        <option [value]="'Credito'">Crédito</option>
                       </select>
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        name="product_price"
-                        id="product_price"
-                        class="form-control"
-                        formControlName="product_price"
-                        [readonly]="true"
-                        *ngIf="viewMode === 'new'"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        class="form-control"
-                        formControlName="product_quantity"
-                        (change)="handleProductSelection($event, i)"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        class="form-control"
-                        formControlName="subtotal"
-                        [readonly]="true"
-                      />
-                    </td>
-                    <td
-                      *ngIf="viewMode == 'new'"
-                      class="d-flex justify-content-between"
+                    </ng-template>
+                    <p
+                      *ngIf="error_payment_type"
+                      style="color: red; margin: 3% 0 0 3%"
                     >
-                      <button
-                        *ngIf="numberOfProducts > 1"
-                        class="btn btn-danger"
-                        (click)="removeProduct(i)"
-                      >
-                        <i class="i-Remove-Cart"></i>
-                      </button>
-                      <div
-                        class="button_container"
-                        *ngIf="i === productsFormArray.controls.length - 1"
-                      >
-                        <button class="btn btn-primary" (click)="addProduct()">
-                          +
-                        </button>
+                      Se debe seleccionar un tipo de pago*
+                    </p>
+                  </div>
+                </div>
+
+                <div class="col-md-12 mt-4 table-border">
+                  <table class="table table-hover mb-4">
+                    <thead class="bg-gray-300">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre del Producto</th>
+                        <th scope="col">Precio Unitario</th>
+                        <th scope="col">Unidades</th>
+                        <th scope="col">Subtotal</th>
+                        <th *ngIf="viewMode == 'new'" scope="col">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody formArrayName="products">
+                      <ng-container *ngIf="viewMode === 'new'; else detailView">
+                        <tr
+                          *ngFor="
+                            let product of productsFormArray.controls;
+                            let i = index
+                          "
+                          [formGroupName]="i"
+                        >
+                          <th scope="row">{{ i + 1 }}</th>
+                          <td>
+                            <ng-select
+                              class="form-control"
+                              formControlName="id_product"
+                              notFoundText="Producto no encontrado..."
+                              [items]="listProducts"
+                              bindLabel="name_product"
+                              bindValue="id_product"
+                              loadingText="Cargando..."
+                              [virtualScroll]="true"
+                              [hideSelected]="true"
+                              [disabled]="false"
+                              (change)="handleProductSelection($event, i)"
+                              [searchable]="true"
+                              [clearable]="false"
+                              appearance="none"
+                            >
+                            </ng-select>
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              name="product_price"
+                              id="product_price"
+                              class="form-control"
+                              formControlName="product_price"
+                              [readonly]="true"
+                              *ngIf="viewMode === 'new'"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              class="form-control"
+                              [placeholder]="
+                                'Stock: ' +
+                                productsFormArray.at(i).get('quantityOnhand')
+                                  .value
+                              "
+                              formControlName="product_quantity"
+                              (change)="handleProductSelection($event, i)"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              class="form-control"
+                              formControlName="subtotal"
+                              [readonly]="true"
+                            />
+                          </td>
+                          <td
+                            *ngIf="viewMode == 'new'"
+                            class="d-flex justify-content-between"
+                          >
+                            <button
+                              *ngIf="numberOfProducts > 1"
+                              class="btn btn-danger"
+                              (click)="removeProduct(i)"
+                            >
+                              <i class="i-Remove-Cart"></i>
+                            </button>
+                            <div
+                              class="button_container"
+                              *ngIf="
+                                i === productsFormArray.controls.length - 1
+                              "
+                            >
+                              <button
+                                class="btn btn-primary"
+                                (click)="addProduct()"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-container>
+                      <ng-template #detailView>
+                        <tr
+                          *ngFor="
+                            let product of order_detail_products;
+                            let i = index
+                          "
+                        >
+                          <th scope="row">{{ i + 1 }}</th>
+                          <td>{{ product.product_name }}</td>
+                          <td>{{ product.product_price }}</td>
+                          <td>{{ product.product_quantity }}</td>
+                          <td>
+                            {{
+                              product.product_subtotal
+                                | currency : "" : "symbol" : "1.2"
+                            }}
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </tbody>
+                  </table>
+                  <div class="table-footer" style="margin-bottom: 0 !important">
+                    <div class="col-md-8"></div>
+                    <div class="col-md-8">
+                      <div class="total">
+                        Total:
+                        {{
+                          viewMode == "new"
+                            ? (calculateTotal()
+                              | currency : "" : "symbol" : "1.2")
+                            : (order?.order?.total_order
+                              | currency : "" : "symbol" : "1.2")
+                        }}
                       </div>
-                    </td>
-                  </tr>
-                </ng-container>
-                <ng-template #detailView>
-                  <tr
-                    *ngFor="let product of order_detail_products; let i = index"
-                  >
-                    <th scope="row">{{ i + 1 }}</th>
-                    <td>{{ product.product_name }}</td>
-                    <td>{{ product.product_price }}</td>
-                    <td>{{ product.product_quantity }}</td>
-                    <td>
-                      {{
-                        product.product_subtotal
-                          | currency : "" : "symbol" : "1.2"
-                      }}
-                    </td>
-                  </tr>
-                </ng-template>
-              </tbody>
-            </table>
-            <div class="table-footer">
-              <div class="col-md-8"></div>
-              <div class="col-md-8">
-                <div class="total">
-                  Total:
-                  {{
-                    viewMode == "new"
-                      ? calculateTotal()
-                      : (order?.order?.total_order
-                        | currency : "" : "symbol" : "1.2")
-                  }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12" style="margin-top: 20px">
+                  <div class="d-flex justify-content-end">
+                    <div *ngIf="viewMode == 'new'" class="col md-12">
+                      <label class="checkbox checkbox-primary me-3">
+                        <span>Venta directa</span>
+                        <input
+                          type="checkbox"
+                          [checked]="directSale"
+                          (change)="directSale = !directSale"
+                        />
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
+                    <button
+                      class="btn btn-danger float-right"
+                      [routerLink]="['/orders']"
+                    >
+                      Volver
+                    </button>
+                    <div *ngIf="viewMode === 'new'" style="width: 10px"></div>
+                    <btn-loading
+                      *ngIf="viewMode === 'new'"
+                      btnClass="btn-primary"
+                      [loading]="loading"
+                      >Crear Pedido</btn-loading
+                    >
+                  </div>
+                </div>
+              </form>
+            </tab>
+            <tab *ngIf="viewMode == 'detail'" heading="Pagos Realizados">
+              <div style="padding-top: 2%">
+                <div class="row">
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="id_client">Cliente</label>
+                    <select
+                      class="form-control"
+                      id="id_client"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else clientNewMode"
+                    >
+                      <option>{{ selected_client }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="id_employee">Empleado</label>
+                    <select
+                      class="form-control"
+                      id="id_employee"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else employeeNewMode"
+                    >
+                      <option>{{ selected_employee }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="payment_type">Tipo de Pago</label>
+                    <select
+                      class="form-control"
+                      id="payment_type"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else paymentTypeNewMode"
+                    >
+                      <option>{{ selected_payment_type }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-12 mt-4 table-border">
+                  <table class="table table-hover mb-4">
+                    <thead class="bg-gray-300">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Fecha pago</th>
+                        <th scope="col">Pago realizado</th>
+                        <th scope="col">Total restante</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngIf="listPayments.length === 0; else paymentsList"
+                        class="text-center"
+                      >
+                        <td colspan="4">No hay pagos registrados</td>
+                      </tr>
+                      <ng-template #paymentsList>
+                        <tr *ngFor="let payment of listPayments; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                            {{ payment.payment_date | date : "yyyy-MM-dd" }}
+                          </td>
+                          <td>
+                            {{
+                              payment.total_payment
+                                | currency : "" : "symbol" : "1.2-2"
+                            }}
+                          </td>
+                          <td>
+                            {{
+                              payment.total_remaining
+                                | currency : "" : "symbol" : "1.2-2"
+                            }}
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </tbody>
+                  </table>
+                  <div class="table-footer" style="margin-bottom: 0 !important">
+                    <div class="col-md-8"></div>
+                    <div class="col-md-8">
+                      <div class="total">
+                        <p></p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div *ngIf="viewMode === 'detail'" style="padding-top: 2%">
-            <h2>Pagos Realizados</h2>
-            <div *ngFor="let payment of listPayments">
-              <p>
-                <b>Fecha de Pago:</b>
-                {{ payment.payment_date | date : "yyyy-MM-dd" }}
-                <b>Monto Pago:</b>
-                {{
-                  payment.total_payment | currency : "" : "symbol" : "1.2-2"
-                }}
-                <b>Monto Restante:</b>
-                {{
-                  payment.total_remaining | currency : "" : "symbol" : "1.2-2"
-                }}
-              </p>
-            </div>
-          </div>
-          <div class="col-md-12" style="margin-top: 20px">
-            <div class="d-flex justify-content-end">
-              <button
-                class="btn btn-danger float-right"
-                [routerLink]="['/orders']"
-              >
-                Volver
-              </button>
-              <div *ngIf="viewMode === 'new'" style="width: 10px"></div>
-              <btn-loading
-                *ngIf="viewMode === 'new'"
-                btnClass="btn-primary"
-                [loading]="loading"
-                >Crear Pedido</btn-loading
-              >
-            </div>
-          </div>
-        </form>
+              <div class="col-md-12" style="margin-top: 20px">
+                <div class="d-flex justify-content-end">
+                  <button
+                    class="btn btn-danger float-right"
+                    [routerLink]="['/orders']"
+                  >
+                    Volver
+                  </button>
+                </div>
+              </div>
+            </tab>
+          </tabset>
+        </div>
       </div>
     </div>
   </div>

@@ -33,7 +33,8 @@
             placeholder="Buscar Rol"
             [formControl]="searchControl"
             class="form-control"
-            type="role"
+            type="text"
+            (input)="searchOrders($event)"
           />
         </div>
       </div>
@@ -60,10 +61,11 @@
             [resizeable]="false"
             [canAutoResize]="true"
             class="custom-column-roles"
-            style="text-align: center;" 
+            style="text-align: center"
           >
             <ng-template ngx-datatable-header-template style="text-align: center;" >
-              Nombre del Rol
+             
+              <p style="font-size:15px;"> Nombre del Rol</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -71,8 +73,10 @@
               let-row="row"
               let-rowIndex="rowIndex"
             >
-              <ng-container *ngIf="row && row.id_role" style="font-size: 10px; text-align: center; margin-top: 12px">
-                
+              <ng-container
+                *ngIf="row && row.id_role"
+                style="font-size: 10px; text-align: center; margin-top: 12px"
+              >
                 {{ row.name_role }}
               </ng-container>
             </ng-template>
@@ -82,9 +86,10 @@
             [resizeable]="false"
             [canAutoResize]="true"
             [minWidth]="60"
-            >
+          >
             <ng-template ngx-datatable-header-template>
-              Estado del Rol
+             
+              <p style="font-size:15px;">  Estado del Rol</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -101,7 +106,7 @@
             [resizeable]="false"
             [canAutoResize]="true"
           >
-            <ng-template ngx-datatable-header-template> Acciones </ng-template>
+            <ng-template ngx-datatable-header-template>  <p style="font-size:15px;">Acciones</p> </ng-template>
             <ng-template
               ngx-datatable-cell-template
               let-value="value"
@@ -109,6 +114,7 @@
             >
               <ng-container *ngIf="row && row.id_role">
                 <button
+                  ngbTooltip="Ver Detalle"
                   class="btn btn-dark m-1"
                   [routerLink]="['/roles/detail', row.id_role]"
                 >
@@ -119,12 +125,14 @@
                     row.name_role !== 'Administrador' ||
                     row.name_role == 'Admin'
                   "
+                  ngbTooltip="Editar"
                   class="btn btn-info m-1"
                   [routerLink]="['/roles/edit', row.id_role]"
                 >
                   <i class="i-Pen-4"></i>
                 </button>
                 <label
+                  ngbTooltip="Cambiar Estado"
                   *ngIf="
                     row.name_role !== 'Administrador' ||
                     row.name_role == 'Admin'
@@ -150,15 +158,6 @@
 <ng-template #deleteConfirmModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">Cambiar Estado del Rol</h4>
-    <button
-      type="button"
-      class="btn"
-      aria-label="Close button"
-      aria-describedby="modal-title"
-      (click)="modal.dismiss('Cross click')"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
   </div>
   <div class="modal-body">
     <p>
@@ -183,4 +182,3 @@
     </button>
   </div>
 </ng-template>
-

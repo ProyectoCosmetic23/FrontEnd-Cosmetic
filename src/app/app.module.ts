@@ -12,11 +12,13 @@ import { MyInterceptor } from "interceptors/authentication-interceptor";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "./shared/services/auth.service";
 import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    DropdownModule,
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,
