@@ -41,20 +41,23 @@
                       <option>{{ selected_client }}</option>
                     </select>
                     <ng-template #clientNewMode>
-                      <select
+                      <ng-select
                         class="form-control"
+                        notFoundText="Cliente no encontrado..."
+                        [items]="listClients"
+                        bindLabel="name_client"
+                        [virtualScroll]="true"
+
+                        loadingText="Cargando..."
+                        bindValue="id_client"
+                        [hideSelected]="true"
+                        [disabled]="false"
+                        [searchable]="true"
+                        [clearable]="false"
                         (change)="onClientSelected($event)"
+                        appearance="none"
                       >
-                        <option [value]="">
-                          Seleccione el nombre del cliente
-                        </option>
-                        <option
-                          *ngFor="let client of listClients"
-                          [value]="client.id_client"
-                        >
-                          {{ client.name_client }}
-                        </option>
-                      </select>
+                      </ng-select>
                     </ng-template>
                     <p
                       *ngIf="error_client"
@@ -75,20 +78,22 @@
                       <option>{{ selected_employee }}</option>
                     </select>
                     <ng-template #employeeNewMode>
-                      <select
+                      <ng-select
                         class="form-control"
+                        notFoundText="Empleado no encontrado..."
+                        [items]="listEmployees"
+                        bindLabel="name_employee"
+                        bindValue="employee.id_employee"
+                        loadingText="Cargando..."
+                        [hideSelected]="true"
+                        [disabled]="false"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [clearable]="false"
                         (change)="onEmployeeSelected($event)"
+                        appearance="none"
                       >
-                        <option [value]="">
-                          Seleccione el nombre del empleado
-                        </option>
-                        <option
-                          *ngFor="let employee of listEmployees"
-                          [value]="employee.id_employee"
-                        >
-                          {{ employee.name_employee }}
-                        </option>
-                      </select>
+                      </ng-select>
                     </ng-template>
                     <p
                       *ngIf="error_employee"
@@ -158,6 +163,8 @@
                               [items]="listProducts"
                               bindLabel="name_product"
                               bindValue="id_product"
+                              loadingText="Cargando..."
+                              [virtualScroll]="true"
                               [hideSelected]="true"
                               [disabled]="false"
                               (change)="handleProductSelection($event, i)"
@@ -165,20 +172,6 @@
                               [clearable]="false"
                               appearance="none"
                             >
-                              <ng-container
-                                *ngFor="let product of listProducts"
-                              >
-                                <ng-option
-                                  [ngModelOptions]="{ standalone: true }"
-                                  *ngIf="!product.isDisabled"
-                                  [value]="product.id_product"
-                                  [ngClass]="{
-                                    'disabled-option': product.isDisabled
-                                  }"
-                                >
-                                  {{ product.name_product }}
-                                </ng-option>
-                              </ng-container>
                             </ng-select>
                           </td>
                           <td>

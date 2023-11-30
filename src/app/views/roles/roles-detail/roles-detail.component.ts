@@ -122,6 +122,7 @@ export class RolesDetailComponent implements OnInit {
     }
   }
 
+
   handleNameSelection(event: any) {
     this.showErrorMessageName = false; // Reiniciar el estado de error
 
@@ -130,7 +131,8 @@ export class RolesDetailComponent implements OnInit {
     // Validar la cantidad de caracteres
     if (inputValue.length < 5) {
       this.showErrorMessageName = true;
-      this.nameErrorMessage = "El nombre del rol debe tener al menos 5 caracteres.";
+      this.nameErrorMessage =
+        "El nombre del rol debe tener al menos 5 caracteres.";
       return;
     }
 
@@ -155,9 +157,24 @@ export class RolesDetailComponent implements OnInit {
       return;
     }
 
-    // Si todas las validaciones pasan, actualizar el valor en tu objeto
-    this.new_role.name_role = inputValue;
-    console.log(this.new_role.name_role);
+    // Utilizar la función validateRoleName del servicio
+    this._rolesService.validateRoleName(inputValue).subscribe(
+      (validationResponse) => {
+        // Manejar la respuesta de validación como desees
+        if (validationResponse.message === "El nombre de rol ya está en uso.") {
+          this.showErrorMessageName = true;
+          this.nameErrorMessage = "Este nombre de rol ya está en uso.";
+        } else {
+          // Si todas las validaciones pasan, actualizar el valor en tu objeto
+          this.new_role.name_role = inputValue;
+          console.log(this.new_role.name_role);
+        }
+      },
+      (error) => {
+        // Manejo de errores al llamar a validateRoleName
+        console.error("Error al validar el nombre del rol", error);
+      }
+    );
   }
 
   saveData() {

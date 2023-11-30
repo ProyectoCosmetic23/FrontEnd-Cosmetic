@@ -24,7 +24,8 @@
           placeholder="Buscar Pedido"
           [formControl]="searchControl"
           class="form-control"
-          type="role"
+          type="text"
+          (input)="searchOrders($event)"
         />
       </div>
     </div>
@@ -336,7 +337,7 @@
                     ngbTooltip="Registrar Pago"
                     class="btn btn-success btn-sm"
                     [ngClass]="{
-                      'btn-danger': row.delivery_state == 'Anulado' 
+                      'btn-danger': row.delivery_state == 'Anulado'
                     }"
                     (click)="openPayments(row.id_order)"
                     [disabled]="
@@ -356,12 +357,15 @@
                       'btn-primary':
                         row.delivery_state === 'Por entregar' ||
                         row.delivery_state === 'Entregado',
-                      'btn-danger': row.delivery_state == 'Anulado' 
+                      'btn-danger': row.delivery_state == 'Anulado'
                     }"
                     *ngIf="
-                      ['En proceso', 'Por entregar', 'Entregado', 'Anulado'].includes(
-                        row.delivery_state
-                      )
+                      [
+                        'En proceso',
+                        'Por entregar',
+                        'Entregado',
+                        'Anulado'
+                      ].includes(row.delivery_state)
                     "
                     (click)="
                       openModal(row.id_order, 'Enviar', row.delivery_state)
@@ -379,7 +383,8 @@
                     *ngIf="
                       (row.order_state !== 'Anulado' &&
                         row.delivery_state !== 'Entregado') ||
-                      (row.delivery_state == 'Por entregar' || row.order_state == 'Anulado')
+                      row.delivery_state == 'Por entregar' ||
+                        row.order_state == 'Anulado'
                     "
                     ngbTooltip="Anular Pedido"
                     class="btn btn-danger btn-sm"
@@ -422,7 +427,7 @@
       placeholder="Razón por la que se anula el pedido"
       [(ngModel)]="message_observation"
       class="form-control"
-      style="resize: none;"
+      style="resize: none"
     ></textarea>
   </div>
   <div class="modal-footer">

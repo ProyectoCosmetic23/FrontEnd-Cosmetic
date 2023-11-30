@@ -22,6 +22,7 @@ export class RolesListComponent implements OnInit {
   originalRowCount: any;
   activeLayer: boolean = false;
   stateMessage: string;
+  listlistRolesOriginal: any[] = [];
 
   constructor(
     private _rolesService: RolesService,
@@ -39,6 +40,7 @@ export class RolesListComponent implements OnInit {
     this._rolesService.getAllRoles().subscribe(
       (data) => {
         this.listRoles = data;
+        this.listlistRolesOriginal = data;
         this.originalRowCount = this.listRoles.length;
         setTimeout(() => {
           const pageCountElement =
@@ -58,6 +60,22 @@ export class RolesListComponent implements OnInit {
         this.showLoadingScreen = false;
       }
     );
+  }
+
+  searchOrders($event) {
+    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+  
+    if (value.trim() !== "") {
+      this.listRoles = this.listRoles.filter(order =>
+        Object.values(order).some(
+          field => field !== null && field !== undefined && field.toString().toLowerCase().includes(value)
+        )
+      );
+    } else {
+      // Si el valor de búsqueda está vacío, restaura la lista completa
+      this.listRoles = this.listlistRolesOriginal;
+      ;
+    }
   }
 
   @ViewChild(DatatableComponent)

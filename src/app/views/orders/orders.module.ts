@@ -9,10 +9,12 @@ import { SharedComponentsModule } from "src/app/shared/components/shared-compone
 import { OrdersDetailComponent } from "./orders-detail/orders-detail.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { DropdownModule } from "primeng/dropdown";
 
 @NgModule({
   imports: [
     [TabsModule.forRoot()],
+    DropdownModule,
     NgSelectModule,
     CommonModule,
     FormsModule,

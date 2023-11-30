@@ -8,28 +8,32 @@ import { environment } from 'src/environments/environment';
 })
 export class RolesService {
 
-  url = environment.url +'/api/roles';
+  url = environment.url +'/api';
   constructor(
     private http: HttpClient
   ) { }
 
   getAllRoles(): Observable<any> {
-    return this.http.get(this.url);
+    return this.http.get(this.url + '/roles');
   }
 
   getRoleById(id: any): Observable<any> {
-    return this.http.get(this.url + '/' + id);
+    return this.http.get(this.url + '/roles/' + id);
+  }
+
+  validateRoleName(name: string): Observable<any> {
+    return this.http.get(`${this.url}/validate-role/${name}`);
   }
 
   createRole(roleData: any): Observable<any> {
-    return this.http.post(this.url + '/', roleData);
+    return this.http.post(this.url + '/roles/', roleData);
   }
 
   editRole(id: any, roleData: any): Observable<any> {
-    return this.http.put(this.url + '/update/' + id, roleData);
+    return this.http.put(this.url + '/roles/update/' + id, roleData);
   }
 
   updateRoleStatus(id: any): Observable<any> {
-    return this.http.put(this.url + '/updateStatus/' + id, {});
+    return this.http.put(this.url + '/roles/updateStatus/' + id, {});
   }
 }
