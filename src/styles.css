@@ -150,3 +150,19 @@ table th:last-child {
   background: rgba(171, 166, 174, 0.1);
 }
 
+/* Your component's styles.css or styles.scss file */
+
+/* Styling for ng-dropdown-panel-items */
+.ng-dropdown-panel-items {
+  background-color: #fff; /* Set your desired background color */
+  border: 1px solid #ced4da; /* Set your desired border style */
+  padding: 10px; /* Set your desired padding */
+  margin-right: auto;
+  width: 200%;
+}
+
+
+.scroll-host {
+  display: hidden;
+}
+

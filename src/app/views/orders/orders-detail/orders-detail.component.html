@@ -151,19 +151,28 @@
                         >
                           <th scope="row">{{ i + 1 }}</th>
                           <td>
-                            <select
+                            <ng-select
                               class="form-control"
-                              id="id_product"
                               formControlName="id_product"
+                              [items]="listProducts"
+                              bindLabel="name_product"
+                              bindValue="id_product"
+                              [disabled]="false"
                               (change)="handleProductSelection($event, i)"
+                              [searchable]="true"
+                              [clearable]="false"
+                              appearance="none"
+                              (open)="handleDropdownOpen($event)"
                             >
-                              <option
-                                *ngFor="let product of listProducts"
-                                [value]="product.id_product"
-                              >
-                                {{ product.name_product }}
-                              </option>
-                            </select>
+                              <ng-template ngValue let-item>
+                                <span
+                                  [attr.disabled]="
+                                    item.isDisabled ? true : null
+                                  "
+                                  >{{ item.name_product }}</span
+                                >
+                              </ng-template>
+                            </ng-select>
                           </td>
                           <td>
                             <input

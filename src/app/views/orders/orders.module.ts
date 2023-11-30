@@ -9,10 +9,12 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { SharedComponentsModule } from "src/app/shared/components/shared-components.module";
 import { OrdersDetailComponent } from "./orders-detail/orders-detail.component";
 import { TabsModule } from "ngx-bootstrap/tabs";
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
     [TabsModule.forRoot()],
+    NgSelectModule,
     CommonModule,
     FormsModule,
     NgxDatatableModule,
