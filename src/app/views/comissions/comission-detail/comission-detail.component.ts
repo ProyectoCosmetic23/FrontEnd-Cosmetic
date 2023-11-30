@@ -18,6 +18,7 @@ interface Comission {
 })
 export class ComissionsDetailComponent implements OnInit {
   listEmployees: any[];
+  activeEmployees: any[];
   listSales: any[];
   listComisionDetail: any[];
   totalCommissions: number
@@ -132,12 +133,18 @@ export class ComissionsDetailComponent implements OnInit {
       (data) => {
         this.listEmployees = data;
         console.log('Lista de empleados cargada:', this.listEmployees);
+  
+        // Filtrar empleados activos y agregarlos a la lista activeEmployees
+        this.activeEmployees = this.listEmployees.filter(employee => employee.state_employee === "Activo");
+  
+        console.log('Lista de empleados activos:', this.activeEmployees);
       },
       (error) => {
         console.error('Error al obtener la lista de empleados:', error);
       }
     );
   }
+  
   loadComissionDetail() {
     this._comissionsService.getAllComsDetail().subscribe(
       (data) => {

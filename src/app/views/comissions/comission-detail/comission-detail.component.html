@@ -20,7 +20,7 @@
                                 <select class="form-control" id="id_employee"
                                     formControlName="id_employee" (change) = "updateComs()">
                                     <option>Elija el empleado</option>
-                                    <option *ngFor="let employee of listEmployees"
+                                    <option *ngFor="let employee of activeEmployees"
                                         [value]="employee.id_employee">
                                         {{ employee.name_employee }}</option>
                                 </select>
