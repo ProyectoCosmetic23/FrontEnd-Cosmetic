@@ -94,7 +94,15 @@
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea cambiar el estado de  esta categoría?</strong></p>
-
+        <form [formGroup]="reasonForm">
+            <div class="col-md-6 form-group mb-3">
+                <label for="reason_anulate">Motivo de Cambio de Estado</label>
+                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
+                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
+                  El campo superar los 100 caracteres.
+              </div>
+              </div>
+        </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary btn"
