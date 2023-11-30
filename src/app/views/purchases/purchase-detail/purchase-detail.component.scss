@@ -74,6 +74,7 @@
 
 //-------------------------------------------------------------------//
 
+
 .error-message {
   color: red;
   font-size: 14px;
@@ -138,4 +139,9 @@ select:disabled {
   color: #808080; /* Cambia el color del texto a gris oscuro */
   cursor: not-allowed; /* Cambia el cursor a "no permitido" */
   /* Otros estilos que desees aplicar */
+}
+
+.bloqueado {
+pointer-events: none;
+  opacity: 0.5; /* O cualquier otro estilo para indicar que está bloqueado */
 }
