@@ -50,8 +50,6 @@
     "ngx-select-dropdown": "^3.3.1",
     "ngx-toastr": "14.0.0",
     "popper.js": "1.14.4",
-    "primeicons": "^6.0.1",
-    "primeng": "^14.0.0",
     "rxjs": "^6.6.3",
     "rxjs-compat": "^6.6.7",
     "sweetalert2": "^11.10.1",
