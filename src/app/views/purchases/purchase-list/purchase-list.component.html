@@ -42,7 +42,7 @@
 
                 <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        # Factura
+                        <p style="font-size:15px;">#Factura</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         <ng-container *ngIf="row && row.id_purchase">
@@ -53,7 +53,7 @@
 
                 <ngx-datatable-column name="id_provider" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        Proveedor
+                        <p style="font-size:15px;">Proveedor</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         <ng-container *ngIf="row && row.id_purchase" class="long-text">
@@ -67,7 +67,7 @@
 
                 <ngx-datatable-column name="purchase_date" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        Fecha
+                        <p style="font-size:15px;">Fecha de compra</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         {{ row.purchase_date | date: 'dd/MM/yyyy' }}
@@ -76,7 +76,7 @@
 
                 <ngx-datatable-column name="total_purchase" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        Total Factura
+                        <p style="font-size:15px;">Total </p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         {{ row.total_purchase | currency:'':'symbol':'1.0-0'}}
@@ -85,7 +85,7 @@
 
                 <ngx-datatable-column name="state_purchase" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        Estado
+                        <p style="font-size:15px;">Estado</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                         {{ row.state_purchase ? 'Activo':'Anulada' }}
@@ -95,7 +95,7 @@
                 <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los categories -->
                 <ngx-datatable-column [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
-                        Acciones
+                        <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-row="row">
                        
@@ -128,7 +128,7 @@
         <form [formGroup]="reasonForm">
             <div class="col-md-6 form-group mb-3">
                 <label for="reason_anulate">Motivo de Anulación</label>
-                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"></textarea>
+                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
                 <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
                   El campo superar los 100 caracteres.
               </div>

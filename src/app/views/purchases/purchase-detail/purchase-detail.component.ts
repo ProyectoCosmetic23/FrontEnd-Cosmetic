@@ -75,7 +75,6 @@ export class PurchaseDetailComponent implements OnInit {
   //INICIALIZAR FORMULARIO Y GETS
   ngOnInit() {
     this.id = this.route.snapshot.params['id_purchase'];
-    console.log(this.id);
     this.isNew = !this.id;
     this.getProviders();
     this.getProducts();
@@ -153,7 +152,7 @@ export class PurchaseDetailComponent implements OnInit {
     this.providersService.getAllProviders().subscribe(
       (data) => {
         this.listProviders = data;
-        console.log(this.listProviders);
+   
       },
       (error) => {
         console.error('Error al obtener proveedores:', error);
@@ -165,7 +164,7 @@ export class PurchaseDetailComponent implements OnInit {
     this.productsService.getAllProducts().subscribe(
       (data) => {
         this.listProducts = data;
-        console.log(this.listProducts);
+      
       },
       (error) => {
         console.error('Error al obtener productos:', error);
@@ -177,7 +176,7 @@ export class PurchaseDetailComponent implements OnInit {
     this.categoriesService.getAllCategory().subscribe(
       (data) => {
         this.listCategories = data;
-        console.log(this.listCategories);
+
       },
       (error) => {
         console.error('Error al obtener proveedores:', error);
@@ -276,9 +275,8 @@ export class PurchaseDetailComponent implements OnInit {
       this.purchaseService.createPurchase(purchaseData).subscribe(
         (response) => {
           this.loading = false;
-          console.log("Éxito al crear la compra: ", response);
-          this.submit();
-          //this.toastr.success('Compra registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+          this.submitProduct();
+          this.toastr.success('Compra registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
 
         },
         (error) => {
@@ -299,6 +297,20 @@ export class PurchaseDetailComponent implements OnInit {
     }
 
   }
+
+  submitProduct() {
+    if (!this.loading) {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        this.toastr.success('Producto registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+        setTimeout(() => {
+          this.router.navigateByUrl('');
+        },);
+      },);
+    }
+  }
+
 
   submit() {
     if (!this.loading) {
@@ -434,7 +446,7 @@ export class PurchaseDetailComponent implements OnInit {
         this.purchaseService.getValidatePurchaseExist(value).subscribe(
           (isAvailable) => {
             this.purchaseExists = isAvailable;
-            console.log('Is Purchase Available:', isAvailable);
+       
             resolve(this.purchaseExists ? { purchaseTaken: true } : null);
           },
           (error) => {
@@ -552,7 +564,7 @@ calculateTotal(){
         (response) => {
           this.loading = false;
           console.log("Éxito al crear caetgoría: ", response);
-          this.submit();
+          this.submitProduct();
         },
         (error) => {
           this.loading = false;

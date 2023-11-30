@@ -53,7 +53,8 @@ private inicializateForm(id: number): void {
         name_category:['',[ Validators.required, Validators.maxLength(80),Validators.pattern('^[a-zA-ZáéíóúñÑ ]+$'),], (control) => this.validateCategoryExist(control)],
         observation_category: ['', [Validators.required,Validators.maxLength(100)]],
         state_category: [],
-        creation_date_category: []
+        creation_date_category: [],
+        reason_anulate: [''],
     });
 
     if (this.viewMode == 'print') {
