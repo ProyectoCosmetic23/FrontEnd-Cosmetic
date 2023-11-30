@@ -6,6 +6,8 @@ import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/aut
 import { AuthGuard } from './shared/services/auth.guard';
 
 const adminRoutes: Routes = [
+
+
   {
     path: 'dashboard',
     canActivate:[AuthGuard],
@@ -86,7 +88,10 @@ const adminRoutes: Routes = [
     loadChildren: () =>
       import("./views/users/user.module").then((m) => m.UserModule),
   },
+ 
+  // ... otras rutas
 ];
+
 
 const routes: Routes = [
   {
