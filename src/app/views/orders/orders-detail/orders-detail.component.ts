@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
-import { CookieService } from "ngx-cookie-service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
+import { NgSelectConfig } from '@ng-select/ng-select';
 
 @Component({
   selector: "app-orders-detail",
@@ -52,8 +52,10 @@ export class OrdersDetailComponent implements OnInit {
     private router: Router,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private ngSelectConfig: NgSelectConfig
   ) {
+    this.ngSelectConfig.notFoundText = 'No se encontraron resultados';
     this.productsFormArray = this.formBuilder.array([]);
   }
 

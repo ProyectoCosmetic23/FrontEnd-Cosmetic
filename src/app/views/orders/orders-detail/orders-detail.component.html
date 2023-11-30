@@ -154,24 +154,31 @@
                             <ng-select
                               class="form-control"
                               formControlName="id_product"
+                              notFoundText="Producto no encontrado..."
                               [items]="listProducts"
                               bindLabel="name_product"
                               bindValue="id_product"
+                              [hideSelected]="true"
                               [disabled]="false"
                               (change)="handleProductSelection($event, i)"
                               [searchable]="true"
                               [clearable]="false"
                               appearance="none"
                             >
-                              <ng-option
+                              <ng-container
                                 *ngFor="let product of listProducts"
-                                [value]="product.id_product"
-                                [ngClass]="{
-                                  'disabled-option': product.isDisabled
-                                }"
                               >
-                                {{ product.name_product }}
-                              </ng-option>
+                                <ng-option
+                                  [ngModelOptions]="{ standalone: true }"
+                                  *ngIf="!product.isDisabled"
+                                  [value]="product.id_product"
+                                  [ngClass]="{
+                                    'disabled-option': product.isDisabled
+                                  }"
+                                >
+                                  {{ product.name_product }}
+                                </ng-option>
+                              </ng-container>
                             </ng-select>
                           </td>
                           <td>
