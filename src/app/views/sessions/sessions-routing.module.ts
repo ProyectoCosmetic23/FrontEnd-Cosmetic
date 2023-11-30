@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'forgot',
     component: ForgotComponent
+  },
+  {
+    path: 'signup/:token',
+    component: SignupComponent,
   }
 ];
 
