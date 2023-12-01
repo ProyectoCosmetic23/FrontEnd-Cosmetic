@@ -50,6 +50,7 @@ export class OrdersListComponent implements OnInit {
   message_observation: any = "";
   activeTab: string = "Todos los Pedidos";
   usage: string;
+  isSmallScreen: boolean = false;
 
   constructor(
     private _ordersService: OrdersService,
@@ -74,6 +75,17 @@ export class OrdersListComponent implements OnInit {
     this.getPayments();
     this.getClients();
     this.getOrders(this.order_type);
+    this.checkScreenSize();
+
+    // Escucha cambios en el tamaño de la pantalla y actualiza la variable
+    window.addEventListener("resize", () => {
+      this.checkScreenSize();
+    });
+  }
+
+  checkScreenSize() {
+    // Establece isSmallScreen basándote en la resolución de la pantalla
+    this.isSmallScreen = window.innerWidth <= 100; // Ajusta el valor según tus necesidades
   }
 
   onTabSelect(tabName: string) {

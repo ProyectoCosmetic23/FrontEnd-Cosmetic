@@ -40,8 +40,19 @@
         (click)="onTabSelect('Todos los Pedidos')"
       >
         <a class="nav-link" id="todos" style="cursor: pointer"
-          >Todos los Pedidos</a
+          >Todos los Pedidos
+        </a>
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
         >
+          <i class="i-Eye" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -54,6 +65,17 @@
         <a class="nav-link" id="porEntregar" style="cursor: pointer"
           >Pedidos por Entregar</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Jeep" style="font-size: 1.5em">+</i>
+        </div>
       </li>
 
       <li
@@ -66,6 +88,17 @@
         <a class="nav-link" id="porPagar" style="cursor: pointer"
           >Pedidos por Pagar</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Financial" style="font-size: 1.5em">+</i>
+        </div>
       </li>
 
       <li
@@ -78,6 +111,17 @@
         <a class="nav-link" id="entregados" style="cursor: pointer"
           >Pedidos Entregados</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Jeep" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -90,6 +134,17 @@
         <a class="nav-link" id="pagados" style="cursor: pointer"
           >Pedidos Pagados</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Financial" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -102,6 +157,17 @@
         <a class="nav-link" id="ventas" style="cursor: pointer"
           >Ventas Realizadas</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Money-2 nav-icon" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -115,6 +181,17 @@
         <a class="nav-link" id="anulados" style="cursor: pointer"
           >Pedidos Anulados</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Close" style="font-size: 1.5em"></i>
+        </div>
       </li>
     </ul>
 
@@ -190,7 +267,6 @@
             name="order_date"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="100"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Fecha</p>
@@ -210,9 +286,12 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
+            class="custom-datatable-column"
             name="order_state"
+            [hidden]="isSmallScreen"
             [resizeable]="false"
             [canAutoResize]="true"
+            *ngIf="order_type == 'Anulado'"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">
@@ -234,9 +313,12 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
+            class="custom-datatable-column"
             name="delivery_state"
+            [hidden]="isSmallScreen"
             [resizeable]="false"
-            [canAutoResize]="true"
+            [canAutoResize]="true" 
+            *ngIf="order_type == 'Por entregar' || order_type == 'Todos'"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 102x; text-align: center">
@@ -258,9 +340,12 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
+            class="custom-datatable-column"
+            [hidden]="isSmallScreen"
             name="payment_state"
             [resizeable]="false"
             [canAutoResize]="true"
+            *ngIf="order_type == 'Todos'"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Estado de Pago</p>
@@ -283,7 +368,6 @@
             name="total_order"
             [resizeable]="false"
             [canAutoResize]="true"
-            [maxWidth]="100"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Total</p>
@@ -319,7 +403,7 @@
                 <div
                   style="
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: space-around;
                     margin-top: 5px;
                   "
                 >
@@ -384,7 +468,7 @@
                       (row.order_state !== 'Anulado' &&
                         row.delivery_state !== 'Entregado') ||
                       row.delivery_state == 'Por entregar' ||
-                        row.order_state == 'Anulado'
+                      row.order_state == 'Anulado'
                     "
                     ngbTooltip="Anular Pedido"
                     class="btn btn-danger btn-sm"

@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validator } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ProvidersService } from 'src/app/shared/services/provider.service';
-import { ToastrService } from 'ngx-toastr';
-
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validator } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ProvidersService } from "src/app/shared/services/provider.service";
+import { ToastrService } from "ngx-toastr";
 
 interface Provider {
   name_provider: string;
@@ -18,37 +17,36 @@ interface Provider {
 }
 
 @Component({
-  selector: 'app-providers-detail',
-  templateUrl: './provider-detail.component.html',
-  styleUrls: ['./provider-detail.component.scss']
+  selector: "app-providers-detail",
+  templateUrl: "./provider-detail.component.html",
+  styleUrls: ["./provider-detail.component.scss"],
 })
-
 export class ProvidersDetailComponent implements OnInit {
   loading: boolean;
   formBasic: FormGroup;
-  viewMode: 'new' | 'edit' | 'print' = 'new';
+  viewMode: "new" | "edit" | "print" = "new";
   id: string;
   isNew: boolean;
   provider: Provider = {
-    name_provider: '',
-    state_provider: 'Activo',
-    nit_cedula: '',
-    email_provider: '',
-    address_provider: '',
-    phone_provider: '',
-    observation_provider: '',
-    name_contact: '',
+    name_provider: "",
+    state_provider: "Activo",
+    nit_cedula: "",
+    email_provider: "",
+    address_provider: "",
+    phone_provider: "",
+    observation_provider: "",
+    name_contact: "",
     creation_date_provider: new Date(),
   };
   new_provider = {
-    name_provider: '',
-    state_provider: 'Activo',
-    nit_cedula: '',
-    email_provider: '',
-    address_provider: '',
-    phone_provider: '',
-    observation_provider: '',
-    name_contact: '',
+    name_provider: "",
+    state_provider: "Activo",
+    nit_cedula: "",
+    email_provider: "",
+    address_provider: "",
+    phone_provider: "",
+    observation_provider: "",
+    name_contact: "",
     creation_date_provider: new Date(),
   };
 
@@ -63,7 +61,7 @@ export class ProvidersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.params['id'];
+    this.id = this.route.snapshot.params["id"];
     this.isNew = !this.id;
     this.buildProvidersForm(this.provider);
     this.setViewMode();
@@ -90,34 +88,34 @@ export class ProvidersDetailComponent implements OnInit {
     });
   }
   setViewMode() {
-
     const currentRoute = this.router.url;
 
-    if (currentRoute.includes('/registrar')) {
-      this.viewMode = 'new';
-    } else if (currentRoute.includes('/editar/')) {
-      this.viewMode = 'edit';
-
-    } else if (currentRoute.includes('/detalle/')) {
-      this.viewMode = 'print';
+    if (currentRoute.includes("/registrar")) {
+      this.viewMode = "new";
+    } else if (currentRoute.includes("/editar/")) {
+      this.viewMode = "edit";
+    } else if (currentRoute.includes("/detalle/")) {
+      this.viewMode = "print";
     }
-    console.log('viewMode:', this.viewMode);
+    console.log("viewMode:", this.viewMode);
   }
   getProvider() {
-    this.id = this.route.snapshot.params['id_provider'];
-    console.log(this.id);
+    if (this.viewMode == "print" || this.viewMode == "edit") {
+      this.id = this.route.snapshot.params["id_provider"];
+      console.log(this.id);
 
-    const providerId = parseInt(this.id, 10); // Convierte this.id a un número
+      const providerId = parseInt(this.id, 10); // Convierte this.id a un número
 
-    this._providersService.getProviderById(providerId).subscribe(
-      (data) => {
-        this.provider = data;
-        console.log(this.provider);
-      },
-      (error) => {
-        console.error('Error al obtener proveedor:', error);
-      }
-    );
+      this._providersService.getProviderById(providerId).subscribe(
+        (data) => {
+          this.provider = data;
+          console.log(this.provider);
+        },
+        (error) => {
+          console.error("Error al obtener proveedor:", error);
+        }
+      );
+    }
   }
   handleStateSelection(event: any) {
     this.new_provider.state_provider = event.target.value;
@@ -149,31 +147,36 @@ export class ProvidersDetailComponent implements OnInit {
     this.new_provider.phone_provider = event.target.value;
     this.updatedFields.phone_provider = event.target.value;
   }
-  
 
   createProvider() {
     const currentRoute = this.router.url;
     console.log(currentRoute);
-  
-    if (currentRoute.includes('/registrar')) {
+
+    if (currentRoute.includes("/registrar")) {
       console.log(this.new_provider);
-      
+
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
           console.log(data);
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
-            this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+            this.toastr.success(
+              "Proveedor creado con éxito.",
+              "Proceso Completado",
+              { progressBar: true, timeOut: 3000 }
+            );
             setTimeout(() => {
-              this.router.navigate(['/proveedores']);
+              this.router.navigate(["/proveedores"]);
             }, 3000);
           }, 3000);
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Error al crear el proveedor:', 'Error', { progressBar: true });
-          console.error('Error al crear el proveedor:', error);
+          this.toastr.error("Error al crear el proveedor:", "Error", {
+            progressBar: true,
+          });
+          console.error("Error al crear el proveedor:", error);
         }
       );
     }
@@ -182,32 +185,42 @@ export class ProvidersDetailComponent implements OnInit {
 
   updateProvider() {
     const currentRoute = this.router.url;
-    if (currentRoute.includes('/editar')) {
-      this._providersService.updateProvider(this.id, this.updatedFields).subscribe(
-        (data) => {
-          console.log(data);
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.toastr.success('Proveedor actualizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
+    if (currentRoute.includes("/editar")) {
+      this._providersService
+        .updateProvider(this.id, this.updatedFields)
+        .subscribe(
+          (data) => {
+            console.log(data);
+            this.loading = true;
             setTimeout(() => {
-              this.router.navigate(['/proveedores']);
+              this.loading = false;
+              this.toastr.success(
+                "Proveedor actualizado con éxito.",
+                "Proceso Completado",
+                { progressBar: true, timeOut: 3000 }
+              );
+              setTimeout(() => {
+                this.router.navigate(["/proveedores"]);
+              }, 3000);
             }, 3000);
-          }, 3000);
-        },
-        (error) => {
-          this.loading = false;
-          this.toastr.error('Ya existe un proveedor con estos datos.', 'Error', { progressBar: true });
-          console.error('Error al actualizar el proveedor:', error);
-        }
-      );
+          },
+          (error) => {
+            this.loading = false;
+            this.toastr.error(
+              "Ya existe un proveedor con estos datos.",
+              "Error",
+              { progressBar: true }
+            );
+            console.error("Error al actualizar el proveedor:", error);
+          }
+        );
     }
   }
 
   submit() {
-    if (this.viewMode === 'new') {
+    if (this.viewMode === "new") {
       this.createProvider(); // Lógica de creación
-    } else if (this.viewMode === 'edit') {
+    } else if (this.viewMode === "edit") {
       this.updateProvider(); // Lógica de edición
     }
   }
