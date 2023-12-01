@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router'; // Asegúrate de importar Router desde '@angular/router'
+import { Router } from '@angular/router';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 
 @Component({
@@ -12,31 +12,56 @@ import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
   animations: [SharedAnimations],
 })
 export class ForgotComponent implements OnInit {
-  @ViewChild('resetForm', { static: false }) resetForm: NgForm;
+  resetForm: FormGroup;
 
-  constructor(private authService: AuthService, private toastr: ToastrService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private toastr: ToastrService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.resetForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email, this.allowedDomainsValidator(['gmail.com', 'hotmail.com', 'outlook.com'])]],
+    });
+  }
 
   resetPassword(): void {
-    // Obtén el valor del campo de correo electrónico desde el modelo
-    const email = this.resetForm.value.email;
+    if (this.resetForm.valid) {
+      const email = this.resetForm.value.email;
 
-    // Llama al servicio para enviar la solicitud de recuperación de contraseña
-    this.authService.forgotPassword(email).subscribe(
-      (response) => {
-        this.toastr.success('Link de recuperación enviado satisfactoriamente', 'Éxito', {
-          progressBar: true,
-          timeOut: 3000,
-        });
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        this.toastr.error('El Correo ingresado no es válido', 'Error', {
-          progressBar: true,
-          timeOut: 3000,
-        });
+      this.authService.forgotPassword(email).subscribe(
+        (response) => {
+          this.toastr.success('Link de recuperación enviado satisfactoriamente', 'Éxito', {
+            progressBar: true,
+            timeOut: 3000,
+          });
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          this.toastr.error('El Correo ingresado no es válido', 'Error', {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
+      );
+    } else {
+      this.toastr.error('Por favor, ingresa un correo electrónico válido', 'Error', {
+        progressBar: true,
+        timeOut: 3000,
+      });
+    }
+  }
+
+  allowedDomainsValidator(allowedDomains: string[]) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const email: string = control.value;
+      const domain: string = email.substring(email.lastIndexOf('@') + 1);
+      if (!allowedDomains.includes(domain.toLowerCase())) {
+        return { 'invalidDomain': true };
       }
-    );
+      return null;
+    };
   }
 }
