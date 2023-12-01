@@ -15,9 +15,9 @@ export class SignupComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-
+  showPassword: boolean = false;
   token: string;
-
+  
   // Propiedades para el formulario
   public myForm: FormGroup;
 
@@ -46,6 +46,10 @@ export class SignupComponent implements OnInit {
     return newPassword === confirmPassword ? null : { 'passwordsNotMatch': true };
   }
 
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
   changePassword() {
     if (this.myForm.valid) {
       const newPassword = this.myForm.get('newPassword').value;
