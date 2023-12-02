@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
-import { NgSelectConfig } from '@ng-select/ng-select';
+import { NgSelectConfig } from "@ng-select/ng-select";
 
 @Component({
   selector: "app-orders-detail",
@@ -55,7 +55,7 @@ export class OrdersDetailComponent implements OnInit {
     private toastr: ToastrService,
     private ngSelectConfig: NgSelectConfig
   ) {
-    this.ngSelectConfig.notFoundText = 'No se encontraron resultados';
+    this.ngSelectConfig.notFoundText = "No se encontraron resultados";
     this.productsFormArray = this.formBuilder.array([]);
   }
 
@@ -89,6 +89,7 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   // -------------- INICIO: Métodos para obtener datos -------------- //
+
   getPaymentsForOrder() {
     if (this.viewMode === "detail") {
       // Convertir this.id a número usando parseInt
@@ -239,7 +240,9 @@ export class OrdersDetailComponent implements OnInit {
   getClients() {
     this._ordersService.getAllClients().subscribe(
       (data) => {
-        this.listClients = data;
+        this.listClients = data.filter(
+          (client) => client.state_client === "Activo"
+        );
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -251,7 +254,9 @@ export class OrdersDetailComponent implements OnInit {
   getEmployees() {
     this._ordersService.getAllEmployees().subscribe(
       (data) => {
-        this.listEmployees = data;
+        this.listEmployees = data.filter(
+          (employee) => employee.state_employee === "Activo"
+        );
       },
       (error) => {
         console.error("Error al obtener Empleados:", error);
@@ -266,9 +271,11 @@ export class OrdersDetailComponent implements OnInit {
         // Inicializa la propiedad isDisabled en false para cada producto
         this.listProducts = data.map((product) => ({
           ...product,
-          isDisabled: false,
+          disabled: false,
         }));
-        console.log(this.listProducts);
+        this.listProducts = this.listProducts.filter(
+          (product) => product.state_product === "Activo"
+        );
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
@@ -282,29 +289,27 @@ export class OrdersDetailComponent implements OnInit {
     return product ? product.product_price : undefined;
   }
 
-  onClientSelected(event: any): void {
-    this.selected_client_id = event.target.value;
+  onClientSelected(selectedClient: any): void {
+    // Accede al ID del cliente seleccionado
+    const selectedClientId = selectedClient ? selectedClient.id_client : null;
 
-    if (
-      event.target.value == null ||
-      event.target.value == "Seleccione el nombre del cliente" ||
-      event.target.value == undefined
-    ) {
+    this.selected_client_id = selectedClientId;
+    // Verifica si el ID es nulo, indefinido o vacío
+    if (!this.selected_client_id) {
       this.error_client = true;
     } else {
       this.error_client = false;
     }
   }
 
-  onEmployeeSelected(event: any): void {
-    // Accede al valor seleccionado
-    this.selected_employee_id = event.target.value;
+  onEmployeeSelected(selectedEmployee: any): void {
+    // Accede al ID del empleado seleccionado
+    this.selected_employee_id = selectedEmployee
+      ? selectedEmployee.id_employee
+      : null;
 
-    if (
-      event.target.value == null ||
-      event.target.value == "Seleccione el nombre del empleado" ||
-      event.target.value == undefined
-    ) {
+    // Verifica si el ID es nulo, indefinido o vacío
+    if (!this.selected_employee_id) {
       this.error_employee = true;
     } else {
       this.error_employee = false;
@@ -345,15 +350,11 @@ export class OrdersDetailComponent implements OnInit {
       .at(i)
       .get("id_product").value;
 
-    console.log(selectedProductId);
-
     const selectedProductIndex = this.listProducts.findIndex(
       (product) => product.id_product == selectedProductId
     );
 
     const selectedProduct = this.listProducts[selectedProductIndex];
-
-    console.log(selectedProduct);
 
     if (selectedProductIndex !== -1) {
       this.productsFormArray
@@ -375,7 +376,7 @@ export class OrdersDetailComponent implements OnInit {
         this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
 
         // Cambia la propiedad isDisabled a true
-        this.listProducts[selectedProductIndex].isDisabled = true;
+        this.listProducts[selectedProductIndex].disabled = true;
       } else {
         console.log("La cantidad del producto no está definida.");
       }
@@ -406,7 +407,7 @@ export class OrdersDetailComponent implements OnInit {
 
     // Cambia el estado isDisabled a false
     if (productIndexToRemove !== -1) {
-      this.listProducts[productIndexToRemove].isDisabled = false;
+      this.listProducts[productIndexToRemove].disabled = false;
     }
 
     // Elimina el producto del FormArray

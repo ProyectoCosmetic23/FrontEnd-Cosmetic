@@ -36,7 +36,7 @@
                   type="text"
                   class="form-control"
                   id="nombre_rol"
-                  (change)="handleNameSelection($event)"
+                  (input)="handleNameSelection($event)"
                   [value]="role?.name_role"
                   [placeholder]="role?.name_role || 'Ingrese el nombre del rol'"
                   [readonly]="viewMode === 'print'"

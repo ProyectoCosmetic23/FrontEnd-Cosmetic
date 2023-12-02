@@ -33,7 +33,8 @@
             placeholder="Buscar Rol"
             [formControl]="searchControl"
             class="form-control"
-            type="role"
+            type="text"
+            (input)="searchOrders($event)"
           />
         </div>
       </div>

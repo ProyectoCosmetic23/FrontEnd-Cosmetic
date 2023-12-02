@@ -32,6 +32,7 @@ export class OrdersListComponent implements OnInit {
   listClients: any[] = [];
   clientName: string;
   id_client: number;
+  listOrdersOriginal: any[] = [];
   listOrders: any[] = [];
   paymentsForOrder: any[] = [];
   modalAbierto = false;
@@ -129,6 +130,7 @@ export class OrdersListComponent implements OnInit {
     orderService.subscribe(
       (ordersData) => {
         this.listOrders = ordersData;
+        this.listOrdersOriginal = ordersData;
         console.log(this.listOrders);
 
         // Después de obtener la lista de pedidos, obtenemos la lista de clientes
@@ -174,6 +176,24 @@ export class OrdersListComponent implements OnInit {
         this.showLoadingScreen = false;
       }
     );
+  }
+
+  searchOrders($event) {
+    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+
+    if (value.trim() !== "") {
+      this.listOrders = this.listOrders.filter((order) =>
+        Object.values(order).some(
+          (field) =>
+            field !== null &&
+            field !== undefined &&
+            field.toString().toLowerCase().includes(value)
+        )
+      );
+    } else {
+      // Si el valor de búsqueda está vacío, restaura la lista completa
+      this.listOrders = this.listOrdersOriginal;
+    }
   }
 
   getClients() {
