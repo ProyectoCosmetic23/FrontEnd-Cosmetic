@@ -19,7 +19,14 @@
     </div>
     <div class="col-md-4">
       <div class="form-group">
-        <input id="role" placeholder="Buscar Pedido" [formControl]="searchControl" class="form-control" type="role" />
+        <input
+          id="role"
+          placeholder="Buscar Pedido"
+          [formControl]="searchControl"
+          class="form-control"
+          type="text"
+          (input)="searchOrders($event)"
+        />
       </div>
     </div>
   </div>
@@ -33,8 +40,19 @@
         (click)="onTabSelect('Todos los Pedidos')"
       >
         <a class="nav-link" id="todos" style="cursor: pointer"
-          >Todos los Pedidos</a
+          >Todos los Pedidos
+        </a>
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
         >
+          <i class="i-Eye" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -47,6 +65,17 @@
         <a class="nav-link" id="porEntregar" style="cursor: pointer"
           >Pedidos por Entregar</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Jeep" style="font-size: 1.5em">+</i>
+        </div>
       </li>
 
       <li
@@ -59,6 +88,17 @@
         <a class="nav-link" id="porPagar" style="cursor: pointer"
           >Pedidos por Pagar</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Financial" style="font-size: 1.5em">+</i>
+        </div>
       </li>
 
       <li
@@ -71,6 +111,17 @@
         <a class="nav-link" id="entregados" style="cursor: pointer"
           >Pedidos Entregados</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Jeep" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -83,6 +134,17 @@
         <a class="nav-link" id="pagados" style="cursor: pointer"
           >Pedidos Pagados</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Financial" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -95,6 +157,17 @@
         <a class="nav-link" id="ventas" style="cursor: pointer"
           >Ventas Realizadas</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Money-2 nav-icon" style="font-size: 1.5em"></i>
+        </div>
       </li>
 
       <li
@@ -108,6 +181,17 @@
         <a class="nav-link" id="anulados" style="cursor: pointer"
           >Pedidos Anulados</a
         >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Close" style="font-size: 1.5em"></i>
+        </div>
       </li>
     </ul>
 
@@ -147,7 +231,11 @@
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="order_date" [resizeable]="false" [canAutoResize]="true" [maxWidth]="100">
+          <ngx-datatable-column
+            name="order_date"
+            [resizeable]="false"
+            [canAutoResize]="true"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Fecha</p>
             </ng-template>
@@ -159,7 +247,14 @@
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="order_state" [resizeable]="false" [canAutoResize]="true">
+          <ngx-datatable-column
+            class="custom-datatable-column"
+            name="order_state"
+            [hidden]="isSmallScreen"
+            [resizeable]="false"
+            [canAutoResize]="true"
+            *ngIf="order_type == 'Anulado'"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">
                 Estado de Pedido
@@ -173,7 +268,14 @@
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="delivery_state" [resizeable]="false" [canAutoResize]="true">
+          <ngx-datatable-column
+            class="custom-datatable-column"
+            name="delivery_state"
+            [hidden]="isSmallScreen"
+            [resizeable]="false"
+            [canAutoResize]="true" 
+            *ngIf="order_type == 'Por entregar' || order_type == 'Todos'"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 102x; text-align: center">
                 Estado de Entrega
@@ -187,7 +289,14 @@
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="payment_state" [resizeable]="false" [canAutoResize]="true">
+          <ngx-datatable-column
+            class="custom-datatable-column"
+            [hidden]="isSmallScreen"
+            name="payment_state"
+            [resizeable]="false"
+            [canAutoResize]="true"
+            *ngIf="order_type == 'Todos'"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Estado de Pago</p>
             </ng-template>
@@ -199,7 +308,11 @@
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="total_order" [resizeable]="false" [canAutoResize]="true" [maxWidth]="100">
+          <ngx-datatable-column
+            name="total_order"
+            [resizeable]="false"
+            [canAutoResize]="true"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Total</p>
             </ng-template>
@@ -219,7 +332,7 @@
               <ng-container *ngIf="row && row.id_order">
                 <div style="
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: space-around;
                     margin-top: 5px;
                   ">
                   <!-- Ver detalle -->
@@ -236,7 +349,7 @@
                     ngbTooltip="Registrar Pago"
                     class="btn btn-success btn-sm"
                     [ngClass]="{
-                      'btn-danger': row.delivery_state == 'Anulado' 
+                      'btn-danger': row.delivery_state == 'Anulado'
                     }"
                     (click)="openPayments(row.id_order)"
                     [disabled]="
@@ -255,12 +368,15 @@
                       'btn-primary':
                         row.delivery_state === 'Por entregar' ||
                         row.delivery_state === 'Entregado',
-                      'btn-danger': row.delivery_state == 'Anulado' 
+                      'btn-danger': row.delivery_state == 'Anulado'
                     }"
                     *ngIf="
-                      ['En proceso', 'Por entregar', 'Entregado', 'Anulado'].includes(
-                        row.delivery_state
-                      )
+                      [
+                        'En proceso',
+                        'Por entregar',
+                        'Entregado',
+                        'Anulado'
+                      ].includes(row.delivery_state)
                     "
                     (click)="
                       openModal(row.id_order, 'Enviar', row.delivery_state)
@@ -276,7 +392,8 @@
                     *ngIf="
                       (row.order_state !== 'Anulado' &&
                         row.delivery_state !== 'Entregado') ||
-                      (row.delivery_state == 'Por entregar' || row.order_state == 'Anulado')
+                      row.delivery_state == 'Por entregar' ||
+                      row.order_state == 'Anulado'
                     "
                     ngbTooltip="Anular Pedido"
                     class="btn btn-danger btn-sm"
@@ -319,7 +436,7 @@
       placeholder="Razón por la que se anula el pedido"
       [(ngModel)]="message_observation"
       class="form-control"
-      style="resize: none;"
+      style="resize: none"
     ></textarea>
   </div>
   <div class="modal-footer">

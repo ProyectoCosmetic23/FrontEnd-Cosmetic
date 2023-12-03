@@ -33,6 +33,7 @@ export class OrdersListComponent implements OnInit {
   listClients: any[] = [];
   clientName: string;
   id_client: number;
+  listOrdersOriginal: any[] = [];
   listOrders: any[] = [];
   paymentsForOrder: any[] = [];
   modalAbierto = false;
@@ -51,6 +52,7 @@ export class OrdersListComponent implements OnInit {
   mensaje = "";
   activeTab: string = "Todos los Pedidos";
   usage: string;
+  isSmallScreen: boolean = false;
 
   constructor(
     private _ordersService: OrdersService,
@@ -75,6 +77,17 @@ export class OrdersListComponent implements OnInit {
     this.getPayments();
     this.getClients();
     this.getOrders(this.order_type);
+    this.checkScreenSize();
+
+    // Escucha cambios en el tamaño de la pantalla y actualiza la variable
+    window.addEventListener("resize", () => {
+      this.checkScreenSize();
+    });
+  }
+
+  checkScreenSize() {
+    // Establece isSmallScreen basándote en la resolución de la pantalla
+    this.isSmallScreen = window.innerWidth <= 100; // Ajusta el valor según tus necesidades
   }
   nonNegativeValidator(control) {
     const value = control.value;
@@ -142,6 +155,7 @@ export class OrdersListComponent implements OnInit {
     orderService.subscribe(
       (ordersData) => {
         this.listOrders = ordersData;
+        this.listOrdersOriginal = ordersData;
         console.log(this.listOrders);
 
         // Después de obtener la lista de pedidos, obtenemos la lista de clientes
@@ -187,6 +201,24 @@ export class OrdersListComponent implements OnInit {
         this.showLoadingScreen = false;
       }
     );
+  }
+
+  searchOrders($event) {
+    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+
+    if (value.trim() !== "") {
+      this.listOrders = this.listOrders.filter((order) =>
+        Object.values(order).some(
+          (field) =>
+            field !== null &&
+            field !== undefined &&
+            field.toString().toLowerCase().includes(value)
+        )
+      );
+    } else {
+      // Si el valor de búsqueda está vacío, restaura la lista completa
+      this.listOrders = this.listOrdersOriginal;
+    }
   }
 
   getClients() {

@@ -20,37 +20,36 @@ interface Provider {
 }
 
 @Component({
-  selector: 'app-providers-detail',
-  templateUrl: './provider-detail.component.html',
-  styleUrls: ['./provider-detail.component.scss']
+  selector: "app-providers-detail",
+  templateUrl: "./provider-detail.component.html",
+  styleUrls: ["./provider-detail.component.scss"],
 })
-
 export class ProvidersDetailComponent implements OnInit {
   loading: boolean;
   formBasic: FormGroup;
-  viewMode: 'new' | 'edit' | 'print' = 'new';
+  viewMode: "new" | "edit" | "print" = "new";
   id: string;
   isNew: boolean;
   provider: Provider = {
-    name_provider: '',
-    state_provider: 'Activo',
-    nit_cedula: '',
-    email_provider: '',
-    address_provider: '',
-    phone_provider: '',
-    observation_provider: '',
-    name_contact: '',
+    name_provider: "",
+    state_provider: "Activo",
+    nit_cedula: "",
+    email_provider: "",
+    address_provider: "",
+    phone_provider: "",
+    observation_provider: "",
+    name_contact: "",
     creation_date_provider: new Date(),
   };
   new_provider = {
-    name_provider: '',
-    state_provider: 'Activo',
-    nit_cedula: '',
-    email_provider: '',
-    address_provider: '',
-    phone_provider: '',
-    observation_provider: '',
-    name_contact: '',
+    name_provider: "",
+    state_provider: "Activo",
+    nit_cedula: "",
+    email_provider: "",
+    address_provider: "",
+    phone_provider: "",
+    observation_provider: "",
+    name_contact: "",
     creation_date_provider: new Date(),
   };
 
@@ -65,7 +64,7 @@ export class ProvidersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = this.route.snapshot.params['id'];
+    this.id = this.route.snapshot.params["id"];
     this.isNew = !this.id;
     this.buildProvidersForm(this.provider);
     console.log('Formulario construido:', this.formBasic); // Agrega esta línea
@@ -130,18 +129,16 @@ export class ProvidersDetailComponent implements OnInit {
     });
   }
   setViewMode() {
-
     const currentRoute = this.router.url;
 
-    if (currentRoute.includes('/registrar')) {
-      this.viewMode = 'new';
-    } else if (currentRoute.includes('/editar/')) {
-      this.viewMode = 'edit';
-
-    } else if (currentRoute.includes('/detalle/')) {
-      this.viewMode = 'print';
+    if (currentRoute.includes("/registrar")) {
+      this.viewMode = "new";
+    } else if (currentRoute.includes("/editar/")) {
+      this.viewMode = "edit";
+    } else if (currentRoute.includes("/detalle/")) {
+      this.viewMode = "print";
     }
-    console.log('viewMode:', this.viewMode);
+    console.log("viewMode:", this.viewMode);
   }
   getProvider() {
     if (this.viewMode == "print" || this.viewMode == "edit") {
@@ -212,8 +209,10 @@ export class ProvidersDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Error al crear el proveedor:', 'Error', { progressBar: true });
-          console.error('Error al crear el proveedor:', error);
+          this.toastr.error("Error al crear el proveedor:", "Error", {
+            progressBar: true,
+          });
+          console.error("Error al crear el proveedor:", error);
         }
       );
     }
@@ -241,9 +240,9 @@ export class ProvidersDetailComponent implements OnInit {
   }
 
   submit() {
-    if (this.viewMode === 'new') {
+    if (this.viewMode === "new") {
       this.createProvider(); // Lógica de creación
-    } else if (this.viewMode === 'edit') {
+    } else if (this.viewMode === "edit") {
       this.updateProvider(); // Lógica de edición
     }
   }
