@@ -69,9 +69,17 @@ export class ComissionsDetailComponent implements OnInit {
     }).subscribe(
       (data: any) => {
         this.listEmployees = data.employees;
+    
+        // Aquí es donde ordenas los datos de comissionDetail
+        data.comissionDetail.sort((a, b) => {
+          return new Date(a.month_commission).getTime() - new Date(b.month_commission).getTime();
+        });
+    
+        // Y luego asignas los datos ya ordenados a listComisionDetail
         this.listComisionDetail = data.comissionDetail;
+    
         this.listSales = data.sales;
-
+    
         this.buildProvidersForm(this.comission);
         this.getComission();
       },
