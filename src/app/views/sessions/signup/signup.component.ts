@@ -55,11 +55,16 @@ export class SignupComponent implements OnInit {
       const newPassword = this.myForm.get('newPassword').value;
       this.authService.changePassword(this.token, newPassword).subscribe(
         (response) => {
-          this.router.navigate(['/login']);
           this.toastr.success('Contraseña cambiada exitosamente', 'Éxito', {
             progressBar: true,
             timeOut: 3000,
           });
+  
+          // Aquí puedes manejar la redirección dentro del mismo componente
+          this.router.navigate(['/sessions/signin']);
+          
+          // Si prefieres no navegar y quieres mantener al usuario en el mismo componente,
+          // puedes mostrar un mensaje o realizar alguna acción específica.
         },
         (error) => {
           console.error('Error al cambiar la contraseña:', error);
@@ -76,4 +81,4 @@ export class SignupComponent implements OnInit {
       });
     }
   }
-}
+}  

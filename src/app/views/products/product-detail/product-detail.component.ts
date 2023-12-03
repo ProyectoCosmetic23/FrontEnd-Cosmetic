@@ -230,7 +230,6 @@ export class ProductDetailComponent implements OnInit {
         });
 
         if (this.enableFields.value) {
-            console.log('SE ESTA IENDO POR EDITAR')
             this.saveChanges()
         } else {
             if (this.productForm.valid) {
@@ -284,7 +283,7 @@ export class ProductDetailComponent implements OnInit {
     validateNameSimbolAndNumber(control: FormControl) {
         const nameValue = control.value;
         const combinedPattern = /^[\wáéíóúñÑ´\s]+$/;
-
+    
         return new Promise((resolve) => {
             setTimeout(() => {
                 if (combinedPattern.test(nameValue)) {
@@ -300,13 +299,7 @@ export class ProductDetailComponent implements OnInit {
             }, 0);
         });
     }
-
-
-   
-      
-
-      
-
+    
 
     saveProductChanges(id: number, updatedData: any) {
         const token = this.cookieService.get('token');
