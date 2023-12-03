@@ -1,6 +1,7 @@
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -25,8 +26,18 @@ export class ProvidersService {
     return this.http.get(`${this.baseUrl}/${providerId}`);
   }
 
-  updateProviderStatus(providerId: any, ): Observable<any> {
-    return this.http.put(`${this.baseUrl}/state/${providerId}`, null);
+  updateProviderStatus(id: any, reason?: string): Observable<any> {
+    const url = `${this.baseUrl}/state/${id}`;
+    
+    // Agregamos la razón al cuerpo de la solicitud
+    const body = reason ? { reason_anulate: reason } : {};
+    console.log("reason", body);
+    return this.http.put<any>(url, body).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud:', error);
+        return throwError('Ocurrió un error al cambiar el estado del proveedor. Por favor, inténtalo de nuevo.');
+      })
+    );
   }
 
   updateProvider(providerId: any, updatedProviderData: any):
