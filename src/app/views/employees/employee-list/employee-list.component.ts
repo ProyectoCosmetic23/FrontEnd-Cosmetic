@@ -21,6 +21,7 @@ export class EmployeeListComponent implements OnInit {
   modalAbierto = false;
   itemsPerPage = 6;
   countLabel: number;
+  reasonAnulate: string = ''; 
  
 
 
@@ -39,6 +40,8 @@ export class EmployeeListComponent implements OnInit {
   handleChange(event: any, row: any) {
     row.state_employee = event.target.checked ? 'Activo' : 'Inactivo';
   }
+
+ 
 
   getEmployees() {
     this.loading = true; // Puedes mostrar un indicador de carga mientras se obtienen los datos
@@ -127,6 +130,9 @@ sortListEmployeesById() {
   changeEmployeeStateDescription(state_employee: boolean) {
     return state_employee ? 'Activo' : 'Inactivo';
   }
+
+
+  
   
   
 
@@ -135,11 +141,15 @@ sortListEmployeesById() {
   openModal(idEmployee: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
+
       this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
         (result) => {
           if (result === 'Ok') {
             const token = this.cookieService.get('token');
-            this._employeeService.employeeChangeStatus(idEmployee, token).subscribe(
+            console.log('Razón de anulación recibida:', this.reasonAnulate);
+
+            // Modifica la llamada al servicio para enviar la razón de anulación
+            this._employeeService.employeeChangeStatus(idEmployee, token, this.reasonAnulate).subscribe(
               (data) => {
                 this.loading = false;
                 this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
@@ -153,7 +163,6 @@ sortListEmployeesById() {
               }
             );
           }
-
         },
         (reason) => {
           // Manejar la cancelación del modal aquí
@@ -163,10 +172,7 @@ sortListEmployeesById() {
       );
     }
   }
-
-
 }
-
 
 
 

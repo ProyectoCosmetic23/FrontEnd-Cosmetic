@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
@@ -75,7 +75,7 @@ export class ProductDetailComponent implements OnInit {
         this.productForm = this.formBuilder.group({
             id_product: [''],
             id_category: ['', [Validators.required]],
-            name_product: ['', [Validators.required]],
+            name_product: ['', [Validators.required, Validators.maxLength(80)],[this.validateNameSimbolAndNumber]],
             quantity: [null],
             max_stock: [''],
             min_stock: [''],
@@ -85,6 +85,7 @@ export class ProductDetailComponent implements OnInit {
             observation: ['', [Validators.maxLength(100)]],
             state_product: [],
             creation_date_product: [],
+            reason_anulate:[''],
             enableFields: [false], // Nuevo campo para el checkbox
         });
 
@@ -134,13 +135,10 @@ export class ProductDetailComponent implements OnInit {
             this.productForm.reset();
             this.disabledFieldsNewForm();
 
-            console.log("-----------------Disabled ");
-
         }
     }
 
     disabledFieldsNewForm() {
-        console.log("-----------------Disabled ");
        
         this.productForm.get('quantity').disable();
         this.productForm.get('cost_price').disable();
@@ -304,7 +302,10 @@ export class ProductDetailComponent implements OnInit {
     }
 
 
+   
+      
 
+      
 
 
     saveProductChanges(id: number, updatedData: any) {

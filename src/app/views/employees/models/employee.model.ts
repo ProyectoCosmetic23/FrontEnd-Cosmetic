@@ -7,6 +7,7 @@ export class EmployeeFormModel {
     state_employee: string;
     observation: string;
     creation_date_employee: Date;
+    reason_anulate: string; // Nueva propiedad
 
 
     constructor(response) {
@@ -18,5 +19,6 @@ export class EmployeeFormModel {
         this.state_employee = response.state_employee;
         this.observation = response.observation;
         this.creation_date_employee = response.creation_date_employee;
+        this.reason_anulate = response.reason_anulate;
     }
 }

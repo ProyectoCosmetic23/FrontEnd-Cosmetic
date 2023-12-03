@@ -10,6 +10,7 @@ export class ProductFormModel {
     profit: string;
     creation_date_product: Date;
     state_product: string;
+    reason_anulate: string;
     observation: string;
 
 
@@ -24,6 +25,7 @@ export class ProductFormModel {
         this.selling_price = response.selling_price;
         this.profit = response.profit;
         this.state_product = response.state_product;
+        this.reason_anulate = response.reason_anulate;
         this.observation = response.observation;
         this.creation_date_product = response.creation_date_product;
     }

@@ -28,6 +28,7 @@ export class ProductListComponent implements OnInit {
     returnReason: string = '';
     returnValue: number ;
     countLabel: number;
+    reasonAnulate: string = ''; 
 
     itemsPerPage = 6; // El número de filas por página
     constructor(
@@ -195,7 +196,7 @@ export class ProductListComponent implements OnInit {
                 (result) => {
                     if (result === 'Ok') {
                         const token = this.cookieService.get('token');
-                        this._productService.productChangeStatus(idProduct,token).subscribe(
+                        this._productService.productChangeStatus(idProduct,token,this.reasonAnulate).subscribe(
                             (data) => {
                                 this.loading = false;
                                 this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });

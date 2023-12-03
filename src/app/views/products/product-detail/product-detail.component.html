@@ -29,7 +29,7 @@
                                 
                                
                                 <div *ngIf="viewMode == 'new'" class="row">
-                                    <label  class="col-md-6 form-group mb-3 checkbox checkbox-primary">
+                                    <label  class="col-md-6 form-group  checkbox checkbox-primary">
                                         <input  type="checkbox" formControlName="enableFields"
                                             (change)="toggleEnableFields()">
                                         <span>Click si desea agregar un producto Existente </span>
@@ -103,7 +103,11 @@
                                         class="error-message">
                                         El campo Stock Maxino es obligatorio.
                                     </div>
-
+                                    <div *ngIf="productForm.get('max_stock').hasError('stockMinMax')" class="error-message">
+                                        El stock máximo no puede ser menor que el stock mínimo.
+                                    </div>
+                                    
+                                      
 
                                 </div>
 
@@ -136,6 +140,11 @@
                                 <div *ngIf="viewMode == 'print'" class="col-md-4 form-group mb-3">
                                     <label for="state_product">Estado<span class="text-danger">*</span></label>
                                     <input class="form-control" id="state_product" formControlName="state_product">
+                                </div>
+                                
+                                <div *ngIf="viewMode === 'print' && productForm.get('state_product').value === 'Inactivo'" class="col-md-3 form-group mb-3">
+                                    <label for="reason_anulate">Razón de Anulación<span class="text-danger">*</span></label>
+                                    <input class="form-control" id="reason_anulate" formControlName="reason_anulate">
                                 </div>
                                 <div *ngIf="viewMode == 'print'"class="col-md-4 form-group mb-3">
                                     <label for="profit">Ganancia<span class="text-danger">*</span></label>
