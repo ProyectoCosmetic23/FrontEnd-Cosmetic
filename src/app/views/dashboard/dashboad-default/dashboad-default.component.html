@@ -111,7 +111,12 @@
                     </div>
                     <div echarts [options]="salesChartPie" [autoResize]="true" style="height: 300px;"></div>
                 </div>
+                <div class="justify-content-start align-self-end">
+                    <!-- <button class="btn btn-primary m-1 custom-button" (click)="getReportProductsPrediccion()">Predicción</button> -->
 
+
+                </div>
+               
             </div>
         </div>
         <div class="col-lg-12 col-md-12">
@@ -167,3 +172,25 @@
         });
     });
 </script>
+
+<!-- En tu componente donde está la lógica de la modal -->
+<ng-template #changeStatusModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">Predicción de productos</h4>
+    </div>
+    <div class="modal-body">
+      <div class="col-lg-12 col-sm-12">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="card-title">Predicción de productos {{year_data}}</div>
+            <!-- ECharts pie chart dentro del modal -->
+            <div echarts [options]="prediccionChartPie" [autoResize]="true" style="height: 300px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary btn" (click)="modal.dismiss('cancel')">Volver</button>
+    </div>
+  </ng-template>
+ 

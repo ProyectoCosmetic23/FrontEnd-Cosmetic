@@ -275,8 +275,8 @@ export class PurchaseDetailComponent implements OnInit {
       this.purchaseService.createPurchase(purchaseData).subscribe(
         (response) => {
           this.loading = false;
-          this.submitProduct();
-          this.toastr.success('Compra registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+          this.submit();
+        
 
         },
         (error) => {
@@ -303,10 +303,8 @@ export class PurchaseDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success('Producto registrada con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
-        setTimeout(() => {
-          this.router.navigateByUrl('');
-        },);
+        this.toastr.success('Producto registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
+        
       },);
     }
   }
@@ -563,13 +561,13 @@ calculateTotal(){
       this.productsService.createProduct(productData).subscribe(
         (response) => {
           this.loading = false;
-          console.log("Éxito al crear caetgoría: ", response);
+          console.log("Éxito al crear  producto desde compras: ", response);
           this.submitProduct();
         },
         (error) => {
           this.loading = false;
-          console.error("Error al crear caetgoría: ", this.toastr.error);
-          const errorMessage = error.error ? error.error : 'Ocurrió un error al crear el caetgoría.';
+          console.error("Error al crear producto desde compras: ", this.toastr.error);
+          const errorMessage = error.error ? error.error : 'Ocurrió un error al crear producto desde compras';
           this.toastr.error(errorMessage, 'Error');
         }
       );

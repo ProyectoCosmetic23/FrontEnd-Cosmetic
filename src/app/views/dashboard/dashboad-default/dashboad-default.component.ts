@@ -1,8 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { EChartsOption } from "echarts";
+import { echartStyles } from "../../../shared/echart-styles";
+import { AuthService } from "src/app/shared/services/auth.service";
 import { User } from "src/app/shared/interfaces";
 import { ReportService } from "src/app/shared/services/reports.service";
+import { map } from "rxjs/operators";
+import { verify } from "crypto";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+} from "@angular/forms";
 
 @Component({
   selector: "app-dashboad-default",
@@ -10,12 +19,14 @@ import { ReportService } from "src/app/shared/services/reports.service";
   styleUrls: ["./dashboad-default.component.css"],
 })
 export class DashboadDefaultComponent implements OnInit {
+  @ViewChild("changeStatusModal") changeStatusModal: ElementRef;
   chartLineOption1: EChartsOption;
   chartLineOption2: EChartsOption;
   chartLineOption3: EChartsOption;
   salesChartBar: EChartsOption;
   employeesChartBar: EChartsOption;
   salesChartPie: EChartsOption;
+  prediccionChartPie: EChartsOption;
   year_data: 0;
   top_productForm: FormGroup;
   total_number_orders: number = 0;
@@ -24,35 +35,36 @@ export class DashboadDefaultComponent implements OnInit {
   total_paid: number = 0;
   user: User | null;
   months = [
-    { name: 'Enero', value: 1 },
-    { name: 'Febrero', value: 2 },
-    { name: 'Marzo', value: 3 },
-    { name: 'Abril', value: 4 },
-    { name: 'Mayo', value: 5 },
-    { name: 'Junio', value: 6 },
-    { name: 'Julio', value: 7 },
-    { name: 'Agosto', value: 8 },
-    { name: 'Septiembre', value: 9 },
-    { name: 'Octubre', value: 10 },
-    { name: 'Noviembre', value: 11 },
-    { name: 'Diciembre', value: 12 },
+    { name: "Enero", value: 1 },
+    { name: "Febrero", value: 2 },
+    { name: "Marzo", value: 3 },
+    { name: "Abril", value: 4 },
+    { name: "Mayo", value: 5 },
+    { name: "Junio", value: 6 },
+    { name: "Julio", value: 7 },
+    { name: "Agosto", value: 8 },
+    { name: "Septiembre", value: 9 },
+    { name: "Octubre", value: 10 },
+    { name: "Noviembre", value: 11 },
+    { name: "Diciembre", value: 12 },
   ];
   startYear = 2023;
   endYear = 2025;
-  years = Array.from({ length: this.endYear - this.startYear + 1 }, (_, index) => this.startYear + index);
+  years = Array.from(
+    { length: this.endYear - this.startYear + 1 },
+    (_, index) => this.startYear + index
+  );
   // Puedes establecer el año inicial según tus necesidades
   isChecked: boolean = false;
-  selectedMonth: number
-    ;
+  selectedMonth: number;
   selectedYear: number = this.startYear;
-
+  dialog: any;
 
   constructor(
-    private reportService: ReportService,
-  ) { }
-
-
-
+    private authService: AuthService,
+    private reportService: ReportService
+  ) {}
+  private fb: FormBuilder;
 
   ngOnInit() {
     const currentMonth = new Date().getMonth() + 1;
@@ -64,23 +76,20 @@ export class DashboadDefaultComponent implements OnInit {
     this.getReportCreditSales();
     this.getReportCards();
     this.getReportEmployees();
-
+    this.getReportProductsPrediccion();
   }
-
-
 
   onCheckboxChange(event: any) {
     this.isChecked = event.target.checked;
     // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
     // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
-    console.log('Checkbox state changed. isChecked:', this.isChecked);
+    console.log("Checkbox state changed. isChecked:", this.isChecked);
     // Resto del código...
     this.getReportProducts();
     this.getReportCreditSales();
     this.getReportCards();
     this.getReportEmployees();
   }
-
 
   onMonthChangeYear(event: any) {
     this.selectedYear = event.target.value;
@@ -106,49 +115,50 @@ export class DashboadDefaultComponent implements OnInit {
     this.getReportEmployees();
   }
 
-
-
   getReportCards() {
-
-    this.reportService.getReportCards(this.isChecked, this.selectedYear, this.selectedMonth).subscribe({
-      next: (response: any) => {
-
-        this.total_number_orders = response[0].total_number_orders;
-        this.total_number_purchases = response[0].total_number_purchases;
-        this.total_debts = response[0].total_debts;
-        this.total_paid = response[0].total_paid;
-      },
-      error: (err) => {
-        console.log('err', err);
-      },
-      complete: () => {
-      },
-    });
-
+    this.reportService
+      .getReportCards(this.isChecked, this.selectedYear, this.selectedMonth)
+      .subscribe({
+        next: (response: any) => {
+          this.total_number_orders = response[0].total_number_orders;
+          this.total_number_purchases = response[0].total_number_purchases;
+          this.total_debts = response[0].total_debts;
+          this.total_paid = response[0].total_paid;
+        },
+        error: (err) => {
+          console.log("err", err);
+        },
+        complete: () => {},
+      });
   }
-
-
-
 
   getReportCreditSales() {
-
     this.reportService.getReportSales(this.selectedYear).subscribe({
       next: (response: any) => {
-        const totalOrderFinalArrayCredit = response.resultCredit.map(item => Number(item.total_order_final));
-        const totalOrderFinalArrayCounted = response.resultCounted.map(item => Number(item.total_order_final));
-        this.buildReportCreditSalesChartBar(totalOrderFinalArrayCredit, totalOrderFinalArrayCounted, this.getMonths(null));
+        const totalOrderFinalArrayCredit = response.resultCredit.map((item) =>
+          Number(item.total_order_final)
+        );
+        const totalOrderFinalArrayCounted = response.resultCounted.map((item) =>
+          Number(item.total_order_final)
+        );
+        this.buildReportCreditSalesChartBar(
+          totalOrderFinalArrayCredit,
+          totalOrderFinalArrayCounted,
+          this.getMonths(null)
+        );
       },
       error: (err) => {
-        console.log('err', err);
+        console.log("err", err);
       },
-      complete: () => {
-      },
+      complete: () => {},
     });
-
   }
 
-  buildReportCreditSalesChartBar(dataCredits: any, dataCounted: any, months: any) {
-
+  buildReportCreditSalesChartBar(
+    dataCredits: any,
+    dataCounted: any,
+    months: any
+  ) {
     // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
 
     const maxValue1 = Math.max(...dataCredits);
@@ -243,29 +253,28 @@ export class DashboadDefaultComponent implements OnInit {
   }
 
   getReportProducts() {
-    this.reportService.getReportProducts(this.isChecked, this.selectedYear, this.selectedMonth).subscribe({
-      next: (response: any) => {
-        let data = response.map((datos) => {
-          return {
-            value: datos.order_detail_count,
-            name: datos.name_product,
-            // Agrega o modifica propiedades según sea necesario
-          };
-        })
+    this.reportService
+      .getReportProducts(this.isChecked, this.selectedYear, this.selectedMonth)
+      .subscribe({
+        next: (response: any) => {
+          let data = response.map((datos) => {
+            return {
+              value: datos.order_detail_count,
+              name: datos.name_product,
+              // Agrega o modifica propiedades según sea necesario
+            };
+          });
 
-        this.buildReportProductsChartPie(data);
-      },
-      error: (err) => {
-        console.log('err', err);
-      },
-      complete: () => {
-      },
-    });
-
+          this.buildReportProductsChartPie(data);
+        },
+        error: (err) => {
+          console.log("err", err);
+        },
+        complete: () => {},
+      });
   }
 
   buildReportProductsChartPie(data: any) {
-
     this.salesChartPie = {
       color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
       tooltip: {
@@ -304,7 +313,7 @@ export class DashboadDefaultComponent implements OnInit {
           center: ["50%", "50%"],
           data: data,
           label: {
-            formatter: '{b}: {@[' + "" + ']} ({d}%)'
+            formatter: "{b}: {@[" + "" + "]} ({d}%)",
           },
           itemStyle: {
             // emphasis: {
@@ -319,20 +328,26 @@ export class DashboadDefaultComponent implements OnInit {
   }
 
   getReportEmployees() {
-    this.reportService.getReportEmployees(this.isChecked, this.selectedYear, this.selectedMonth).subscribe({
-      next: (response: any) => {
-        const totalFinalArrayName = response.map(item => item.name);
-        const totalFinalArrayValue = response.map(item => item.total_sales);
-        const totalFinalArrayValueCommision = response.map(item => item.total_commission);
-        this.buildReportEmployeesChartBar(totalFinalArrayName, totalFinalArrayValue, totalFinalArrayValueCommision);
-      },
-      error: (err) => {
-        console.log('err', err);
-      },
-      complete: () => {
-      },
-    });
-
+    this.reportService
+      .getReportEmployees(this.isChecked, this.selectedYear, this.selectedMonth)
+      .subscribe({
+        next: (response: any) => {
+          const totalFinalArrayName = response.map((item) => item.name);
+          const totalFinalArrayValue = response.map((item) => item.total_sales);
+          const totalFinalArrayValueCommision = response.map(
+            (item) => item.total_commission
+          );
+          this.buildReportEmployeesChartBar(
+            totalFinalArrayName,
+            totalFinalArrayValue,
+            totalFinalArrayValueCommision
+          );
+        },
+        error: (err) => {
+          console.log("err", err);
+        },
+        complete: () => {},
+      });
   }
 
   getMonths(month) {
@@ -349,11 +364,11 @@ export class DashboadDefaultComponent implements OnInit {
       "Sept",
       "Oct",
       "Nov",
-      "Dic",
-    ]
+      "Dic"
+    ];
 
     if (month != null) {
-      finalsMonth = [months[month - 1]]
+      finalsMonth = [months[month - 1]];
     } else {
       finalsMonth = months;
     }
@@ -361,9 +376,11 @@ export class DashboadDefaultComponent implements OnInit {
     return finalsMonth;
   }
 
-
-  buildReportEmployeesChartBar(dataNames: any, dataValues: any, dataCommissions: any) {
-
+  buildReportEmployeesChartBar(
+    dataNames: any,
+    dataValues: any,
+    dataCommissions: any
+  ) {
     // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
 
     const maxValue = Math.max(...dataValues);
@@ -423,7 +440,7 @@ export class DashboadDefaultComponent implements OnInit {
           color: "#bcbbdd",
           label: {
             show: true,
-            position: 'right',
+            position: "right",
             valueAnimation: true,
             color: "#0168c1",
           },
@@ -436,9 +453,92 @@ export class DashboadDefaultComponent implements OnInit {
           color: "#639",
           label: {
             show: true,
-            position: 'right',
+            position: "right",
             valueAnimation: true,
             color: "#0168c1",
+          },
+        },
+      ],
+    };
+  }
+  getReportProductsPrediccion() {
+    console.log("getReportProductsPrediccion() llamado");
+    this.reportService.getPredictions().subscribe({
+      next: (response: any) => {
+        const months = Object.keys(response);
+        const selectedMonth = "April";
+        const topProducts = response[selectedMonth].top_products;
+        const data = Object.keys(topProducts).map((productName) => {
+          return {
+            value: topProducts[productName],
+            name: productName,
+          };
+        });
+
+        this.buildReportPrediccionChartPie(data, selectedMonth);
+        this.openPredictionModal();
+      },
+    });
+  }
+
+  openPredictionModal(): void {
+    const dialogRef = this.dialog.open(this.changeStatusModal, {
+      width: "80%",
+    });
+
+    // Puedes realizar acciones después de que se cierre la modal
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log("Modal cerrada", result);
+    });
+  }
+
+  buildReportPrediccionChartPie(data: any, selectedMonth: string) {
+    this.prediccionChartPie = {
+      color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
+      tooltip: {
+        show: true,
+        backgroundColor: "rgba(0, 0, 0, .8)",
+        textStyle: {
+          color: "white",
+        },
+      },
+      xAxis: [
+        {
+          axisLine: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+      ],
+      yAxis: [
+        {
+          axisLine: {
+            show: false,
+          },
+          splitLine: {
+            show: false,
+          },
+        },
+      ],
+      series: [
+        {
+          name: "Productos",
+          type: "pie",
+          radius: "55%",
+          center: ["50%", "60%"],
+          data: data,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+          label: {
+            show: true,
+            formatter: "{b} : {c} ({d}%)",
           },
         },
       ],
