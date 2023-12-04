@@ -350,8 +350,21 @@ export class OrdersDetailComponent implements OnInit {
       .at(i)
       .get("id_product").value;
 
+    // Obtén el producto previamente seleccionado
+    const previouslySelectedProductId =
+      this.productsFormArray.value[i].id_product;
+    const previouslySelectedProductIndex = this.listProducts.findIndex(
+      (product) => product.id_product === previouslySelectedProductId
+    );
+
+    // Si había un producto previamente seleccionado, cambia su estado a false
+    if (previouslySelectedProductIndex !== -1) {
+      this.listProducts[previouslySelectedProductIndex].disabled = false;
+      console.log('Producto borrado: ', this.listProducts[previouslySelectedProductIndex]);
+    }
+
     const selectedProductIndex = this.listProducts.findIndex(
-      (product) => product.id_product == selectedProductId
+      (product) => product.id_product === selectedProductId
     );
 
     const selectedProduct = this.listProducts[selectedProductIndex];
@@ -375,7 +388,7 @@ export class OrdersDetailComponent implements OnInit {
           .setValue(selectedProduct.quantity);
         this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
 
-        // Cambia la propiedad isDisabled a true
+        // Cambia la propiedad isDisabled a true para el nuevo producto seleccionado
         this.listProducts[selectedProductIndex].disabled = true;
       } else {
         console.log("La cantidad del producto no está definida.");
@@ -384,6 +397,7 @@ export class OrdersDetailComponent implements OnInit {
       console.log("Producto no encontrado.");
       this.productsFormArray.at(i).get("product_price").setValue(null);
     }
+    console.log(this.listProducts[selectedProductIndex]);
   }
 
   // Función para agregar un nuevo producto al FormArray
@@ -409,6 +423,8 @@ export class OrdersDetailComponent implements OnInit {
     if (productIndexToRemove !== -1) {
       this.listProducts[productIndexToRemove].disabled = false;
     }
+
+    console.log(this.listProducts[productIndexToRemove]);
 
     // Elimina el producto del FormArray
     this.productsFormArray.removeAt(index);

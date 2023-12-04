@@ -111,15 +111,17 @@
 
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header" [closable]="false">
-        <h4 class="modal-title" id="modal-title">Cambiar Estado Producto</h4>
+        <h4 class="modal-title" id="modal-title">Cambiar estado producto</h4>
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea inhabilitar este Producto?</strong></p>
-
+        <p><strong>¿Está seguro de que desea cambiar el estado de este Producto?</strong></p>
+        <label for="reasonAnulate">Razón de cambio de estado:</label>
+        <textarea  id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado" [(ngModel)]="reasonAnulate" style="resize:none" rows="5"></textarea>
+        
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary " (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger " (click)="modal.close('Ok')">Aceptar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger " (click)="modal.close('Ok')" [disabled]="reasonAnulate == ''">Aceptar</button>
     </div>
 </ng-template>
 <ng-template #retireModal let-modal>
@@ -148,7 +150,7 @@
             <p></p>
             <div class="col-md-12">
                 <label for="returnReason">Motivo:</label>
-                <textarea type="textarea" id="returnReason" class="form-control" [(ngModel)]="returnReason"></textarea>
+                <textarea type="textarea" id="returnReason" class="form-control" [(ngModel)]="returnReason" style="resize:none" rows="5"></textarea>
             </div>
         </div>
         <div class="modal-footer">

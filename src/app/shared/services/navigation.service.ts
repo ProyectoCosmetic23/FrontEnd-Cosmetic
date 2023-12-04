@@ -94,7 +94,6 @@ export class NavigationService {
                 { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
                 { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/defective-products', type: 'link' },
                 { icon: 'i-Conference', name: 'Clientes', state: '/clients', type: 'link' },
-             
             ]
         },
         {

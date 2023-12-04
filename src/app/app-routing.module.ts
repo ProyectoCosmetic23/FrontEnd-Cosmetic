@@ -14,7 +14,7 @@ const adminRoutes: Routes = [
     canActivate:[AuthGuard],
     loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
-
+ 
   {
     path: "proveedores",
     canActivate:[AuthGuard],

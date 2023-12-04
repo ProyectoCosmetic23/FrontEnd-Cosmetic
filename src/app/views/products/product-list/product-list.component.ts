@@ -28,6 +28,7 @@ export class ProductListComponent implements OnInit {
     returnReason: string = '';
     returnValue: number ;
     countLabel: number;
+    reasonAnulate: string = ''; 
 
     itemsPerPage = 6; // El número de filas por página
     constructor(
@@ -190,35 +191,45 @@ export class ProductListComponent implements OnInit {
 
     openModal(idProduct: number) {
         if (!this.modalAbierto) {
-            this.modalAbierto = true;
-            this.modalService.open(this.deleteConfirmModal, { centered: true }).result.then(
-                (result) => {
-                    if (result === 'Ok') {
-                        const token = this.cookieService.get('token');
-                        this._productService.productChangeStatus(idProduct,token).subscribe(
-                            (data) => {
-                                this.loading = false;
-                                this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                                this.getProducts();
-                                this.modalAbierto = false;
-                            },
-                            (error) => {
-                                this.loading = false;
-                                this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
-                                console.error('Error al cambiar de estado:', error);
-                            }
-                        );
-                    }
-
-                },
-                (reason) => {
-                    // Manejar la cancelación del modal aquí
+          this.modalAbierto = true;
+          const modalRef = this.modalService.open(this.deleteConfirmModal, { centered: true });
+      
+          modalRef.result.then(
+            (result) => {
+              if (result === 'Ok') {
+                // Verifica si reasonAnulate está presente y no es una cadena vacía
+               
+      
+                const token = this.cookieService.get('token');
+               
+                // Realiza la llamada al servicio solo si la razón de anulación es válida
+                this._productService.productChangeStatus(idProduct, token, this.reasonAnulate).subscribe(
+                  (data) => {
+                    this.loading = false;
+                    this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
                     this.getProducts();
                     this.modalAbierto = false;
-                }
-            );
+                  },
+                  (error) => {
+                    this.loading = false;
+                    this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
+                    console.error('Error al cambiar de estado:', error);
+                    this.modalAbierto = false;
+                  }
+                );
+              } else {
+                this.modalAbierto = false;
+              }
+            },
+            (reason) => {
+              // Manejar la cancelación del modal aquí
+              this.getProducts();
+              this.modalAbierto = false;
+            }
+          );
         }
-    }
-
+      }
+      
+    
 }
 

@@ -1,179 +1,119 @@
 <div class="breadcrumb">
-  <h1>CosmeTic</h1>
-  <ul>
-    <li><a href="">Compras</a></li>
-    <li>Proveedores</li>
-  </ul>
+    <h1>CosmeTic</h1>
+    <ul>
+        <li><a href="">Compras</a></li>
+        <li>Proveedores</li>
+    </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
 
 <div class="row mb-3">
-  <div class="col-md-12 mb-3">
-    <div class="row">
-      <div class="col-md-6">
-        <button
-          class="btn btn-primary float-right"
-          [routerLink]="['/proveedores/registrar']"
-        >
-          Crear nuevo proveedor
-        </button>
-      </div>
-      <div class="col-md-6 d-flex justify-content-end">
-        <input
-          [formControl]="searchControl"
-          id="email"
-          placeholder="Buscar Proveedores"
-          type="text"
-          class="form-control"
-        />
-      </div>
-    </div>
-  </div>
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary float-right" [routerLink]="['/proveedores/registrar']">Crear nuevo
+                    proveedor</button>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <input [formControl]="searchControl" (input)="searchProvider($event)" id="email"
+                    placeholder="Buscar Proveedores" type="text" class="form-control">
 
-  <div class="col-md-12">
-    <div class="card o-hidden">
-      <div class="col-md-12">
-        <div class="card o-hidden">
-          <ngx-datatable
-            class="material fullscreen"
-            style="height: 460px"
-            [columnMode]="'force'"
-            [headerHeight]="50"
-            [footerHeight]="50"
-            [rowHeight]="60"
-            [scrollbarV]="true"
-            [rows]="filteredProviders"
-            [externalPaging]="true"
-            [count]="filteredProviders.length"
-            [limit]="itemsPerPage"
-            [offset]="(currentPage - 1) * itemsPerPage"
-            (page)="onPageChange($event)"
-          >
-            <ngx-datatable-column name="name_provider">
-              <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Nombre Proveedor</p>
-              </ng-template>
-              <ng-template
-                ngx-datatable-cell-template
-                let-value="value"
-                let-row="row"
-              >
-                <div style="white-space: pre-line">
-                  {{ row.name_provider }}
-                </div>
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="phone_provider">
-              <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Teléfono</p>
-              </ng-template>
-              <ng-template
-                ngx-datatable-cell-template
-                let-value="value"
-                let-row="row"
-              >
-                <div style="white-space: pre-line">
-                  {{ row.phone_provider }}
-                </div>
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="name_contact">
-              <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Nombre Contacto</p>
-              </ng-template>
-              <ng-template
-                ngx-datatable-cell-template
-                let-value="value"
-                let-row="row"
-              >
-                <div style="white-space: pre-line">
-                  {{ row.name_contact }}
-                </div>
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="state_provider">
-              <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Estado</p>
-              </ng-template>
-              <ng-template
-                ngx-datatable-cell-template
-                let-value="value"
-                let-row="row"
-              >
-                {{ row.state_provider }}
-              </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column [width]="120">
-              <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Acciones</p>
-              </ng-template>
-              <ng-template
-                ngx-datatable-cell-template
-                let-value="value"
-                let-row="row"
-              >
-                <button
-                  class="btn btn-dark m-1 me-3"
-                  [routerLink]="['/proveedores/detalle', row.id_provider]"
-                >
-                  <i class="i-Eye"></i>
-                </button>
-                <button
-                  class="btn btn-info m-1 me-3"
-                  [routerLink]="['/proveedores/editar', row.id_provider]"
-                  [disabled]="row.state_provider == 'Inactivo'"
-                >
-                  <i class="i-Pen-4"></i>
-                </button>
-                <label
-                  class="switch switch-success me-3"
-                  (click)="openModal(row.id_provider)"
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="
-                      row.state_provider === 'Activo' ||
-                      row.state_provider === 'Active'
-                    "
-                  />
-                  <span class="slider"></span>
-                </label>
-              </ng-template>
-            </ngx-datatable-column>
-          </ngx-datatable>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
+<div class="col-md-12">
+    <div class="card o-hidden">
+        <div class="col-md-12">
+            <div class="card o-hidden">
+                <ngx-datatable class="material fullscreen" style="height: 460px" [columnMode]="'force'"
+                    [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"
+                    [rows]="filteredProviders" [externalPaging]="true" [count]="filteredProviders.length"
+                    [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage" (page)="onPageChange($event)">
+                    <ngx-datatable-column name="name_provider">
+                        <ng-template ngx-datatable-header-template>
+                            <p style="font-size: 15px">Nombre Proveedor</p>
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            <div style="white-space: pre-line">
+                                {{ row.name_provider }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="phone_provider">
+                        <ng-template ngx-datatable-header-template>
+                            <p style="font-size: 15px">Teléfono</p>
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            <div style="white-space: pre-line">
+                                {{ row.phone_provider }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="name_contact">
+                        <ng-template ngx-datatable-header-template>
+                            <p style="font-size: 15px">Nombre Contacto</p>
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            <div style="white-space: pre-line">
+                                {{ row.name_contact }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="state_provider">
+                        <ng-template ngx-datatable-header-template>
+                            <p style="font-size: 15px">Estado</p>
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            {{ row.state_provider }}
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [width]="120">
+                        <ng-template ngx-datatable-header-template>
+                            <p style="font-size: 15px">Acciones</p>
+                        </ng-template>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                            <button class="btn btn-dark m-1 me-3"
+                                [routerLink]="['/proveedores/detalle', row.id_provider]">
+                                <i class="i-Eye"></i>
+                            </button>
+                            <button class="btn btn-info m-1 me-3"
+                                [routerLink]="['/proveedores/editar', row.id_provider]"
+                                [disabled]="row.state_provider == 'Inactivo'">
+                                <i class="i-Pen-4"></i>
+                            </button>
+                            <label class="switch switch-success me-3" (click)="openModal(row.id_provider)">
+                                <input type="checkbox" [checked]="
+                      row.state_provider === 'Activo' ||
+                      row.state_provider === 'Active'
+                    " />
+                                <span class="slider"></span>
+                            </label>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <ng-template #changeStateModal let-modal>
-  <div class="modal-header">
-    <h4 class="Cambiar estado" id="modal-title">
-      Cambiar Estado del Proveedor
-    </h4>
-  </div>
-  <div class="modal-body">
-    <p>
-      <strong>¿Está seguro de que desea inhabilitar este proveedor?</strong>
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-secondary btn-rounded"
-      (click)="modal.dismiss('cancel')"
-    >
-      Cancelar
-    </button>
-    <button
-      type="button"
-      ngbAutofocus
-      class="btn btn-wide btn-danger btn-rounded"
-      (click)="modal.close('Yes')"
-    >
-      Aceptar
-    </button>
-  </div>
+    <div class="modal-header">
+        <h4 class="Cambiar estado" id="modal-title">Cambiar Estado del Proveedor</h4>
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea inhabilitar este proveedor?</strong></p>
+        <label for="reasonAnulate">Razón de Cambio de estado del proveedor:</label>
+        <textarea id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado"
+            [(ngModel)]="reasonAnulate" style="resize:none" rows="5"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-rounded"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+            (click)="modal.close('Yes')">Aceptar</button>
+    </div>
 </ng-template>

@@ -37,7 +37,7 @@ export class ForgotComponent implements OnInit {
             progressBar: true,
             timeOut: 3000,
           });
-          this.router.navigate(['/login']);
+          this.router.navigate(['/sessions/signin']);
         },
         (error) => {
           this.toastr.error('El Correo ingresado no es válido', 'Error', {
