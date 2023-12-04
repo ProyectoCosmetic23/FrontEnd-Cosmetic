@@ -102,6 +102,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Files',
             sub: [
+                
                 { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
                 { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
 

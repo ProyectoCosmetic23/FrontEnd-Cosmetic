@@ -24,6 +24,7 @@ const routes: Routes = [
     },
     {
         path: 'returns/:id_order',
+        canActivate: [AuthGuard],
         component: ReturnsDetailComponent
     }
 ]

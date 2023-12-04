@@ -102,12 +102,20 @@ export class UserDetailComponent implements OnInit {
 
     if (this.viewMode == "print" /*|| this.viewMode == 'edit'*/) {
       this.userForm.disable();
+      
     }
+    
 
     if (this.viewMode != "new") {
       this.getUserByID(id);
       this.email.disable();
       this.id_card_employee.disable();
+    }
+//new
+    if (this.viewMode != "new" && this.viewMode != "print" ) {
+
+      this.password.disable();
+   
     }
   }
 
