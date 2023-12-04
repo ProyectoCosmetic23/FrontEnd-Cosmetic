@@ -247,4 +247,10 @@ table th:last-child {
   }
 }
 
+.ng-dropdown-panel-items {
+  max-width: 100%;
+}
 
+#productSelect .ng-dropdown-panel-items {
+  max-width: 200%;
+}
