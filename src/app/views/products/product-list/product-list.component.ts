@@ -116,13 +116,10 @@ export class ProductListComponent implements OnInit {
             const rowsToAdd = 6 - (endIndex % 6);
             endIndex += rowsToAdd;
     
-            // this.filteredProducts = this.filteredProducts.slice(startIndex, endIndex);
-    
-            console.log('load data charged');
+
         }
     
         onPageChange(event: any) {
-            console.log('onPageChange event:', event);
             this.currentPage = event.offset + 1;
             this.loadData();
         }
@@ -167,8 +164,6 @@ export class ProductListComponent implements OnInit {
                     this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
                     this.toastr.success('Producto dado de baja exitosamente.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
                     this.modalService.dismissAll();
-    
-                    console.log('Producto dado de baja exitosamente', response);
                 },
                 (error) => {
                     console.error('Error al dar de baja el producto', error);

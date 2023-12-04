@@ -21,7 +21,6 @@ export class MyInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.cookieService.get("token");
-    console.log(token);
     
   
     // You can modify the request before it is sent
