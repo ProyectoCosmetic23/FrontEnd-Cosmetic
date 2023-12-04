@@ -71,7 +71,7 @@ export class DashboadDefaultComponent implements OnInit {
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
-  // this.getReportProductsPrediccion();
+  // // this.getReportProductsPrediccion();
 
 }
 
