@@ -166,11 +166,8 @@
                               [virtualScroll]="true"
                               [hideSelected]="true"
                               [disabled]="false"
-                              (change)="
-                                handleProductSelection(
-                                  $event,
-                                  i
-                                )
+                              (click)="
+                                handleProductSelection($event, i)
                               "
                               [searchable]="true"
                               [clearable]="false"
