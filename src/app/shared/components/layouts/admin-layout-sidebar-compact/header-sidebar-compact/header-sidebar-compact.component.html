@@ -33,10 +33,26 @@
 
                 <div ngbDropdownMenu aria-labelledby="userDropdown">
                     
-                    <button class="dropdown-item" (click)="onLogout()"><i class="i-Logout"></i>Cerrar Sesion</button>
+                    <button class="dropdown-item" (click)="onLogout(content)"><i class="i-Logout"></i>Cerrar Sesión</button>
+
                 </div>
             </div>
 
         </div>
-
+        <ng-template #content let-modal>
+            <div class="modal-header">
+              <h4 class="modal-title">Confirmación</h4>
+              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              ¿Está seguro de que desea cerrar sesión?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancelar</button>
+              <button type="button" class="btn btn-primary" (click)="confirmLogout()">Aceptar</button>
+            </div>
+          </ng-template>
+          
     </div>
