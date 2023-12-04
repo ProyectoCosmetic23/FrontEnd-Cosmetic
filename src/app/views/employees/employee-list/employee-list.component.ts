@@ -98,14 +98,10 @@ sortListEmployeesById() {
     // Ajusta endIndex para que sea el próximo número divisible por 6
     const rowsToAdd = 6 - (endIndex % 6);
     endIndex += rowsToAdd;
-  
-    // this.filteredEmployees = this.filteredEmployees.slice(startIndex, endIndex);
-  
-    console.log('load data charged');
+
   }
   
   onPageChange(event: any) {
-    console.log('onPageChange event:', event);
     this.currentPage = event.offset + 1;
     this.loadData();
   }
@@ -146,8 +142,6 @@ sortListEmployeesById() {
         (result) => {
           if (result === 'Ok') {
             const token = this.cookieService.get('token');
-            console.log('Razón de anulación recibida:', this.reasonAnulate);
-
             // Modifica la llamada al servicio para enviar la razón de anulación
             this._employeeService.employeeChangeStatus(idEmployee, token, this.reasonAnulate).subscribe(
               (data) => {

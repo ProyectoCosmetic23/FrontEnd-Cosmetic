@@ -4,6 +4,8 @@ import { User } from "src/app/shared/interfaces/user.interfaces";
 import { AuthService } from "src/app/shared/services/auth.service";
 import { NavigationService } from "src/app/shared/services/navigation.service";
 import { SearchService } from "src/app/shared/services/search.service";
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: "app-header-sidebar-compact",
@@ -13,9 +15,12 @@ import { SearchService } from "src/app/shared/services/search.service";
 export class HeaderSidebarCompactComponent implements OnInit {
   notifications: any[];
   user: User | null;
+  private modalRef: NgbModalRef;
+
   
   constructor(
     private navService: NavigationService,
+    private modalService: NgbModal,
     public searchService: SearchService,
     private authService: AuthService,
     private router: Router
@@ -33,14 +38,31 @@ export class HeaderSidebarCompactComponent implements OnInit {
   }
   */
 
+  openConfirmationModal(content: any) {
+    this.modalRef = this.modalService.open(content, { centered: true });
+  }
+  
+
   toggelSidebar() {
     const state = this.navService.sidebarState;
     state.sidenavOpen = !state.sidenavOpen;
     state.childnavOpen = !state.childnavOpen;
   }
 
-  onLogout() {
+  onLogout(content: any) {
+    // Abre el modal de confirmación
+    this.openConfirmationModal(content);
+  }
+  
+  confirmLogout() {
+    // Cierra el modal
+    this.modalRef.close();
+  
+    // Realiza la acción de cierre de sesión
     this.authService.logout();
     this.router.navigate(['/sessions/signin']);
   }
+  
+
+  
 }

@@ -93,7 +93,7 @@ export class NavigationService {
             sub: [
                 { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
                 { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/defective-products', type: 'link' },
-                { icon: 'i-Conference', name: 'Clientes', state: '/clients', type: 'link' },
+                { icon: 'i-Business-Mens', name: 'Clientes', state: '/clients', type: 'link' },
             ]
         },
         {
@@ -102,6 +102,7 @@ export class NavigationService {
             type: 'dropDown',
             icon: 'i-Files',
             sub: [
+                
                 { icon: 'i-Conference', name: 'Empleados', state: '/employees', type: 'link' },
                 { icon: 'i-Money-2', name: 'Comisiones', state: '/comisiones', type: 'link' },
 
@@ -114,7 +115,7 @@ export class NavigationService {
             icon: 'i-Gear',
             sub: [
                 { icon: 'i-Key', name: 'Roles', state: '/roles', type: 'link' },
-                { icon: 'i-Conference', name: 'Usuarios', state: '/users', type: 'link' },
+                { icon: 'i-Male-21', name: 'Usuarios', state: '/users', type: 'link' },
             ]
         },
     ];

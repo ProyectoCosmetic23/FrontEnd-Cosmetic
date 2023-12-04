@@ -17,6 +17,7 @@ interface Provider {
   observation_provider: string;
   name_contact: string;
   creation_date_provider: Date;
+  reason_anulate: string;
 }
 
 @Component({
@@ -40,6 +41,7 @@ export class ProvidersDetailComponent implements OnInit {
     observation_provider: "",
     name_contact: "",
     creation_date_provider: new Date(),
+    reason_anulate: "",
   };
   new_provider = {
     name_provider: "",
@@ -51,6 +53,7 @@ export class ProvidersDetailComponent implements OnInit {
     observation_provider: "",
     name_contact: "",
     creation_date_provider: new Date(),
+    reason_anulate: "",
   };
 
   constructor(
@@ -91,6 +94,7 @@ export class ProvidersDetailComponent implements OnInit {
   updatedFields: any = {};
 
   buildProvidersForm(i: any = {}) {
+    console.log("formulario: ", i)
     this.formBasic = this.formBuilder.group({
       name_provider: [i.name_provider, [
         Validators.required,
@@ -117,6 +121,8 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.maxLength(80),
         Validators.pattern(/^[0-9\s]+$/)
       ]],
+      reason_anulate:[i.reason_anulate],
+
       state_provider: [i.state_provider],
       observation_provider: [i.observation_provider],
       name_contact: [i.name_contact, [
@@ -127,6 +133,8 @@ export class ProvidersDetailComponent implements OnInit {
     ]],
       creation_date_provider: [i.creation_date_provider],
     });
+    console.log("Razon anulate", i.reason_anulate, "nombre", i.name_provider)
+
   }
   setViewMode() {
     const currentRoute = this.router.url;
@@ -141,6 +149,7 @@ export class ProvidersDetailComponent implements OnInit {
     console.log("viewMode:", this.viewMode);
   }
   getProvider() {
+    console.log("Proveedor antes de cargar datos: ",this.provider)
     if (this.viewMode == "print" || this.viewMode == "edit") {
       this.id = this.route.snapshot.params["id_provider"];
       console.log(this.id);
@@ -149,6 +158,7 @@ export class ProvidersDetailComponent implements OnInit {
 
       this._providersService.getProviderById(providerId).subscribe(
         (data) => {
+          console.log("Datos del proveedor", data);
           this.provider = data;
           console.log(this.provider);
         },

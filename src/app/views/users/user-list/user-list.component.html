@@ -2,7 +2,7 @@
     <div class="breadcrumb">
         <h1>Usuarios</h1>
         <ul>
-            <li><a href="#">Servicios</a></li>
+            <li><a>Servicios</a></li>
             <li>Usuarios</li>
         </ul>
     </div>
@@ -87,7 +87,7 @@
 
 
 <ng-template #deleteConfirmModal let-modal>
-    <div class="modal-header">
+    <!-- <div class="modal-header">
         <h4 class="modal-title" id="modal-title">Cambiar estado usuario</h4>
        
     </div>
@@ -99,6 +99,29 @@
         <button type="button" class="btn btn-danger ml-2"
             (click)="modal.dismiss('cancel')">Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-primary -m1 custom-button"
+            (click)="modal.close('Ok')">Aceptar</button>
+    </div> -->
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Cambiar estado del usuario</h4>
+      
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea cambiar el estado del usuario?</strong></p>
+        <form [formGroup]="reasonForm">
+            <div class="col-md-6 form-group mb-3">
+                <label for="reason_anulate">Motivo de cambio de estado</label>
+                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
+                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
+                  El campo supera los 100 carácteres.
+              </div>
+              </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
             (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>

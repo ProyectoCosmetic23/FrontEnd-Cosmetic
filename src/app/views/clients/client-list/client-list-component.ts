@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ClientsService } from 'src/app/shared/services/client.service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -23,14 +23,18 @@ export class ClientListComponent implements OnInit {
     currentPage = 1; // Propiedad para rastrear la página actual
     itemsPerPage = 6; // El número de filas por página
     countLabel: number;
-
+    reasonForm: FormGroup;
+   
     constructor(
         private _clientService: ClientsService,
         private modalService: NgbModal,
         private toastr: ToastrService,) { }
+        private formBuilder: FormBuilder
 
     ngOnInit(): void {
+        
         this.getClients();
+        this.reasoniniForm();
         
     }
 
@@ -115,7 +119,14 @@ export class ClientListComponent implements OnInit {
 
     changeClientStateDescription(state_client:boolean){
         return state_client ? 'Activo':'Inactivo';}
-
+        
+        private reasoniniForm(): void {
+            this.reasonForm = this.formBuilder.group({
+              reason_anulate: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(220)]],
+        
+            });
+        
+          }
 
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 

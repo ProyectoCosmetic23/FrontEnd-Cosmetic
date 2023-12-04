@@ -360,7 +360,6 @@ export class OrdersDetailComponent implements OnInit {
     // Si había un producto previamente seleccionado, cambia su estado a false
     if (previouslySelectedProductIndex !== -1) {
       this.listProducts[previouslySelectedProductIndex].disabled = false;
-      console.log('Producto borrado: ', this.listProducts[previouslySelectedProductIndex]);
     }
 
     const selectedProductIndex = this.listProducts.findIndex(
@@ -397,7 +396,6 @@ export class OrdersDetailComponent implements OnInit {
       console.log("Producto no encontrado.");
       this.productsFormArray.at(i).get("product_price").setValue(null);
     }
-    console.log(this.listProducts[selectedProductIndex]);
   }
 
   // Función para agregar un nuevo producto al FormArray

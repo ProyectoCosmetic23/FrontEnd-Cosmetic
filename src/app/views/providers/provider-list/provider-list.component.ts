@@ -44,6 +44,7 @@ export class ProviderListComponent implements OnInit {
         const token = this.cookieService.get('token');
         this._providersService.getAllProviders().subscribe(
             (data) => {
+                console.log(data)
                 this.listProviders = data;
                 this.filteredProviders = this.listProviders;
                 this.sortListProvidersById();

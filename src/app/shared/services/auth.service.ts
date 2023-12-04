@@ -147,8 +147,7 @@ export class AuthService {
   
     return this.http.post(url, body).pipe(
       map((response) => {
-        // Puedes realizar acciones adicionales después de cambiar la contraseña, si es necesario
-        console.log("Contraseña cambiada exitosamente:", response);
+        
         return response;
       }),
       catchError((error) => {
