@@ -134,6 +134,6 @@
         <button type="button" class="btn btn-outline-secondary btn"
             (click)="modal.dismiss('cancel')">Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
-            (click)="modal.close('Ok')">Aceptar</button>
+            (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
     </div>
 </ng-template>

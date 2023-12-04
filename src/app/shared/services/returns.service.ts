@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 export class ReturnsService {
   headers: any;
   url = environment.url;
-  
+
   // url = 'http://localhost:8080/api/orders';
   // url2 = 'http://localhost:8080/api/returns';
   // url3='http://localhost:8080/api/clients';
@@ -56,6 +56,13 @@ export class ReturnsService {
   //   return this.http.get<any>(`${this.url}/api/returns/productByIdOrder/${id}`);
 
   // }
+
+  //Devolver producto
+  retireProduct(id: number, data: any): Observable<any> {
+    const url = `${this.url}/retire/${id}`;
+    return this.http.put(url, data);
+  }
+
 
 
 

@@ -520,6 +520,7 @@ export class ReturnsDetailComponent implements OnInit {
 }
 
 
+
     
 retireProduct(): void {
     if (this.selectedProductId && this.returnQuantity) {    
@@ -530,7 +531,7 @@ retireProduct(): void {
         };
 
         // Llamada a la API para dar de baja el producto
-        this._productService.retireProduct(this.selectedProductId, data).subscribe(
+        this._returnsService.retireProduct(this.selectedProductId, data).subscribe(
             (response) => {
                 this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
                 this.toastr.success('Producto dado de baja exitosamente.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
@@ -548,13 +549,13 @@ retireProduct(): void {
 
 
 updateProductQuantity(productId: number, quantityToSubtract: number): void {
-    // Encuentra el producto en tu lista local y resta la cantidad
-    const productToUpdate = this.filteredProducts.find(product => product.id_product === productId);
+  const productToUpdate = this.order_detail_products.find(product => product.id_product === productId);
 
-    if (productToUpdate) {
-        productToUpdate.quantity -= quantityToSubtract;
-    }
+  if (productToUpdate) {
+    productToUpdate.product_quantity -= quantityToSubtract;
+  }
 }
+
 
 
 
