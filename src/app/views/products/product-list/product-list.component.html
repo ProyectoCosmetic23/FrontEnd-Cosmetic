@@ -134,13 +134,28 @@
             <input type="text" id="selectedProductId" class="form-control readonly-input" readonly [value]="getProductNameById(selectedProductId)" />
         </div>
         <div class="col-md-4">
-            <label for="returnQuantity">Cantidad:</label>
-            <input type="number" id="returnQuantity" class="form-control" [(ngModel)]="returnQuantity" (ngModelChange)="returnValue = calculateUpdatedValue(selectedProductValue)" />
+            <label for="product_quantity">Cantidad:</label>
+            <input
+            type="number"
+            class="form-control"
+            [placeholder]="
+              'Stock: ' +
+              productsFormArray.at(i).get('quantityOnhand')
+                .value
+            "
+            formControlName="product_quantity"
+            (change)="handleProductSelection($event, i)"
+          />
         </div>
         
         <div class="col-md-4">
-            <label for="selectedProductValue">Valor del producto:</label>
-            <input type="number" id="returnValue" class="form-control" disabled="true" [(ngModel)]= "returnValue" />
+            <label for="subtotal">Valor del producto:</label>
+            <input
+            type="number"
+            class="form-control"
+            formControlName="subtotal"
+            [readonly]="true"
+          />
         </div>
         <p></p>
         <div class="col-md-12">

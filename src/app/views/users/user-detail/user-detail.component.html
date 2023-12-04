@@ -45,7 +45,7 @@
                 El campo rol es obligatorio.
               </div>
               </div>
-              <div class="col-md-4 form-group mb-3">
+              <div class="col-md-4 form-group mb-3" *ngIf="viewMode !== 'print'">
                 <label for="id_card_employee">Cédula empleado <span class="text-danger">*</span></label>
                 <input
                     type="text"
@@ -56,27 +56,27 @@
                     required
                 />
                 <input
-                type="text"
-                class="form-control ng-touched ng-dirty ng-invalid"
-                id="id_employee"
-                formControlName="id_employee"
-                disabled
-                
-              />Id empleado
+                  type="text"
+                  class="form-control ng-touched ng-dirty ng-invalid"
+                  id="id_employee"
+                  formControlName="id_employee"
+                  disabled
+                />Id empleado
                 <div
-                *ngIf="
-                  userForm.get('id_card_employee').touched &&
-                  userForm.get('id_card_employee').hasError('required')
-                "
-                class="error-message"
-              >
-                El campo cédula empleado es obligatorio.
-              </div>
+                  *ngIf="
+                    userForm.get('id_card_employee').touched &&
+                    userForm.get('id_card_employee').hasError('required')
+                  "
+                  class="error-message"
+                >
+                  El campo cédula empleado es obligatorio.
+                </div>
                 <!-- Mostrar mensaje de empleado no encontrado -->
                 <div *ngIf="employeeNotFoundMessage" class="error-message">
                     {{ employeeNotFoundMessage }}
                 </div>
-            </div>
+              </div>
+              
 
               <div class="col-md-5 form-group mb-3">
                 <label for="username"
@@ -175,24 +175,25 @@
                 />
               </div>
 
-              <div class="col-md-6 form-group mb-3">
+              <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'print'">
                 <label for="password">Contraseña<span class="text-danger">*</span></label>
                 <input
-                  type="text"
+                  type="password"
                   class="form-control"
                   id="password"
                   formControlName="password"
                 />
                 <div
-                *ngIf="
-                  userForm.get('password').touched &&
-                  userForm.get('password').hasError('required')
-                "
-                class="error-message"
-              >
-                El campo contraseña es obligatorio.
+                  *ngIf="
+                    userForm.get('password').touched &&
+                    userForm.get('password').hasError('required')
+                  "
+                  class="error-message"
+                >
+                  El campo contraseña es obligatorio.
+                </div>
               </div>
-              </div>
+              
               
 
               <div class="col-md-12 form-group mb-3">

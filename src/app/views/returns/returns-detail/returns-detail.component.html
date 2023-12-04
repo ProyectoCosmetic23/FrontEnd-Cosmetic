@@ -72,7 +72,7 @@
                     <div>
                     
 
-                      <button ngbTooltip="Devolver producto" class="btn btn-danger" (click)="openRetireModal(product.id_product, product.product_value, retireModal)">
+                      <button ngbTooltip="Devolver producto" class="btn btn-warning" (click)="openRetireModal(product.id_product, product.product_value, retireModal)">
                         <i class="i-Remove"></i>
                       </button>
                       
@@ -85,32 +85,28 @@
               <div class="col-md-8"></div>
               <div class="col-md-8">
                 <div class="total">
-                  Total:
-                  {{
-                    order?.order?.total_order | currency : "" : "symbol" : "1.2"
-                  }}
+                  <span class="large-number text-nowrap display-6">
+                    {{
+                      order?.order?.total_order | currency : "" : "symbol" : "1.2"
+                    }}
+                  </span>
                 </div>
               </div>
             </div>
+            
 
-            <div class="col-md-12" style="margin-top: 20px">
-              <div class="d-flex justify-content-end">
-                <button
-                  class="btn btn-danger float-right"
-                  [routerLink]="['/orders']"
-                >
-                  Volver
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-danger float-right" [routerLink]="['/orders']">
+                Cancelar
+              </button>
+            
+              <div style="margin-left: 10px;">
+                <button type="button" class="btn btn-primary">
+                  Guardar
                 </button>
-
-                <div>
-                  <button type="button" class="btn btn-primary" >
-                    Guardar devolución
-                    </button>
-                </div>
-
-
               </div>
             </div>
+            
           </div>
         </form>
       </div>
@@ -125,7 +121,7 @@
   <div class="modal-body">
     <!-- Formulario para la cantidad, motivo y valor de la baja -->
     <div class="row mb-3">
-      <div class="col-md-4">
+      <div class="col-md-7">
         <label for="selectedProductId">Producto:</label>
         <input
           type="text"
@@ -135,57 +131,50 @@
           [value]="getProductNameById(selectedProductId)"
         />
       </div>
-      <div class="col-md-4">
-        <label for="returnQuantity">Cantidad:</label>
+      <div class="col-md-5">
+        <label for="returnQuantity">Unidades a devolver:</label>
         <input
           type="number"
           id="returnQuantity"
           class="form-control"
-          [(ngModel)]="returnQuantity"
           (ngModelChange)="
             returnValue = calculateUpdatedValue(selectedProductValue)
           "
+          min="1"
         />
       </div>
 
-      <div class="col-md-4">
-        <label for="selectedProductValue">Valor del producto:</label>
-        <input
-          type="number"
-          id="returnValue"
-          class="form-control"
-          disabled="true"
-          [(ngModel)]="returnValue"
-        />
-      </div>
 
-      <div class="col-md-12">
+
+      <div class="col-md-">
         <label>
-          <input type="checkbox" [(ngModel)]="wishToRetire" />
+          <input type="checkbox" class="form-check-input custom-checkbox" [(ngModel)]="wishToRetire" (change)="handleDefectiveQuantityChange()" />
           ¿Desea dar de baja el producto?
         </label>
+        
       </div>
 
 
 
 
      
-      <div class="col-md-12">
+      <div class="col-md-12 form-group mb-3">
         <label for="returnReason">Motivo:</label>
         <textarea
           type="textarea"
           id="returnReason"
           class="form-control"
           [(ngModel)]="returnReason"
+          style="resize: none;"
         ></textarea>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      <button type="button" class="btn btn-danger" (click)="modal.dismiss()">
         Cancelar
       </button>
       <button type="button" class="btn btn-primary" (click)="retireProduct()">
-        Devolver producto
+        Devolver
       </button>
     </div>
   </div>

@@ -61,6 +61,10 @@ export class ReturnsDetailComponent implements OnInit {
 
   filteredProducts: any[];
 
+  wishToRetire: boolean = false;
+  
+
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -277,9 +281,9 @@ export class ReturnsDetailComponent implements OnInit {
       event.target.value == "Seleccione el nombre del empleado" ||
       event.target.value == undefined
     ) {
-      this.error_employee = true;
+      // this.error_employee = true;
     } else {
-      this.error_employee = false;
+      // this.error_employee = false;
     }
 
     // Ahora `selectedClientId` contiene el ID del cliente seleccionado
@@ -295,9 +299,9 @@ export class ReturnsDetailComponent implements OnInit {
       event.target.value == "Seleccione el tipo de pago" ||
       event.target.value == undefined
     ) {
-      this.error_payment_type = true;
+      // this.error_payment_type = true;
     } else {
-      this.error_payment_type = false;
+      // this.error_payment_type = false;
     }
 
     // Ahora `selectedPaymentType` contiene el tipo de pago seleccionado
@@ -406,7 +410,7 @@ export class ReturnsDetailComponent implements OnInit {
       products: this.productsFormArray.value,
     };
 
-    this.submitOrder(newOrder);
+    // this.submitOrder(newOrder);
   }
 
   checkProducts() {
@@ -422,8 +426,7 @@ export class ReturnsDetailComponent implements OnInit {
         !product.product_price ||
         !product.product_quantity
       ) {
-        this.showFormWarning("Completa todos los campos del producto");
-        throw new Error("Campos de producto incompletos");
+      
       }
     }
   }
@@ -436,7 +439,7 @@ export class ReturnsDetailComponent implements OnInit {
           this.selected_client === "Seleccione el nombre del cliente" ||
           this.selected_client_id == null ||
           this.selected_client_id == undefined,
-        errorMessage: "Seleccione un cliente",
+        // errorMessage: "Seleccione un cliente",
       },
       {
         variable: "error_employee",
@@ -444,7 +447,7 @@ export class ReturnsDetailComponent implements OnInit {
           this.selected_employee === "Seleccione el nombre del empleado" ||
           this.selected_employee_id == null ||
           this.selected_employee_id == undefined,
-        errorMessage: "Seleccione un empleado",
+        // errorMessage: "Seleccione un empleado",
       },
       {
         variable: "error_payment_type",
@@ -452,7 +455,7 @@ export class ReturnsDetailComponent implements OnInit {
           this.selected_payment_type === "Seleccione el tipo de pago" ||
           this.selected_payment_type == null ||
           this.selected_payment_type == undefined,
-        errorMessage: "Seleccione un tipo de pago",
+        // errorMessage: "Seleccione un tipo de pago",
       },
     ];
 
@@ -461,44 +464,44 @@ export class ReturnsDetailComponent implements OnInit {
         this[condition.variable] || condition.condition;
 
       if (this[condition.variable]) {
-        this.showFormWarning(condition.errorMessage);
-        throw new Error(`${condition.variable} no seleccionado`);
+        // this.showFormWarning(condition.errorMessage);
+        // throw new Error(`${condition.variable} no seleccionado`);
       }
     });
 
     // Reset errors if all conditions are false
-    if (!conditions.some((condition) => this[condition.variable])) {
-      conditions.forEach((condition) => {
-        this[condition.variable] = false;
-      });
-    }
+    // if (!conditions.some((condition) => this[condition.variable])) {
+    //   conditions.forEach((condition) => {
+    //     this[condition.variable] = false;
+    //   });
+    // }
   }
 
   showFormWarning(message: string) {
     this.toastr.warning(message, "Advertencia");
   }
 
-  submitOrder(newOrder) {
-    this._returnsService.createOrder(newOrder).subscribe(
-      (response) => {
-        this.showSuccessMessage("Pedido creado exitosamente");
-        this.router.navigate(["/orders"]);
-      },
-      (error) => {
-        this.handleError("Error al crear el pedido:", error);
-      }
-    );
-  }
+  // submitOrder(newOrder) {
+  //   this._returnsService.createOrder(newOrder).subscribe(
+  //     (response) => {
+  //       this.showSuccessMessage("Pedido creado exitosamente");
+  //       this.router.navigate(["/orders"]);
+  //     },
+  //     (error) => {
+  //       this.handleError("Error al crear el pedido:", error);
+  //     }
+  //   );
+  // }
 
 
-  showSuccessMessage(message: string) {
-    this.toastr.success(message, "Éxito");
-  }
+  // showSuccessMessage(message: string) {
+  //   this.toastr.success(message, "Éxito");
+  // }
 
-  handleError(errorMessage: string, error: any) {
-    console.error(errorMessage, error);
-    this.toastr.error("Error al crear el pedido", "Error");
-  }
+  // handleError(errorMessage: string, error: any) {
+  //   console.error(errorMessage, error);
+  //   this.toastr.error("Error al crear el pedido", "Error");
+  // }
 
 
 
@@ -509,6 +512,9 @@ export class ReturnsDetailComponent implements OnInit {
  openRetireModal(productId: number, productValue: number, content: any): void {
   this.selectedProductId = productId;
   this.selectedProductValue = productValue;
+  this.returnQuantity = 0;
+  this.returnReason = '';
+  this.returnValue ;
   // Resto del código...
   this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 }
@@ -589,6 +595,8 @@ filterData(value: string) {
 
 }
 
+
+//Metodo para manejar la devolucion del producto
 
 
 
