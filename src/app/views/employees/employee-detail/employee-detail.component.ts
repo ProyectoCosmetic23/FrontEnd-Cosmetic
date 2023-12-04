@@ -63,11 +63,13 @@ export class EmployeeDetailComponent implements OnInit {
             phone: ['', [Validators.required, Validators.maxLength(80), Validators.pattern('^[0-9]{10}$')]],
             observation: ['',[ Validators.maxLength(100)]],
             state_employee: [],
-            creation_date_employee: []
+            creation_date_employee: [],
+            reason_anulate:['']
         });
 
         if (this.viewMode == 'print') {
             this.employeeForm.disable();
+            
         }
 
         if (this.viewMode == 'edit') {

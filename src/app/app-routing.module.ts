@@ -5,6 +5,7 @@ import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
 import { AuthGuard } from './shared/services/auth.guard';
 
+
 const adminRoutes: Routes = [
 
 
@@ -13,6 +14,7 @@ const adminRoutes: Routes = [
     canActivate:[AuthGuard],
     loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
+ 
   {
     path: "proveedores",
     canActivate:[AuthGuard],

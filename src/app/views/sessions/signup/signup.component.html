@@ -1,4 +1,4 @@
-<div class="card o-hidden" [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+<div class="card o-hidden" [@animate]="{value:'*', params:{y:'120px', opacity:'0', delay:'100ms', duration: '400ms'}}">
   <div class="row me-0">
     <div class="col-md-6">
       <div class="p-4">
@@ -6,11 +6,40 @@
           <b class="mb-3 text-26 text-center">Bienvenidos</b>
         </div>
         <h1 class="mb-3 text-18 text-center">Cambiar Contraseña</h1>
-        <form (ngSubmit)="changePassword()" #changeForm="ngForm">
+        <form [formGroup]="myForm" (ngSubmit)="changePassword()" #changeForm="ngForm">
           <div class="form-group">
             <label for="newPassword">Nueva Contraseña</label>
-            <input id="newPassword" class="form-control" type="password" name="newPassword" ngModel required>
+            <div class="input-group">
+              <input id="newPassword" class="form-control" type="{{ showPassword ? 'text' : 'password' }}" formControlName="newPassword">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()">
+                  <i class="{{ showPassword ? 'i-Eye' : 'i-Eye' }}"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="myForm.get('newPassword').hasError('required') && myForm.get('newPassword').touched" class="text-danger">
+              La nueva contraseña es obligatoria.
+            </div>
+            <div *ngIf="myForm.get('newPassword').hasError('minlength') && myForm.get('newPassword').touched" class="text-danger">
+              La nueva contraseña debe tener al menos 6 caracteres.
+            </div>
           </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar Contraseña</label>
+            <div class="input-group ">
+            <input id="confirmPassword" class="form-control" type="{{ showPassword ? 'text' : 'password' }}" formControlName="confirmPassword">
+            <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()">
+              <i class="{{ showPassword ? 'i-Eye' : 'i-Eye' }}"></i>
+            </button>
+          </div>
+        </div>
+            <div *ngIf="myForm.hasError('passwordsNotMatch') && myForm.get('confirmPassword').touched" class="text-danger">
+              Las contraseñas no coinciden.
+            </div>
+          </div>
+
           <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Contraseña</button>
         </form>
       </div>

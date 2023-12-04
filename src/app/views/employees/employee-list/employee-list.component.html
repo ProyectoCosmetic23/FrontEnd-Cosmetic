@@ -93,18 +93,22 @@
         </div>
     </div>
 
-
     <ng-template #deleteConfirmModal let-modal>
         <div class="modal-header" [closable]="false">
             <h4 class="modal-title" id="modal-title">Cambiar Estado Empleado</h4>
         </div>
         <div class="modal-body">
-            <p><strong>¿Está seguro de que desea inhabilitar este Empleado?</strong></p>
-
+            <p><strong>¿Está seguro de que desea cambiar el estado de este Empleado?</strong></p>
+            <label for="reasonAnulate">Razón de Cambio de estado:</label>
+            <textarea  id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado" [(ngModel)]="reasonAnulate" style="resize:none" rows="5"></textarea>
+            
         </div>
+       
         <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary " (click)="modal.dismiss('cancel')">Cancelar</button>
             <button type="button" ngbAutofocus class="btn btn-wide btn-danger "
                 (click)="modal.close('Ok')">Aceptar</button>
         </div>
     </ng-template>
+    
+</div>
