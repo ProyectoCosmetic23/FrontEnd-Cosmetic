@@ -3,7 +3,7 @@
     <h1 *ngIf="viewMode === 'edit'">Editar Proveedor</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</h1>
     <ul>
-        <li><a [routerLink]="['/proveedores']">Proveedores</a></li>
+        <li><a>Proveedores</a></li>
         <li *ngIf="viewMode === 'new'">Registrar Proveedor</li>
         <li *ngIf="viewMode === 'edit'">Editar Proveedor</li>
         <li *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</li>
@@ -176,7 +176,27 @@
                             </ng-template>
                         </div>
 
-                        <div class="col-md-12 form-group mb-3">
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
+                            <label for="reason_anulate">Razón de cambio de estado</label>
+                            <textarea class="form-control" id="reason_anulate"
+                                [placeholder]="provider?.reason_anulate"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
+                                rows="6"></textarea>
+                        </div>
+
+                        <div *ngIf="viewMode !== 'print'">
+                            <div class="col-md-12 form-group mb-3">
+                                <label for="observation_provider">Observación del proveedor</label>
+                                <textarea class="form-control" id="observation_provider"
+                                    (change)="handleObservationSelection($event)"
+                                    [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
+                                    [readonly]="viewMode === 'print'"
+                                    [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
+                                    rows="6"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
                             <label for="observation_provider">Observación del proveedor</label>
                             <textarea class="form-control" id="observation_provider"
                                 (change)="handleObservationSelection($event)"
