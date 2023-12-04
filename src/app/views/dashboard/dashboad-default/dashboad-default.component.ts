@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { echartStyles } from "../../../shared/echart-styles";
 import { AuthService } from "src/app/shared/services/auth.service";
@@ -14,12 +14,14 @@ import { FormBuilder, FormControl, FormGroup, FormsModule } from "@angular/forms
   styleUrls: ["./dashboad-default.component.css"],
 })
 export class DashboadDefaultComponent implements OnInit {
+  @ViewChild('changeStatusModal') changeStatusModal: ElementRef;
   chartLineOption1: EChartsOption;
   chartLineOption2: EChartsOption;
   chartLineOption3: EChartsOption;
   salesChartBar: EChartsOption;
   employeesChartBar: EChartsOption;
   salesChartPie: EChartsOption;
+  prediccionChartPie: EChartsOption;
   year_data: 0;
   top_productForm: FormGroup;
   total_number_orders: number = 0;
@@ -49,6 +51,7 @@ export class DashboadDefaultComponent implements OnInit {
   selectedMonth: number 
   ;
   selectedYear: number = this.startYear;
+  dialog: any;
  
 
   constructor(
@@ -68,6 +71,7 @@ export class DashboadDefaultComponent implements OnInit {
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
+  this.getReportProductsPrediccion();
 
 }
 
@@ -366,6 +370,7 @@ getMonths(month) {
 }
 
 
+
 buildReportEmployeesChartBar(dataNames: any, dataValues: any, dataCommissions: any) {
 
   // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
@@ -448,4 +453,89 @@ this.employeesChartBar = {
   ],
 };
 }
+getReportProductsPrediccion() {
+  console.log('getReportProductsPrediccion() llamado');
+  this.reportService.getPredictions().subscribe({
+    next: (response: any) => {
+      const months = Object.keys(response);
+      const selectedMonth = "April";
+      const topProducts = response[selectedMonth].top_products;
+      const data = Object.keys(topProducts).map(productName => {
+        return {
+          value: topProducts[productName],
+          name: productName,
+        };
+      });
+
+      this.buildReportPrediccionChartPie(data, selectedMonth);
+      this.openPredictionModal();
+    }
+  });
+}
+
+openPredictionModal(): void {
+  const dialogRef = this.dialog.open(this.changeStatusModal, {
+    width: '80%',
+  });
+
+  // Puedes realizar acciones después de que se cierre la modal
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('Modal cerrada', result);
+  });
+}
+
+buildReportPrediccionChartPie(data: any , selectedMonth: string) {
+  this.prediccionChartPie = {
+    color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
+    tooltip: {
+      show: true,
+      backgroundColor: "rgba(0, 0, 0, .8)",
+      textStyle: {
+        color: "white",
+      },
+    },
+    xAxis: [
+      {
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+    ],
+    yAxis: [
+      {
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+    ],
+    series: [
+      {
+        name: 'Productos',
+        type: 'pie',
+        radius: '55%',
+        center: ['50%', '60%'],
+        data: data,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+        label: {
+          show: true,
+          formatter: '{b} : {c} ({d}%)',
+        },
+      },
+    ],
+  };
+}
+
+
 }
