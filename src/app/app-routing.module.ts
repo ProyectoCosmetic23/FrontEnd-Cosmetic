@@ -5,12 +5,16 @@ import { AdminLayoutSidebarCompactComponent } from './shared/components/layouts/
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
 import { AuthGuard } from './shared/services/auth.guard';
 
+
 const adminRoutes: Routes = [
+
+
   {
     path: 'dashboard',
     canActivate:[AuthGuard],
     loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
+ 
   {
     path: "proveedores",
     canActivate:[AuthGuard],
@@ -86,13 +90,10 @@ const adminRoutes: Routes = [
     loadChildren: () =>
       import("./views/users/user.module").then((m) => m.UserModule),
   },
-  {
-    path: "returns",
-    canActivate:[AuthGuard],
-    loadChildren: () =>
-      import("./views/returns/returns.module").then((m) => m.ReturnsModule),
-  },
+ 
+  // ... otras rutas
 ];
+
 
 const routes: Routes = [
   {

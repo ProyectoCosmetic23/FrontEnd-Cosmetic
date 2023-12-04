@@ -77,21 +77,20 @@ export class AuthService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 401) {
       // Credenciales incorrectas
-      return throwError(
-        "Credenciales incorrectas. Por favor, inténtelo de nuevo."
-      );
+      return throwError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
     } else if (error.status === 0) {
       // No se puede conectar al servidor
-      return throwError(
-        "No se puede conectar al servidor. Por favor, inténtelo más tarde."
-      );
+      return throwError("No se puede conectar al servidor. Por favor, inténtelo más tarde.");
     } else {
       // Otro tipo de error
-      return throwError(
-        "Error desconocido. Por favor, contacte al soporte técnico."
-      );
+      let errorMessage = "Error desconocido. Por favor, contacte al soporte técnico.";
+      if (error.error && error.error.error) {
+        errorMessage = error.error.error;
+      }
+      return throwError(errorMessage);
     }
   }
+  
 
   private checkAuthStatusAfterLogin(): Observable<boolean> {
     return this._authStatus.pipe(
@@ -133,6 +132,32 @@ export class AuthService {
     const storedUser = sessionStorage.getItem(this.userSessionStorageKey);
     return storedUser ? JSON.parse(storedUser) : null;
   }
+
+
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/users/recover`, { email });
+  }
+
+
+  changePassword(token: string, newPassword: string): Observable<any> {
+    const url = `${this.baseUrl}/api/change-password/${token}`;
+    console.log(url);
+    const body = { token, newPassword };
+  
+    return this.http.post(url, body).pipe(
+      map((response) => {
+        
+        return response;
+      }),
+      catchError((error) => {
+        // Imprime el error completo en la consola
+        console.error('Error al cambiar la contraseña:', error);
+        return throwError(error);
+      })
+    );
+  }
+  
 
   logout() {
     this._currentUser.next(null);

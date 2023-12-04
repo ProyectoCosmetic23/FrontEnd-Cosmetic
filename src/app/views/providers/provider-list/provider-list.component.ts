@@ -14,19 +14,20 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
     styleUrls: ['./provider-list.component.scss']
 })
 export class ProviderListComponent implements OnInit {
+    motivo: string
     loading: boolean;
     listProviders: any[] = []
     originalListProviders: any[] = [];
+    reasonAnulate: any = "";
     openedModal = false;
     searchControl: UntypedFormControl = new UntypedFormControl();
     providers;
-    filteredProviders;
+    filteredProviders: any[] = [];
     paginationId: string = 'providers-pagination';
 
     currentPage: number = 1;
     itemsPerPage: number = 6;
     countLabel: number;
-
 
     constructor(
         private _providersService: ProvidersService,
@@ -37,16 +38,15 @@ export class ProviderListComponent implements OnInit {
 
     ngOnInit(): void {
         this.getProviders();
-        
     }
 
- 
     getProviders() {
         const token = this.cookieService.get('token');
         this._providersService.getAllProviders().subscribe(
             (data) => {
+                console.log(data)
                 this.listProviders = data;
-                this.filteredProviders =this.listProviders;
+                this.filteredProviders = this.listProviders;
                 this.sortListProvidersById();
                 this.refreshListProviders();
             },
@@ -62,7 +62,7 @@ export class ProviderListComponent implements OnInit {
     actualizarCountLabel() {
         this.countLabel = this.filteredProviders.length;
     }
-//AJUSTAR LA LISTA DE CATEGORIAS
+    //AJUSTAR LA LISTA DE CATEGORIAS
     refreshListProviders() {
         // const totalRows = this.filteredProviders.length;
         // const remainingRows = 6 - (totalRows % 6);
@@ -85,26 +85,21 @@ export class ProviderListComponent implements OnInit {
             return 0;
         });
     }
-//CARGA LAS CATEGORIAS EN CADA PAGINA
+    //CARGA LAS CATEGORIAS EN CADA PAGINA
     loadData() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         let endIndex = startIndex + this.itemsPerPage;
-
         const totalPages = Math.ceil(this.filteredProviders.length / this.itemsPerPage);
-
         if (this.currentPage === totalPages) {
             const remainingRows = this.filteredProviders.length % this.itemsPerPage;
             if (remainingRows > 0) {
                 endIndex = startIndex + remainingRows;
             }
         }
-
         // Ajusta endIndex para que sea el próximo número divisible por 6
         const rowsToAdd = 6 - (endIndex % 6);
         endIndex += rowsToAdd;
-
         // this.filteredProviders = this.filteredProviders.slice(startIndex, endIndex);
-
         console.log('load data charged');
     }
 
@@ -114,56 +109,74 @@ export class ProviderListComponent implements OnInit {
         this.loadData();
     }
 
-    searchProvider($event){
-        
-        const value = ($event.target as HTMLInputElement).value;
-        if(value !==null && value !== undefined && value !== '')
-        {
-            this.filteredProviders = this.listProviders.filter(c => c.name_provider.toLowerCase().indexOf(value.toLowerCase()) !== -1
-            || this.changeProviderStateDescription(c.state_provider).toLowerCase().indexOf(value.toLowerCase()) !== -1)
-        }else{
+    searchProvider(event: Event) {
+        const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
+        if (searchTerm !== null && searchTerm !== undefined && searchTerm !== '') {
+            this.filteredProviders = this.listProviders.filter(provider =>
+                provider.name_provider.toLowerCase().includes(searchTerm) ||
+                this.changeProviderStateDescription(provider.state_provider).toLowerCase().includes(searchTerm)
+            );
+        } else {
             this.filteredProviders = this.listProviders;
         }
+
+        this.actualizarCountLabel();
+        this.refreshListProviders();
     }
 
-    changeProviderStateDescription(state_provider:boolean){
-        return state_provider ? 'Activo':'Inactivo';}
+    changeProviderStateDescription(state_provider: boolean) {
+        return state_provider ? 'Activo' : 'Inactivo';
+    }
 
     @ViewChild('changeStateModal', { static: true }) changeStateModal: any;
 
     openModal(idProvider: number) {
-        this._providersService.getProviderById(idProvider).subscribe
+        console.log(idProvider)
+        this._providersService.getProviderById(idProvider).subscribe()
         if (!this.openedModal) {
             this.openedModal = true;
-            this.modalService.open(this.changeStateModal, { centered: true }).result.then(
-                (result) => {
-                    if (result === 'Yes') {
-                        this._providersService.updateProviderStatus(idProvider).subscribe(
-                            (data) => {
+            this.modalService
+                .open(this.changeStateModal, { centered: true })
+                .result.then(
+                    (result) => {
+                        if (result === "Yes") {
+                            console.log("razon", this.reasonAnulate)
+                            this._providersService.updateProviderStatus(idProvider, this.reasonAnulate).subscribe(
 
-                                this.loading = false;
-                                this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                                console.log(data);
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 2000);
-                            },
-                            (error) => {
-                                this.loading = false;
-                                this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
-                                console.error('Error al cambiar de estado:', error);
-                            }
-                        );
-                    } else if (result === 'Cancel') {
+                                (data) => {
+                                    this.openedModal = false;
+                                    this.loading = false;
+                                    this.toastr.success(
+                                        "Cambio de estado realizado con éxito.",
+                                        "Proceso Completado",
+                                        { progressBar: true, timeOut: 2000 }
+                                    );
+                                    console.log(data);
+                                    this.openedModal = false;
+                                    this.getProviders()
+
+                                },
+                                (error) => {
+                                    this.loading = false;
+                                    this.toastr.error(
+                                        "Fallo al realizar el cambio de estado.",
+                                        "Error",
+                                        { progressBar: true, timeOut: 2000 }
+                                    );
+                                    console.error("Error al cambiar de estado:", error);
+                                    this.openedModal = false;
+                                }
+                            );
+                        } else if (result === "Cancel") {
+                            this.openedModal = false;
+                        }
+                    },
+                    (reason) => {
                         this.openedModal = false;
-                       
+                        location.reload();
                     }
-                },
-                (reason) => {
-                    this.openedModal = false;
-                    location.reload();
-                }
-            );
+                );
         }
-    }
+    };
 }

@@ -1,10 +1,5 @@
 import { Component, OnInit, inject } from "@angular/core";
-import {
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormControl } from "@angular/forms";
 import {
   ResolveEnd,
   ResolveStart,
@@ -28,12 +23,15 @@ export class SigninComponent implements OnInit {
   private router = inject(Router);
   loading: boolean;
   loadingText: string;
-  signinForm: FormGroup;
+
+  // Propiedad para mostrar/ocultar la contraseña
+  showPassword: boolean = false;
 
   constructor(private toastr: ToastrService) {}
+
   public myForm: FormGroup = this.fb.group({
-    email: ["julian@gmail.com", [Validators.required, Validators.email]],
-    password: ["Julian9*", [Validators.required, Validators.minLength(6)]],
+    email: ["marcela18@gmai.com", [Validators.required, Validators.email]],
+    password: ["M1234567*", [Validators.required, Validators.minLength(6)]],
   });
 
   ngOnInit() {
@@ -50,6 +48,29 @@ export class SigninComponent implements OnInit {
         this.loading = false;
       }
     });
+
+    // Inicializa el formulario de inicio de sesión con validaciones
+    this.myForm = this.fb.group({
+      email: new FormControl("", [Validators.required, Validators.email, this.allowedDomainsValidator(['gmail.com', 'hotmail.com', 'outlook.com'])]),
+      password: new FormControl("", [Validators.required, Validators.minLength(6)]),
+    });
+  }
+
+  // Función de validación para dominios permitidos
+  allowedDomainsValidator(allowedDomains: string[]) {
+    return (control: FormControl): { [key: string]: any } | null => {
+      const email: string = control.value;
+      const domain: string = email.substring(email.lastIndexOf('@') + 1);
+      if (!allowedDomains.includes(domain.toLowerCase())) {
+        return { 'invalidDomain': true };
+      }
+      return null;
+    };
+  }
+
+  // Toggle para mostrar/ocultar la contraseña
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   login() {

@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms'; 
-import { DashboardRoutingModule } from './dashboard-routing.module';
-import { DashboadDefaultComponent } from './dashboad-default/dashboad-default.component';
-import { NgxEchartsModule } from 'ngx-echarts';
-import * as echarts from 'echarts';
-import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import * as echarts from 'echarts';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { DashboadDefaultComponent } from './dashboad-default/dashboad-default.component';
+import { DashboardRoutingModule } from './dashboard-routing.module';
 
 
 @NgModule({
@@ -20,7 +20,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgxDatatableModule,
     NgbModule,
     DashboardRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
     
   ],
   declarations: [DashboadDefaultComponent]

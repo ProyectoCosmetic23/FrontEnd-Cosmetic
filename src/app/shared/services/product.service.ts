@@ -47,12 +47,21 @@ export class ProductService {
   }
   
   
-  productChangeStatus(id: any,token?: string): Observable<any> {
+  productChangeStatus(id: any, token?: string, reason?: string): Observable<any> {
     const headers = token ? new HttpHeaders().set('x-token', token) : undefined;
     const url = `${this.url}/changeState/${id}`;
-    return this.http.put<any>(url, {}, { headers });
   
+    // Agregamos la razón al cuerpo de la solicitud
+    const body = reason ? { reason_anulate: reason } : {};
+  
+    return this.http.put<any>(url, body, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error en la solicitud:', error);
+        return throwError('Ocurrió un error al cambiar el estado del producto. Por favor, inténtalo de nuevo.');
+      })
+    );
   }
+  
 
 
 getValidateProductExist(id_category: number , name_product: string): Observable<boolean>{

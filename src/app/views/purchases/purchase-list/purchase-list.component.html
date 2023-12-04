@@ -25,20 +25,17 @@
 
     <div class="col-md-12">
         <div class="card o-hidden">
-            <ngx-datatable class="material fullscreen" 
-            style="height: 460px;" 
+            <ngx-datatable
+            class="material fullscreen"
+            style="height: 460px"
             [columnMode]="'force'"
-             [headerHeight]="50"
-                [footerHeight]="50"
-                 [rowHeight]="60" 
-                 [scrollbarV]="true" 
-                 [rows]="filteredPurchases" 
-                 [externalPaging]="true"
-                [count]="filteredPurchases.length"
-                 [limit]="itemsPerPage" 
-                 [offset]="(currentPage - 1) * itemsPerPage"
-                (page)="onPageChange($event)">
-                
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="60"
+            [rows]="filteredPurchases"
+            [count]="filteredPurchases.length"
+            [limit]="6"
+        rowHeight="700px">
 
                 <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
@@ -112,6 +109,7 @@
                         
                     </ng-template>
                 </ngx-datatable-column>
+                
             </ngx-datatable>
         </div>
     </div>
