@@ -18,6 +18,7 @@ interface Comission {
 })
 export class ComissionsDetailComponent implements OnInit {
   listEmployees: any[];
+  activeEmployees: any[];
   listSales: any[];
   listComisionDetail: any[];
   totalCommissions: number
@@ -68,9 +69,17 @@ export class ComissionsDetailComponent implements OnInit {
     }).subscribe(
       (data: any) => {
         this.listEmployees = data.employees;
+    
+        // Aquí es donde ordenas los datos de comissionDetail
+        data.comissionDetail.sort((a, b) => {
+          return new Date(a.month_commission).getTime() - new Date(b.month_commission).getTime();
+        });
+    
+        // Y luego asignas los datos ya ordenados a listComisionDetail
         this.listComisionDetail = data.comissionDetail;
+    
         this.listSales = data.sales;
-
+    
         this.buildProvidersForm(this.comission);
         this.getComission();
       },
@@ -83,9 +92,6 @@ export class ComissionsDetailComponent implements OnInit {
       this.getComission();
     }
   }
-
-
-
   setViewMode() {
     const currentRoute = this.router.url;
     if (currentRoute.includes('/registrar')) {
@@ -116,7 +122,6 @@ export class ComissionsDetailComponent implements OnInit {
             } else {
               console.error('Error: Listas no definidas correctamente.');
             }
-
             console.log(idComissionDetail)
             console.log(idEmployee)
             this.loadingData = false;
@@ -130,21 +135,24 @@ export class ComissionsDetailComponent implements OnInit {
         }
       );
     }
-
   }
-
   loadEmployees() {
     this._comissionsService.getAllEmployees().subscribe(
       (data) => {
         this.listEmployees = data;
         console.log('Lista de empleados cargada:', this.listEmployees);
+  
+        // Filtrar empleados activos y agregarlos a la lista activeEmployees
+        this.activeEmployees = this.listEmployees.filter(employee => employee.state_employee === "Activo");
+  
+        console.log('Lista de empleados activos:', this.activeEmployees);
       },
       (error) => {
         console.error('Error al obtener la lista de empleados:', error);
       }
     );
   }
-
+  
   loadComissionDetail() {
     this._comissionsService.getAllComsDetail().subscribe(
       (data) => {
@@ -167,7 +175,6 @@ export class ComissionsDetailComponent implements OnInit {
       }
     );
   }
-
   updateComs(){
     const detail = this.formBasic.get('id_commission_detail')?.value;
     console.log("detalle", detail);
@@ -207,25 +214,21 @@ export class ComissionsDetailComponent implements OnInit {
     );
     this.month = selectedCommission.month_commission;
     console.log(this.month);
-  
     this._comissionsService.getSalesByEmployeeAndMonth(idEmployee, this.month).subscribe(
       (data) => {
         this.sales = data;
-        // console.log(this.sales);
-  
+        console.log(this.sales);
         // Inicializar totalSale antes de la iteración
         this.totalSale = 0;
-  
         // Iterar sobre los valores usando for...of
         for (let sale of this.sales) {
           // Convertir el total_sale a número antes de sumarlo
-          this.totalSale += parseFloat(sale.total_sale);
+          this.totalSale += parseFloat(sale.total_order);
         }
         //Calcular el total
         this.totalCommissions = this.totalSale * (this.commissionPercentage/100);
         console.log('Total de ventas:', this.totalSale);
         console.log('Total de comisiones:', this.totalCommissions);
-      
         // Actualizar el valor utilizando patchValue y NgZone
         this.ngZone.run(() => {
           this.formBasic.get('total_sales')?.patchValue(this.totalSale);
@@ -239,19 +242,14 @@ export class ComissionsDetailComponent implements OnInit {
       }
     );
   }
-
   findComsData(idComissionDetail: number, idEmployee: number) {
     console.log(idComissionDetail + " " + idEmployee + " ");
-
     if (!this.listComisionDetail || !this.listEmployees) {
       console.error('Error: Listas no definidas correctamente.');
       return;
     }
-
     const detail = this.listComisionDetail.find(detail => detail.id_commission_detail === idComissionDetail);
-
     const employee = this.listEmployees.find(employee => employee.id_employee === idEmployee);
-
     if (detail && employee) {
       this.selectedMonth = detail.month_commission;
       this.selectedPercentage = detail.commission_percentage;
@@ -260,21 +258,19 @@ export class ComissionsDetailComponent implements OnInit {
       console.error('Error: No se pudo encontrar detalle de comisión o empleado.');
       return;
     }
-
     console.log("selected employee", this.selectedEmployee);
     console.log("selected percentaje",this.selectedPercentage);
     console.log("selected mont",this.selectedMonth);
   }
-
   updateCommissionPercentage() {
     let selectedId = this.formBasic.get('id_commission_detail')?.value;
     selectedId = Number(selectedId);
     const selectedCommission = this.listComisionDetail.find((commission) => commission.id_commission_detail === selectedId);
     if (selectedCommission) {
-      this.commissionPercentage = selectedCommission.commission_percentage
-
+      this.commissionPercentage = selectedCommission.commission_percentage;
       this.formBasic.get('commission_percentage')?.setValue(selectedCommission.commission_percentage);
     } else {
+      this.commissionPercentage = 0; // O el valor predeterminado que desees asignar
       this.formBasic.get('commission_percentage')?.setValue(0);
     }
   }
@@ -290,7 +286,6 @@ export class ComissionsDetailComponent implements OnInit {
       commission_percentage: [i.commission_percentage],
     });
   }
-
   handleNameProviderSelection(event: any) {
     this.comission.id_commission_detail = event.target.value;
     // Busca el porcentaje correspondiente en la lista de comisiones
@@ -313,13 +308,9 @@ export class ComissionsDetailComponent implements OnInit {
         (data) => {
           console.log(data);
           this.loading = true;
-          setTimeout(() => {
             this.loading = false;
             this.toastr.success('Comisión creada con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
-            setTimeout(() => {
-              this.router.navigate(['/comisiones']);
-            }, 3000);
-          }, 3000);
+            this.router.navigate(['/comisiones']);
         },
         (error) => {
           this.loading = false;

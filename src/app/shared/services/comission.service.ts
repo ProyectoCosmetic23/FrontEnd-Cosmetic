@@ -13,12 +13,13 @@ export class ComissionsService {
   private url2 = environment.url +'/api/detailComs';
   private url3 = environment.url +'/api/employees';
   private url4 = environment.url +'/api/sales';
+  private url5 = environment.url +'/api/orders';
   token: any;
   
   constructor(private http: HttpClient,  private cookieService: CookieService) {this.token = this.cookieService.get('token'); }
 
   getSalesByEmployeeAndMonth(idEmployee: number, month: string): Observable<any> {
-    const url = `${this.baseUrl}/sales/${idEmployee}/${month}`;
+    const url = `${this.baseUrl}/orders/${idEmployee}/${month}`;
     return this.http.get(url);
   }
 
@@ -29,15 +30,17 @@ export class ComissionsService {
   }
 
   getAllSales(): Observable<any> {
-    return this.http.get(this.url4);
+    return this.http.get(this.url5);
   }
 
   getComsById(comsId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${comsId}`);
   }
 
-  getAllComsDetail(): Observable<any> {
-    return this.http.get(this.url2);
+  getAllComsDetail(): Observable<any[]> {
+    const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
+    console.log("Los headers de detalle comisiones", headers);
+    return this.http.get<any[]>(this.url2, { headers });
   }
 
   createComs(comisionData: any): Observable<any> {
@@ -56,4 +59,5 @@ export class ComissionsService {
   getComissionDetailById(idComissionDetail: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/detail/${idComissionDetail}`);
   }
+  
 }
