@@ -3,7 +3,7 @@
     <h1 *ngIf="viewMode === 'edit'">Editar Producto</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Producto</h1>
     <ul>
-        <li><a [routerLink]="['/products']">Compras</a></li>
+        <li><a>Compras</a></li>
         <li *ngIf="viewMode === 'new'">Registrar Producto</li>
         <li *ngIf="viewMode === 'edit'">Editar Producto</li>
         <li *ngIf="viewMode === 'print'">Ver Detalle de Producto</li>

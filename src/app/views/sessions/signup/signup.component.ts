@@ -26,7 +26,6 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.token = params['token'];
-      console.log(this.token);
     });
 
     // Inicializa el formulario de cambio de contraseña con validaciones
