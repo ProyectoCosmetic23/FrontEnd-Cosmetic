@@ -118,7 +118,8 @@ export class ProvidersDetailComponent implements OnInit {
       ]],
       phone_provider: [i.phone_provider, [
         Validators.required,
-        Validators.maxLength(80),
+        Validators.maxLength(10),
+        Validators.minLength(7),
         Validators.pattern(/^[0-9\s]+$/)
       ]],
       reason_anulate:[i.reason_anulate],

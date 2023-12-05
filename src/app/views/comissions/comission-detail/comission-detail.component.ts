@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ComissionsService } from 'src/app/shared/services/comission.service';
@@ -17,6 +17,7 @@ interface Comission {
   styleUrls: ['./comission-detail.component.scss']
 })
 export class ComissionsDetailComponent implements OnInit {
+  noSales: boolean = false;
   listEmployees: any[];
   activeEmployees: any[];
   listSales: any[];
@@ -32,6 +33,7 @@ export class ComissionsDetailComponent implements OnInit {
   totalSales: number;
   selectedEmployee: string;
   selectedMonth: Date;
+  message: string = "";
   selectedPercentage: number;
   totalSale: number;
   viewMode: 'new' | 'print' = 'new';
@@ -49,7 +51,8 @@ export class ComissionsDetailComponent implements OnInit {
     private ngZone: NgZone,
     private router: Router,
     private _comissionsService: ComissionsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {
     this.formBasic = this.formBuilder.group({});
   }
@@ -225,6 +228,7 @@ export class ComissionsDetailComponent implements OnInit {
           // Convertir el total_sale a número antes de sumarlo
           this.totalSale += parseFloat(sale.total_order);
         }
+
         //Calcular el total
         this.totalCommissions = this.totalSale * (this.commissionPercentage/100);
         console.log('Total de ventas:', this.totalSale);
@@ -234,6 +238,14 @@ export class ComissionsDetailComponent implements OnInit {
           this.formBasic.get('total_sales')?.patchValue(this.totalSale);
           this.formBasic.get('total_commission')?.patchValue(this.totalCommissions);
         });
+        if (this.totalSale == 0){
+          this.noSales = true
+          console.log(this.noSales)
+          this.message = "El empleado no ha realizado ventas"        
+        }else{
+          this.noSales = false;
+          console.log(this.noSales)
+        }
   
         console.log('Total de ventas:', this.totalSale);
       },
