@@ -53,9 +53,16 @@
                                 class="text-danger">
                                 <div *ngIf="formBasic.get('name_provider').hasError('required')">El nombre del proveedor
                                     es obligatorio.</div>
-                                <div *ngIf="formBasic.get('name_provider').hasError('minlength')">El nombre debe ser
+                                <div *ngIf="formBasic.get('name_provider').hasError('minlength')">El nombre del proveedor debe ser
                                     mayor de 5 caracteres.</div>
-                                <div *ngIf="formBasic.get('name_provider').hasError('maxlength')">El nombre no puede
+                                <div *ngIf="formBasic.get('name_provider').hasError('maxlength')">El nombre del proveedor no puede
+                                    superar los 50 caracteres.</div>
+                            </div>
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('name_provider').invalid && (formBasic.get('name_provider').dirty || formBasic.get('name_provider').touched)"
+                                class="text-danger">
+                                <div *ngIf="formBasic.get('name_provider').hasError('minlength')">El nombre del proveedor debe ser
+                                    mayor de 5 caracteres.</div>
+                                <div *ngIf="formBasic.get('name_provider').hasError('maxlength')">El nombre del proveedor no puede
                                     superar los 50 caracteres.</div>
                             </div>
                         </div>
@@ -71,13 +78,21 @@
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('email_provider').touched">
                                 <div *ngIf="formBasic.get('email_provider').hasError('required')" class="text-danger">
-                                    El campo Correo es obligatorio.
+                                    El campo correo es obligatorio.
                                 </div>
                                 <div *ngIf="formBasic.get('email_provider').hasError('email')" class="text-danger">
-                                    El campo Correo debe ser un formato de correo electrónico válido.
+                                    El campo correo debe estar en un formato de correo electrónico válido.
                                 </div>
                                 <div *ngIf="formBasic.get('email_provider').hasError('maxlength')" class="text-danger">
-                                    El campo Correo no puede superar los 80 caracteres.
+                                    El campo correo no puede superar los 80 caracteres.
+                                </div>
+                            </div>
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('email_provider').touched">
+                                <div *ngIf="formBasic.get('email_provider').hasError('email')" class="text-danger">
+                                    El campo correo debe estar en un formato de correo electrónico válido.
+                                </div>
+                                <div *ngIf="formBasic.get('email_provider').hasError('maxlength')" class="text-danger">
+                                    El campo correo no puede superar los 80 caracteres.
                                 </div>
                             </div>
                         </div>
@@ -94,10 +109,17 @@
 
                             <div *ngIf="viewMode === 'new' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
                                 class="text-danger">
-                                El campo Dirección es obligatorio.
+                                El campo dirección es obligatorio.
                             </div>
                             <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
-                                El campo Dirección no puede superar los 80 caracteres.
+                                El campo dirección no puede superar los 80 caracteres.
+                            </div>
+
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
+                                class="text-danger">
+                                <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
+                                    El campo dirección no puede superar los 80 caracteres.
+                                </div>
                             </div>
                         </div>
 
@@ -114,7 +136,21 @@
                                     El campo teléfono es obligatorio.
                                 </div>
                                 <div *ngIf="formBasic.get('phone_provider').hasError('maxlength')" class="text-danger">
-                                    El campo teléfono no puede superar los 80 caracteres.
+                                    El campo teléfono no puede superar los 10 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('phone_provider').hasError('minlength')" class="text-danger">
+                                    El campo teléfono debe tener al menos 7 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('phone_provider').hasError('pattern')" class="text-danger">
+                                    El campo teléfono debe estar en el formato correcto.
+                                </div>
+                            </div>
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('phone_provider').touched">
+                                <div *ngIf="formBasic.get('phone_provider').hasError('maxlength')" class="text-danger">
+                                    El campo teléfono no puede superar los 10 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('phone_provider').hasError('minlength')" class="text-danger">
+                                    El campo teléfono debe tener al menos 7 caracteres.
                                 </div>
                                 <div *ngIf="formBasic.get('phone_provider').hasError('pattern')" class="text-danger">
                                     El campo teléfono debe estar en el formato correcto.
@@ -147,6 +183,17 @@
                                 <div *ngIf="formBasic.get('name_contact').hasError('required')" class="text-danger">
                                     El nombre del contacto es obligatorio.
                                 </div>
+                                <div *ngIf="formBasic.get('name_contact').hasError('pattern')" class="text-danger">
+                                    El nombre del contacto debe contener solo letras y espacios.
+                                </div>
+                                <div *ngIf="formBasic.get('name_contact').hasError('minlength')" class="text-danger">
+                                    El nombre del contacto debe tener al menos 3 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('name_contact').hasError('maxlength')" class="text-danger">
+                                    El nombre del contacto no puede superar los 50 caracteres.
+                                </div>
+                            </div>
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('name_contact').touched">
                                 <div *ngIf="formBasic.get('name_contact').hasError('pattern')" class="text-danger">
                                     El nombre del contacto debe contener solo letras y espacios.
                                 </div>
