@@ -18,6 +18,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
       echarts
     }),
     NgxDatatableModule,
+    
     NgbModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
