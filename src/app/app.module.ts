@@ -14,11 +14,9 @@ import { AuthService } from "./shared/services/auth.service";
 import { FormsModule } from '@angular/forms';
 
 
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
-  
     BrowserAnimationsModule,
     FormsModule,
     BrowserModule,

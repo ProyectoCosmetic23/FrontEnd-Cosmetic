@@ -83,7 +83,6 @@ export class EmployeeDetailComponent implements OnInit {
 
     }
     private getEmployeeByID(id: number, token?: string): void {
-        console.log('Token:', token); // Agrega este log para verificar el token
         this.loading = true;
         this.employeesService.getEmployeesById(id, token).subscribe({
             next: (response: any) => {
@@ -91,7 +90,6 @@ export class EmployeeDetailComponent implements OnInit {
                 this.setDataEmployee();
             },
             error: (err) => {
-                console.log('err', err);
                 this.loading = false;
             },
             complete: () => {
@@ -117,7 +115,6 @@ export class EmployeeDetailComponent implements OnInit {
             this.employeesService.createEmployee(employeeData,token).subscribe(
                 (response) => {
                     this.loading = false;
-                    console.log("Éxito al crear empleado: ", response);
                     this.submit();
                 },
                 (error) => {
@@ -259,8 +256,6 @@ export class EmployeeDetailComponent implements OnInit {
 
 
     saveChanges() {
-        console.log('editar')
-
         if (this.employeeForm.valid) {
           const id = Number(this.id); 
           const updatedData = {

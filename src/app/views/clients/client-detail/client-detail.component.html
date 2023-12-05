@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="col-md-6 form-group mb-3">
                         <label for="nit_or_id_client">Cédula o nit <span class="text-danger">*</span></label>
-                        <input type="text"  class="form-control" id="nit_or_id_client" formControlName="nit_or_id_client" (change)="checkCedulaAvailability()">
+                        <input type="text" minlength="6" maxlength="10" class="form-control" id="nit_or_id_client" formControlName="nit_or_id_client" (change)="checkCedulaAvailability()">
                         <div *ngIf="clientForm.get('nit_or_id_client').touched && clientForm.get(' nit_or_id_client').hasError('required')" class="error-message">
                             El campo cédula o nit es obligatorio.
                         </div>
@@ -92,7 +92,7 @@
                     
                     <div class="col-md-6 form-group mb-3">
                         <label for="phone_client">Teléfono<span class="text-danger">*</span></label>
-                        <input class="form-control" id="phone_client" formControlName="phone_client" required>
+                        <input class="form-control" minlength="9" maxlength="10" id="phone_client" formControlName="phone_client" required>
                         <div *ngIf="clientForm.get('phone_client').touched && clientForm.get('phone_client').hasError('required')"class="error-message">
                             El campo teléfono es obligatorio.
                         </div>
@@ -100,7 +100,7 @@
                             El campo teléfono no puede superar los 80 caracteres.
                         </div>
                         <div *ngIf="clientForm.get('phone_client').hasError('pattern')"class="error-message">
-                            El campo teléfono debe seguir un formato válido.
+                            El campo teléfono debe tener 10 numeros.
                         </div>
                     </div>
                     <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">

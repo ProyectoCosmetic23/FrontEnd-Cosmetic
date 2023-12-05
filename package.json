@@ -40,6 +40,7 @@
     "feather-icons": "4.7.3",
     "flatted": "^3.2.9",
     "highlight.js": "^11.6.0",
+    "ng-select": "^1.0.2",
     "ngx-bootstrap": "^9.0.0",
     "ngx-color-picker": "11.0.0",
     "ngx-cookie-service": "^17.0.0",

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ClientsService } from 'src/app/shared/services/client.service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -23,14 +23,18 @@ export class ClientListComponent implements OnInit {
     currentPage = 1; // Propiedad para rastrear la página actual
     itemsPerPage = 6; // El número de filas por página
     countLabel: number;
-
+    reasonForm: FormGroup;
+   
     constructor(
         private _clientService: ClientsService,
         private modalService: NgbModal,
         private toastr: ToastrService,) { }
+        private formBuilder: FormBuilder
 
     ngOnInit(): void {
+        
         this.getClients();
+        this.reasoniniForm();
         
     }
 
@@ -49,17 +53,6 @@ export class ClientListComponent implements OnInit {
     actualizarCountLabel() {
         this.countLabel = this.filteredClients.length;
     }
-//AJUSTAR LA LISTA DE CATEGORIAS
-    refreshListClients() {
-        // const totalRows = this.filteredClients.length;
-        // const remainingRows = 6 - (totalRows % 6);
-
-        // for (let i = 0; i < remainingRows; i++) {
-        //     // this.filteredClients.push({}); // Agrega filas vacías
-        // }
-
-        this.loadData();
-    }
 
     sortListClientsById() {
         this.filteredClients.sort((a, b) => {
@@ -72,33 +65,11 @@ export class ClientListComponent implements OnInit {
             return 0;
         });
     }
-//CARGA LAS CATEGORIAS EN CADA PAGINA
-    loadData() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        let endIndex = startIndex + this.itemsPerPage;
-
-        const totalPages = Math.ceil(this.filteredClients.length / this.itemsPerPage);
-
-        if (this.currentPage === totalPages) {
-            const remainingRows = this.filteredClients.length % this.itemsPerPage;
-            if (remainingRows > 0) {
-                endIndex = startIndex + remainingRows;
-            }
-        }
-
-        // Ajusta endIndex para que sea el próximo número divisible por 6
-        const rowsToAdd = 6 - (endIndex % 6);
-        endIndex += rowsToAdd;
-
-        // this.filteredClients = this.filteredClients.slice(startIndex, endIndex);
-
-        console.log('load data charged');
-    }
 
     onPageChange(event: any) {
         console.log('onPageChange event:', event);
         this.currentPage = event.offset + 1;
-        this.loadData();
+       
     }
 
     searchClient($event){
@@ -115,7 +86,14 @@ export class ClientListComponent implements OnInit {
 
     changeClientStateDescription(state_client:boolean){
         return state_client ? 'Activo':'Inactivo';}
-
+        
+        private reasoniniForm(): void {
+            this.reasonForm = this.formBuilder.group({
+              reason_anulate: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(220)]],
+        
+            });
+        
+          }
 
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
 

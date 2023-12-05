@@ -5472,6 +5472,13 @@ neo-async@^2.6.2:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+ng-select@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/ng-select/-/ng-select-1.0.2.tgz"
+  integrity sha512-QMh5NqnYrsK18J8vmRBjpcv4o9euGd5Grs+4sutNNWWDX65rJlLh+S6oUq3uvo35S2v/ZMcMMR/e5f0gMlwxlA==
+  dependencies:
+    tslib "^1.9.0"
+
 ngx-bootstrap@^9.0.0:
   version "9.0.0"
   resolved "https://registry.npmjs.org/ngx-bootstrap/-/ngx-bootstrap-9.0.0.tgz"

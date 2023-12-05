@@ -47,3 +47,20 @@
     word-wrap: break-word;
     white-space: normal;
   }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Establece el contenedor para ocupar al menos el 100% del alto de la ventana */
+}
+
+.ngx-datatable {
+    flex: 1; /* Hace que ngx-datatable ocupe el espacio disponible en el contenedor */
+}
+
+.footer {
+    flex-shrink: 0; /* Evita que el pie de página se contraiga */
+    padding: 10px; /* Ajusta el espacio alrededor del pie de página según sea necesario */
+    background-color: #f0f0f0; /* Ajusta el color de fondo según sea necesario */
+    text-align: center; /* Alinea el contenido del pie de página en el centro */
+}

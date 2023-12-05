@@ -4,7 +4,7 @@
     <h1 *ngIf="viewMode === 'print'">Detalle de Compra</h1>
     <h1 *ngIf="viewMode === 'print'"></h1>
     <ul>
-      <li><a [routerLink]="['/purchases']">Compras</a></li>
+      <li><a>Compras</a></li>
       <li *ngIf="viewMode === 'new'">Registrar Compra</li>
       <li *ngIf="viewMode === 'print'"> Detalle de Compra</li>
     </ul>
@@ -30,15 +30,13 @@
                 <div class="form-group">
 
                   <input type="text" class="form-control" id="invoice_number" name="invoice_number"
-                    formControlName="invoice_number" style="width: 100%;" (keyup)="validatePurchaseExist()" />
+                    formControlName="invoice_number" style="width: 100%;"  />
                   <div
                     *ngIf="purchaseForm.get('invoice_number').touched && purchaseForm.get('invoice_number').hasError('required')"
                     class="error-message">
                     El campo es obligatorio.
                   </div>
-                  <div *ngIf="viewMode === 'new'">
-                    <div *ngIf="purchaseExists" class="error-message">El número de factura ya existe.</div>
-                  </div>
+              
                 </div>
               </div>
               <div class="col-md-6">
@@ -127,7 +125,7 @@
               </div>
             
               <div class="col-md-5">
-                <label for="reason_anulate">Motivo de anulación</label>
+                <label for="reason_anulate" *ngIf=" !purchaseForm.get('state_purchase').value">Motivo de anulación</label>
                 <div  *ngIf=" !purchaseForm.get('state_purchase').value">
                   <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"
                     [ngStyle]="{ 'max-width.px': 800 }" disabled [style.resize]="'none'"></textarea>

@@ -1,8 +1,8 @@
 <div class="breadcrumb">
     <h1>Categorías de Productos</h1>
     <ul>
-        <li><a [routerLink]="['/categories']">Categorías</a></li>
-        <li><a [routerLink]="['/categories']">Categorías</a></li>
+        <li><a >Compras</a></li>
+        <li><a>Categorías de productos</a></li>
     </ul>
 </div>
 
@@ -26,19 +26,17 @@
 
     <div class="col-md-12">
         <div class="card o-hidden">
-            <ngx-datatable class="material fullscreen" 
-            style="height: 460px;" 
+            <ngx-datatable
+            class="material fullscreen"
+            style="height: 100px"
             [columnMode]="'force'"
-             [headerHeight]="50"
-                [footerHeight]="50"
-                 [rowHeight]="60" 
-                 [scrollbarV]="true" 
-                 [rows]="filteredCategories" 
-                 [externalPaging]="true"
-                [count]="filteredCategories.length"
-                 [limit]="itemsPerPage" 
-                 [offset]="(currentPage - 1) * itemsPerPage"
-                (page)="onPageChange($event)">
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="60"
+            [rows]="filteredCategories"
+            [count]="filteredCategories.length"
+            [limit]="6"
+            rowHeight="700px">
                 
                 <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
                     <ng-template ngx-datatable-header-template>
@@ -108,7 +106,7 @@
         <button type="button" class="btn btn-outline-secondary btn"
             (click)="modal.dismiss('cancel')">Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
-            (click)="modal.close('Ok')">Aceptar</button>
+            (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
     </div>
 </ng-template>
 

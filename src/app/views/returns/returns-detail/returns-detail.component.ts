@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ReturnsService } from "src/app/shared/services/returns.service";
-import { ProductService } from 'src/app/shared/services/product.service';
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
-import { CommonModule } from '@angular/common';
 import { PaymentsService } from 'src/app/shared/services/payment.service';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProductService } from 'src/app/shared/services/product.service';
+
 
 // import { CookieService } from "ngx-cookie-service";
 
@@ -27,7 +29,7 @@ export class ReturnsDetailComponent implements OnInit {
   productsFormArray: FormArray;
 
   // Propiedades para el modo de vista
-  viewMode: "detaild";
+  viewMode:  "detaild"= "detaild";
 
   // Otras propiedades
   id: string;
@@ -49,19 +51,34 @@ export class ReturnsDetailComponent implements OnInit {
   error_client: boolean = false;
   listPayments: any[] = [];
 
-  listProductsDevol: any[] = [];
+  modalAbierto = false;
+  selectedProductId: number;
+  selectedProductValue: number;
+  returnQuantity: number = 0;
+  calculatedValue: number = 0;
+  returnReason: string = '';
+  returnValue: number ;
+
+  filteredProducts: any[];
+
+  wishToRetire: boolean = false;
   
+
+
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private _ordersService: OrdersService,
     private _returnsService: ReturnsService,
+    private _paymentService: PaymentsService,
     private cookieService: CookieService,
     private toastr: ToastrService,
-    private productsService: ProductService,
-    private _ordersService: OrdersService,
-    private _paymentService: PaymentsService,
+
+
+    private _productService: ProductService,
+    private modalService: NgbModal
   ) {
     this.productsFormArray = this.formBuilder.array([]);
   }
@@ -76,27 +93,25 @@ export class ReturnsDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
-    // this.getproductByIdOrder();
     this.formBasic = this.formBuilder.group({});
     this.formBasic.addControl("products", this.productsFormArray);
     this.getPaymentsForOrder();
+    this.getProducts();
 
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
- 
 
-  // Método que determina el modo de vista (nuevo o detalle) según la ruta actual
+  // Método que determina el modo de vista (detalle) según la ruta actual
   setViewMode() {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/detaild/")) {
       this.viewMode = "detaild";
     }
+ 
   }
-
+  
   // -------------- INICIO: Métodos para obtener datos -------------- //
-
-   //pagos 
   getPaymentsForOrder() {
     if (this.viewMode === 'detaild') {
       // Convertir this.id a número usando parseInt
@@ -116,14 +131,12 @@ export class ReturnsDetailComponent implements OnInit {
       );
     }
   }
-
-  // Método para obtener un pedido y sus detalles
   // Método para obtener un pedido y sus detalles
   getOrder() {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/orders/returns/")) {
       // Antes de cargar los datos, establece loadingData en true
-      this._ordersService.getOrderById(this.id).subscribe(
+      this._returnsService.getOrderById(this.id).subscribe(
         (data) => {
           this.order = data;
           const idClient = this.order.order.id_client;
@@ -169,7 +182,6 @@ export class ReturnsDetailComponent implements OnInit {
     }
   }
 
-
   // Método para encontrar información relacionada con el pedido (cliente, empleado, productos)
   findOrderData(clientId: number, employeeId: number, products: any) {
     console.log(clientId + " " + employeeId + " " + products.id_product);
@@ -203,7 +215,7 @@ export class ReturnsDetailComponent implements OnInit {
     this._returnsService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
-        //console.log(this.listClients);
+       
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -216,7 +228,7 @@ export class ReturnsDetailComponent implements OnInit {
     this._returnsService.getAllEmployees().subscribe(
       (data) => {
         this.listEmployees = data;
-        //console.log(this.listEmployees);
+        
       },
       (error) => {
         console.error("Error al obtener Empleados:", error);
@@ -224,14 +236,12 @@ export class ReturnsDetailComponent implements OnInit {
     );
   }
 
-
-
   // Método para obtener todos los productos
   getProducts() {
     this._returnsService.getAllProducts().subscribe(
       (data) => {
         this.listProducts = data;
-        console.log(this.listProducts);
+      
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
@@ -239,29 +249,64 @@ export class ReturnsDetailComponent implements OnInit {
     );
   }
 
-  // // Método para obtener todos los productos
-  // getproductByIdOrder() {
-  //   const currentRoute = this.router.url;
-  //   if (currentRoute.includes("/orders/returns/")) {
-  //     this._returnsService.getProductByIdOrder(this.id).subscribe(
-  //       (data) => {
-  //         this.listProductsDevol = data;
-         
-  //        // console.log(this.listProductsDevol);
-  //       },
-  //       (error) => {
-  //         console.error("Error al obtener Productos:", error);
-  //       }
-  //     );
-  //   }
-  // }
-
   // Método para obtener el precio unitario de un producto por su ID
   getProductPrice(idProduct: number): number | undefined {
     const product = this.listProducts.find((p) => p.id_product === idProduct);
     return product ? product.product_price : undefined;
   }
 
+  onClientSelected(event: any): void {
+    this.selected_client_id = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el nombre del cliente" ||
+      event.target.value == undefined
+    ) {
+      this.error_client = true;
+    } else {
+      this.error_client = false;
+    }
+
+    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
+    console.log("Cliente seleccionado:", this.selected_client_id);
+  }
+
+  onEmployeeSelected(event: any): void {
+    // Accede al valor seleccionado
+    this.selected_employee_id = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el nombre del empleado" ||
+      event.target.value == undefined
+    ) {
+      // this.error_employee = true;
+    } else {
+      // this.error_employee = false;
+    }
+
+    // Ahora `selectedClientId` contiene el ID del cliente seleccionado
+    console.log("Empleado seleccionado:", this.selected_employee_id);
+  }
+
+  onPaymentTypeSelected(event: any): void {
+    // Accede al valor seleccionado
+    this.selected_payment_type = event.target.value;
+
+    if (
+      event.target.value == null ||
+      event.target.value == "Seleccione el tipo de pago" ||
+      event.target.value == undefined
+    ) {
+      // this.error_payment_type = true;
+    } else {
+      // this.error_payment_type = false;
+    }
+
+    // Ahora `selectedPaymentType` contiene el tipo de pago seleccionado
+    console.log("Tipo de pago seleccionado:", this.selected_payment_type);
+  }
 
   // -------------- INICIO: Funciones para manipular Productos -------------- //
 
@@ -365,7 +410,7 @@ export class ReturnsDetailComponent implements OnInit {
       products: this.productsFormArray.value,
     };
 
-
+    // this.submitOrder(newOrder);
   }
 
   checkProducts() {
@@ -381,8 +426,7 @@ export class ReturnsDetailComponent implements OnInit {
         !product.product_price ||
         !product.product_quantity
       ) {
-        this.showFormWarning("Completa todos los campos del producto");
-        throw new Error("Campos de producto incompletos");
+      
       }
     }
   }
@@ -395,7 +439,7 @@ export class ReturnsDetailComponent implements OnInit {
           this.selected_client === "Seleccione el nombre del cliente" ||
           this.selected_client_id == null ||
           this.selected_client_id == undefined,
-        errorMessage: "Seleccione un cliente",
+        // errorMessage: "Seleccione un cliente",
       },
       {
         variable: "error_employee",
@@ -403,7 +447,7 @@ export class ReturnsDetailComponent implements OnInit {
           this.selected_employee === "Seleccione el nombre del empleado" ||
           this.selected_employee_id == null ||
           this.selected_employee_id == undefined,
-        errorMessage: "Seleccione un empleado",
+        // errorMessage: "Seleccione un empleado",
       },
       {
         variable: "error_payment_type",
@@ -411,7 +455,7 @@ export class ReturnsDetailComponent implements OnInit {
           this.selected_payment_type === "Seleccione el tipo de pago" ||
           this.selected_payment_type == null ||
           this.selected_payment_type == undefined,
-        errorMessage: "Seleccione un tipo de pago",
+        // errorMessage: "Seleccione un tipo de pago",
       },
     ];
 
@@ -420,31 +464,144 @@ export class ReturnsDetailComponent implements OnInit {
         this[condition.variable] || condition.condition;
 
       if (this[condition.variable]) {
-        this.showFormWarning(condition.errorMessage);
-        throw new Error(`${condition.variable} no seleccionado`);
+        // this.showFormWarning(condition.errorMessage);
+        // throw new Error(`${condition.variable} no seleccionado`);
       }
     });
 
     // Reset errors if all conditions are false
-    if (!conditions.some((condition) => this[condition.variable])) {
-      conditions.forEach((condition) => {
-        this[condition.variable] = false;
-      });
-    }
+    // if (!conditions.some((condition) => this[condition.variable])) {
+    //   conditions.forEach((condition) => {
+    //     this[condition.variable] = false;
+    //   });
+    // }
   }
 
   showFormWarning(message: string) {
     this.toastr.warning(message, "Advertencia");
   }
 
+  // submitOrder(newOrder) {
+  //   this._returnsService.createOrder(newOrder).subscribe(
+  //     (response) => {
+  //       this.showSuccessMessage("Pedido creado exitosamente");
+  //       this.router.navigate(["/orders"]);
+  //     },
+  //     (error) => {
+  //       this.handleError("Error al crear el pedido:", error);
+  //     }
+  //   );
+  // }
 
 
-  showSuccessMessage(message: string) {
-    this.toastr.success(message, "Éxito");
-  }
+  // showSuccessMessage(message: string) {
+  //   this.toastr.success(message, "Éxito");
+  // }
 
-  handleError(errorMessage: string, error: any) {
-    console.error(errorMessage, error);
-    this.toastr.error("Error al crear el pedido", "Error");
+  // handleError(errorMessage: string, error: any) {
+  //   console.error(errorMessage, error);
+  //   this.toastr.error("Error al crear el pedido", "Error");
+  // }
+
+
+
+
+
+ // Modal paraa el manejo de devolucion 
+
+ openRetireModal(productId: number, productValue: number, content: any): void {
+  this.selectedProductId = productId;
+  this.selectedProductValue = productValue;
+  this.returnQuantity = 0;
+  this.returnReason = '';
+  this.returnValue ;
+  // Resto del código...
+  this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+}
+
+
+
+    
+retireProduct(): void {
+    if (this.selectedProductId && this.returnQuantity) {    
+        const data = {
+            return_quantity: this.returnQuantity,
+            return_reason: this.returnReason,
+            return_value: this.returnValue,
+        };
+
+        // Llamada a la API para dar de baja el producto
+        this._returnsService.retireProduct(this.selectedProductId, data).subscribe(
+            (response) => {
+                this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
+                this.toastr.success('Producto dado de baja exitosamente.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                this.modalService.dismissAll();
+
+                console.log('Producto dado de baja exitosamente', response);
+            },
+            (error) => {
+                console.error('Error al dar de baja el producto', error);
+                this.toastr.error('Fallo al dar de baja el producto.', 'Error', { progressBar: true, timeOut: 2000 });
+            }
+        );
+    }
+}
+
+
+updateProductQuantity(productId: number, quantityToSubtract: number): void {
+  const productToUpdate = this.order_detail_products.find(product => product.id_product === productId);
+
+  if (productToUpdate) {
+    productToUpdate.product_quantity -= quantityToSubtract;
   }
 }
+
+
+
+
+
+
+//PRODUCTOS 
+getProductNameById(productId: number): string {
+  const product = this.listProducts.find(p => p.id_product === productId);
+  return product ? product.name_product : '';
+  }
+
+calculateUpdatedValue(originalValue: number): number {
+  // Asegúrate de que returnQuantity esté definido en tu componente
+  return this.returnQuantity * originalValue;
+  }
+  
+  
+  
+
+
+
+filterData(value: string) {
+  if (value) {
+      value = value.toLowerCase();
+  } else {
+      this.filteredProducts = [...this.listProducts];
+      return;
+  }
+
+  this.filteredProducts = this.listProducts.filter(productc => {
+      const nombreMatch = productc.name_product.toLowerCase().includes(value);
+      const cost_priceMatch = productc.cost_price.toLowerCase().includes(value);
+      const estadoMatch = productc.state_product.toLowerCase().includes(value);
+
+      return nombreMatch || cost_priceMatch || estadoMatch;
+  });
+
+
+}
+
+
+//Metodo para manejar la devolucion del producto
+
+
+
+
+}
+
+

@@ -2,7 +2,7 @@
     <div class="breadcrumb">
         <h1>Clientes</h1>
         <ul>
-            <li><a href="#">Ventas</a></li>
+            <li><a >Ventas</a></li>
             <li>Clientes</li>
         </ul>
         </div>
@@ -26,19 +26,17 @@
         
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable class="material fullscreen" 
-                style="height: 460px;" 
+                <ngx-datatable
+                class="material fullscreen"
+                style="height: 100px"
                 [columnMode]="'force'"
-                 [headerHeight]="50"
-                    [footerHeight]="50"
-                     [rowHeight]="60" 
-                     [scrollbarV]="true" 
-                     [rows]="filteredClients" 
-                     [externalPaging]="true"
-                    [count]="filteredClients.length"
-                     [limit]="itemsPerPage" 
-                     [offset]="(currentPage - 1) * itemsPerPage"
-                    (page)="onPageChange($event)">
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="60"
+                [rows]="filteredClients"
+                [count]="filteredClients.length"
+                [limit]="6"
+                rowHeight="700px">
 
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
@@ -100,7 +98,7 @@
 </div>
 
 <ng-template #deleteConfirmModal let-modal>
-    <div class="modal-header">
+    <!-- <div class="modal-header">
         <h4 class="modal-title" id="modal-title">Cambiar estado cliente</h4>
 
     </div>
@@ -113,5 +111,27 @@
             (click)="modal.dismiss('cancel')">Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-primary -m1 custom-button"
             (click)="modal.close('Ok')">Aceptar</button>
+    </div> -->
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Cambiar estado del cliente</h4>
+      
+    </div>
+    <div class="modal-body">
+        <p><strong>¿Está seguro de que desea cambiar el estado del cliente?</strong></p>
+        <form [formGroup]="reasonForm">
+            <div class="col-md-6 form-group mb-3">
+                <label for="reason_anulate">Motivo de cambio de estado</label>
+                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
+                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
+                  El campo supera los 100 carácteres.
+              </div>
+              </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn"
+            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
+            (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
     </div>
 </ng-template>

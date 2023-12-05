@@ -18,7 +18,6 @@ import { AuthService } from './auth.service';
   
       // Verifica si el usuario está autenticado según el estado de autenticación y si hay un token en las cookies
       if (authStatus === AuthStatus.authenticated) {
-        console.log('Autenticado');
         return true;
       } else if (authStatus === AuthStatus.notAuthenticated) {
     
@@ -27,7 +26,7 @@ import { AuthService } from './auth.service';
         return false;
       } else {
         // AuthStatus.checking o cualquier otro estado
-        console.log('Verificando...');
+   
         if (this.authService.isAuthenticated()) {
           return true;
         } else {

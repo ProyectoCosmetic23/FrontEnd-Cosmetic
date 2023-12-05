@@ -157,7 +157,6 @@ export class ProductDetailComponent implements OnInit {
         this.categoriesService.getAllCategory().subscribe(
             (data) => {
                 this.listCategories = data;
-                console.log(this.listCategories);
             },
             (error) => {
                 console.error('Error al obtener proveedores:', error);
@@ -177,7 +176,6 @@ export class ProductDetailComponent implements OnInit {
                 // this.listProducts = [response];  // Almacena el producto en la lista
             },
             error: (err) => {
-                console.log('err', err);
                 this.loading = false;
             },
             complete: () => {
@@ -223,8 +221,6 @@ export class ProductDetailComponent implements OnInit {
     }
 
     createProduct() {
-        console.log(this.productForm.valid)
-
         Object.values(this.productForm.controls).forEach(control => {
             control.markAsTouched();
         });
@@ -237,21 +233,11 @@ export class ProductDetailComponent implements OnInit {
                 productData.quantity = this.productForm.get('quantity').value;
                 productData.cost_price = this.productForm.get('cost_price').value;
                 productData.selling_price = this.productForm.get('selling_price').value;
-
-
-                console.log(this.productForm.get('quantity').value)
-                console.log('Datos del producto a enviar:', productData);
-
                 const token = this.cookieService.get('token');
                 this.loading = true;
-
-                // Imprimir detalles de la solicitud
-                console.log('Solicitud POST a /api/productcs:', JSON.stringify(productData));
-
                 this.productsService.createProduct(productData, token).subscribe(
                     (response) => {
                         this.loading = false;
-                        console.log("Éxito al crear el producto: ", response);
                         this.submit();
                     },
                     (error) => {
@@ -303,8 +289,6 @@ export class ProductDetailComponent implements OnInit {
 
     saveProductChanges(id: number, updatedData: any) {
         const token = this.cookieService.get('token');
-        console.log('ID del producto a actualizar:', id);
-        console.log('Datos actualizados del producto:', updatedData);
         this.productsService.updateProduct(id, updatedData, token).subscribe(
             (response) => {
                 this.loading = false;
@@ -336,7 +320,6 @@ export class ProductDetailComponent implements OnInit {
 
 
     saveChanges() {
-        console.log('editar')
 
         if (this.productForm.valid) {
             const id = Number(this.id); // Convierte el ID a número
@@ -350,7 +333,6 @@ export class ProductDetailComponent implements OnInit {
                 observation: this.productForm.get('observation').value,
                 quantity: this.productForm.get('quantity').value
             };
-            console.log(JSON.stringify(updatedData))
             this.saveProductChanges(id, updatedData);
         } else {
             this.toastr.error('Por favor, complete todos los campos correctamente.', 'Error de validación', { progressBar: true, timeOut: 3000 });

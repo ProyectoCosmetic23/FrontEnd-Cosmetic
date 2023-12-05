@@ -3,7 +3,7 @@
     <h1 *ngIf="viewMode === 'edit'">Editar Proveedor</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</h1>
     <ul>
-        <li><a [routerLink]="['/proveedores']">Proveedores</a></li>
+        <li><a>Proveedores</a></li>
         <li *ngIf="viewMode === 'new'">Registrar Proveedor</li>
         <li *ngIf="viewMode === 'edit'">Editar Proveedor</li>
         <li *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</li>
@@ -18,46 +18,111 @@
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
-                            <label for="nit_cedula">Cédula o NIT del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
-
-                            <input type="number" class="form-control" id="nit_cedula" (change)="handleNitSelection($event)"
-                              [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'" 
-                              [readonly]="viewMode === 'print' || viewMode === 'edit'"
-                              [ngClass]="{'placeholder-black': viewMode === 'print'}">  
-                          </div>
+                            <label for="nit_cedula">Cédula o NIT del proveedor<span *ngIf="viewMode === 'new'"
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nit_cedula" formControlName="nit_cedula"
+                                (change)="handleNitSelection($event)"
+                                [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'"
+                                [readonly]="viewMode === 'print' || viewMode === 'edit'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                            <div *ngIf="viewMode === 'new' && formBasic.get('nit_cedula').invalid && (formBasic.get('nit_cedula').dirty || formBasic.get('nit_cedula').touched)"
+                                class="text-danger">
+                                <div *ngIf="formBasic.get('nit_cedula').hasError('required')">La cédula o NIT es
+                                    obligatoria.</div>
+                                <div *ngIf="formBasic.get('nit_cedula').hasError('minlength')">La cédula o NIT no puede
+                                    ser menor de 7 caracteres.</div>
+                                <div *ngIf="formBasic.get('nit_cedula').hasError('maxlength')">La cédula o NIT no puede
+                                    ser mayor de 10 caracteres.</div>
+                                <div *ngIf="formBasic.get('nit_cedula').hasError('pattern')">Solo se admiten números en
+                                    la cédula o NIT.</div>
+                                <div *ngIf="formBasic.get('nit_cedula').hasError('cedulaNotAvailable')">La cédula ya
+                                    está en uso.</div>
+                            </div>
+                        </div>
 
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name_provider"(change)="handleNameProviderSelection($event)"
+                            <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'"
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name_provider" formControlName="name_provider"
+                                (change)="handleNameProviderSelection($event)"
                                 [placeholder]="provider?.name_provider || 'Nombre del proveedor'"
                                 [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                            <div *ngIf="viewMode === 'new' && formBasic.get('name_provider').invalid && (formBasic.get('name_provider').dirty || formBasic.get('name_provider').touched)"
+                                class="text-danger">
+                                <div *ngIf="formBasic.get('name_provider').hasError('required')">El nombre del proveedor
+                                    es obligatorio.</div>
+                                <div *ngIf="formBasic.get('name_provider').hasError('minlength')">El nombre debe ser
+                                    mayor de 5 caracteres.</div>
+                                <div *ngIf="formBasic.get('name_provider').hasError('maxlength')">El nombre no puede
+                                    superar los 50 caracteres.</div>
+                            </div>
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
                             <label for="email_provider">Correo del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email_provider"(change)="handleMailSelection($event)"
+                            <input type="email" class="form-control" id="email_provider"
+                                (change)="handleMailSelection($event)"
+                                formControlName="email_provider"
                                 [placeholder]="provider?.email_provider || 'Correo del proveedor'"
                                 [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        
+                            <div *ngIf="viewMode === 'new' && formBasic.get('email_provider').touched">
+                                <div *ngIf="formBasic.get('email_provider').hasError('required')" class="text-danger">
+                                    El campo Correo es obligatorio.
+                                </div>
+                                <div *ngIf="formBasic.get('email_provider').hasError('email')" class="text-danger">
+                                    El campo Correo debe ser un formato de correo electrónico válido.
+                                </div>
+                                <div *ngIf="formBasic.get('email_provider').hasError('maxlength')" class="text-danger">
+                                    El campo Correo no puede superar los 80 caracteres.
+                                </div>
+                            </div>
                         </div>
+                        
 
                         <div class="col-md-6 form-group mb-3">
-                            <label for="address_provider">Dirección del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
-                            <input class="form-control" id="address_provider"(change)="handleAddressSelection($event)"
+                            <label for="address_provider">Dirección del proveedor<span *ngIf="viewMode === 'new'"
+                                    class="text-danger">*</span></label>
+                            <input class="form-control" id="address_provider" (change)="handleAddressSelection($event)"
+                                formControlName="address_provider"
                                 [placeholder]="provider?.address_provider || 'Dirección del proveedor'"
                                 [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
+
+                            <div *ngIf="viewMode === 'new' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
+                                class="text-danger">
+                                El campo Dirección es obligatorio.
+                            </div>
+                            <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
+                                El campo Dirección no puede superar los 80 caracteres.
+                            </div>
                         </div>
 
                         <div class="col-md-6 form-group mb-3">
                             <label for="phone_provider">Teléfono del proveedor<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
-                            <input class="form-control" id="phone_provider"(change)="handlePhoneSelection($event)"
+                            <input class="form-control" id="phone_provider" (change)="handlePhoneSelection($event)"
+                                formControlName="phone_provider"
                                 [placeholder]="provider?.phone_provider || 'Teléfono del proveedor'"
                                 [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        
+                            <div *ngIf="viewMode === 'new' && formBasic.get('phone_provider').touched">
+                                <div *ngIf="formBasic.get('phone_provider').hasError('required')" class="text-danger">
+                                    El campo teléfono es obligatorio.
+                                </div>
+                                <div *ngIf="formBasic.get('phone_provider').hasError('maxlength')" class="text-danger">
+                                    El campo teléfono no puede superar los 80 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('phone_provider').hasError('pattern')" class="text-danger">
+                                    El campo teléfono debe estar en el formato correcto.
+                                </div>
+                            </div>
                         </div>
+                        
+                        
 
 
                         <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new' && viewMode !== 'edit'">
@@ -71,16 +136,34 @@
 
                         <div class="col-md-6 form-group mb-3">
                             <label for="name_contact">Nombre del contacto<span *ngIf="viewMode === 'new'" class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name_contact"(change)="handleNameContactSelection($event)"
+                            <input type="text" class="form-control" id="name_contact"
+                                (change)="handleNameContactSelection($event)"
+                                formControlName="name_contact"
                                 [placeholder]="provider?.name_contact || 'Nombre del contacto'"
                                 [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
+                        
+                            <div *ngIf="viewMode === 'new' && formBasic.get('name_contact').touched">
+                                <div *ngIf="formBasic.get('name_contact').hasError('required')" class="text-danger">
+                                    El nombre del contacto es obligatorio.
+                                </div>
+                                <div *ngIf="formBasic.get('name_contact').hasError('pattern')" class="text-danger">
+                                    El nombre del contacto debe contener solo letras y espacios.
+                                </div>
+                                <div *ngIf="formBasic.get('name_contact').hasError('minlength')" class="text-danger">
+                                    El nombre del contacto debe tener al menos 3 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('name_contact').hasError('maxlength')" class="text-danger">
+                                    El nombre del contacto no puede superar los 50 caracteres.
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new' && viewMode !== 'edit'">
                             <label for="state_provider">Estado del proveedor</label>
                             <ng-container *ngIf="viewMode === 'edit'; else viewModeDisplay">
-                                <select class="form-control" id="state_provider" (change)="handleStateSelection($event)">
+                                <select class="form-control" id="state_provider"
+                                    (change)="handleStateSelection($event)">
                                     <option value="Activo">Activo</option>
                                     <option value="Inactivo">Inactivo</option>
                                 </select>
@@ -93,12 +176,34 @@
                             </ng-template>
                         </div>
 
-                        <div class="col-md-12 form-group mb-3">
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
+                            <label for="reason_anulate">Razón de cambio de estado</label>
+                            <textarea class="form-control" id="reason_anulate"
+                                [placeholder]="provider?.reason_anulate"
+                                [readonly]="viewMode === 'print'"
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
+                                rows="6"></textarea>
+                        </div>
+
+                        <div *ngIf="viewMode !== 'print'">
+                            <div class="col-md-12 form-group mb-3">
+                                <label for="observation_provider">Observación del proveedor</label>
+                                <textarea class="form-control" id="observation_provider"
+                                    (change)="handleObservationSelection($event)"
+                                    [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
+                                    [readonly]="viewMode === 'print'"
+                                    [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
+                                    rows="6"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
                             <label for="observation_provider">Observación del proveedor</label>
-                            <textarea class="form-control" id="observation_provider"(change)="handleObservationSelection($event)"
+                            <textarea class="form-control" id="observation_provider"
+                                (change)="handleObservationSelection($event)"
                                 [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
                                 [readonly]="viewMode === 'print'"
-                                [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;" rows="6"></textarea>
+                                [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
+                                rows="6"></textarea>
                         </div>
                         <div class="col-md-12">
                             <div class="d-flex justify-content-end">

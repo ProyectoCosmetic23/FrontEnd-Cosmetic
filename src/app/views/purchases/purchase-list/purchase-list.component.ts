@@ -19,6 +19,7 @@ export class PurchaseListComponent implements OnInit {
   searchControl: FormControl = new FormControl();
   listPurchases: any[] = [];
   filteredPurchases: any[] = [];
+  list: any[] = [];
   purchases: any[] = [];
   offset: number = 0;
   itemsPerPage = 6;
@@ -43,7 +44,6 @@ export class PurchaseListComponent implements OnInit {
 
     this.reasoniniForm();
     this.getPurchases();
-    this.getPurchases();
     this.providersService.getAllProviders().subscribe((providers: any[]) => {
       providers.forEach(provider => {
         this.providers[provider.id_provider] = provider.name_provider;
@@ -60,7 +60,6 @@ export class PurchaseListComponent implements OnInit {
             this.listPurchases = data;
             this.filteredPurchases =this.listPurchases;
             this.sortListPurchases();
-            this.refreshListPurchases();
         },
         (error) => {
             console.error('Error al obtener Categorías:', error);
@@ -75,17 +74,6 @@ table: DatatableComponent;
 actualizarCountLabel() {
     this.countLabel = this.filteredPurchases.length;
 }
-//AJUSTAR LA LISTA DE CATEGORIAS
-refreshListPurchases() {
-    // const totalRows = this.filteredPurchases.length;
-    // const remainingRows = 6 - (totalRows % 6);
-
-    // for (let i = 0; i < remainingRows; i++) {
-    //     // this.filteredPurchases.push({}); // Agrega filas vacías
-    // }
-
-    this.loadData();
-}
 
 sortListPurchases() {
     this.filteredPurchases.sort((a, b) => {
@@ -98,42 +86,15 @@ sortListPurchases() {
         return 0;
     });
 }
-//CARGA LAS CATEGORIAS EN CADA PAGINA
-loadData() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    let endIndex = startIndex + this.itemsPerPage;
-
-    const totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
-
-    if (this.currentPage === totalPages) {
-        const remainingRows = this.filteredPurchases.length % this.itemsPerPage;
-        if (remainingRows > 0) {
-            endIndex = startIndex + remainingRows;
-        }
-    }
-
-    // Ajusta endIndex para que sea el próximo número divisible por 6
-    const rowsToAdd = 6 - (endIndex % 6);
-    endIndex += rowsToAdd;
-
-    // this.filteredPurchases = this.filteredPurchases.slice(startIndex, endIndex);
-
-    console.log('load data charged');
-}
-
-onPageChange(event: any) {
-    console.log('onPageChange event:', event);
-    this.currentPage = event.offset + 1;
-    this.loadData();
-}
 
 searchPurchase($event){
     
     const value = ($event.target as HTMLInputElement).value;
     if(value !==null && value !== undefined && value !== '')
     {
-        this.filteredPurchases = this.listPurchases.filter(c => c.name_provider.toLowerCase().indexOf(value.toLowerCase()) !== -1
-        || this.changePuchaseStateDescription(c.state_purchase).toLowerCase().indexOf(value.toLowerCase()) !== -1)
+        this.filteredPurchases = this.listPurchases.filter(c => c.provider.name_provider.toLowerCase().indexOf(value.toLowerCase()) !== -1
+        || this.changePuchaseStateDescription(c.state_purchase).toLowerCase().indexOf(value.toLowerCase()) !== -1 || 
+        c.invoice_number.indexOf(value.toLowerCase()) !== -1)
     }else{
         this.filteredPurchases = this.listPurchases;
     }
@@ -204,8 +165,3 @@ changePuchaseStateDescription(state_purchase:boolean){
   }
 
 }
-
-
-
-
-

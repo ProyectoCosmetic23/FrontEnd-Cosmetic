@@ -40,11 +40,23 @@ export class UserListComponent implements OnInit {
         this._userService.getAllUsers().subscribe(data => {
             this.listUsers = data.sort((a, b) => a.id_user - b.id_user);
             this.filteredUsers = [...this.listUsers];
+            this.sortListUsers();
         }, error => {
             console.log(error);
         });
     }
 
+    sortListUsers() {
+        this.filteredUsers.sort((a, b) => {
+            if (a.id_user > b.id_user) {
+                return -1;
+            }
+            if (a.id_user > b.id_user) {
+                return 1;
+            }
+            return 0;
+        });
+    }
     filterData(value: string) {
         if (value) {
             value = value.toLowerCase();
