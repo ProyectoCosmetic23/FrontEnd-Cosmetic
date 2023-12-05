@@ -15,7 +15,7 @@ export class EmployeeListComponent implements OnInit {
   loading: boolean;
   searchControl: UntypedFormControl = new UntypedFormControl();
   listEmployees: any[] = [];
-  filteredEmployees: any[];
+  filteredEmployees: any[] = [];
   pageSize: number = 10;
   currentPage: number = 1;
   modalAbierto = false;
