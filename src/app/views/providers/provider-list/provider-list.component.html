@@ -28,10 +28,17 @@
     <div class="card o-hidden">
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable class="material fullscreen" style="height: 460px" [columnMode]="'force'"
-                    [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"
-                    [rows]="filteredProviders" [externalPaging]="true" [count]="filteredProviders.length"
-                    [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage" (page)="onPageChange($event)">
+                <ngx-datatable
+                class="material fullscreen"
+                style="height: 100px"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="60"
+                [rows]="filteredProviders"
+                [count]="filteredProviders.length"
+                [limit]="6"
+                rowHeight="700px">
                     <ngx-datatable-column name="name_provider">
                         <ng-template ngx-datatable-header-template>
                             <p style="font-size: 15px">Nombre Proveedor</p>

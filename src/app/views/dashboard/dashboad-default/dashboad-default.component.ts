@@ -43,6 +43,21 @@ export class DashboadDefaultComponent implements OnInit {
     { name: 'Noviembre', value: 11 },
     { name: 'Diciembre', value: 12 },
   ];
+ months2 = [
+    { name: 'January', value: '1_2024'  },
+    { name: 'February', value: '2_2024'  },
+    { name: 'March', value: '3_2024'},
+    { name: 'April', value: '4_2024' },
+    { name: 'May', value: '5_2024'  },
+    { name: 'June' , value: '6_2024' },
+    { name: 'July', value: '7_2024'  },
+    { name: 'August', value: '8_2024' },
+    { name: 'September' , value: '9_2024' },
+    { name: 'October', value: '10_2023'  },
+    { name: 'November', value: '11_2024' },
+    { name: 'December', value: '12_2024'  },
+  ];
+  
   startYear = 2023;
   endYear = 2025;
   years = Array.from({ length: this.endYear - this.startYear + 1 }, (_, index) => this.startYear + index);
@@ -52,6 +67,8 @@ export class DashboadDefaultComponent implements OnInit {
   ;
   selectedYear: number = this.startYear;
   dialog: any;
+
+  selectedMonth2: string ;
  
 
   constructor(
@@ -66,12 +83,13 @@ export class DashboadDefaultComponent implements OnInit {
 
     // Establece el mes actual como valor predeterminado
     this.selectedMonth = currentMonth;
+
      // Llama a las funciones para cargar los datos iniciales
   this.getReportProducts();
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
-  // // this.getReportProductsPrediccion();
+  this.getReportProductsPrediccion();
 
 }
 
@@ -87,6 +105,7 @@ onCheckboxChange(event: any) {
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
+  this.getReportProductsPrediccion();
 }
 
 
@@ -100,10 +119,13 @@ onMonthChangeYear(event: any) {
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
+  this.getReportProductsPrediccion();
 }
 
 onMonthChangeMonth(event: any) {
   this.selectedMonth = event.target.value;
+  this.selectedMonth2 = event.target.value;
+  
   // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
   // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
   console.log("Mes seleccionado:", this.selectedMonth);
@@ -112,8 +134,20 @@ onMonthChangeMonth(event: any) {
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
+  this.getReportProductsPrediccion();
 }
 
+onMonthChangeMonth2(event: any) {
+  this.selectedMonth2 = event.target.value;
+  
+  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
+  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
+  console.log("Mes seleccionado:", this.selectedMonth2);
+
+
+this.getReportProductsPrediccion();
+  
+}
 
 
 getReportCards() {
@@ -453,90 +487,81 @@ this.employeesChartBar = {
   ],
 }
 };
-// }
-// getReportProductsPrediccion() {
-//   console.log('getReportProductsPrediccion() llamado');
-//   this.reportService.getPredictions().subscribe({
-//     next: (response: any) => {
-//       const months = Object.keys(response);
-//       const selectedMonth = "April";
-//       const topProducts = response[selectedMonth].top_products;
-//       const data = Object.keys(topProducts).map(productName => {
-//         return {
-//           value: topProducts[productName],
-//           name: productName,
-//         };
-//       });
 
-//       this.buildReportPrediccionChartPie(data, selectedMonth);
-//       this.openPredictionModal();
-//     }
-//   });
-// }
+getReportProductsPrediccion() {
+  
+  console.log('getReportProductsPrediccion() llamado');
+  this.reportService.getPredictions().subscribe({
+    next: (response: any) => {
+      const months = Object.keys(response);
+      const selectedMonth = this.selectedMonth2 || '1_2024';
+      const topProducts = response[selectedMonth].top_products;
+      const data = Object.keys(topProducts).map(productName => {
+        return {
+          value: topProducts[productName],
+          name: productName,
+        };
+      });
 
-// openPredictionModal(): void {
-//   const dialogRef = this.dialog.open(this.changeStatusModal, {
-//     width: '80%',
-//   });
+      this.buildReportPrediccionChartPie(data, selectedMonth);
+      
+    }
+  });
+}
 
-//   // Puedes realizar acciones después de que se cierre la modal
-//   dialogRef.afterClosed().subscribe(result => {
-//     console.log('Modal cerrada', result);
-//   });
-// }
 
-// buildReportPrediccionChartPie(data: any , selectedMonth: string) {
-//   this.prediccionChartPie = {
-//     color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
-//     tooltip: {
-//       show: true,
-//       backgroundColor: "rgba(0, 0, 0, .8)",
-//       textStyle: {
-//         color: "white",
-//       },
-//     },
-//     xAxis: [
-//       {
-//         axisLine: {
-//           show: false,
-//         },
-//         splitLine: {
-//           show: false,
-//         },
-//       },
-//     ],
-//     yAxis: [
-//       {
-//         axisLine: {
-//           show: false,
-//         },
-//         splitLine: {
-//           show: false,
-//         },
-//       },
-//     ],
-//     series: [
-//       {
-//         name: 'Productos',
-//         type: 'pie',
-//         radius: '55%',
-//         center: ['50%', '60%'],
-//         data: data,
-//         emphasis: {
-//           itemStyle: {
-//             shadowBlur: 10,
-//             shadowOffsetX: 0,
-//             shadowColor: 'rgba(0, 0, 0, 0.5)',
-//           },
-//         },
-//         label: {
-//           show: true,
-//           formatter: '{b} : {c} ({d}%)',
-//         },
-//       },
-//     ],
-//   };
-// }
+buildReportPrediccionChartPie(data: any , selectedMonth: string ) {
+  this.prediccionChartPie = {
+    color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
+    tooltip: {
+      show: true,
+      backgroundColor: "rgba(0, 0, 0, .8)",
+      textStyle: {
+        color: "white",
+      },
+    },
+    xAxis: [
+      {
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+    ],
+    yAxis: [
+      {
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+    ],
+    series: [
+      {
+        name: 'Productos',
+        type: 'pie',
+        radius: '55%',
+        center: ['50%', '60%'],
+        data: data,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+        label: {
+          show: true,
+          formatter: '{b} : {c} ({d}%)',
+        },
+      },
+    ],
+  };
+}
 
 
 }

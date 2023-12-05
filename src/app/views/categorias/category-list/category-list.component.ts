@@ -39,7 +39,7 @@ export class CategoryListComponent {
                 this.listCategories = data;
                 this.filteredCategories =this.listCategories;
                 this.sortListCategoriesById();
-                this.refreshListPurchases();
+               
             },
             (error) => {
                 console.error('Error al obtener Categorías:', error);
@@ -54,17 +54,7 @@ export class CategoryListComponent {
     actualizarCountLabel() {
         this.countLabel = this.filteredCategories.length;
     }
-//AJUSTAR LA LISTA DE CATEGORIAS
-    refreshListPurchases() {
-        // const totalRows = this.filteredCategories.length;
-        // const remainingRows = 6 - (totalRows % 6);
 
-        // for (let i = 0; i < remainingRows; i++) {
-        //     // this.filteredCategories.push({}); // Agrega filas vacías
-        // }
-
-        this.loadData();
-    }
 
     sortListCategoriesById() {
         this.filteredCategories.sort((a, b) => {
@@ -77,34 +67,7 @@ export class CategoryListComponent {
             return 0;
         });
     }
-//CARGA LAS CATEGORIAS EN CADA PAGINA
-    loadData() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        let endIndex = startIndex + this.itemsPerPage;
 
-        const totalPages = Math.ceil(this.filteredCategories.length / this.itemsPerPage);
-
-        if (this.currentPage === totalPages) {
-            const remainingRows = this.filteredCategories.length % this.itemsPerPage;
-            if (remainingRows > 0) {
-                endIndex = startIndex + remainingRows;
-            }
-        }
-
-        // Ajusta endIndex para que sea el próximo número divisible por 6
-        const rowsToAdd = 6 - (endIndex % 6);
-        endIndex += rowsToAdd;
-
-        // this.filteredCategories = this.filteredCategories.slice(startIndex, endIndex);
-
-        console.log('load data charged');
-    }
-
-    onPageChange(event: any) {
-        console.log('onPageChange event:', event);
-        this.currentPage = event.offset + 1;
-        this.loadData();
-    }
 
     searchCategory($event){
         
