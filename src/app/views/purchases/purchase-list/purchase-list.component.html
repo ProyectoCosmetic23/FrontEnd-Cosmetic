@@ -27,7 +27,7 @@
         <div class="card o-hidden">
             <ngx-datatable
             class="material fullscreen"
-            style="height: 460px"
+            style="height: 100px"
             [columnMode]="'force'"
             [headerHeight]="50"
             [footerHeight]="50"
@@ -35,7 +35,7 @@
             [rows]="filteredPurchases"
             [count]="filteredPurchases.length"
             [limit]="6"
-        rowHeight="700px">
+            rowHeight="700px">
 
                 <ngx-datatable-column name="invoice_number" [resizeable]="false" [canAutoResize]="true" >
                     <ng-template ngx-datatable-header-template>
