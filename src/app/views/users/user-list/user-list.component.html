@@ -25,8 +25,17 @@
 
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable style="height: 460px;" class="material fullscreen" [columnMode]="'force'" [headerHeight]="50"
-                    [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="filteredUsers">
+                <ngx-datatable
+                class="material fullscreen"
+                style="height: 100px"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="60"
+                [rows]="filteredUsers"
+                [count]="filteredUsers.length"
+                [limit]="6"
+                rowHeight="700px">
                     <!-- <ngx-datatable-column name="id_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
                             Id usuario

@@ -17,7 +17,7 @@ export class ProductListComponent implements OnInit {
     loading: boolean;
     searchControl: UntypedFormControl = new UntypedFormControl();
     listProducts: any[];
-    filteredProducts: any[];
+    filteredProducts: any[] = [];
     pageSize: number = 10;
     currentPage: number = 1;
     modalAbierto = false;
@@ -39,7 +39,24 @@ export class ProductListComponent implements OnInit {
 
     ngOnInit(): void {
         this.getProducts()
+       
     }
+
+            
+    getProducts() {
+        this._productService.getAllProducts().subscribe(
+            (data) => {
+                this.listProducts = data;
+                this.filteredProducts = this.listProducts;
+                this.sortListProdcuctsById();
+              
+            },
+            (error) => {
+                console.error('Error al obtener Productos:', error);
+            }
+        );
+    }
+
 
     handleChange(event: any, row: any) {
         row.state_product = event.target.checked ? 'Activo' : 'Inactivo';
@@ -54,39 +71,7 @@ export class ProductListComponent implements OnInit {
         // Asegúrate de que returnQuantity esté definido en tu componente
         return this.returnQuantity * originalValue;
         }
-        
-        
-        getProducts() {
-            this._productService.getAllProducts().subscribe(
-                (data) => {
-                    this.listProducts = data;
-                    this.filteredProducts =this.listProducts;
-                    this.sortListProdcuctsById();
-                    this.irefreshListProducts();
-                },
-                (error) => {
-                    console.error('Error al obtener Productos:', error);
-                }
-            );
-        }
-    
-    
-        //  actualizar el valor visual de count según tus necesidades
-        actualizarCountLabel() {
-            this.countLabel = this.filteredProducts.length;
-        }
-    //AJUSTAR LA LISTA DE CATEGORIAS
-        irefreshListProducts() {
-            // const totalRows = this.filteredProducts.length;
-            // const remainingRows = 6 - (totalRows % 6);
-    
-            // for (let i = 0; i < remainingRows; i++) {
-            //     // this.filteredProducts.push({}); // Agrega filas vacías
-            // }
-    
-            this.loadData();
-        }
-    
+
         sortListProdcuctsById() {
             this.filteredProducts.sort((a, b) => {
                 if (a.id_product > b.id_product) {
@@ -98,31 +83,7 @@ export class ProductListComponent implements OnInit {
                 return 0;
             });
         }
-    //CARGA LAS CATEGORIAS EN CADA PAGINA
-        loadData() {
-            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-            let endIndex = startIndex + this.itemsPerPage;
-    
-            const totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage);
-    
-            if (this.currentPage === totalPages) {
-                const remainingRows = this.filteredProducts.length % this.itemsPerPage;
-                if (remainingRows > 0) {
-                    endIndex = startIndex + remainingRows;
-                }
-            }
-    
-            // Ajusta endIndex para que sea el próximo número divisible por 6
-            const rowsToAdd = 6 - (endIndex % 6);
-            endIndex += rowsToAdd;
-    
-
-        }
-    
-        onPageChange(event: any) {
-            this.currentPage = event.offset + 1;
-            this.loadData();
-        }
+   
     
         searchProduct($event){
             

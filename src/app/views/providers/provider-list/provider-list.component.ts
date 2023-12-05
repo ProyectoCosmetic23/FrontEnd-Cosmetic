@@ -48,7 +48,7 @@ export class ProviderListComponent implements OnInit {
                 this.listProviders = data;
                 this.filteredProviders = this.listProviders;
                 this.sortListProvidersById();
-                this.refreshListProviders();
+               
             },
             (error) => {
                 console.error('Error al obtener Categorías:', error);
@@ -62,17 +62,7 @@ export class ProviderListComponent implements OnInit {
     actualizarCountLabel() {
         this.countLabel = this.filteredProviders.length;
     }
-    //AJUSTAR LA LISTA DE CATEGORIAS
-    refreshListProviders() {
-        // const totalRows = this.filteredProviders.length;
-        // const remainingRows = 6 - (totalRows % 6);
-
-        // for (let i = 0; i < remainingRows; i++) {
-        //     // this.filteredProviders.push({}); // Agrega filas vacías
-        // }
-
-        this.loadData();
-    }
+  
 
     sortListProvidersById() {
         this.filteredProviders.sort((a, b) => {
@@ -85,29 +75,7 @@ export class ProviderListComponent implements OnInit {
             return 0;
         });
     }
-    //CARGA LAS CATEGORIAS EN CADA PAGINA
-    loadData() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        let endIndex = startIndex + this.itemsPerPage;
-        const totalPages = Math.ceil(this.filteredProviders.length / this.itemsPerPage);
-        if (this.currentPage === totalPages) {
-            const remainingRows = this.filteredProviders.length % this.itemsPerPage;
-            if (remainingRows > 0) {
-                endIndex = startIndex + remainingRows;
-            }
-        }
-        // Ajusta endIndex para que sea el próximo número divisible por 6
-        const rowsToAdd = 6 - (endIndex % 6);
-        endIndex += rowsToAdd;
-        // this.filteredProviders = this.filteredProviders.slice(startIndex, endIndex);
-        console.log('load data charged');
-    }
-
-    onPageChange(event: any) {
-        console.log('onPageChange event:', event);
-        this.currentPage = event.offset + 1;
-        this.loadData();
-    }
+  
 
     searchProvider(event: Event) {
         const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -122,7 +90,7 @@ export class ProviderListComponent implements OnInit {
         }
 
         this.actualizarCountLabel();
-        this.refreshListProviders();
+       
     }
 
     changeProviderStateDescription(state_provider: boolean) {

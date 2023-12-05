@@ -25,11 +25,17 @@
         </div>
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable *ngIf="filteredProducts && filteredProducts.length" class="material fullscreen"
-                    style="height: 460px;" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
-                    [rowHeight]="60" [scrollbarV]="true" [rows]="filteredProducts" [externalPaging]="true"
-                    [count]="filteredProducts.length" [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
-                    (page)="onPageChange($event)">
+                <ngx-datatable
+                class="material fullscreen"
+                style="height: 100px"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="60"
+                [rows]="filteredProducts"
+                [count]="filteredProducts.length"
+                [limit]="6"
+                rowHeight="700px">
 
 
                     <ngx-datatable-column name="id_category" [resizeable]="false" [canAutoResize]="true"
