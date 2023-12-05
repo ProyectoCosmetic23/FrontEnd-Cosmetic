@@ -490,7 +490,6 @@ this.employeesChartBar = {
 
 getReportProductsPrediccion() {
   
-  console.log('getReportProductsPrediccion() llamado');
   this.reportService.getPredictions().subscribe({
     next: (response: any) => {
       const months = Object.keys(response);
