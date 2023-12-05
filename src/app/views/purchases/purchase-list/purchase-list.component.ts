@@ -123,8 +123,7 @@ changePuchaseStateDescription(state_purchase:boolean){
 
         if (result === 'Ok') {
           const reasonAnulate = this.reasonForm.get('reason_anulate').value;
-          const serializedReason = flatted.stringify(reasonAnulate);
-          this._purchaseService.PurchaseChangeStatus(idPurchase, serializedReason).subscribe(
+          this._purchaseService.PurchaseChangeStatus(idPurchase, reasonAnulate).subscribe(
 
             (data) => {
               this.loading = false;
