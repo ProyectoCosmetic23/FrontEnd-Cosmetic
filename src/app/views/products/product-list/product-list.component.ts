@@ -17,7 +17,7 @@ export class ProductListComponent implements OnInit {
     loading: boolean;
     searchControl: UntypedFormControl = new UntypedFormControl();
     listProducts: any[];
-    filteredProducts: any[];
+    filteredProducts: any[] = [];
     pageSize: number = 10;
     currentPage: number = 1;
     modalAbierto = false;
@@ -39,7 +39,24 @@ export class ProductListComponent implements OnInit {
 
     ngOnInit(): void {
         this.getProducts()
+       
     }
+
+            
+    getProducts() {
+        this._productService.getAllProducts().subscribe(
+            (data) => {
+                this.listProducts = data;
+                this.filteredProducts = this.listProducts;
+                this.sortListProdcuctsById();
+              
+            },
+            (error) => {
+                console.error('Error al obtener Productos:', error);
+            }
+        );
+    }
+
 
     handleChange(event: any, row: any) {
         row.state_product = event.target.checked ? 'Activo' : 'Inactivo';
@@ -54,28 +71,7 @@ export class ProductListComponent implements OnInit {
         // Asegúrate de que returnQuantity esté definido en tu componente
         return this.returnQuantity * originalValue;
         }
-        
-        
-        getProducts() {
-            this._productService.getAllProducts().subscribe(
-                (data) => {
-                    this.listProducts = data;
-                    this.filteredProducts =this.listProducts;
-                    this.sortListProdcuctsById();
-                  
-                },
-                (error) => {
-                    console.error('Error al obtener Productos:', error);
-                }
-            );
-        }
-    
-    
-        //  actualizar el valor visual de count según tus necesidades
-        actualizarCountLabel() {
-            this.countLabel = this.filteredProducts.length;
-        }
- 
+
         sortListProdcuctsById() {
             this.filteredProducts.sort((a, b) => {
                 if (a.id_product > b.id_product) {

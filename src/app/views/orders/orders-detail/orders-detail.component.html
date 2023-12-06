@@ -132,10 +132,105 @@
                 </div>
 
                 <div class="col-md-12 mt-4 table-border">
+                  <div *ngIf="viewMode === 'new'">
+                    <form [formGroup]="formulario">
+                      <div class="product-container">
+                        <div class="product-row" style="display: flex">
+                          <div
+                            class="form-group"
+                            style="flex: 1; margin-right: 10px"
+                          >
+                            <label for="productSelect">Producto:</label>
+                            <ng-select
+                              id="productSelect"
+                              class="form-control"
+                              notFoundText="Producto no encontrado..."
+                              [items]="listProducts"
+                              bindLabel="name_product"
+                              bindValue="id_product"
+                              loadingText="Cargando..."
+                              [hideSelected]="true"
+                              formControlName="productSelect"
+                            ></ng-select>
+                            <p style="color: red" *ngIf="productError">
+                              Seleccione un producto.
+                            </p>
+                          </div>
+
+                          <div
+                            class="form-group"
+                            style="flex: 1; margin-right: 10px"
+                          >
+                            <label for="product_price">Precio:</label>
+                            <input
+                              type="number"
+                              name="product_price"
+                              id="product_price"
+                              class="form-control"
+                              [readonly]="true"
+                              formControlName="product_price"
+                            />
+                          </div>
+
+                          <div
+                            class="form-group"
+                            style="flex: 1; margin-right: 10px"
+                          >
+                            <label for="product_quantity">Cantidad:</label>
+                            <input
+                              type="number"
+                              class="form-control"
+                              formControlName="product_quantity"
+                              [placeholder]="
+                                'Stock: ' +
+                                (inventoryQuantity !== undefined
+                                  ? inventoryQuantity
+                                  : 0)
+                              "
+                              (input)="limitMaxValue($event)"
+                            />
+                            <p style="color: red" *ngIf="quantityError">
+                              Seleccione una cantidad válida.
+                            </p>
+                          </div>
+
+                          <div
+                            class="form-group"
+                            style="flex: 1; margin-right: 10px"
+                          >
+                            <label for="subtotal">Subtotal:</label>
+                            <input
+                              type="number"
+                              class="form-control"
+                              [readonly]="true"
+                              formControlName="subtotal"
+                            />
+                          </div>
+
+                          <div
+                            class="product-cell d-flex justify-content-between"
+                            style="margin-top: 1.45rem"
+                          >
+                            <div class="button-container">
+                              <button
+                                class="btn btn-primary"
+                                (click)="addProduct()"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
                   <table class="table table-hover mb-4">
                     <thead class="bg-gray-300">
                       <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">
+                          <p hidden>#</p>
+                        </th>
                         <th scope="col">Nombre del Producto</th>
                         <th scope="col">Precio Unitario</th>
                         <th scope="col">Unidades</th>
@@ -154,33 +249,19 @@
                         >
                           <th scope="row">{{ i + 1 }}</th>
                           <td>
-                            <ng-select
-                              id="productSelect"
+                            <input
+                              type="text"
                               class="form-control"
-                              formControlName="id_product"
-                              notFoundText="Producto no encontrado..."
-                              [items]="listProducts"
-                              bindLabel="name_product"
-                              bindValue="id_product"
-                              loadingText="Cargando..."
-                              [virtualScroll]="true"
-                              [hideSelected]="true"
-                              [disabled]="false"
-                              (click)="handleProductSelection($event, i)"
-                              [searchable]="true"
-                              [clearable]="false"
-                              appearance="none"
-                            >
-                            </ng-select>
+                              formControlName="product_name"
+                              readonly
+                            />
                           </td>
                           <td>
                             <input
                               type="number"
-                              name="product_price"
-                              id="product_price"
                               class="form-control"
                               formControlName="product_price"
-                              [readonly]="true"
+                              readonly
                               *ngIf="viewMode === 'new'"
                             />
                           </td>
@@ -188,13 +269,9 @@
                             <input
                               type="number"
                               class="form-control"
-                              [placeholder]="
-                                'Stock: ' +
-                                productsFormArray.at(i).get('quantityOnhand')
-                                  .value
-                              "
                               formControlName="product_quantity"
                               (change)="handleProductSelection($event, i)"
+                              readonly
                             />
                           </td>
                           <td>
@@ -202,7 +279,7 @@
                               type="number"
                               class="form-control"
                               formControlName="subtotal"
-                              [readonly]="true"
+                              readonly
                             />
                           </td>
                           <td
@@ -210,25 +287,11 @@
                             class="d-flex justify-content-between"
                           >
                             <button
-                              *ngIf="numberOfProducts > 1"
                               class="btn btn-danger"
                               (click)="removeProduct(i)"
                             >
                               <i class="i-Remove-Cart"></i>
                             </button>
-                            <div
-                              class="button_container"
-                              *ngIf="
-                                i === productsFormArray.controls.length - 1
-                              "
-                            >
-                              <button
-                                class="btn btn-primary"
-                                (click)="addProduct()"
-                              >
-                                +
-                              </button>
-                            </div>
                           </td>
                         </tr>
                       </ng-container>

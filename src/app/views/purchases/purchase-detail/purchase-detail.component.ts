@@ -57,6 +57,7 @@ export class PurchaseDetailComponent implements OnInit {
   numberInvoiceExists: boolean;
 
 
+
   minDate = { year: 2023, month: 1, day: 1 };
   maxDate = { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }
   constructor(
@@ -198,7 +199,7 @@ export class PurchaseDetailComponent implements OnInit {
     const date = new Date(recordDate);
     return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
   }
-  //PLANTILLA DE DETALLE
+  //PLANTILLA DE DETALLE de compras
   private createDetailFormGroup(detail: Detail): FormGroup {
     return this.formBuilder.group({
       id_product: [detail.id_product],

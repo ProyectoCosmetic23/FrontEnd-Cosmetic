@@ -134,7 +134,6 @@ export class OrdersListComponent implements OnInit {
   }
 
   getOrders(order_type: string) {
-    console.log(this.activeTab);
     this.showLoadingScreen = true;
     let orderService;
     if (order_type == "Todos") {
@@ -156,7 +155,6 @@ export class OrdersListComponent implements OnInit {
       (ordersData) => {
         this.listOrders = ordersData;
         this.listOrdersOriginal = ordersData;
-        console.log(this.listOrders);
 
         // Después de obtener la lista de pedidos, obtenemos la lista de clientes
         this._ordersService.getAllClients().subscribe(
@@ -184,7 +182,6 @@ export class OrdersListComponent implements OnInit {
                 const innerText = pageCountElement.innerText;
                 pageCountElement.innerText =
                   this.originalRowCount + " registros.";
-                console.log("Inner text de .page-count:", innerText);
               }
             });
             this.adjustListOrders();
@@ -225,7 +222,6 @@ export class OrdersListComponent implements OnInit {
     this._ordersService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
-        console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -271,11 +267,9 @@ export class OrdersListComponent implements OnInit {
 
     this.filteredOrders = this.listOrders.slice(startIndex, endIndex);
 
-    console.log("load data charged");
   }
 
   onPageChange(event: any) {
-    console.log("onPageChange event:", event);
     this.currentPage = event.offset + 1;
     this.loadData();
   }
@@ -387,7 +381,6 @@ export class OrdersListComponent implements OnInit {
     this._paymentService.getAllPayments().subscribe(
       (data) => {
         this.payments = data;
-        console.log(this.payments);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -398,7 +391,6 @@ export class OrdersListComponent implements OnInit {
   createPayment() {
     this._paymentService.createPayment(this.new_payment).subscribe(
       (data) => {
-        console.log(data);
         this.loading = false;
         this.toastr.success("Pago creado con éxito.", "Proceso Completado", {
           progressBar: true,
@@ -429,7 +421,6 @@ export class OrdersListComponent implements OnInit {
   }
 
   updateTotalRemaining() {
-    console.log("updateTotalRemaining called");
 
     const totalOrder = parseFloat(this.formBasic.get("total_order")?.value);
     const id_order = this.formBasic.get("id_order")?.value;
@@ -471,7 +462,6 @@ export class OrdersListComponent implements OnInit {
       this.new_payment.id_client = id_client;
       this.new_payment.id_order = id_order;
 
-      console.log(this.new_payment);
     } else {
       // Si no hay pagos, realiza el cálculo estándar
       const totalRemaining =
