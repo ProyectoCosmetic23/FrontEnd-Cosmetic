@@ -71,7 +71,6 @@ export class ProductListComponent implements OnInit {
         // Asegúrate de que returnQuantity esté definido en tu componente
         return this.returnQuantity * originalValue;
         }
-
         sortListProdcuctsById() {
             this.filteredProducts.sort((a, b) => {
                 if (a.id_product > b.id_product) {
