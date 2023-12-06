@@ -6,6 +6,7 @@ import { ComissionsDetailService } from 'src/app/shared/services/comission-detai
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validator } from '@angular/forms';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ActivatedRoute, Router } from '@angular/router';
 //import Swal from 'sweetalert2';
 
@@ -47,6 +48,9 @@ export class ComissionListComponent implements OnInit {
 
     ];
     totalCommissions: number;
+    paginationId: string = 'comissions-pagination';
+    currentPage: number = 1;
+    itemsPerPage: number = 6;
     selectedMonth: number = new Date().getMonth() + 1;
     listComissions: any[] = []
     originalListComissions: any[] = [];
@@ -55,8 +59,9 @@ export class ComissionListComponent implements OnInit {
     currentYear: number;
     allCommissions: any[] = [];
     openedModal = false;
+    countLabel: number;
     searchControl: UntypedFormControl = new UntypedFormControl();
-    filteredComissions;
+    filteredComissions : any[] = [];
     commissionsMonth;
     modalRef: NgbModalRef;
     sweetAlert: any;
@@ -103,15 +108,16 @@ export class ComissionListComponent implements OnInit {
                     this.details = details;
     
                     // Obtener IDs de empleados activos
-                    const activeEmployeeIds = employees
-                        .filter(employee => employee.state_employee === 'Activo')
-                        .map(activeEmployee => activeEmployee.id_employee);
+                    // const activeEmployeeIds = employees
+                    //     .filter(employee => employee.state_employee === 'Activo')
+                    //     .map(activeEmployee => activeEmployee.id_employee);
     
                     // Filtrar las comisiones para incluir solo las asociadas a empleados activos
-                    this.listComissions = this.allCommissions.filter(commission =>
-                        activeEmployeeIds.includes(commission.id_employee)
-                    );
-    
+                    // this.listComissions = this.allCommissions.filter(commission =>
+                    //     activeEmployeeIds.includes(commission.id_employee)
+                    // );
+                    this.listComissions = this.allCommissions
+                        
                     // Asignar detalles de comisiones a cada comisión en la lista
                     this.listComissions.forEach(comission => {
                         const detail = details.find(detail => detail.id_commission_detail === comission.id_commission_detail);
@@ -132,7 +138,12 @@ export class ComissionListComponent implements OnInit {
         });
     }
     
-    
+    @ViewChild(DatatableComponent)
+    table: DatatableComponent;
+    //  actualizar el valor visual de count según tus necesidades
+    actualizarCountLabel() {
+        this.countLabel = this.filteredComissions.length;
+    }
     filterComissionsByMonth() {
         console.log("actualizar por mes")
         const currentYear = new Date().getFullYear();
@@ -202,31 +213,17 @@ export class ComissionListComponent implements OnInit {
         console.log("actualizar por mes")
         this.filterComissionsByMonth();
     }
-    paginationId: string = 'comissions-pagination';
-    currentPage: number = 1;
-    itemsPerPage: number = 6;
-    updateListComissions() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        let endIndex = startIndex + this.itemsPerPage;
-        const totalPages = Math.ceil(this.listComissions.length / this.itemsPerPage);
 
-        if (this.currentPage === totalPages) {
-            const remainingRows = this.listComissions.length % this.itemsPerPage
-            if (remainingRows > 0) {
-                endIndex = startIndex + remainingRows
-            }
-        }
-        const rowsToAdd = 6 - (endIndex % 6)
-        endIndex += rowsToAdd
-        this.filteredComissions = this.listComissions.slice(startIndex, endIndex)
-    }
+
+
+
     pageChanged(event: any) {
         this.currentPage = event.page;
-        this.updateListComissions();
+   
     }
     onPageChange(event: any) {
         this.currentPage = event.offset / this.itemsPerPage + 1;
-        this.updateListComissions();
+    
     }
 
     @ViewChild('createModal', { static: true }) createModal: any;
