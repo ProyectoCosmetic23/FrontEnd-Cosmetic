@@ -76,10 +76,10 @@
                                 <button class="btn btn-danger float-right"
                                     [routerLink]="['/comisiones']">Volver</button>
                                 <div style="width: 10px;"></div>
-                                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading"
-                                    [disabled]="noSales">
-                                    Registrar Comisión
-                                </btn-loading>
+                                <button class="btn btn-primary" *ngIf="viewMode === 'new'" [loading]="loading"
+                                [disabled]="noSales">
+                                Registrar Comisión
+                            </button>
                             </div>
                         </div>
                     </div>
