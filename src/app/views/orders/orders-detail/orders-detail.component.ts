@@ -54,6 +54,8 @@ export class OrdersDetailComponent implements OnInit {
   product_quantity: any;
   selectedProduct: any;
   inventoryQuantity: any;
+  message_observation: any;
+  orderState: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -157,7 +159,8 @@ export class OrdersDetailComponent implements OnInit {
 
           // Después de cargar los datos, establece loadingData en false
           this.showLoadingScreen = false;
-          console.log(this.order);
+          this.message_observation = this.order.order.observation_return;
+          this.orderState = this.order.order.order_state;
         },
         (error) => {
           console.error("Error al obtener el pedido:", error);

@@ -203,29 +203,61 @@
       </div>
 
       <div *ngIf="showLoadingScreen == false">
-        <ngx-datatable class="material fullscreen" style="height: 460px" [columnMode]="'force'" [headerHeight]="50"
-          [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="listOrders" [externalPaging]="true"
-          [count]="listOrders.length" [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
-          (page)="onPageChange($event)">
-          <ngx-datatable-column name="order_number" [resizeable]="false" [canAutoResize]="true" [maxWidth]="60">
+        <ngx-datatable
+          class="material fullscreen"
+          style="height: 460px"
+          [columnMode]="'force'"
+          [headerHeight]="50"
+          [footerHeight]="50"
+          [rowHeight]="60"
+          [scrollbarV]="true"
+          [rows]="listOrders"
+          [externalPaging]="true"
+          [count]="listOrders.length"
+          [limit]="itemsPerPage"
+          [offset]="(currentPage - 1) * itemsPerPage"
+          (page)="onPageChange($event)"
+        >
+          <ngx-datatable-column
+            name="order_number"
+            [resizeable]="false"
+            [canAutoResize]="true"
+            [maxWidth]="60"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 10px; text-align: center">N°</p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.order_number }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="client" [resizeable]="false" [canAutoResize]="true">
+          <ngx-datatable-column
+            name="client"
+            [resizeable]="false"
+            [canAutoResize]="true"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 10px; text-align: center">Cliente</p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.name_client }}
                 </p>
               </ng-container>
@@ -239,9 +271,15 @@
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Fecha</p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.order_date.split("T")[0] }}
                 </p>
               </ng-container>
@@ -260,9 +298,15 @@
                 Estado de Pedido
               </p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.order_state }}
                 </p>
               </ng-container>
@@ -273,7 +317,7 @@
             name="delivery_state"
             [hidden]="isSmallScreen"
             [resizeable]="false"
-            [canAutoResize]="true" 
+            [canAutoResize]="true"
             *ngIf="order_type == 'Por entregar' || order_type == 'Todos'"
           >
             <ng-template ngx-datatable-header-template>
@@ -281,9 +325,15 @@
                 Estado de Entrega
               </p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.delivery_state }}
                 </p>
               </ng-container>
@@ -300,9 +350,15 @@
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Estado de Pago</p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.payment_state }}
                 </p>
               </ng-container>
@@ -316,25 +372,41 @@
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Total</p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <p style="font-size: 10px; text-align: center; margin-top: 12px">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
                   {{ row.total_order | currency : "" : "symbol" : "1.2-2" }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true">
+          <ngx-datatable-column
+            name="actions"
+            [resizeable]="false"
+            [canAutoResize]="true"
+          >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Acciones</p>
             </ng-template>
-            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
               <ng-container *ngIf="row && row.id_order">
-                <div style="
+                <div
+                  style="
                     display: flex;
                     justify-content: space-around;
                     margin-top: 5px;
-                  ">
+                  "
+                >
                   <!-- Ver detalle -->
                   <button
                     ngbTooltip="Ver Detalle"
@@ -355,7 +427,8 @@
                     [disabled]="
                       row.payment_state == 'Pagado' ||
                       row.order_state == 'Anulado'
-                    ">
+                    "
+                  >
                     <i class="i-Financial" style="font-size: 15px"></i>
                   </button>
 
@@ -380,10 +453,12 @@
                     "
                     (click)="
                       openModal(row.id_order, 'Enviar', row.delivery_state)
-                    " [disabled]="
+                    "
+                    [disabled]="
                       row.delivery_state == 'Entregado' ||
                       row.order_state == 'Anulado'
-                    ">
+                    "
+                  >
                     <i class="i-Jeep" style="font-size: 15px"></i>
                   </button>
 
@@ -460,11 +535,19 @@
 
 <ng-template #paymentModal let-modal>
   <ul class="nav nav-tabs">
-    <li class="nav-item" (click)="activTab = 'formulario'" style="cursor: pointer">
-      <a class="nav-link" [class.active]="activTab === 'formulario'">Registrar pago</a>
+    <li
+      class="nav-item"
+      (click)="activTab = 'formulario'"
+      style="cursor: pointer"
+    >
+      <a class="nav-link" [class.active]="activTab === 'formulario'"
+        >Registrar pago</a
+      >
     </li>
     <li class="nav-item" (click)="activTab = 'abonos'" style="cursor: pointer">
-      <a class="nav-link" [class.active]="activTab === 'abonos'">Pagos registrados</a>
+      <a class="nav-link" [class.active]="activTab === 'abonos'"
+        >Pagos registrados</a
+      >
     </li>
   </ul>
 
@@ -474,19 +557,32 @@
         <div class="row">
           <div class="col-md-6 form-group mb-3">
             <label for="id_client">Nombre cliente</label>
-            <input class="form-control" id="id_client" [readonly]="true" (change)="handleClientSelection($event)"
-              formControlName="id_client" />
+            <input
+              class="form-control"
+              id="id_client"
+              [readonly]="true"
+              (change)="handleClientSelection($event)"
+              formControlName="id_client"
+            />
           </div>
 
           <div class="col-md-6 form-group mb-3">
             <label for="payment_date">Fecha de pago</label>
-            <input type="text" class="form-control" id="payment_date" [placeholder]="'Fecha de pago'" [readonly]="true"
+            <input
+              type="text"
+              class="form-control"
+              id="payment_date"
+              [placeholder]="'Fecha de pago'"
+              [readonly]="true"
               [value]="
                 formBasic.get('payment_date').value | date : 'yyyy-MM-dd'
-              " />
+              "
+            />
           </div>
           <div class="col-md-6 form-group mb-3">
-            <label for="total_payment">Monto pago<span class="text-danger">*</span></label>
+            <label for="total_payment"
+              >Monto pago<span class="text-danger">*</span></label
+            >
             <input
               type="number"
               class="form-control"
@@ -497,40 +593,71 @@
               formControlName="total_payment"
             />
             <div *ngIf="formBasic.get('total_payment').touched">
-              <div *ngIf="formBasic.get('total_payment').hasError('required')" class="text-danger">
+              <div
+                *ngIf="formBasic.get('total_payment').hasError('required')"
+                class="text-danger"
+              >
                 El total del pago es obligatorio.
               </div>
-              <div *ngIf="formBasic.get('total_payment').hasError('nonNegative')" class="text-danger">
+              <div
+                *ngIf="formBasic.get('total_payment').hasError('nonNegative')"
+                class="text-danger"
+              >
                 El monto del pago no puede ser negativo.
               </div>
-              <div *ngIf="formBasic.get('total_payment').hasError('max')" class="text-danger">
+              <div
+                *ngIf="formBasic.get('total_payment').hasError('max')"
+                class="text-danger"
+              >
                 El total del pago no puede ser mayor que el total de la venta.
               </div>
             </div>
           </div>
-          
-          
+
           <div class="col-md-6 form-group mb-3">
             <label for="total_order">Total pedido</label>
-            <input class="form-control" id="total_order" [readonly]="true" formControlName="total_order" />
+            <input
+              class="form-control"
+              id="total_order"
+              [readonly]="true"
+              formControlName="total_order"
+            />
           </div>
 
           <div class="col-md-6 form-group mb-3">
             <label for="total_remaining">Total restante</label>
-            <input type="number" class="form-control" id="total_remaining" [placeholder]="'Total restante'"
-              [readonly]="true" [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
-              formControlName="total_remaining" />
-              <div *ngIf="formBasic.get('total_remaining').hasError('nonNegative')" class="text-danger">
-               {{ mensaje }}
-              </div>
+            <input
+              type="number"
+              class="form-control"
+              id="total_remaining"
+              [placeholder]="'Total restante'"
+              [readonly]="true"
+              [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
+              formControlName="total_remaining"
+            />
+            <div
+              *ngIf="formBasic.get('total_remaining').hasError('nonNegative')"
+              class="text-danger"
+            >
+              {{ mensaje }}
+            </div>
           </div>
           <div class="col-md-12">
             <div class="d-flex justify-content-end">
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary " (click)="modal.close('cancel')">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="modal.close('cancel')"
+                >
                   Cancelar
                 </button>
-                <button type="button" ngbAutofocus class="btn btn-wide btn-primary" (click)="asignarPago()">
+                <button
+                  type="button"
+                  ngbAutofocus
+                  class="btn btn-wide btn-primary"
+                  (click)="asignarPago()"
+                >
                   Pagar
                 </button>
               </div>
@@ -556,8 +683,16 @@
             <tbody>
               <tr *ngFor="let payment of paymentsForOrder">
                 <td>{{ payment.payment_date | date : "yyyy-MM-dd" }}</td>
-                <td>{{ payment.total_payment | currency : "" : "symbol" : "1.2-2" }}</td>
-                <td>{{ payment.total_remaining | currency : "" : "symbol" : "1.2-2" }}</td>
+                <td>
+                  {{
+                    payment.total_payment | currency : "" : "symbol" : "1.2-2"
+                  }}
+                </td>
+                <td>
+                  {{
+                    payment.total_remaining | currency : "" : "symbol" : "1.2-2"
+                  }}
+                </td>
               </tr>
             </tbody>
           </table>

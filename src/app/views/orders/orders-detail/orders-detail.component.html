@@ -129,6 +129,21 @@
                       Se debe seleccionar un tipo de pago*
                     </p>
                   </div>
+                  <div
+                    class="col-md-12 form-group mb-3"
+                    *ngIf="
+                      viewMode == 'detail' && orderState == 'Anulado' && order.obsertavion_return !== ''
+                    "
+                  >
+                    <label for="payment_type">Razón por la que se anula</label>
+                    <textarea
+                      placeholder="Razón por la que se anula el pedido"
+                      class="form-control"
+                      [value]="message_observation"
+                      style="resize: none"
+                      readonly
+                    ></textarea>
+                  </div>
                 </div>
 
                 <div class="col-md-12 mt-4 table-border">

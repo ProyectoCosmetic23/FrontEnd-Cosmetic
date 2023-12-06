@@ -51,6 +51,23 @@
                   [readonly]="viewMode === 'print'"
                 />
               </div>
+              <div
+                class="col-md-6 form-group mb-3"
+                *ngIf="
+                  viewMode == 'print' &&
+                  roleStatus == 'Inactivo' &&
+                  role.obsertavion_status !== ''
+                "
+              >
+                <label>Razón por la que se cambió de estado</label>
+                <input
+                  placeholder="Razón por la que se cambió de estado"
+                  class="form-control"
+                  [value]="role.observation_status"
+                  style="resize: none"
+                  readonly
+                />
+              </div>
               <div class="error-message" *ngIf="showErrorMessageName">
                 <p class="text-danger">{{ nameErrorMessage }}</p>
               </div>
