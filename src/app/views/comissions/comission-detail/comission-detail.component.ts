@@ -241,7 +241,7 @@ export class ComissionsDetailComponent implements OnInit {
         if (this.totalSale == 0){
           this.noSales = true
           console.log(this.noSales)
-          this.message = "El empleado no ha realizado ventas"        
+          this.message = "El empleado no realizó o ha realizado ventas para el mes elegido"        
         }else{
           this.noSales = false;
           console.log(this.noSales)
