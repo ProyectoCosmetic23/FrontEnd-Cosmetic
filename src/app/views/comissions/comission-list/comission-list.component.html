@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <select class="form-select" [(ngModel)]="selectedMonth" (change)="filterByMonth()">
+                        <select class="form-select" [(ngModel)]="selectedMonth" (change)="filterComissionsByMonth()">
                             <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
                         </select>
                     </div>
@@ -41,11 +41,18 @@
         <div class="card o-hidden">
             <div class="col-md-12">
                 <div class="card o-hidden">
-                    <ngx-datatable class="material fullscreen" style="height: 460px;" [columnMode]="'force'"
-                        [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true"
-                        [rows]="listComissions" [externalPaging]="true" [count]="listComissions.length"
-                        [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
-                        (page)="onPageChange($event)">
+                    <ngx-datatable
+                    class="material fullscreen"
+                    style="height: 100px"
+                    [columnMode]="'force'"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [rowHeight]="60"
+                    [rows]="listComissions"
+                    [count]="listComissions.length"
+                    [limit]="6"
+                    rowHeight="700px"
+                  >
                         <ngx-datatable-column name="id_employee">
                             <ng-template ngx-datatable-header-template>
                                 

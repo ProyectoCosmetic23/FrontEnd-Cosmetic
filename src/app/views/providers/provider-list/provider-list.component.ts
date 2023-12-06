@@ -24,7 +24,6 @@ export class ProviderListComponent implements OnInit {
     providers;
     filteredProviders: any[] = [];
     paginationId: string = 'providers-pagination';
-
     currentPage: number = 1;
     itemsPerPage: number = 6;
     countLabel: number;
