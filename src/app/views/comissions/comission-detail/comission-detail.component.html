@@ -67,9 +67,14 @@
                         <div class="col-md-6 form-group mb-3">
                             <label for="total_sales">Total ventas</label>
                             <input class="form-control" id="total_sales" [readonly]="true"
-                                [ngClass]="{'placeholder-black': viewMode === 'print'}"
-                                [placeholder]="totalSales || 'No se realizó ninguna venta'" formControlName="total_sales">
+                                [ngClass]="{'placeholder-black': viewMode === 'print', 'text-danger': noSales}"
+                                [placeholder]="totalSales || 'No se realizó ninguna venta'"
+                                formControlName="total_sales">
+                            <div *ngIf="viewMode === 'new' && noSales === true" class="text-danger">
+                                <div>{{message}}</div>
+                            </div>
                         </div>
+                        
 
                         <div class="col-md-12">
                             <div class="d-flex justify-content-end">
