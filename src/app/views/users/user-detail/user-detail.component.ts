@@ -70,9 +70,12 @@ export class UserDetailComponent implements OnInit {
           this.userForm.patchValue({
             email: data.email, // Actualiza el campo de correo electrónico con el valor obtenido
             id_employee: data.id_employee,
+            name_employee: data.name_employee
           });
           console.log(data.email);
           console.log(data.id_employee);
+          console.log(data.name_employee);
+          
 
           this.employeeNotFoundMessage = ""; // Reinicia el mensaje si se encontró el empleado
         },
@@ -91,13 +94,14 @@ export class UserDetailComponent implements OnInit {
       id_role: ["", [Validators.required]],
       id_employee: [],
       username: ["", [Validators.required, Validators.maxLength(80)]],
-      email: [],
-      observation_user: ["", [Validators.required, Validators.maxLength(100)]],
+      email: ['',[Validators.email]],
+      observation_user: ["", [ Validators.maxLength(100)]],
       state_user: [],
       creation_date_user: [],
       password: ["", [Validators.required]],
       name_role: ["", []],
-      id_card_employee: ["", [Validators.required]],
+      id_card_employee: ["", [Validators.required,  Validators.maxLength(10), Validators.minLength(7), Validators.pattern('^[0-9]+$')]],
+      name_employee:[]
     });
 
     if (this.viewMode == "print" /*|| this.viewMode == 'edit'*/) {
@@ -115,6 +119,7 @@ export class UserDetailComponent implements OnInit {
     if (this.viewMode != "new" && this.viewMode != "print" ) {
 
       this.password.disable();
+      
    
     }
   }
@@ -191,6 +196,7 @@ export class UserDetailComponent implements OnInit {
         this.state_user.setValue(this.userData.state_user),
         this.observation_user.setValue(this.userData.observation_user),
         this.userForm.setValue(this.userData);
+        this.name_employee.setValue(this.userData.name_employee)
     }
   }
 
@@ -221,6 +227,42 @@ export class UserDetailComponent implements OnInit {
       );
     }
   }
+  
+  checkEmployeeAvailability(): void {
+    if (this.id_employee && this.id_employee instanceof AbstractControl) {
+      this.validateEmployeeAvailability(this.id_employee).then((result) => {
+        if (result) {
+          this.id_employee.setErrors(result);
+        }
+      });
+    }
+  }
+  
+  validateEmployeeAvailability(control: AbstractControl) {
+    return new Promise((resolve) => {
+      if (!control.value) {
+        resolve(null);
+      } else {
+        this.usersService.checkEmployeeAvailability(control.value).subscribe(
+          (isAvailable) => {
+            if (isAvailable) {
+              resolve(null);
+            } else {
+              resolve({ employeeTaken: true });
+            }
+          },
+          (error) => {
+            resolve({ employeeTaken: true });
+          }
+        );
+      }
+    });
+  }
+
+
+
+
+
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
@@ -410,5 +452,8 @@ export class UserDetailComponent implements OnInit {
 
   get password() {
     return this.userForm.get("password");
+  }
+  get name_employee(){
+    return this.userForm.get("name_employee")
   }
 }

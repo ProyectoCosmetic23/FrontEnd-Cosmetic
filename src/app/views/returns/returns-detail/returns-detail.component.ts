@@ -321,6 +321,19 @@ export class ReturnsDetailComponent implements OnInit {
     });
   }
 
+  createReturn():FormGroup{
+    console.log(this.productsFormArray.value);
+    return this.formBuilder.group({
+      id_product: [""],
+      product_quantity: [""],
+      product_name:[""]
+    
+
+    });
+    
+  }
+
+
   // Método para manejar la selección de un producto
   handleProductSelection(event: any, i: number) {
     const selectedProductId = this.productsFormArray
@@ -507,14 +520,12 @@ export class ReturnsDetailComponent implements OnInit {
 
 
 
- // Modal paraa el manejo de devolucion 
+ // Modal para el manejo de devolucion 
 
  openRetireModal(productId: number, productValue: number, content: any): void {
   this.selectedProductId = productId;
-  this.selectedProductValue = productValue;
-  this.returnQuantity = 0;
   this.returnReason = '';
-  this.returnValue ;
+  
   // Resto del código...
   this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
 }
@@ -523,15 +534,15 @@ export class ReturnsDetailComponent implements OnInit {
 
     
 retireProduct(): void {
-    if (this.selectedProductId && this.returnQuantity) {    
+    if (this.wishToRetire && this.selectedProductId && this.returnQuantity) {    
         const data = {
             return_quantity: this.returnQuantity,
             return_reason: this.returnReason,
-            return_value: this.returnValue,
+            
         };
 
         // Llamada a la API para dar de baja el producto
-        this._returnsService.retireProduct(this.selectedProductId, data).subscribe(
+        this._productService.retireProduct(this.selectedProductId, data).subscribe(
             (response) => {
                 this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
                 this.toastr.success('Producto dado de baja exitosamente.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
@@ -548,8 +559,11 @@ retireProduct(): void {
 }
 
 
+
+
+
 updateProductQuantity(productId: number, quantityToSubtract: number): void {
-  const productToUpdate = this.order_detail_products.find(product => product.id_product === productId);
+  const productToUpdate = this.listProducts.find(product => product.id_product === productId);
 
   if (productToUpdate) {
     productToUpdate.product_quantity -= quantityToSubtract;
