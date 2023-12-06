@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
+import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
@@ -16,10 +16,16 @@ export class OrdersDetailComponent implements OnInit {
   loading: boolean;
   loadingData: boolean;
   isNew: boolean;
+  error_payment_type: boolean = false;
+  error_employee: boolean = false;
+  error_client: boolean = false;
+  quantityError: boolean;
+  productError: boolean;
 
   // Propiedades de formulario
   formBasic: FormGroup;
   productsFormArray: FormArray;
+  formulario: FormGroup;
 
   // Propiedades para el modo de vista
   viewMode: "new" | "detail" = "new";
@@ -37,14 +43,17 @@ export class OrdersDetailComponent implements OnInit {
   selected_employee: string;
   selected_client: string;
   selected_payment_type: string;
-  error_payment_type: boolean = false;
   selected_employee_id: number;
-  error_employee: boolean = false;
   selected_client_id: number;
-  error_client: boolean = false;
   listPayments: any[] = [];
   showLoadingScreen: boolean = false;
   directSale: boolean = false;
+  productStock: any;
+  productPrice: any;
+  subtotal: number;
+  product_quantity: any;
+  selectedProduct: any;
+  inventoryQuantity: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,8 +69,6 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    const productGroup = this.createProductGroup();
-    this.productsFormArray.push(productGroup);
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
     this.setViewMode();
@@ -69,11 +76,31 @@ export class OrdersDetailComponent implements OnInit {
     this.getEmployees();
     this.getProducts();
     this.getOrder();
+    this.initFormGroups();
+    this.handleFormChanges();
+  }
+
+  private initFormGroups() {
     this.formBasic = this.formBuilder.group({
       directSale: false,
     });
     this.formBasic.addControl("products", this.productsFormArray);
-    this.getPaymentsForOrder();
+
+    this.formulario = this.formBuilder.group({
+      productSelect: [null, Validators.required],
+      product_price: [{ value: null, disabled: true }],
+      product_quantity: [null, [Validators.required, Validators.min(1)]],
+      subtotal: [{ value: null, disabled: true }],
+    });
+  }
+
+  private handleFormChanges() {
+    // Escucha los cambios en el producto seleccionado
+    this.formulario
+      .get("productSelect")
+      .valueChanges.subscribe((selectedProduct) => {
+        this.handleProductSelection(selectedProduct);
+      });
   }
 
   // -------------- INICIO: Método para definir el tipo de vista -------------- //
@@ -333,76 +360,135 @@ export class OrdersDetailComponent implements OnInit {
 
   // -------------- INICIO: Funciones para manipular Productos -------------- //
 
-  // Método para crear un FormGroup para un producto
-  createProductGroup(): FormGroup {
-    return this.formBuilder.group({
-      id_product: [""],
-      product_price: [""],
-      product_quantity: [""],
-      subtotal: [""],
-      quantityOnhand: [""],
-    });
-  }
-
   // Método para manejar la selección de un producto
-  handleProductSelection(event: any, i: number) {
-    const selectedProductId = this.productsFormArray
-      .at(i)
-      .get("id_product").value;
-
-    // Obtén el producto previamente seleccionado
-    const previouslySelectedProductId =
-      this.productsFormArray.value[i].id_product;
-    const previouslySelectedProductIndex = this.listProducts.findIndex(
-      (product) => product.id_product === previouslySelectedProductId
-    );
-
-    // Si había un producto previamente seleccionado, cambia su estado a false
-    if (previouslySelectedProductIndex !== -1) {
-      this.listProducts[previouslySelectedProductIndex].disabled = false;
-    }
-
-    const selectedProductIndex = this.listProducts.findIndex(
+  handleProductSelection(selectedProductId: any) {
+    this.quantityError = false;
+    this.productError = false;
+    this.selectedProduct = this.listProducts.find(
       (product) => product.id_product === selectedProductId
     );
 
-    const selectedProduct = this.listProducts[selectedProductIndex];
+    console.log(this.selectedProduct);
 
-    if (selectedProductIndex !== -1) {
-      this.productsFormArray
-        .at(i)
-        .get("product_price")
-        .setValue(selectedProduct.selling_price);
+    if (this.selectedProduct) {
+      this.productPrice = this.selectedProduct.selling_price;
+      this.formulario.get("product_price").setValue(this.productPrice);
 
-      const unitValue = this.productsFormArray
-        .at(i)
-        .get("product_quantity").value;
+      this.inventoryQuantity = this.selectedProduct.quantity; // Reemplaza con la propiedad correcta
 
-      if (unitValue != null && unitValue !== undefined) {
-        const subtotal = selectedProduct.selling_price * unitValue;
+      // Establece el límite en el formulario
+      this.formulario
+        .get("product_quantity")
+        .setValidators([
+          Validators.min(1),
+          Validators.max(this.inventoryQuantity),
+        ]);
 
-        this.productsFormArray
-          .at(i)
-          .get("quantityOnhand")
-          .setValue(selectedProduct.quantity);
-        this.productsFormArray.at(i).get("subtotal").setValue(subtotal);
+      // Limpia el valor del campo de cantidad al seleccionar un nuevo producto
+      this.formulario.get("product_quantity").setValue(null);
 
-        // Cambia la propiedad isDisabled a true para el nuevo producto seleccionado
-        this.listProducts[selectedProductIndex].disabled = true;
-      } else {
-        console.log("La cantidad del producto no está definida.");
-      }
-    } else {
-      console.log("Producto no encontrado.");
-      this.productsFormArray.at(i).get("product_price").setValue(null);
+      this.formulario.get("product_quantity").valueChanges.subscribe((value) => {
+        this.product_quantity = value;
+        this.formulario
+          .get("subtotal")
+          .setValue(this.productPrice * this.product_quantity);
+      });
     }
+  }
+
+  limitMaxValue(event: any): void {
+    const inputElement = event.target;
+    const inputValue = parseInt(inputElement.value, 10);
+    const max =
+      this.inventoryQuantity !== undefined
+        ? this.inventoryQuantity
+        : Number.MAX_SAFE_INTEGER;
+
+    if (inputValue > max) {
+      inputElement.value = String(max);
+      this.formulario.get("product_quantity").setValue(max);
+    }
+  }
+
+  calcSubtotal() {
+    this.selectedProduct.selling_price * this.product_quantity;
   }
 
   // Función para agregar un nuevo producto al FormArray
   addProduct() {
-    const productGroup = this.createProductGroup();
-    this.productsFormArray.push(productGroup);
-    this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
+    const selectedProductId = this.formulario.get("productSelect").value;
+
+    const selectedProduct = this.listProducts.find(
+      (product) => product.id_product === selectedProductId
+    );
+
+    const quantityToAdd = this.formulario.get("product_quantity").value;
+
+    if (!selectedProduct && quantityToAdd <= 0) {
+      // Puedes mostrar un mensaje de error o realizar alguna acción
+      this.productError = true;
+      this.quantityError = true;
+      return; // Salir de la función si la cantidad no es válida
+    } else if (!selectedProduct) {
+      // Puedes mostrar un mensaje de error o realizar alguna acción
+      this.productError = true;
+      return; // Salir de la función si la cantidad no es válida
+    } else if (quantityToAdd <= 0) {
+      // Puedes mostrar un mensaje de error o realizar alguna acción
+      this.quantityError = true;
+      return; // Salir de la función si la cantidad no es válida
+    }
+
+    this.productError = false;
+    this.quantityError = false;
+
+    // Buscar si el producto ya está en el FormArray
+    const existingProductIndex = this.productsFormArray.controls.findIndex(
+      (product) => {
+        return product.get("id_product").value === selectedProductId;
+      }
+    );
+
+    if (existingProductIndex !== -1) {
+      // Si el producto ya existe, aumentar la cantidad solamente
+      const existingProduct =
+        this.productsFormArray.controls[existingProductIndex];
+      const existingQuantity = existingProduct.get("product_quantity").value;
+      existingProduct
+        .get("product_quantity")
+        .setValue(existingQuantity + quantityToAdd);
+      existingProduct
+        .get("subtotal")
+        .setValue(
+          existingProduct.get("product_price").value *
+            (existingQuantity + quantityToAdd)
+        );
+
+      // Actualiza la cantidad en el objeto original (selectedProduct)
+      selectedProduct.quantity -= quantityToAdd;
+      this.inventoryQuantity -= quantityToAdd;
+      this.formulario.get("product_quantity").setValue(null);
+    } else {
+      // Si el producto no existe, agregarlo al FormArray
+      const productGroup = this.formBuilder.group({
+        id_product: [selectedProductId],
+        product_name: [selectedProduct ? selectedProduct.name_product : ""],
+        product_price: [selectedProduct ? selectedProduct.selling_price : 0],
+        product_quantity: [quantityToAdd],
+        subtotal: [
+          selectedProduct ? selectedProduct.selling_price * quantityToAdd : 0,
+        ],
+      });
+
+      // Resta la cantidad del producto original
+      selectedProduct.quantity -= quantityToAdd;
+      this.inventoryQuantity -= quantityToAdd;
+      this.productsFormArray.push(productGroup);
+      this.numberOfProducts = this.productsFormArray.length;
+
+      // Limpia el valor del campo de cantidad en el formulario
+      this.formulario.get("product_quantity").setValue(null);
+    }
   }
 
   // Función para eliminar un producto del FormArray
@@ -417,18 +503,25 @@ export class OrdersDetailComponent implements OnInit {
       (product) => product.id_product == productIdToRemove
     );
 
-    // Cambia el estado isDisabled a false
     if (productIndexToRemove !== -1) {
+      // Incrementa la cantidad en listProducts con la cantidad que se está eliminando
+      const quantityToRemove = this.productsFormArray
+        .at(index)
+        .get("product_quantity").value;
+
+      this.listProducts[productIndexToRemove].quantity += quantityToRemove;
+      this.inventoryQuantity += quantityToRemove;
+      // Cambia el estado isDisabled a false
       this.listProducts[productIndexToRemove].disabled = false;
     }
-
-    console.log(this.listProducts[productIndexToRemove]);
 
     // Elimina el producto del FormArray
     this.productsFormArray.removeAt(index);
 
     // Actualiza la cantidad de productos
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
+
+    console.log(this.productsFormArray.value);
   }
 
   calculateTotal() {
@@ -442,14 +535,9 @@ export class OrdersDetailComponent implements OnInit {
     return total;
   }
 
-  selectConfig = {
-    displayKey: "name",
-    search: true,
-    placeholder: "Selecciona un producto",
-  };
-
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
+  // Función principal para crear el pedido 
   createOrder() {
     try {
       if (!this.formBasic.valid) {
@@ -518,6 +606,7 @@ export class OrdersDetailComponent implements OnInit {
     }
 
     const productsArray = this.productsFormArray.value;
+    console.log(productsArray);
     for (const product of productsArray) {
       if (
         !product.id_product ||
@@ -525,22 +614,6 @@ export class OrdersDetailComponent implements OnInit {
         !product.product_quantity
       ) {
         this.showFormWarning("Completa todos los campos del producto");
-        allConditionsMet = false;
-      }
-
-      // Encuentra el producto en listProducts por id_product
-      const selectedProduct = this.listProducts.find(
-        (p) => p.id_product === product.id_product
-      );
-
-      if (
-        selectedProduct &&
-        product.product_quantity > selectedProduct.quantity
-      ) {
-        // Si la cantidad en productsFormArray es mayor que la cantidad disponible en listProducts, muestra una advertencia
-        this.showFormWarning(
-          "La cantidad de productos supera el stock disponible"
-        );
         allConditionsMet = false;
       }
     }
