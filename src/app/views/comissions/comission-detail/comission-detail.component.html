@@ -68,7 +68,7 @@
                             <label for="total_sales">Total ventas</label>
                             <input class="form-control" id="total_sales" [readonly]="true"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}"
-                                [placeholder]="totalSales || 'No realizó ninguna venta'" formControlName="total_sales">
+                                [placeholder]="totalSales || 'No se realizó ninguna venta'" formControlName="total_sales">
                         </div>
 
                         <div class="col-md-12">
@@ -76,10 +76,10 @@
                                 <button class="btn btn-danger float-right"
                                     [routerLink]="['/comisiones']">Volver</button>
                                 <div style="width: 10px;"></div>
-                                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading"
+                                <button class="btn btn-primary" *ngIf="viewMode === 'new'" [loading]="loading"
                                     [disabled]="noSales">
                                     Registrar Comisión
-                                </btn-loading>
+                                </button>
                             </div>
                         </div>
                     </div>
