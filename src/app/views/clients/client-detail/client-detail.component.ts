@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { ClientsService } from 'src/app/shared/services/client.service';
 import { ClientFormModel } from '../models/client.model';
+import { CookieService } from 'ngx-cookie-service';
+
 
 
 @Component({
@@ -14,8 +16,7 @@ import { ClientFormModel } from '../models/client.model';
 })
 export class ClientDetailComponent implements OnInit {
 
-    clientForm: FormGroup;
-    clientFormSub: Subscription;
+
     loading: boolean = false;
     formBasic: FormGroup;
     viewMode: 'new' | 'edit' | 'print' = 'new';
@@ -27,6 +28,8 @@ export class ClientDetailComponent implements OnInit {
     subTotal: number;
     saving: boolean;
     clientData: ClientFormModel;
+    clientForm: FormGroup;
+    clientFormSub: Subscription;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -34,6 +37,7 @@ export class ClientDetailComponent implements OnInit {
         private router: Router,
         private fb: UntypedFormBuilder,
         private toastr: ToastrService,
+         private cookieService: CookieService,
         private clientsService: ClientsService
     ) {
 
@@ -63,7 +67,7 @@ export class ClientDetailComponent implements OnInit {
         }
 
         if (this.viewMode == 'edit') {
-            this.nit_or_id_client.disable();
+            this.cedula.disable();
         }
 
         if (this.viewMode != 'new') {
@@ -98,7 +102,7 @@ export class ClientDetailComponent implements OnInit {
 
         private setDataClient(): void {
         if (this.clientData) {
-            this.nit_or_id_client.setValue(this.clientData.nit_or_id_client)
+            this.cedula.setValue(this.clientData.nit_or_id_client)
             this.clientForm.setValue(this.clientData)
         }
     }
@@ -194,10 +198,10 @@ export class ClientDetailComponent implements OnInit {
     }
 
     public checkCedulaAvailability(): void {
-        if (this.nit_or_id_client && this.nit_or_id_client instanceof AbstractControl) {
-            this.validateCedulaAvailability(this.nit_or_id_client).then((result) => {
+        if (this.cedula && this.cedula instanceof AbstractControl) {
+            this.validateCedulaAvailability(this.cedula).then((result) => {
                 if (result) {
-                    this.nit_or_id_client.setErrors(result);
+                    this.cedula.setErrors(result);
                 }
             });
         }
@@ -252,7 +256,7 @@ export class ClientDetailComponent implements OnInit {
         if (this.clientForm.valid) {
             const id = Number(this.id); // Convierte el ID a número
             const updatedData = {
-                nit_or_id_client: this.nit_or_id_client.value,
+                nit_or_id_client: this.cedula.value,
                 name_client: this.clientForm.get('name_client').value,
                 email_client: this.email_client.value,
                 address_client: this.clientForm.get('address_client').value,
@@ -306,7 +310,7 @@ export class ClientDetailComponent implements OnInit {
 
 
 
-    get nit_or_id_client () {
+    get cedula(){
         return this.clientForm.get('nit_or_id_client');
     }
 

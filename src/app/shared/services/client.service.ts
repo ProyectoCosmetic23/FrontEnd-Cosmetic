@@ -33,8 +33,8 @@ export class ClientsService {
         );
     }
 
-    checkCedulaAvailability(nit_or_id_client: string): Observable<boolean> {
-        return this.http.get<boolean>(`${this.url}-check-cedula?cedula=${nit_or_id_client}`);
+    checkCedulaAvailability(cedula: string): Observable<boolean> {
+        return this.http.get<boolean>(`${this.url}-check-cedula?cedula=${cedula}`);
     }
 
     checkEmailAvailability(email_client: string): Observable<boolean> {

@@ -73,4 +73,8 @@ export class UsersService {
     const url = `${this.url3}/${id}`;
     return this.http.get<any>(url);
   }
+
+  checkEmployeeAvailability(id_employee: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.url}-check-empleado?id_employee=${id_employee}`);
+  }
 }
