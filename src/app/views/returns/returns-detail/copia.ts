@@ -84,8 +84,8 @@ export class ReturnsDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    // const productGroup = this.createProductGroup();
-    // this.productsFormArray.push(productGroup);
+    const productGroup = this.createProductGroup();
+    this.productsFormArray.push(productGroup);
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
     this.setViewMode();
@@ -312,15 +312,15 @@ export class ReturnsDetailComponent implements OnInit {
   // -------------- INICIO: Funciones para manipular Productos -------------- //
 
   // Método para crear un FormGroup para un producto
-  // createProductGroup(): FormGroup {
-  //   console.log(this.productsFormArray.value);
-  //   return this.formBuilder.group({
-  //     id_product: [""],
-  //     product_price: [""],
-  //     product_quantity: [""],
-  //     subtotal: [""],
-  //   });
-  // }
+  createProductGroup(): FormGroup {
+    console.log(this.productsFormArray.value);
+    return this.formBuilder.group({
+      id_product: [""],
+      product_price: [""],
+      product_quantity: [""],
+      subtotal: [""],
+    });
+  }
 
   createReturn():FormGroup{
     console.log(this.productsFormArray.value);
@@ -374,114 +374,114 @@ export class ReturnsDetailComponent implements OnInit {
   }
 
   // Función para agregar un nuevo producto al FormArray
-  // addProduct() {
-  //   const productGroup = this.createProductGroup();
-  //   this.productsFormArray.push(productGroup);
-  //   this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-  //   console.log(this.numberOfProducts);
-  // }
+  addProduct() {
+    const productGroup = this.createProductGroup();
+    this.productsFormArray.push(productGroup);
+    this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
+    console.log(this.numberOfProducts);
+  }
 
   // Función para eliminar un producto del FormArray
-  // removeProduct(index: number) {
-  //   this.productsFormArray.removeAt(index);
-  //   this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-  //   console.log(this.numberOfProducts);
-  // }
+  removeProduct(index: number) {
+    this.productsFormArray.removeAt(index);
+    this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
+    console.log(this.numberOfProducts);
+  }
 
-  // calculateTotal() {
-  //   let total = 0;
-  //   for (let i = 0; i < this.productsFormArray.length; i++) {
-  //     const subtotal = this.productsFormArray.at(i).get("subtotal").value;
-  //     if (subtotal) {
-  //       total += subtotal;
-  //     }
-  //   }
-  //   console.log(this.productsFormArray);
-  //   return total;
-  // }
+  calculateTotal() {
+    let total = 0;
+    for (let i = 0; i < this.productsFormArray.length; i++) {
+      const subtotal = this.productsFormArray.at(i).get("subtotal").value;
+      if (subtotal) {
+        total += subtotal;
+      }
+    }
+    console.log(this.productsFormArray);
+    return total;
+  }
 
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
-  // createOrder() {
-  //   if (!this.formBasic.valid) {
-  //     this.showFormWarning("Completa el formulario correctamente");
-  //     return;
-  //   }
+  createOrder() {
+    if (!this.formBasic.valid) {
+      this.showFormWarning("Completa el formulario correctamente");
+      return;
+    }
 
-  //   this.checkProducts();
+    this.checkProducts();
 
-  //   this.checkConditions();
+    this.checkConditions();
 
-  //   const order_date = new Date();
-  //   const total_order = this.calculateTotal();
+    const order_date = new Date();
+    const total_order = this.calculateTotal();
 
-  //   const newOrder = {
-  //     id_client: this.selected_client_id,
-  //     id_employee: this.selected_employee_id,
-  //     order_date: order_date,
-  //     payment_type: this.selected_payment_type,
-  //     total_order: total_order,
-  //     products: this.productsFormArray.value,
-  //   };
+    const newOrder = {
+      id_client: this.selected_client_id,
+      id_employee: this.selected_employee_id,
+      order_date: order_date,
+      payment_type: this.selected_payment_type,
+      total_order: total_order,
+      products: this.productsFormArray.value,
+    };
 
-  //    this.submitOrder(newOrder);
-  // }
+    // this.submitOrder(newOrder);
+  }
 
-  // checkProducts() {
-  //   if (this.productsFormArray.length === 0) {
-  //     this.showFormWarning("Agrega al menos un producto al pedido");
-  //     throw new Error("Productos insuficientes");
-  //   }
+  checkProducts() {
+    if (this.productsFormArray.length === 0) {
+      this.showFormWarning("Agrega al menos un producto al pedido");
+      throw new Error("Productos insuficientes");
+    }
 
-  //   const productsArray = this.productsFormArray.value;
-  //   for (const product of productsArray) {
-  //     if (
-  //       !product.id_product ||
-  //       !product.product_price ||
-  //       !product.product_quantity
-  //     ) {
+    const productsArray = this.productsFormArray.value;
+    for (const product of productsArray) {
+      if (
+        !product.id_product ||
+        !product.product_price ||
+        !product.product_quantity
+      ) {
       
-  //     }
-  //   }
-  // }
+      }
+    }
+  }
 
-  // checkConditions() {
-  //   const conditions = [
-  //     {
-  //       variable: "error_client",
-  //       condition:
-  //         this.selected_client === "Seleccione el nombre del cliente" ||
-  //         this.selected_client_id == null ||
-  //         this.selected_client_id == undefined,
-  //       // errorMessage: "Seleccione un cliente",
-  //     },
-  //     {
-  //       variable: "error_employee",
-  //       condition:
-  //         this.selected_employee === "Seleccione el nombre del empleado" ||
-  //         this.selected_employee_id == null ||
-  //         this.selected_employee_id == undefined,
-  //       // errorMessage: "Seleccione un empleado",
-  //     },
-  //     {
-  //       variable: "error_payment_type",
-  //       condition:
-  //         this.selected_payment_type === "Seleccione el tipo de pago" ||
-  //         this.selected_payment_type == null ||
-  //         this.selected_payment_type == undefined,
-  //       // errorMessage: "Seleccione un tipo de pago",
-  //     },
-  //   ];
+  checkConditions() {
+    const conditions = [
+      {
+        variable: "error_client",
+        condition:
+          this.selected_client === "Seleccione el nombre del cliente" ||
+          this.selected_client_id == null ||
+          this.selected_client_id == undefined,
+        // errorMessage: "Seleccione un cliente",
+      },
+      {
+        variable: "error_employee",
+        condition:
+          this.selected_employee === "Seleccione el nombre del empleado" ||
+          this.selected_employee_id == null ||
+          this.selected_employee_id == undefined,
+        // errorMessage: "Seleccione un empleado",
+      },
+      {
+        variable: "error_payment_type",
+        condition:
+          this.selected_payment_type === "Seleccione el tipo de pago" ||
+          this.selected_payment_type == null ||
+          this.selected_payment_type == undefined,
+        // errorMessage: "Seleccione un tipo de pago",
+      },
+    ];
 
-  //   conditions.forEach((condition) => {
-  //     this[condition.variable] =
-  //       this[condition.variable] || condition.condition;
+    conditions.forEach((condition) => {
+      this[condition.variable] =
+        this[condition.variable] || condition.condition;
 
-  //     if (this[condition.variable]) {
+      if (this[condition.variable]) {
         // this.showFormWarning(condition.errorMessage);
         // throw new Error(`${condition.variable} no seleccionado`);
-    //   }
-    // });
+      }
+    });
 
     // Reset errors if all conditions are false
     // if (!conditions.some((condition) => this[condition.variable])) {
@@ -489,11 +489,11 @@ export class ReturnsDetailComponent implements OnInit {
     //     this[condition.variable] = false;
     //   });
     // }
-  // }
+  }
 
-  // showFormWarning(message: string) {
-  //   this.toastr.warning(message, "Advertencia");
-  // }
+  showFormWarning(message: string) {
+    this.toastr.warning(message, "Advertencia");
+  }
 
   // submitOrder(newOrder) {
   //   this._returnsService.createOrder(newOrder).subscribe(
@@ -614,7 +614,7 @@ filterData(value: string) {
 
 //Metodo para manejar la devolucion del producto
 cancelOrder(idOrder) {
-   this._returnsService.AnulateOrder(idOrder, {
+   this._ordersService.AnulateOrder(idOrder, {
     
    
   });
@@ -654,8 +654,6 @@ createReplacementOrder() {
     }
   );
 }
-
-
 
 
 

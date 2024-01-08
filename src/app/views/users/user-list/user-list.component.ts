@@ -4,6 +4,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { UsersService } from 'src/app/shared/services/user.service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { RolesService } from "src/app/shared/services/roles.service";
+import { EmployeesService } from 'src/app/shared/services/employee.service';
+
 
 @Component({
     selector: 'app-user-list',
@@ -18,20 +21,38 @@ export class UserListComponent implements OnInit {
     pageSize: number = 10;
     currentPage: number = 1;
     modalAbierto = false;
+    roles:any={};
+    employees:any={};
 
 
     constructor(
         private _userService: UsersService,
         private modalService: NgbModal,
+        private _rolesService: RolesService,
+        private _employeeService: EmployeesService,
         private toastr: ToastrService,) { }
 
     ngOnInit(): void {
         this.getUsers();
-        this.searchControl.valueChanges
-            .pipe(debounceTime(200))
-            .subscribe(value => {
-                this.filterData(value);
+        this._rolesService.getAllRoles().subscribe((roles:any[])=>{
+            roles.forEach(role=>{
+                this.roles[role.id_role]=role.name_role;
             });
+        });
+
+        this._employeeService.getAllEmployees().subscribe((employees:any[])=>{
+            employees.forEach(employee=>{
+                this.employees[employee.id_employee]=employee.id_card_employee;
+            });
+        });
+        this.attachRoleNames();
+        this.attachCardEmployee();
+
+        // this.searchControl.valueChanges
+        //     .pipe(debounceTime(200))
+        //     .subscribe(value => {
+        //         this.filterData(value);
+        //     });
     }
 
 
@@ -40,11 +61,38 @@ export class UserListComponent implements OnInit {
         this._userService.getAllUsers().subscribe(data => {
             this.listUsers = data.sort((a, b) => a.id_user - b.id_user);
             this.filteredUsers = [...this.listUsers];
+            this.sortListUsers();
+            this.attachRoleNames();
+            this.attachCardEmployee();
         }, error => {
             console.log(error);
         });
     }
 
+    attachRoleNames() {
+        this.filteredUsers.forEach(user => {
+            user.roleName = this.roles[user.id_role]; // Suponiendo que 'id_role' es el identificador del rol del usuario
+        });
+    }
+
+    attachCardEmployee() {
+        this.filteredUsers.forEach(user => {
+            user.employeeCard = this.employees[user.id_employee]; // Suponiendo que 'id_role' es el identificador del rol del usuario
+        });
+    }
+    
+
+    sortListUsers() {
+        this.filteredUsers.sort((a, b) => {
+            if (a.id_user > b.id_user) {
+                return -1;
+            }
+            if (a.id_user > b.id_user) {
+                return 1;
+            }
+            return 0;
+        });
+    }
     filterData(value: string) {
         if (value) {
             value = value.toLowerCase();

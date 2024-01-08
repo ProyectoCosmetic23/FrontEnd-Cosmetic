@@ -228,6 +228,8 @@ export class ClientDetailComponent implements OnInit {
         });
     }
 
+    //Guardar cambios al editar
+
     saveClientsChanges(id: number, updatedData: any) {
         this.clientsService.updateClient(id, updatedData).subscribe(
             (response) => {
@@ -251,6 +253,7 @@ export class ClientDetailComponent implements OnInit {
         }
     }
 
+    //Guardar el crear cliente
     saveChanges() {
         console.log('editar')
         if (this.clientForm.valid) {
@@ -280,8 +283,8 @@ export class ClientDetailComponent implements OnInit {
                 this.toastr.success('Cliente registrado con éxito.', 'Éxito', { progressBar: true, timeOut: 3000 });
                 setTimeout(() => {
                     this.router.navigateByUrl('/clients');
-                }, 3000);
-            }, 3000);
+                },);
+            },);
         }
     }
 

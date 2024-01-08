@@ -16,7 +16,7 @@
                 <div class="col-md-6 d-flex justify-content-end">
                     <input _ngcontent-vet-c167="" id="search" placeholder="Buscar cliente" type="text"
                         class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
-                        style="width: 50%;" (keyup)="searchClient($event)">
+                        style="width: 50%;" (keyup)="filterData($event)">
                 </div>
             </div>
         </div>
@@ -26,19 +26,17 @@
         
         <div class="col-md-12">
             <div class="card o-hidden">
-                <ngx-datatable class="material fullscreen" 
-                style="height: 460px;" 
+                <ngx-datatable
+                class="material fullscreen"
+                style="height: 100px"
                 [columnMode]="'force'"
-                 [headerHeight]="50"
-                    [footerHeight]="50"
-                     [rowHeight]="60" 
-                     [scrollbarV]="true" 
-                     [rows]="filteredClients" 
-                     [externalPaging]="true"
-                    [count]="filteredClients.length"
-                     [limit]="itemsPerPage" 
-                     [offset]="(currentPage - 1) * itemsPerPage"
-                    (page)="onPageChange($event)">
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="60"
+                [rows]="filteredClients"
+                [count]="filteredClients.length"
+                [limit]="6"
+                rowHeight="700px">
 
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
