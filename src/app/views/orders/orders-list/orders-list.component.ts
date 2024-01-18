@@ -46,11 +46,11 @@ export class OrdersListComponent implements OnInit {
   originalRowCount: any;
   showLoadingScreen: boolean = false;
   formBasic: FormGroup;
-  order_type: string = "Todos";
+  order_type: string = "Por entregar";
   modal_message: string;
   message_observation: any = "";
   mensaje = "";
-  activeTab: string = "Todos los Pedidos";
+  activeTab: string = "Pedidos Por Entregar";
   usage: string;
   isSmallScreen: boolean = false;
 
@@ -130,6 +130,10 @@ export class OrdersListComponent implements OnInit {
       this.activeTab = "Pedidos Anulados";
       this.order_type = "Anulado";
       this.getOrders(this.order_type);
+    } else if (tabName === "Devoluciones") {
+      this.activeTab = "Devoluciones";
+      this.order_type = "Devoluciones";
+      this.getOrders(this.order_type);
     }
   }
 
@@ -150,6 +154,8 @@ export class OrdersListComponent implements OnInit {
       orderService = this._ordersService.getAllSales();
     } else if (order_type == "Anulado") {
       orderService = this._ordersService.getAllAnulatedOrders();
+    } else if (order_type == "Devoluciones") {
+      orderService = this._ordersService.getAllReturns();
     }
     orderService.subscribe(
       (ordersData) => {

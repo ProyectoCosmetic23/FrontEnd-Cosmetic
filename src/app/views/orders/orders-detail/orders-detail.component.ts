@@ -138,6 +138,7 @@ export class OrdersDetailComponent implements OnInit {
       );
     }
   }
+  
   // Método para obtener un pedido y sus detalles
   getOrder() {
     this.showLoadingScreen = true;

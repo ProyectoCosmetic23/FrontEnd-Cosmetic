@@ -34,29 +34,6 @@
     <ul class="nav nav-tabs">
       <li
         [ngClass]="{
-          'custom-tab': activeTab === 'Todos los Pedidos',
-          'custom-tab-unselected': activeTab !== 'Todos los Pedidos'
-        }"
-        (click)="onTabSelect('Todos los Pedidos')"
-      >
-        <a class="nav-link" id="todos" style="cursor: pointer"
-          >Todos los Pedidos
-        </a>
-        <div
-          style="
-            height: 5vh;
-            width: 10vw;
-            justify-content: center;
-            padding-top: 0.5rem;
-            display: none;
-          "
-        >
-          <i class="i-Eye" style="font-size: 1.5em"></i>
-        </div>
-      </li>
-
-      <li
-        [ngClass]="{
           'custom-tab': activeTab === 'Pedidos Por Entregar',
           'custom-tab-unselected': activeTab !== 'Pedidos Por Entregar'
         }"
@@ -193,6 +170,29 @@
           <i class="i-Close" style="font-size: 1.5em"></i>
         </div>
       </li>
+
+      <li
+        [ngClass]="{
+          'custom-tab': activeTab === 'Devoluciones',
+          'custom-tab-unselected': activeTab !== 'Devoluciones'
+        }"
+        (click)="onTabSelect('Devoluciones')"
+      >
+        <a class="nav-link" id="anulados" style="cursor: pointer"
+          >Devoluciones</a
+        >
+        <div
+          style="
+            height: 5vh;
+            width: 10vw;
+            justify-content: center;
+            padding-top: 0.5rem;
+            display: none;
+          "
+        >
+          <i class="i-Close" style="font-size: 1.5em"></i>
+        </div>
+      </li>
     </ul>
 
     <div class="card o-hidden">
@@ -267,9 +267,10 @@
             name="order_date"
             [resizeable]="false"
             [canAutoResize]="true"
+            *ngIf="order_type !== 'Entregado'"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px; text-align: center">Fecha</p>
+              <p style="font-size: 12px; text-align: center">Fecha de Pedido</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -286,17 +287,13 @@
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column
-            class="custom-datatable-column"
-            name="order_state"
-            [hidden]="isSmallScreen"
+            name="order_date"
             [resizeable]="false"
             [canAutoResize]="true"
-            *ngIf="order_type == 'Anulado'"
+            *ngIf="order_type == 'Entregado' || order_type == 'Ventas'"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px; text-align: center">
-                Estado de Pedido
-              </p>
+              <p style="font-size: 12px; text-align: center">Fecha de Entrega</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -307,7 +304,7 @@
                 <p
                   style="font-size: 10px; text-align: center; margin-top: 12px"
                 >
-                  {{ row.order_state }}
+                  {{ row.delivery_date }}
                 </p>
               </ng-container>
             </ng-template>
@@ -318,7 +315,7 @@
             [hidden]="isSmallScreen"
             [resizeable]="false"
             [canAutoResize]="true"
-            *ngIf="order_type == 'Por entregar' || order_type == 'Todos'"
+            *ngIf="order_type == 'Por entregar' || order_type == 'Por pagar' || order_type == 'Pagado'"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 102x; text-align: center">
@@ -345,7 +342,7 @@
             name="payment_state"
             [resizeable]="false"
             [canAutoResize]="true"
-            *ngIf="order_type == 'Todos'"
+            *ngIf="order_type == 'Entregado'"
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Estado de Pago</p>
@@ -360,6 +357,31 @@
                   style="font-size: 10px; text-align: center; margin-top: 12px"
                 >
                   {{ row.payment_state }}
+                </p>
+              </ng-container>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column
+            class="custom-datatable-column"
+            [hidden]="isSmallScreen"
+            name="payment_state"
+            [resizeable]="false"
+            [canAutoResize]="true"
+            *ngIf="order_type == 'Anulado' || order_type == 'Devoluciones'"
+          >
+            <ng-template ngx-datatable-header-template>
+              <p style="font-size: 12px; text-align: center">Razón Anulación</p>
+            </ng-template>
+            <ng-template
+              ngx-datatable-cell-template
+              let-value="value"
+              let-row="row"
+            >
+              <ng-container *ngIf="row && row.id_order">
+                <p
+                  style="font-size: 10px; text-align: center; margin-top: 12px"
+                >
+                  {{ row.observation_return }}
                 </p>
               </ng-container>
             </ng-template>
@@ -485,6 +507,7 @@
                     class="btn btn-warning btn-sm"
                     [disabled]="row.order_state == 'Anulado'"
                     [routerLink]="['returns/', row.id_order]"
+                    [disabled]="row.order_state == 'Anulado'"
                   >
                     <i class="i-Close" style="font-size: 15px"></i>
                   </button>

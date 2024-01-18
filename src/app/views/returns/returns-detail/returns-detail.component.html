@@ -42,6 +42,13 @@
           </div>
 
           <div class="col-md-12 mt-4 table-border">
+            <div
+              class="card-title"
+              style="margin-left: 1%; margin-bottom: 2%; margin-top: 1%"
+            >
+              Detalle del Pedido
+            </div>
+
             <table class="table table-hover mb-4">
               <thead class="bg-gray-300">
                 <tr>
@@ -59,7 +66,11 @@
                 >
                   <th scope="row">{{ i + 1 }}</th>
                   <td scope="row">{{ product.product_name }}</td>
-                  <td scope="row">{{ product.product_price }}</td>
+                  <td scope="row">
+                    {{
+                      product.product_price | currency : "" : "symbol" : "1.2"
+                    }}
+                  </td>
                   <td>{{ product.product_quantity }}</td>
                   <td>
                     {{
@@ -70,12 +81,21 @@
 
                   <td>
                     <div>
-                    
-
-                      <button ngbTooltip="Devolver producto" class="btn btn-warning" (click)="openRetireModal(product.id_product, product.product_value, retireModal)">
+                      <button
+                        ngbTooltip="Devolver producto"
+                        class="btn btn-warning"
+                        [disabled]="product.product_quantity == 0"
+                        (click)="
+                          openRetireModal(
+                            product.id_product,
+                            product.product_quantity,
+                            product.product_value,
+                            retireModal
+                          )
+                        "
+                      >
                         <i class="i-Remove"></i>
                       </button>
-                      
                     </div>
                   </td>
                 </tr>
@@ -86,27 +106,94 @@
               <div class="col-md-8">
                 <div class="total">
                   Total:
-                  
-                    {{
-                      order?.order?.total_order | currency : "" : "symbol" : "1.2"
-                    }}
-                 
+
+                  {{
+                    order?.order?.total_order | currency : "" : "symbol" : "1.2"
+                  }}
                 </div>
               </div>
             </div>
-            
 
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-danger float-right" [routerLink]="['/orders']">
-                Cancelar
-              </button>
-            
-              <div style="margin-left: 10px;">
-                <button type="button" class="btn btn-primary" onclick="createReplacementOrder()"  >Guardar</button>
+            <hr />
 
+            <div class="card-title" style="margin-left: 1%; margin-bottom: 2%">
+              Pendientes por Devolución
+            </div>
+
+            <table class="table table-hover mb-4">
+              <thead class="bg-gray-300">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nombre del Producto</th>
+                  <th scope="col">Tipo de Devolución</th>
+                  <th scope="col">Motivo</th>
+                  <th scope="col">Unidades</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let productCtrl of returnedProductsFormArray.controls;
+                    let i = index
+                  "
+                >
+                  <ng-container [formGroup]="productCtrl">
+                    <td scope="row">{{ i + 1 }}</td>
+                    <td scope="row">
+                      {{ productCtrl.get("product_name")?.value }}
+                    </td>
+                    <td scope="row">{{ productCtrl.get("retire")?.value }}</td>
+                    <td scope="row">{{ productCtrl.get("returnReason")?.value }}</td>
+                    <td>{{ productCtrl.get("product_quantity")?.value }}</td>
+                  </ng-container>
+
+                  <td>
+                    <div>
+                      <button
+                        ngbTooltip="Eliminar"
+                        class="btn btn-danger"
+                        (click)="
+                          returnProductToDetail(
+                            productCtrl.get('id_product')?.value,
+                            productCtrl.get('product_quantity')?.value
+                          )
+                        "
+                      >
+                        <i class="i-Remove"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-footer">
+              <div class="col-md-8"></div>
+              <div class="col-md-8">
+                <div class="total">
+                  <br />
+                </div>
               </div>
             </div>
-            
+
+            <div class="d-flex justify-content-end">
+              <button
+                class="btn btn-danger float-right"
+                [routerLink]="['/orders']"
+              >
+                Cancelar
+              </button>
+
+              <div style="margin-left: 10px">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="createReplacementOrder()"
+                >
+                  Guardar
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -135,42 +222,46 @@
         <label for="returnQuantity">Unidades a devolver:</label>
         <input
           type="number"
-          id="returnQuantity"
+          returnQuantity
           class="form-control"
-          (ngModelChange)="
-            returnValue = calculateUpdatedValue(selectedProductValue)
+          [(ngModel)]="productQuantity"
+          [placeholder]="
+            'Máximo: ' + (max_quantity !== undefined ? max_quantity : 0)
           "
-          min="1"
+          (input)="limitMaxValue($event)"
         />
+        <p style="color: red; margin-bottom: 0;" *ngIf="quantityError">
+          Ingrese una cantidad válida.
+        </p>
       </div>
 
-
-
-      <div class="col-md-">
-        <label>
-          <input type="checkbox" class="form-check-input custom-checkbox" [(ngModel)]="wishToRetire"  />
-          ¿Desea dar de baja el producto?
-        </label>
-        
-      </div>
-
-
-
-
-     
-      <div class="col-md-12 form-group mb-3">
+      <div class="col-md-12 form-group mb-3 mt-3">
         <label for="returnReason">Motivo:</label>
         <textarea
           type="textarea"
           id="returnReason"
           class="form-control"
           [(ngModel)]="returnReason"
-          style="resize: none;"
+          style="resize: none"
         ></textarea>
+      </div>
+      <p style="color: red" *ngIf="reasonError">
+        Ingrese el motivo de la devolución.
+      </p>
+      <div>
+        <label style="font-size: 14px">
+          <input
+            type="checkbox"
+            class="form-check-input custom-checkbox"
+            [(ngModel)]="wishToRetire"
+            style="transform: scale(1.5); margin: 5px"
+          />
+          ¿Desea dar de baja el producto?
+        </label>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger" (click)="modal.dismiss()">
+      <button type="button" class="btn btn-danger" (click)="closeModal()">
         Cancelar
       </button>
       <button type="button" class="btn btn-primary" (click)="retireProduct()">
