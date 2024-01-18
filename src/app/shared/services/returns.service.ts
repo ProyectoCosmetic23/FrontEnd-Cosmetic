@@ -64,6 +64,11 @@ export class ReturnsService {
   }
 
 
+  AnulateOrder(id: any, orderData: any): Observable<any> {
+    return this.http.put(this.url + '/api/returns/anulate/' + id, orderData);
+  }
+
+
 
 
 

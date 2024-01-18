@@ -13,7 +13,7 @@
       <div class="card-body">
         <div class="card-title mb-3">Formulario de Devolución</div>
 
-        <form [formGroup]="formBasic" (ngSubmit)="createOrder()">
+        <form [formGroup]="formBasic">
           <div class="row">
             <div class="col-md-5 form-group mb-3">
               <label for="id_client">Cliente</label>
@@ -85,11 +85,12 @@
               <div class="col-md-8"></div>
               <div class="col-md-8">
                 <div class="total">
-                  <span class="large-number text-nowrap display-6">
+                  Total:
+                  
                     {{
                       order?.order?.total_order | currency : "" : "symbol" : "1.2"
                     }}
-                  </span>
+                 
                 </div>
               </div>
             </div>
@@ -101,9 +102,8 @@
               </button>
             
               <div style="margin-left: 10px;">
-                <button type="button" class="btn btn-primary">
-                  Guardar
-                </button>
+                <button type="button" class="btn btn-primary" onclick="createReplacementOrder()"  >Guardar</button>
+
               </div>
             </div>
             

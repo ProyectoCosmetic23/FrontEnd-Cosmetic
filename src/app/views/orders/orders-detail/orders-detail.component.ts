@@ -600,6 +600,8 @@ export class OrdersDetailComponent implements OnInit {
     }
   }
 
+  
+
   checkProducts(): boolean {
     let allConditionsMet = true;
 
@@ -695,4 +697,12 @@ export class OrdersDetailComponent implements OnInit {
     console.error(errorMessage, error);
     this.toastr.error("Error al crear el pedido", "Error");
   }
+
+
+
+
+
+
+
+
 }

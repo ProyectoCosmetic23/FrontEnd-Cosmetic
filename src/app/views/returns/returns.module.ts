@@ -5,9 +5,10 @@ import { ReturnsRoutingModule } from './returns-routing.module';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgxDatatableModule }from '@swimlane/ngx-datatable';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { ReturnsDetailComponent } from './returns-detail/returns-detail.component';
+
 
 @NgModule({
    imports: [
