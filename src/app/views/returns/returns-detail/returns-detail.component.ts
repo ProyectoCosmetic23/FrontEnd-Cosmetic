@@ -6,7 +6,7 @@ import { ReturnsService } from "src/app/shared/services/returns.service";
 import { OrdersService } from "src/app/shared/services/orders.service";
 import { CookieService } from "ngx-cookie-service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
-
+import Swal from "sweetalert2";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ProductService } from "src/app/shared/services/product.service";
 
@@ -68,6 +68,9 @@ export class ReturnsDetailComponent implements OnInit {
   max_quantity: number;
   quantityError: any;
   reasonError: boolean;
+  lengthError: boolean;
+  staticTotalOrder: any;
+  asociatedPayments: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -115,11 +118,7 @@ export class ReturnsDetailComponent implements OnInit {
 
   getPaymentsForOrder() {
     if (this.viewMode === "detaild") {
-      // Convertir this.id a número usando parseInt
       const orderId = parseInt(this.id, 10);
-
-      // O alternativamente, usando Number
-      // const orderId = Number(this.id);
 
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
@@ -167,11 +166,12 @@ export class ReturnsDetailComponent implements OnInit {
             if (this.order_detail_products) {
               this.order_detail_products.push(detail);
             }
-            console.log(this.order_detail_products);
           });
           this.selected_payment_type = this.order.order.payment_type;
 
           this.findOrderData(idClient, idEmployee, orderDetail);
+
+          this.staticTotalOrder = this.order.order.total_order;
 
           // Después de cargar los datos, establece loadingData en false
           this.loadingData = false;
@@ -358,6 +358,7 @@ export class ReturnsDetailComponent implements OnInit {
   updateTotalOrder() {
     // Recorrer todos los productos en order_detail_products y calcular la suma
     let sumProductSubtotal = 0;
+
     this.order_detail_products.forEach((product) => {
       // Calcular el subtotal del producto
       product.product_subtotal =
@@ -509,39 +510,175 @@ export class ReturnsDetailComponent implements OnInit {
   }
 
   createReplacementOrder() {
-    // Recolectar los detalles del pedido original
-    const orderDetails = this.order_detail_products.map((product) => {
-      return {
-        id_product: product.id_product,
-        product_name: product.product_name,
-        product_price: product.product_price,
-        product_quantity: product.product_quantity,
-        // Otros detalles del producto si es necesario
-      };
-    });
+    if (this.returnedProductsFormArray.length == 0) {
+      this.lengthError = true;
+    } else {
+      this.lengthError = false;
 
-    // Crear un nuevo pedido con los detalles recolectados
-    const newOrder = {
-      id_client: this.selected_client_id,
-      id_employee: this.selected_employee_id,
-      payment_type: this.selected_payment_type,
-      order_detail_products: orderDetails,
-      total_order: this.order?.order?.total_order, // Usar el total del pedido original
-      // Otros detalles del pedido si es necesario
-    };
+      let totalSale = 0;
+      let products = [];
+      const newOrderDate = new Date();
 
-    // Llamar al servicio para crear el nuevo pedido
-    this._ordersService.createOrder(newOrder).subscribe(
-      (response) => {
-        console.log("Nuevo pedido creado con los mismos detalles:", response);
-        // Puedes hacer algo con el nuevo pedido, como mostrarlo en la interfaz
-      },
-      (error) => {
-        console.error(
-          "Error al crear el nuevo pedido con los mismos detalles:",
-          error
+      this.order_detail_products.forEach((product) => {
+        if (product.product_quantity > 0) {
+          products.push(product);
+          totalSale += product.product_subtotal;
+        }
+      });
+
+      var productsLength = products.length > 0;
+
+      if (products.length > 0 && products.length !== -1) {
+        // En caso de que si existan cantidades dentro del Array de productos se crea un nuevo pedido
+        // con los productos con cantidad > 0, se anula el pedido actual, y se crean los registros de
+        // los productos devueltos en la base de datos.
+        const newOrder = {
+          id_client: this.order.order.id_client,
+          id_employee: this.order.order.id_employee,
+          order_date: newOrderDate,
+          payment_type: this.order.order.payment_type,
+          total_order: totalSale,
+          products: products,
+          directSale: this.order.order.directSale,
+          isReturn: true,
+        };
+
+        this._ordersService.createOrder(newOrder).subscribe(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.log(error);
+          }
         );
+
+        this.anulateOrderWithRefund(productsLength);
+      } else {
+        // En caso de que no existan cantidades dentro del Array de productos no se crea un nuevo pedido,
+        // se anula el pedido actual, y se crean los registros de los productos devueltos en la base de
+        // datos.
+
+        this.anulateOrderWithRefund(productsLength);
       }
-    );
+    }
+  }
+
+  anulateOrderWithRefund(productsLength: boolean) {
+    var totalPayments = 0;
+
+    if (this.listPayments.length > 0) {
+      this.listPayments.forEach((payments) => {
+        totalPayments += parseInt(payments.total_payment);
+      });
+    } else {
+      console.log("No existen pagos asociados");
+    }
+
+    let amountToRefund = totalPayments - this.order.order.total_order;
+
+    var message;
+
+    if (totalPayments > this.order.order.total_order) {
+      // Formatear amountToRefund como moneda
+      const formattedAmountToRefund = new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP", // Puedes cambiar la moneda según tu necesidad
+      }).format(amountToRefund);
+
+      message = productsLength
+        ? `Se realizó la devolución de éste pedido, y se creó un nuevo pedido con los productos restantes no devueltos. Se realizó al cliente una devolución de ${amountToRefund} pesos.`
+        : `Se realizó la devolución de éste pedido, y se realizó al cliente una devolución de ${amountToRefund} pesos.`;
+
+      // Usar SweetAlert para mostrar la alerta
+      Swal.fire({
+        icon: "warning",
+        title: "Alerta",
+        text: `Se debe realizar una devolución de ${formattedAmountToRefund}. `,
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Continuar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log("Refunded ", amountToRefund);
+          this._ordersService
+            .AnulateOrder(this.order.order.id_order, {
+              observation: message,
+              anulationType: true,
+            })
+            .subscribe(
+              (data) => {
+                // Manejar la respuesta exitosa aquí
+                console.log("La orden fue anulada correctamente", data);
+              },
+              (error) => {
+                // Manejar el error aquí
+                console.error("Hubo un error al anular la orden", error);
+              }
+            );
+          this.registerReturns();
+        } else {
+          this.toastr.warning("La devolución ha sido cancelada", "Cancelado");
+        }
+      });
+    } else {
+      message = productsLength
+        ? `Se realizó la devolución de éste pedido, y se creó un nuevo pedido con los productos restantes no devueltos.`
+        : `Se realizó la devolución de éste pedido`;
+
+      Swal.fire({
+        icon: "warning",
+        title: "Alerta",
+        text: `¿Está seguro de que desea realizar la devolución?`,
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Continuar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this._ordersService
+            .AnulateOrder(this.order.order.id_order, {
+              observation: message,
+              anulationType: true,
+            })
+            .subscribe(
+              (data) => {
+                // Manejar la respuesta exitosa aquí
+                console.log("La orden fue anulada correctamente", data);
+              },
+              (error) => {
+                // Manejar el error aquí
+                console.error("Hubo un error al anular la orden", error);
+              }
+            );
+          this.registerReturns();
+        } else {
+          this.toastr.warning("La devolución ha sido cancelada", "Cancelado");
+        }
+      });
+    }
+  }
+
+  registerReturns() {
+    const returnedProductsArray = this.returnedProductsFormArray.value;
+    var error = false;
+    returnedProductsArray.forEach((product) => {
+      product.id_order = this.order.order.id_order;
+      console.log(product);
+      this._returnsService.retireProduct(product).subscribe(
+        (response) => {
+          console.log("Retiro de producto exitoso:", response);
+        },
+        (error) => {
+          error = true;
+
+          console.error("Error al retirar el producto:", error);
+        }
+      );
+    });
+    if (error == false) {
+      this.toastr.success("Devolución realizada", "Completado");
+      this.router.navigate(["/orders"]);
+    } else {
+      this.toastr.error("Devolución Fallida", "Error");
+    }
   }
 }

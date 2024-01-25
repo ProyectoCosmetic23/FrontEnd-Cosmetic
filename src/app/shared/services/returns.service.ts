@@ -45,13 +45,15 @@ export class ReturnsService {
     return this.http.post(this.url + '/api/orders', orderData);
   }
 
-  retireProduct(id: number, data: any): Observable<any> {
-    const url = `${this.url}/retire/${id}`;
-    return this.http.put(url, data);
+  retireProduct(data: any): Observable<any> {
+    return this.http.post(this.url + '/api/processReturn', data);
   }
 
-  AnulateOrder(id: any, orderData: any): Observable<any> {
-    return this.http.put(this.url + '/api/returns/anulate/' + id, orderData);
+  AnulateOrder(id: any, data: any): Observable<any> {
+    return this.http.put(this.url + '/api/returns/anulate/' + id, data);
   }
 
+  getReturnedProducts(id: any): Observable<any> {
+    return this.http.get(this.url + '/api/returns_detail/' + id);
+  }
 }

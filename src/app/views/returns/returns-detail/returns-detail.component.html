@@ -175,7 +175,9 @@
                 </div>
               </div>
             </div>
-
+            <p style="color: red; margin-bottom: 0;" *ngIf="lengthError">
+              Seleccione como mínimo un producto para realizar la devolución.
+            </p>
             <div class="d-flex justify-content-end">
               <button
                 class="btn btn-danger float-right"
@@ -188,7 +190,7 @@
                 <button
                   type="button"
                   class="btn btn-primary"
-                  onclick="createReplacementOrder()"
+                  (click)="createReplacementOrder()"
                 >
                   Guardar
                 </button>

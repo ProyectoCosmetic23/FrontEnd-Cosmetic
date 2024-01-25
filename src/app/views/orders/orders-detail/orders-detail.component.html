@@ -132,7 +132,9 @@
                   <div
                     class="col-md-12 form-group mb-3"
                     *ngIf="
-                      viewMode == 'detail' && orderState == 'Anulado' && order.obsertavion_return !== ''
+                      viewMode == 'detail' &&
+                      orderState == 'Anulado' &&
+                      order.obsertavion_return !== ''
                     "
                   >
                     <label for="payment_type">Razón por la que se anula</label>
@@ -377,7 +379,10 @@
                 </div>
               </form>
             </tab>
-            <tab *ngIf="viewMode == 'detail'" heading="Pagos Realizados">
+            <tab
+              *ngIf="viewMode == 'detail' && returnedDetail == false"
+              heading="Pagos Realizados"
+            >
               <div style="padding-top: 2%">
                 <div class="row">
                   <div class="col-md-4 form-group mb-3">
@@ -460,6 +465,129 @@
                     <div class="col-md-8">
                       <div class="total">
                         <p></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top: 20px">
+                <div class="d-flex justify-content-end">
+                  <button
+                    class="btn btn-danger float-right"
+                    [routerLink]="['/orders']"
+                  >
+                    Volver
+                  </button>
+                </div>
+              </div>
+            </tab>
+            <tab
+              *ngIf="viewMode == 'detail' && returnedDetail == true"
+              heading="Productos Devueltos"
+            >
+              <div style="padding-top: 2%">
+                <div class="row">
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="id_client">Cliente</label>
+                    <select
+                      class="form-control"
+                      id="id_client"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else clientNewMode"
+                    >
+                      <option>{{ selected_client }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="id_employee">Empleado</label>
+                    <select
+                      class="form-control"
+                      id="id_employee"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else employeeNewMode"
+                    >
+                      <option>{{ selected_employee }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 form-group mb-3">
+                    <label for="payment_type">Tipo de Pago</label>
+                    <select
+                      class="form-control"
+                      id="payment_type"
+                      [disabled]="viewMode === 'detail'"
+                      *ngIf="viewMode === 'detail'; else paymentTypeNewMode"
+                    >
+                      <option>{{ selected_payment_type }}</option>
+                    </select>
+                  </div>
+                  <div
+                    class="col-md-12 form-group mb-3"
+                    *ngIf="
+                      viewMode == 'detail' &&
+                      orderState == 'Anulado' &&
+                      order.obsertavion_return !== ''
+                    "
+                  >
+                    <label for="payment_type">Razón por la que se anula</label>
+                    <textarea
+                      placeholder="Razón por la que se anula el pedido"
+                      class="form-control"
+                      [value]="message_observation"
+                      style="resize: none"
+                      readonly
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="col-md-12 mt-4 table-border">
+                  <table class="table table-hover mb-4">
+                    <thead class="bg-gray-300">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre del Producto</th>
+                        <th scope="col">Precio Unitario</th>
+                        <th scope="col">Cantidad Devuelta</th>
+                        <th scope="col">Motivo de Devolución</th>
+                        <th scope="col">Tipo de Devolución</th>
+                        <th scope="col">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="
+                          let product of returnedProductList;
+                          let i = index
+                        "
+                      >
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ product?.name_product }}</td>
+                        <td>
+                          {{
+                            product?.selling_price
+                              | currency : "" : "symbol" : "1.2-2"
+                          }}
+                        </td>
+                        <td>{{ product?.return_quantity }}</td>
+                        <td>{{ product?.return_reason }}</td>
+                        <td>{{ product?.return_type }}</td>
+                        <td>
+                          {{
+                            product?.subtotal
+                              | currency : "" : "symbol" : "1.2-2"
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="table-footer" style="margin-bottom: 0 !important">
+                    <div class="col-md-8"></div>
+                    <div class="col-md-8">
+                      <div class="total">
+                        Total:
+                        {{
+                          totalReturnedValue | currency : "" : "symbol" : "1.2"
+                        }}
                       </div>
                     </div>
                   </div>

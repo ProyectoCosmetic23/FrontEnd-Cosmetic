@@ -48,7 +48,7 @@ export class OrdersService {
   }
 
   getAllReturns(): Observable<any> {
-    return this.http.get(this.url + '/api/returns');
+    return this.http.get(this.url + '/api/returned_orders');
   }
 
   getAllClients(): Observable<any> {
