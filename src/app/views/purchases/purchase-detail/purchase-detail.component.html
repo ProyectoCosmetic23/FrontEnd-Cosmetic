@@ -271,8 +271,7 @@
               </div>
             </div>
             <div class="col-md-8 d-flex justify-content-start" *ngIf="viewMode === 'print'">
-              <div class="total" style="font-size: 15px;">Total Compra: {{ calculateTotal() |
-                currency:'':'symbol':'1.0-0' }} </div>
+              
             </div>
             <div class="col-md-12 table-responsive">
               <table class="table table-hover mb-6">
@@ -320,6 +319,8 @@
                 <div class="col-md-8" *ngIf="viewMode === 'new' ">
                   <div class="total">Total: {{ calculateTotal() | currency:'':'symbol':'1.0-0' }} </div>
                 </div>
+                <div class="total" style="font-size: 20px;">Total: {{ calculateTotal() |
+                  currency:'':'symbol':'1.0-0' }} </div>
               </div>
             </div>
             <div class="col-md-12" style="margin-top: 20px;">
