@@ -35,8 +35,8 @@
                   El campo nombre no puede superar los 80 caracteres.
               </div>
 
-              <div *ngIf="viewMode === 'new'">
-                <div *ngIf="categoryExists" class="error-message">El nombre de categoría ya existe.</div>
+              <div>
+                <div  class="error-message"  *ngIf=" categoryExists">El nombre de categoría ya existe.</div>
               </div>
               
               </div>
@@ -49,8 +49,8 @@
               >
             
               </div>
-              <label for="observation" *ngIf="viewMode === 'new' || viewMode === 'edit'">Observación</label>
-              <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'new' || viewMode === 'edit'">
+              <label for="observation" >Observación</label>
+              <div class="col-md-6 form-group mb-3">
                 <textarea class="form-control" id="observation_category"  formControlName="observation_category"  [style.resize]="'none'"></textarea>
                 <div *ngIf="categoryForm.get('observation_category').hasError('maxlength')"class="error-message">
                   El campo Observación no puede superar los 100 caracteres.
@@ -58,12 +58,7 @@
               </div>
 
               <div class=""  *ngIf="viewMode === 'print'">
-                <label for="observation">Observación</label>
-                <div class="col-md-6 form-group mb-3">
-                  <div >
-                    <textarea class="form-control" id="observation_category"  formControlName="observation_category"  [style.resize]="'none'"></textarea>
-                  </div>
-                </div>
+              
                 <label for="reason_anulate" *ngIf=" categoryForm.get('state_category').value === false">Motivo cambio estado </label>
                 <div class="col-md-6 form-group mb-3" *ngIf="categoryForm.get('state_category').value === false ">
                   <div  >

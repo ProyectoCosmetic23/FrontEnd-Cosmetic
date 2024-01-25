@@ -44,34 +44,35 @@ export class CategoryDetailComponent implements OnInit {
     console.log(this.id);
     this.isNew = !this.id;
     this.setViewMode();
-    this.inicializateForm(Number(this.id));
+    this.initializeForm(Number(this.id));
 }
-//INICIALIZAR RL FORMULARIO
-private inicializateForm(id: number): void {
-    this.categoryForm = this.formBuilder.group({
-        id_category: [''],
-        name_category:['',[ Validators.required, Validators.maxLength(80),Validators.pattern('^[a-zA-ZáéíóúñÑ ]+$'),], (control) => this.validateCategoryExist(control)],
-        observation_category: ['', [Validators.required,Validators.maxLength(100)]],
-        state_category: [],
-        creation_date_category: [],
-        reason_anulate: [''],
-    });
+private initializeForm(id: number): void {
+  const nameValidators = this.viewMode === 'new' ?
+       (control) => this.validateCategoryExist(control): '';
 
-    if (this.viewMode == 'print') {
-        this.categoryForm.disable();
-    
-    }
+  this.categoryForm = this.formBuilder.group({
+      id_category: [''],
+      name_category: ['',[Validators.required, Validators.maxLength(80), Validators.pattern('^[a-zA-ZáéíóúñÑ ]+$')], nameValidators],
+      observation_category: ['', [Validators.required, Validators.maxLength(100)]],
+      state_category: [],
+      creation_date_category: [],
+      reason_anulate: [''],
+  });
 
-    if (this.viewMode == 'edit') {
-        this.stateCategory.disable();
-        this.dateCategory.disable();
-    }
+  if (this.viewMode === 'print') {
+      this.categoryForm.disable();
+  }
 
-    if (this.viewMode != 'new') {
-        this.getCategoryById(id);
-    }
+  if (this.viewMode === 'edit') {
+      this.stateCategory.disable();
+      this.dateCategory.disable();
+  }
 
+  if (this.viewMode !== 'new') {
+      this.getCategoryById(id);
+  }
 }
+
 
 //CONSULTAR LA CATEGORIA
 private getCategoryById(id: number): void {
