@@ -22,6 +22,7 @@ export class RolesListComponent implements OnInit {
   originalRowCount: any;
   activeLayer: boolean = false;
   stateMessage: string;
+  message_observation: any = "";
   listlistRolesOriginal: any[] = [];
 
   constructor(
@@ -64,17 +65,19 @@ export class RolesListComponent implements OnInit {
 
   searchOrders($event) {
     const value = ($event.target as HTMLInputElement).value.toLowerCase();
-  
+
     if (value.trim() !== "") {
-      this.listRoles = this.listRoles.filter(order =>
+      this.listRoles = this.listRoles.filter((order) =>
         Object.values(order).some(
-          field => field !== null && field !== undefined && field.toString().toLowerCase().includes(value)
+          (field) =>
+            field !== null &&
+            field !== undefined &&
+            field.toString().toLowerCase().includes(value)
         )
       );
     } else {
       // Si el valor de búsqueda está vacío, restaura la lista completa
       this.listRoles = this.listlistRolesOriginal;
-      ;
     }
   }
 
@@ -164,38 +167,57 @@ export class RolesListComponent implements OnInit {
               (result) => {
                 if (result === "Ok") {
                   this.activeLayer = !this.activeLayer;
-                  this._rolesService.updateRoleStatus(idRole).subscribe(
-                    (data) => {
-                      this.modalAbierto = false;
-                      this.loading = false;
-                      this.toastr.success(
-                        "Cambio de estado realizado con éxito.",
-                        "Proceso Completado",
-                        {
-                          progressBar: true,
-                          timeOut: 1000,
+                  if (this.message_observation == "") {
+                    this.toastr.warning(
+                      "Debe indicar el motivo por el que se cambia el estado del rol.",
+                      "Advertencia",
+                      {
+                        progressBar: true,
+                        timeOut: 1000,
+                      }
+                    );
+                    this.message_observation = "";
+                    this.modalAbierto = false;
+                    this.getRoles();
+                  } else {
+                    this._rolesService
+                      .updateRoleStatus(idRole, {
+                        observation: this.message_observation,
+                      })
+                      .subscribe(
+                        (data) => {
+                          this.modalAbierto = false;
+                          this.loading = false;
+                          this.toastr.success(
+                            "Cambio de estado realizado con éxito.",
+                            "Proceso Completado",
+                            {
+                              progressBar: true,
+                              timeOut: 1000,
+                            }
+                          );
+                          console.log(this.message_observation);
+                          setTimeout(() => {
+                            this.getRoles();
+                            this.updateSwitchState(idRole);
+                            this.activeLayer = !this.activeLayer;
+                          }, 1000);
+                        },
+                        (error) => {
+                          this.updateSwitchState(idRole);
+                          this.loading = false;
+                          this.toastr.error(
+                            "Fallo al realizar el cambio de estado.",
+                            "Error",
+                            {
+                              progressBar: true,
+                              timeOut: 2000,
+                            }
+                          );
+                          console.error("Error al cambiar de estado:", error);
                         }
                       );
-                      setTimeout(() => {
-                        this.getRoles();
-                        this.updateSwitchState(idRole);
-                        this.activeLayer = !this.activeLayer;
-                      }, 1000);
-                    },
-                    (error) => {
-                      this.updateSwitchState(idRole);
-                      this.loading = false;
-                      this.toastr.error(
-                        "Fallo al realizar el cambio de estado.",
-                        "Error",
-                        {
-                          progressBar: true,
-                          timeOut: 2000,
-                        }
-                      );
-                      console.error("Error al cambiar de estado:", error);
-                    }
-                  );
+                  }
                 } else if (result === "Cancel") {
                   this.modalAbierto = false;
                   this.getRoles();
@@ -215,6 +237,7 @@ export class RolesListComponent implements OnInit {
         this.updateSwitchState(idRole);
       }
     );
+    this.message_observation = "";
   }
 
   updateSwitchState(idRole: number) {

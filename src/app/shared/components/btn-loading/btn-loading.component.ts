@@ -15,6 +15,7 @@ export class BtnLoadingComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log('Valor de disabled:', this.disabled);
   }
 
 }

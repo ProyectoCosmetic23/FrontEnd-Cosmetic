@@ -42,7 +42,9 @@ export class RolesDetailComponent implements OnInit {
     name_role: "",
     state_role: "Activo",
     modules_role: [],
+    observation_status: ""
   };
+  roleStatus: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -93,8 +95,7 @@ export class RolesDetailComponent implements OnInit {
           this.role = data;
           this.selected_modules = this.role.modules_role;
           this.new_role.name_role = this.role.name_role;
-          console.log(this.selected_modules);
-          console.log(this.role);
+          this.roleStatus = this.role.state_role;
           this.showLoadingScreen = false;
         },
         (error) => {

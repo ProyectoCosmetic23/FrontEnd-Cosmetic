@@ -11,6 +11,7 @@ export class UserFormModel {
     state_user: string;
     observation_user: string;
    // name_role:string;
+    name_employee:string;
     
 
 
@@ -25,6 +26,7 @@ export class UserFormModel {
         this.password = response.password;
         this.state_user = response.state_user;
        this.observation_user = response.observation_user;
+       this.name_employee= response.name_employee
        //this.name_role=response.name_role;
       
     }

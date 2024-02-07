@@ -33,7 +33,7 @@ export class RolesService {
     return this.http.put(this.url + '/roles/update/' + id, roleData);
   }
 
-  updateRoleStatus(id: any): Observable<any> {
-    return this.http.put(this.url + '/roles/updateStatus/' + id, {});
+  updateRoleStatus(id: any, roleData: any): Observable<any> {
+    return this.http.put(this.url + '/roles/updateStatus/' + id, roleData);
   }
 }

@@ -63,9 +63,11 @@
             class="custom-column-roles"
             style="text-align: center"
           >
-            <ng-template ngx-datatable-header-template style="text-align: center;" >
-             
-              <p style="font-size:15px;"> Nombre del Rol</p>
+            <ng-template
+              ngx-datatable-header-template
+              style="text-align: center"
+            >
+              <p style="font-size: 15px">Nombre del Rol</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -88,8 +90,7 @@
             [minWidth]="60"
           >
             <ng-template ngx-datatable-header-template>
-             
-              <p style="font-size:15px;">  Estado del Rol</p>
+              <p style="font-size: 15px">Estado del Rol</p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -106,7 +107,9 @@
             [resizeable]="false"
             [canAutoResize]="true"
           >
-            <ng-template ngx-datatable-header-template>  <p style="font-size:15px;">Acciones</p> </ng-template>
+            <ng-template ngx-datatable-header-template>
+              <p style="font-size: 15px">Acciones</p>
+            </ng-template>
             <ng-template
               ngx-datatable-cell-template
               let-value="value"
@@ -163,6 +166,12 @@
     <p>
       <strong>{{ stateMessage }}</strong>
     </p>
+    <textarea
+      placeholder="Razón por la que se cambia el estado del Rol"
+      [(ngModel)]="message_observation"
+      class="form-control"
+      style="resize: none"
+    ></textarea>
   </div>
   <div class="modal-footer">
     <button

@@ -24,7 +24,6 @@ export class ProviderListComponent implements OnInit {
     providers;
     filteredProviders: any[] = [];
     paginationId: string = 'providers-pagination';
-
     currentPage: number = 1;
     itemsPerPage: number = 6;
     countLabel: number;
@@ -48,7 +47,7 @@ export class ProviderListComponent implements OnInit {
                 this.listProviders = data;
                 this.filteredProviders = this.listProviders;
                 this.sortListProvidersById();
-               
+
             },
             (error) => {
                 console.error('Error al obtener Categorías:', error);
@@ -62,7 +61,7 @@ export class ProviderListComponent implements OnInit {
     actualizarCountLabel() {
         this.countLabel = this.filteredProviders.length;
     }
-  
+
 
     sortListProvidersById() {
         this.filteredProviders.sort((a, b) => {
@@ -75,7 +74,7 @@ export class ProviderListComponent implements OnInit {
             return 0;
         });
     }
-  
+
 
     searchProvider(event: Event) {
         const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -90,7 +89,7 @@ export class ProviderListComponent implements OnInit {
         }
 
         this.actualizarCountLabel();
-       
+
     }
 
     changeProviderStateDescription(state_provider: boolean) {
@@ -138,13 +137,22 @@ export class ProviderListComponent implements OnInit {
                             );
                         } else if (result === "Cancel") {
                             this.openedModal = false;
+                            this.getProviders();
+                      
                         }
                     },
                     (reason) => {
+                        this.getProviders();
                         this.openedModal = false;
-                        location.reload();
+                        this.updateSwitchState(idProvider)
                     }
                 );
         }
     };
+    updateSwitchState(idProvider: number) {
+        const provider = this.listProviders.find((provider) => provider.id_provider === idProvider);
+        if (provider) {
+            provider.state_provider = provider.state_provider === "Activo" ? "Inactivo" : "Activo";
+        }
+      }
 }

@@ -3,7 +3,12 @@ import { OrdersService } from "src/app/shared/services/orders.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastrService } from "ngx-toastr";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
-import { FormBuilder, FormGroup, UntypedFormControl, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormGroup,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 import { PaymentsService } from "src/app/shared/services/payment.service";
 
 interface payment {
@@ -25,7 +30,7 @@ export class OrdersListComponent implements OnInit {
     total_payment: 0,
     id_order: 0,
   };
-  activTab: string = 'formulario';
+  activTab: string = "formulario";
   loading: boolean;
   modalRef: NgbModalRef;
   currentOrder: any;
@@ -46,11 +51,11 @@ export class OrdersListComponent implements OnInit {
   originalRowCount: any;
   showLoadingScreen: boolean = false;
   formBasic: FormGroup;
-  order_type: string = "Todos";
+  order_type: string = "Por entregar";
   modal_message: string;
   message_observation: any = "";
   mensaje = "";
-  activeTab: string = "Todos los Pedidos";
+  activeTab: string = "Pedidos Por Entregar";
   usage: string;
   isSmallScreen: boolean = false;
 
@@ -67,7 +72,7 @@ export class OrdersListComponent implements OnInit {
       id_order: [""],
       id_client: [""],
       total_order: [""],
-      total_remaining: ["", [ this.nonNegativeValidator]],
+      total_remaining: ["", [this.nonNegativeValidator]],
       total_payment: ["", [Validators.required, this.nonNegativeValidator]],
       payment_date: [this.getCurrentDate()],
     });
@@ -91,16 +96,15 @@ export class OrdersListComponent implements OnInit {
   }
   nonNegativeValidator(control) {
     const value = control.value;
-  
+
     // Verifica si el valor es numérico y no es negativo
     if (isNaN(value) || value < 0) {
-      return { 'nonNegative': true }; // Retorna un objeto indicando que la validación falló
+      return { nonNegative: true }; // Retorna un objeto indicando que la validación falló
     }
-  
+
     return null; // La validación pasa si el valor es numérico y no es negativo
   }
 
-  
   onTabSelect(tabName: string) {
     if (tabName === "Todos los Pedidos") {
       this.activeTab = "Todos los Pedidos";
@@ -130,11 +134,14 @@ export class OrdersListComponent implements OnInit {
       this.activeTab = "Pedidos Anulados";
       this.order_type = "Anulado";
       this.getOrders(this.order_type);
+    } else if (tabName === "Devoluciones") {
+      this.activeTab = "Devoluciones";
+      this.order_type = "Devoluciones";
+      this.getOrders(this.order_type);
     }
   }
 
   getOrders(order_type: string) {
-    console.log(this.activeTab);
     this.showLoadingScreen = true;
     let orderService;
     if (order_type == "Todos") {
@@ -151,12 +158,13 @@ export class OrdersListComponent implements OnInit {
       orderService = this._ordersService.getAllSales();
     } else if (order_type == "Anulado") {
       orderService = this._ordersService.getAllAnulatedOrders();
+    } else if (order_type == "Devoluciones") {
+      orderService = this._ordersService.getAllReturns();
     }
     orderService.subscribe(
       (ordersData) => {
         this.listOrders = ordersData;
         this.listOrdersOriginal = ordersData;
-        console.log(this.listOrders);
 
         // Después de obtener la lista de pedidos, obtenemos la lista de clientes
         this._ordersService.getAllClients().subscribe(
@@ -184,7 +192,6 @@ export class OrdersListComponent implements OnInit {
                 const innerText = pageCountElement.innerText;
                 pageCountElement.innerText =
                   this.originalRowCount + " registros.";
-                console.log("Inner text de .page-count:", innerText);
               }
             });
             this.adjustListOrders();
@@ -225,7 +232,6 @@ export class OrdersListComponent implements OnInit {
     this._ordersService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
-        console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -270,12 +276,9 @@ export class OrdersListComponent implements OnInit {
     endIndex += rowsToAdd;
 
     this.filteredOrders = this.listOrders.slice(startIndex, endIndex);
-
-    console.log("load data charged");
   }
 
   onPageChange(event: any) {
-    console.log("onPageChange event:", event);
     this.currentPage = event.offset + 1;
     this.loadData();
   }
@@ -292,12 +295,8 @@ export class OrdersListComponent implements OnInit {
         this.modal_message =
           "¿Confirma que el pedido ha sido entregado con éxito?";
       }
-      subscribe_method = this._ordersService.updateOrderStatus(idOrder);
     } else if (usage === "Anular") {
       this.modal_message = "¿Está seguro de que desea anular el pedido?";
-      subscribe_method = this._ordersService.AnulateOrder(idOrder, {
-        observation: this.message_observation,
-      });
     }
     this._ordersService.getOrderById(idOrder).subscribe(
       (data) => {
@@ -320,6 +319,19 @@ export class OrdersListComponent implements OnInit {
                     this.message_observation = "";
                     this.modalAbierto = false;
                   }
+                  console.log("El mensaje:", this.message_observation);
+                  if (usage === "Enviar") {
+                    subscribe_method =
+                      this._ordersService.updateOrderStatus(idOrder);
+                  } else if (usage === "Anular") {
+                    subscribe_method = this._ordersService.AnulateOrder(
+                      idOrder,
+                      (data = {
+                        observation: this.message_observation,
+                        anulationType: false,
+                      })
+                    );
+                  }
                   subscribe_method.subscribe(
                     (data) => {
                       this.toastr.success(
@@ -331,7 +343,6 @@ export class OrdersListComponent implements OnInit {
                         }
                       );
                       this.getOrders(this.order_type);
-                      this.message_observation = "";
                       this.modalAbierto = false;
                     },
                     (error) => {
@@ -345,10 +356,10 @@ export class OrdersListComponent implements OnInit {
                         }
                       );
                       this.modalAbierto = false;
-                      this.message_observation = "";
                       console.error("Error al cambiar de estado:", error);
                     }
                   );
+                  this.message_observation = "";
                 } else if (result === "Cancel") {
                   this.message_observation = "";
                   this.modalAbierto = false;
@@ -387,7 +398,6 @@ export class OrdersListComponent implements OnInit {
     this._paymentService.getAllPayments().subscribe(
       (data) => {
         this.payments = data;
-        console.log(this.payments);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -398,7 +408,6 @@ export class OrdersListComponent implements OnInit {
   createPayment() {
     this._paymentService.createPayment(this.new_payment).subscribe(
       (data) => {
-        console.log(data);
         this.loading = false;
         this.toastr.success("Pago creado con éxito.", "Proceso Completado", {
           progressBar: true,
@@ -429,8 +438,6 @@ export class OrdersListComponent implements OnInit {
   }
 
   updateTotalRemaining() {
-    console.log("updateTotalRemaining called");
-
     const totalOrder = parseFloat(this.formBasic.get("total_order")?.value);
     const id_order = this.formBasic.get("id_order")?.value;
     const totalPayment = parseFloat(this.formBasic.get("total_payment")?.value);
@@ -452,11 +459,12 @@ export class OrdersListComponent implements OnInit {
 
       // Verificar si total_payment es mayor que total_remaining antes de calcular el nuevo total_remaining
       if (totalPayment > totalOrder - totalPayments) {
-        this.mensaje = "El pago no puede ser mayor que el restante del último pago"
+        this.mensaje =
+          "El pago no puede ser mayor que el restante del último pago";
         console.log(
           "Error: El total_payment no puede ser mayor que total_remaining"
         );
-         // Detiene la ejecución de la función si hay un error
+        // Detiene la ejecución de la función si hay un error
       }
 
       // Calcular el nuevo total_remaining
@@ -470,15 +478,15 @@ export class OrdersListComponent implements OnInit {
       this.new_payment.total_payment = totalPayment;
       this.new_payment.id_client = id_client;
       this.new_payment.id_order = id_order;
-
-      console.log(this.new_payment);
     } else {
       // Si no hay pagos, realiza el cálculo estándar
       const totalRemaining =
         Math.round((totalOrder - totalPayment) * 100) / 100;
       if (totalRemaining < 0) {
-        this.mensaje = "El pago no puede ser mayor que el total de la venta"
-        console.log("Error: El total_payment no puede ser mayor que el total de la venta")
+        this.mensaje = "El pago no puede ser mayor que el total de la venta";
+        console.log(
+          "Error: El total_payment no puede ser mayor que el total de la venta"
+        );
       }
       this.formBasic.patchValue({ total_remaining: totalRemaining });
 
@@ -564,11 +572,11 @@ export class OrdersListComponent implements OnInit {
                   console.log(result);
                 }
                 this.modalPayment = false;
-                this.activTab = "formulario"
+                this.activTab = "formulario";
               },
               (reason) => {
                 this.modalPayment = false;
-                this.activTab = "formulario"
+                this.activTab = "formulario";
               }
             );
           }
@@ -588,7 +596,7 @@ export class OrdersListComponent implements OnInit {
     if (this.modalRef) {
       this.createPayment();
       this.modalRef.close("yes");
-      this.activTab = "formulario"
+      this.activTab = "formulario";
       // Resetea el valor de modalPayment a false
       this.modalPayment = false;
     } else {

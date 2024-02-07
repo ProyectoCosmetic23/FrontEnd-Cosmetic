@@ -92,7 +92,6 @@ export class NavigationService {
             icon: 'i-Cash-register-2',
             sub: [
                 { icon: 'i-Jeep', name: 'Pedidos', state: '/orders', type: 'link' },
-                { icon: 'i-Remove-Cart', name: 'Devoluciones', state: '/defective-products', type: 'link' },
                 { icon: 'i-Business-Mens', name: 'Clientes', state: '/clients', type: 'link' },
             ]
         },
