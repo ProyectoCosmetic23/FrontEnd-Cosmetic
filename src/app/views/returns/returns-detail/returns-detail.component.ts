@@ -336,7 +336,7 @@ export class ReturnsDetailComponent implements OnInit {
       this.productQuantity = this.max_quantity;
     }
 
-    if (inputValue < 0) {
+    if (inputValue <= 0) {
       inputElement.value = String(0);
       this.returnQuantity = this.max_quantity;
       this.productQuantity = this.max_quantity;
@@ -493,16 +493,6 @@ export class ReturnsDetailComponent implements OnInit {
     this.modalRef.close();
   }
 
-  updateProductQuantity(productId: number, quantityToSubtract: number): void {
-    const productToUpdate = this.listProducts.find(
-      (product) => product.id_product === productId
-    );
-
-    if (productToUpdate) {
-      productToUpdate.product_quantity -= quantityToSubtract;
-    }
-  }
-
   //PRODUCTOS
   getProductNameById(productId: number): string {
     const product = this.listProducts.find((p) => p.id_product === productId);
@@ -568,7 +558,7 @@ export class ReturnsDetailComponent implements OnInit {
 
     if (this.listPayments.length > 0) {
       this.listPayments.forEach((payments) => {
-        totalPayments += parseInt(payments.total_payment);
+        totalPayments += parseFloat(payments.total_payment);
       });
     } else {
       console.log("No existen pagos asociados");
@@ -599,7 +589,6 @@ export class ReturnsDetailComponent implements OnInit {
         confirmButtonText: "Continuar",
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log("Refunded ", amountToRefund);
           this._ordersService
             .AnulateOrder(this.order.order.id_order, {
               observation: message,
@@ -623,7 +612,7 @@ export class ReturnsDetailComponent implements OnInit {
     } else {
       message = productsLength
         ? `Se realizó la devolución de éste pedido, y se creó un nuevo pedido con los productos restantes no devueltos.`
-        : `Se realizó la devolución de éste pedido`;
+        : `Se realizó la devolución de éste pedido.`;
 
       Swal.fire({
         icon: "warning",
@@ -662,7 +651,6 @@ export class ReturnsDetailComponent implements OnInit {
     var error = false;
     returnedProductsArray.forEach((product) => {
       product.id_order = this.order.order.id_order;
-      console.log(product);
       this._returnsService.retireProduct(product).subscribe(
         (response) => {
           console.log("Retiro de producto exitoso:", response);
