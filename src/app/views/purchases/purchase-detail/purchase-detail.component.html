@@ -6,7 +6,7 @@
     <ul>
       <li><a>Compras</a></li>
       <li *ngIf="viewMode === 'new'">Registrar Compra</li>
-      <li *ngIf="viewMode === 'print'"> Detalle de Compra</li>
+      <li *ngIf="viewMode === 'print'">Detalle de Compra</li>
     </ul>
   </div>
 </div>
@@ -16,61 +16,108 @@
       <div class="card-body">
         <div class="card-title mb-3">Formulario de Compra</div>
 
-
-
-        <div *ngIf="viewMode === 'new' || viewMode === 'print' ">
-
+        <div *ngIf="viewMode === 'new' || viewMode === 'print'">
           <form [formGroup]="purchaseForm">
-
             <div class="row">
-
               <div class="col-md-2">
-                <label for="invoice_number">Numero Factura<span class="required"
-                    *ngIf="viewMode === 'new'">*</span></label>
+                <label for="invoice_number"
+                  >Numero Factura<span
+                    class="required"
+                    *ngIf="viewMode === 'new'"
+                    >*</span
+                  ></label
+                >
                 <div class="form-group">
-
-                  <input type="text" class="form-control" id="invoice_number" name="invoice_number"
-                    formControlName="invoice_number" style="width: 100%;"  />
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="invoice_number"
+                    name="invoice_number"
+                    formControlName="invoice_number"
+                    style="width: 100%"
+                  />
                   <div
-                    *ngIf="purchaseForm.get('invoice_number').touched && purchaseForm.get('invoice_number').hasError('required')"
-                    class="error-message">
+                    *ngIf="
+                      purchaseForm.get('invoice_number').touched &&
+                      purchaseForm.get('invoice_number').hasError('required')
+                    "
+                    class="error-message"
+                  >
                     El campo es obligatorio.
                   </div>
-              
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="id_provider">Proveedor<span class="required" *ngIf="viewMode === 'new'">*</span></label>
-                <div class="form-group" [ngClass]="{'disabled-field': viewMode === 'print'}">
-
-                  <select class="form-control" id="id_provider" name="id_provider" formControlName="id_provider"
-                    (change)="handleProviderSelection($event, i)" [disabled]="viewMode === 'print'">
-                    <option *ngFor="let provider of listProviders" [value]="provider.id_provider">{{
-                      provider.name_provider }}</option>
-
-
+                <label for="id_provider"
+                  >Proveedor<span class="required" *ngIf="viewMode === 'new'"
+                    >*</span
+                  ></label
+                >
+                <div
+                  class="form-group"
+                  [ngClass]="{ 'disabled-field': viewMode === 'print' }"
+                >
+                  <select
+                    class="form-control"
+                    id="id_provider"
+                    name="id_provider"
+                    formControlName="id_provider"
+                    (change)="handleProviderSelection($event, i)"
+                    [disabled]="viewMode === 'print'"
+                  >
+                    <option
+                      *ngFor="let provider of listProviders"
+                      [value]="provider.id_provider"
+                    >
+                      {{ provider.name_provider }}
+                    </option>
                   </select>
                   <div
-                    *ngIf="purchaseForm.get('id_provider').touched && purchaseForm.get('id_provider').hasError('required')"
-                    class="error-message">
+                    *ngIf="
+                      purchaseForm.get('id_provider').touched &&
+                      purchaseForm.get('id_provider').hasError('required')
+                    "
+                    class="error-message"
+                  >
                     El campo es obligatorio.
                   </div>
-
-
                 </div>
               </div>
               <div class="col-md-3">
-                <label for="picker1">Fecha Compra<span class="required" *ngIf="viewMode === 'new'">*</span></label>
-                <div class="form-group  d-flex flex-row">
-                  <input formControlName="purchase_date" [minDate]="minDate" [maxDate]="maxDate" id="picker1"
-                    name="purchase_date" class="form-control text-right" name="dp" ngbDatepicker
-                    #orderDatePicker="ngbDatepicker" [attr.readonly]="true">
-                  <button *ngIf="viewMode === 'new'" class="btn btn-secondary" (click)="orderDatePicker.toggle()" type="button"><i
-                      class="icon-regular i-Calendar-4"></i></button>
+                <label for="picker1"
+                  >Fecha Compra<span class="required" *ngIf="viewMode === 'new'"
+                    >*</span
+                  ></label
+                >
+                <div class="form-group d-flex flex-row">
+                  <input
+                    formControlName="purchase_date"
+                    [minDate]="minDate"
+                    [maxDate]="maxDate"
+                    id="picker1"
+                    name="purchase_date"
+                    class="form-control text-right"
+                    name="dp"
+                    ngbDatepicker
+                    #orderDatePicker="ngbDatepicker"
+                    [attr.readonly]="true"
+                  />
+                  <button
+                    *ngIf="viewMode === 'new'"
+                    class="btn btn-secondary"
+                    (click)="orderDatePicker.toggle()"
+                    type="button"
+                  >
+                    <i class="icon-regular i-Calendar-4"></i>
+                  </button>
                 </div>
                 <div
-                  *ngIf="purchaseForm.get('purchase_date').touched && purchaseForm.get('purchase_date').hasError('required')"
-                  class="error-message">
+                  *ngIf="
+                    purchaseForm.get('purchase_date').touched &&
+                    purchaseForm.get('purchase_date').hasError('required')
+                  "
+                  class="error-message"
+                >
                   El campo es obligatorio.
                 </div>
               </div>
@@ -79,101 +126,183 @@
                 <div class="col-md-2">
                   <div class="form-grouP">
                     <label for="picker1">Fecha Registro</label>
-                    <input formControlName="record_date_purchase" [minDate]="minDate" [maxDate]="maxDate" id="picker1"
-                      name="record_date_purchase" class="form-control text-right" name="dp" ngbDatepicker
-                      #orderDatePicker="ngbDatepicker">
+                    <input
+                      formControlName="record_date_purchase"
+                      [minDate]="minDate"
+                      [maxDate]="maxDate"
+                      id="picker1"
+                      name="record_date_purchase"
+                      class="form-control text-right"
+                      name="dp"
+                      ngbDatepicker
+                      #orderDatePicker="ngbDatepicker"
+                    />
                   </div>
                 </div>
                 <div class="col-md-2">
                   <label for="">Estado</label>
                   <div class="form-group">
-
-                    <input type="text"
-                    class="form-control text-right"
-                    value="{{purchaseForm.get('state_purchase').value  ? 'Activo' : 'Anulada'}}"
-                    [disabled]="viewMode === 'print'"
-                  >
+                    <input
+                      type="text"
+                      class="form-control text-right"
+                      value="{{
+                        purchaseForm.get('state_purchase').value
+                          ? 'Activo'
+                          : 'Anulada'
+                      }}"
+                      [disabled]="viewMode === 'print'"
+                    />
                   </div>
                 </div>
               </div>
               <div class="row">
-                <label for="observation_purchase" *ngIf=" viewMode === 'new'">Observación</label>
-                <div class="col-md-12 form-group mb-12" *ngIf=" viewMode === 'new'">
-
-                  <textarea class="form-control" id="observation_purchase" formControlName="observation_purchase"
-                    [ngStyle]="{ 'max-width.px': 798 }" [disabled]="viewMode === 'print'"
-                    [style.resize]="'none'"></textarea>
+                <label for="observation_purchase" *ngIf="viewMode === 'new'"
+                  >Observación</label
+                >
+                <div
+                  class="col-md-12 form-group mb-12"
+                  *ngIf="viewMode === 'new'"
+                >
+                  <textarea
+                    class="form-control"
+                    id="observation_purchase"
+                    formControlName="observation_purchase"
+                    [ngStyle]="{ 'max-width.px': 798 }"
+                    [disabled]="viewMode === 'print'"
+                    [style.resize]="'none'"
+                  ></textarea>
                   <div
-                    *ngIf="purchaseForm.get('observation_purchase').touched && purchaseForm.get('observation_purchase').hasError('maxlength')"
-                    class="error-message">
+                    *ngIf="
+                      purchaseForm.get('observation_purchase').touched &&
+                      purchaseForm
+                        .get('observation_purchase')
+                        .hasError('maxlength')
+                    "
+                    class="error-message"
+                  >
                     El campo supera los 100 caracteres.
                   </div>
                 </div>
               </div>
             </div>
-            <br>
-            <div class="row" *ngIf="viewMode === 'print' ">
-              <div [class.col-md-12]="purchaseForm.get('state_purchase').value"
-              [class.col-md-6]="!purchaseForm.get('state_purchase').value">
-              <label for="observation_purchase">Observación</label>
-              <div >
-                <textarea class="form-control" id="observation_purchase" formControlName="observation_purchase"
-                  [ngStyle]="{ 'max-width.px': 800 }" [disabled]="viewMode === 'print' && !state_purchase"
-                  [style.resize]="'none'"></textarea>
-             
-              </div>
-              </div>
-            
-              <div class="col-md-5">
-                <label for="reason_anulate" *ngIf=" !purchaseForm.get('state_purchase').value">Motivo de anulación</label>
-                <div  *ngIf=" !purchaseForm.get('state_purchase').value">
-                  <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"
-                    [ngStyle]="{ 'max-width.px': 800 }" disabled [style.resize]="'none'"></textarea>
+            <br />
+            <div class="row" *ngIf="viewMode === 'print'">
+              <div
+                [class.col-md-12]="purchaseForm.get('state_purchase').value"
+                [class.col-md-6]="!purchaseForm.get('state_purchase').value"
+              >
+                <label for="observation_purchase">Observación</label>
+                <div>
+                  <textarea
+                    class="form-control"
+                    id="observation_purchase"
+                    formControlName="observation_purchase"
+                    [ngStyle]="{ 'max-width.px': 800 }"
+                    [disabled]="viewMode === 'print' && !state_purchase"
+                    [style.resize]="'none'"
+                  ></textarea>
                 </div>
               </div>
 
+              <div class="col-md-5">
+                <label
+                  for="reason_anulate"
+                  *ngIf="!purchaseForm.get('state_purchase').value"
+                  >Motivo de anulación</label
+                >
+                <div *ngIf="!purchaseForm.get('state_purchase').value">
+                  <textarea
+                    class="form-control"
+                    id="reason_anulate"
+                    formControlName="reason_anulate"
+                    [ngStyle]="{ 'max-width.px': 800 }"
+                    disabled
+                    [style.resize]="'none'"
+                  ></textarea>
+                </div>
+              </div>
             </div>
 
             <div class="mt-3 mb-4 border-top"></div>
-            <div *ngIf="viewMode === 'new' ">
+            <div *ngIf="viewMode === 'new'">
               <form class="row" [formGroup]="purchaseDetailform">
                 <div class="col-md-4 form-container">
-                  <label for="id_category">Categoría<span class="required" *ngIf="viewMode === 'new'">*</span></label>
+                  <label for="id_category"
+                    >Categoría<span class="required" *ngIf="viewMode === 'new'"
+                      >*</span
+                    ></label
+                  >
                   <div class="form-group">
-
-                    <select class="form-control" id="id_category" name="id_category" formControlName="id_category"
-                      (change)="handleCategorySelection($event, i)">
-                      <option *ngFor="let category of listCategories" [value]="category.id_category">{{
-                        category.name_category }}</option>
+                    <select
+                      class="form-control"
+                      id="id_category"
+                      name="id_category"
+                      formControlName="id_category"
+                      (change)="handleCategorySelection($event, i)"
+                    >
+                      <option
+                        *ngFor="let category of listCategories"
+                        [value]="category.id_category"
+                      >
+                        {{ category.name_category }}
+                      </option>
                     </select>
                     <div
-                      *ngIf="purchaseDetailform.get('id_category').touched && purchaseDetailform.get('id_category').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        purchaseDetailform.get('id_category').touched &&
+                        purchaseDetailform
+                          .get('id_category')
+                          .hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
-
                   </div>
                 </div>
 
                 <div class="col-md-5 form-container">
-                  <label for="id_product">Producto<span class="required" *ngIf="products.length == 0">*</span></label>
+                  <label for="id_product"
+                    >Producto<span class="required" *ngIf="products.length == 0"
+                      >*</span
+                    ></label
+                  >
                   <div class="form-group d-flex flex-row">
-
-                    <select class="form-control" id="id_product" [class.readonly]="isReadOnly" name="id_product"
-                      formControlName="id_product" [ngClass]="products.length == 0 ? 'bloqueado' : ''"
-                      (change)="handleProductSelection($event, i)">
-                      <option *ngFor="let product of products" [value]="product.id_product">{{
-                        product.name_product }}</option>
+                    <select
+                      class="form-control"
+                      id="id_product"
+                      [class.readonly]="isReadOnly"
+                      name="id_product"
+                      formControlName="id_product"
+                      [ngClass]="products.length == 0 ? 'bloqueado' : ''"
+                      (change)="handleProductSelection($event, i)"
+                    >
+                      <option
+                        *ngFor="let product of products"
+                        [value]="product.id_product"
+                      >
+                        {{ product.name_product }}
+                      </option>
                     </select>
-                    <button ngbTooltip="Crear Producto" class="btn btn-secondary"
-                      (click)="openCreateProductModal(createProductModal)"><i class="i-Add"></i></button>
+                    <button
+                      ngbTooltip="Crear Producto"
+                      class="btn btn-secondary"
+                      (click)="openCreateProductModal(createProductModal)"
+                    >
+                      <i class="i-Add"></i>
+                    </button>
 
                     <div
-                      *ngIf="purchaseDetailform.get('id_product').touched && purchaseDetailform.get('id_product').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        purchaseDetailform.get('id_product').touched &&
+                        purchaseDetailform
+                          .get('id_product')
+                          .hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
-
                   </div>
                 </div>
                 <!--                          
@@ -187,93 +316,158 @@
                           -->
 
                 <div class="row">
-
-
                   <div class="col-md-3">
-                    <label for="cost_price">Precio Costo<span class="required"
-                        *ngIf="viewMode === 'new'">*</span></label>
+                    <label for="cost_price"
+                      >Precio Costo<span
+                        class="required"
+                        *ngIf="viewMode === 'new'"
+                        >*</span
+                      ></label
+                    >
                     <div class="form-group">
-
-                      <input type="number" min="0" class="form-control" id="cost_price" name="cost_price"
-                        formControlName="cost_price" style="width: 100%;" />
+                      <input
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        id="cost_price"
+                        name="cost_price"
+                        formControlName="cost_price"
+                        style="width: 100%"
+                      />
                     </div>
                     <div
-                      *ngIf="purchaseDetailform.get('cost_price').touched && purchaseDetailform.get('cost_price').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        purchaseDetailform.get('cost_price').touched &&
+                        purchaseDetailform
+                          .get('cost_price')
+                          .hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
                   </div>
 
-
                   <div class="col-md-3">
-                    <label for="selling_price">Precio Venta<span class="required"
-                        *ngIf="viewMode === 'new'">*</span></label>
+                    <label for="selling_price"
+                      >Precio Venta<span
+                        class="required"
+                        *ngIf="viewMode === 'new'"
+                        >*</span
+                      ></label
+                    >
                     <div class="form-group">
-
-                      <input type="number" min="0" class="form-control" id="selling_price" name="selling_price"
-                        formControlName="selling_price" style="width: 100%;" />
+                      <input
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        id="selling_price"
+                        name="selling_price"
+                        formControlName="selling_price"
+                        style="width: 100%"
+                      />
                     </div>
                     <div
-                      *ngIf="purchaseDetailform.get('selling_price').touched && purchaseDetailform.get('selling_price').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        purchaseDetailform.get('selling_price').touched &&
+                        purchaseDetailform
+                          .get('selling_price')
+                          .hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
                     <div
-                      *ngIf="purchaseDetailform.get('selling_price').touched && purchaseDetailform.get('selling_price').hasError('invalidSellingPrice')"
-                      class="error-message">
+                      *ngIf="
+                        purchaseDetailform.get('selling_price').touched &&
+                        purchaseDetailform
+                          .get('selling_price')
+                          .hasError('invalidSellingPrice')
+                      "
+                      class="error-message"
+                    >
                       El precio de venta no puede ser menor al precio de compra
                     </div>
                   </div>
 
-
                   <div class="col-md-3">
-                    <label for="vat">Iva<span class="required" *ngIf="viewMode === 'new'">*</span></label>
+                    <label for="vat"
+                      >Iva<span class="required" *ngIf="viewMode === 'new'"
+                        >*</span
+                      ></label
+                    >
                     <div class="form-group">
-
-                      <input type="number" min="0" class="form-control" id="vat" name="vat" formControlName="vat"
-                        style="width: 100%;" />
+                      <input
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        id="vat"
+                        name="vat"
+                        formControlName="vat"
+                        style="width: 100%"
+                      />
                       <div
-                        *ngIf="purchaseDetailform.get('vat').touched && purchaseDetailform.get('vat').hasError('invalidVat')"
-                        class="error-message">
+                        *ngIf="
+                          purchaseDetailform.get('vat').touched &&
+                          purchaseDetailform.get('vat').hasError('invalidVat')
+                        "
+                        class="error-message"
+                      >
                         El iva no puede superar o ser igual al precio de costo
                       </div>
                     </div>
                   </div>
 
-
                   <div class="col-md-3">
-                    <label for="product_quantity">Cantidad<span class="required"
-                        *ngIf="viewMode === 'new'">*</span></label>
+                    <label for="product_quantity"
+                      >Cantidad<span class="required" *ngIf="viewMode === 'new'"
+                        >*</span
+                      ></label
+                    >
                     <div class="form-group">
-
-                      <input type="number" min="1" class="form-control" id="product_quantity" name="product_quantity"
-                        formControlName="product_quantity" style="width: 100%;" />
+                      <input
+                        type="number"
+                        min="1"
+                        class="form-control"
+                        id="product_quantity"
+                        name="product_quantity"
+                        formControlName="product_quantity"
+                        style="width: 100%"
+                      />
                       <div
-                        *ngIf="purchaseDetailform.get('product_quantity').touched && purchaseDetailform.get('product_quantity').hasError('required')"
-                        class="error-message">
+                        *ngIf="
+                          purchaseDetailform.get('product_quantity').touched &&
+                          purchaseDetailform
+                            .get('product_quantity')
+                            .hasError('required')
+                        "
+                        class="error-message"
+                      >
                         El campo es obligatorio.
                       </div>
                     </div>
                   </div>
-
                 </div>
               </form>
 
-
               <div class="button_container">
-
-                <button class="btn btn-primary" (click)="addPurchaseDetail()" type="button">Agregar Producto</button>
+                <button
+                  class="btn btn-primary"
+                  (click)="addPurchaseDetail()"
+                  type="button"
+                >
+                  Agregar Producto
+                </button>
               </div>
-              <br>
+              <br />
 
-              <div class="col-md-12">
-
-              </div>
+              <div class="col-md-12"></div>
             </div>
-            <div class="col-md-8 d-flex justify-content-start" *ngIf="viewMode === 'print'">
-              <div class="total" style="font-size: 15px;">Total Compra: {{ calculateTotal() |
-                currency:'':'symbol':'1.0-0' }} </div>
-            </div>
+            <div
+              class="col-md-8 d-flex justify-content-start"
+              *ngIf="viewMode === 'print'"
+            ></div>
             <div class="col-md-12 table-responsive">
               <table class="table table-hover mb-6">
                 <thead class="bg-gray-300">
@@ -291,24 +485,44 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of purchaseDetailArray; let i = index">
-                    <td><i>{{ i + 1 }}</i></td>
                     <td>
-                      <div style="white-space: pre-line;">{{ item.name_category }}</div>
+                      <i>{{ i + 1 }}</i>
                     </td>
                     <td>
-                      <div style="white-space: pre-line;">{{ item.name_product }}</div>
+                      <div style="white-space: pre-line">
+                        {{ item.name_category }}
+                      </div>
                     </td>
-                    <td>{{ item.cost_price | currency:'':'symbol':'1.0-0' }}</td>
-                    <td>{{ item.selling_price | currency:'':'symbol':'1.0-0' }}</td>
-                    <td>{{ item.vat | currency:'':'symbol':'1.0-0' }}</td>
+                    <td>
+                      <div style="white-space: pre-line">
+                        {{ item.name_product }}
+                      </div>
+                    </td>
+                    <td>
+                      {{ item.cost_price | currency : "" : "symbol" : "1.0-0" }}
+                    </td>
+                    <td>
+                      {{
+                        item.selling_price | currency : "" : "symbol" : "1.0-0"
+                      }}
+                    </td>
+                    <td>{{ item.vat | currency : "" : "symbol" : "1.0-0" }}</td>
                     <td>{{ item.product_quantity }}</td>
-                    <td>{{( calculateSubtotal(item.cost_price, item.vat, item.product_quantity) |
-                      currency:'':'symbol':'1.0-0' ) }}
-
-
+                    <td>
+                      {{
+                        calculateSubtotal(
+                          item.cost_price,
+                          item.vat,
+                          item.product_quantity
+                        ) | currency : "" : "symbol" : "1.0-0"
+                      }}
                     </td>
                     <td>
-                      <button class="btn btn-danger" (click)="removePurchaseDetail(i)" *ngIf="viewMode === 'new'">
+                      <button
+                        class="btn btn-danger"
+                        (click)="removePurchaseDetail(i)"
+                        *ngIf="viewMode === 'new'"
+                      >
                         <i class="i-Remove-Cart"></i>
                       </button>
                     </td>
@@ -316,119 +530,224 @@
                 </tbody>
               </table>
               <div class="table-footer">
-
-                <div class="col-md-8" *ngIf="viewMode === 'new' ">
-                  <div class="total">Total: {{ calculateTotal() | currency:'':'symbol':'1.0-0' }} </div>
+                <div class="col-md-8" *ngIf="viewMode === 'new'">
+                  <div class="total">
+                    Total:
+                    {{ calculateTotal() | currency : "" : "symbol" : "1.0-0" }}
+                  </div>
+                </div>
+                <div class="total" style="font-size: 20px">
+                  Total:
+                  {{ calculateTotal() | currency : "" : "symbol" : "1.0-0" }}
                 </div>
               </div>
             </div>
-            <div class="col-md-12" style="margin-top: 20px;">
-
-              <div class="form-group text-right" style="text-align: right;" *ngIf="viewMode === 'new'">
-                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
-                <button class="btn btn-primary m-1 custom-button" [disabled]="loading"
-                  (click)="submitPurchase()">Registrar Compra </button>
-
+            <div class="col-md-12" style="margin-top: 20px">
+              <div
+                class="form-group text-right"
+                style="text-align: right"
+                *ngIf="viewMode === 'new'"
+              >
+                <button
+                  type="button"
+                  class="btn btn-danger ml-2"
+                  (click)="cancel()"
+                >
+                  Cancelar
+                </button>
+                <button
+                  class="btn btn-primary m-1 custom-button"
+                  [disabled]="loading"
+                  (click)="submitPurchase()"
+                >
+                  Registrar Compra
+                </button>
               </div>
-
             </div>
           </form>
           <ng-template #createProductModal let-modal>
             <div class="modal-header">
               <h4 class="modal-title" id="modal-title">Crear Producto</h4>
-
             </div>
             <div class="modal-body">
               <form [formGroup]="productForm">
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <label for="id_category">Categoría<span class="text-danger">*</span></label>
-                    <select class="form-control" id="id_category" name="id_category" formControlName="id_category"
-                      (change)="handleCategorySelection($event, i)">
-                      <option *ngFor="let category of listCategories" [value]="category.id_category">{{
-                        category.name_category }}</option>
+                    <label for="id_category"
+                      >Categoría<span class="text-danger">*</span></label
+                    >
+                    <select
+                      class="form-control"
+                      id="id_category"
+                      name="id_category"
+                      formControlName="id_category"
+                      (change)="handleCategorySelection($event, i)"
+                    >
+                      <option
+                        *ngFor="let category of listCategories"
+                        [value]="category.id_category"
+                      >
+                        {{ category.name_category }}
+                      </option>
                     </select>
                     <div
-                      *ngIf="productForm.get('id_category').touched && productForm.get('id_category').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        productForm.get('id_category').touched &&
+                        productForm.get('id_category').hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
                   </div>
 
                   <div class="col-md-6 form-group mb-3">
-                    <label for="name_product">Nombre de producto<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name_product" name="name_product"
-                      formControlName="name_product" required (keyup)="validateProductExist()">
+                    <label for="name_product"
+                      >Nombre de producto<span class="text-danger"
+                        >*</span
+                      ></label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name_product"
+                      name="name_product"
+                      formControlName="name_product"
+                      required
+                      (keyup)="validateProductExist()"
+                    />
                     <div
-                      *ngIf="productForm.get('name_product').touched && productForm.get('name_product').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        productForm.get('name_product').touched &&
+                        productForm.get('name_product').hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
-                    <div *ngIf="  productForm.get('name_product').hasError('maxLength')" class="error-message">
+                    <div
+                      *ngIf="
+                        productForm.get('name_product').hasError('maxLength')
+                      "
+                      class="error-message"
+                    >
                       El campo solo puede contener 80 carácteres
                     </div>
-                    <div *ngIf="productForm.get('name_product').hasError('pattern')" class="error-message">
+                    <div
+                      *ngIf="
+                        productForm.get('name_product').hasError('pattern')
+                      "
+                      class="error-message"
+                    >
                       El campo solo acepta letras y numeros
                     </div>
                     <div *ngIf="viewMode === 'new'">
-                      <div *ngIf="productExists" class="error-message">Ya existe un producto con ese nombre</div>
+                      <div *ngIf="productExists" class="error-message">
+                        Ya existe un producto con ese nombre
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <label for="min_stock">Stock Minímo<span class="text-danger">*</span></label>
-                    <input type="number" min="0" class="form-control" id="min_stock" name="min_stock"
-                      formControlName="min_stock">
+                    <label for="min_stock"
+                      >Stock Minímo<span class="text-danger">*</span></label
+                    >
+                    <input
+                      type="number"
+                      min="0"
+                      class="form-control"
+                      id="min_stock"
+                      name="min_stock"
+                      formControlName="min_stock"
+                    />
                     <div
-                      *ngIf="productForm.get('selling_price').touched && productForm.get('selling_price').hasError('required')"
-                      class="error-message">
+                      *ngIf="
+                        productForm.get('selling_price').touched &&
+                        productForm.get('selling_price').hasError('required')
+                      "
+                      class="error-message"
+                    >
                       El campo es obligatorio.
                     </div>
                   </div>
                   <div class="col-md-6 form-group mb-3">
-                    <label for="max_stock">Stock Maxímo<span class="text-danger">*</span></label>
-                    <input type="number" min="0" class="form-control" id="max_stock" name="max_stock"
-                      formControlName="max_stock">
+                    <label for="max_stock"
+                      >Stock Maxímo<span class="text-danger">*</span></label
+                    >
+                    <input
+                      type="number"
+                      min="0"
+                      class="form-control"
+                      id="max_stock"
+                      name="max_stock"
+                      formControlName="max_stock"
+                    />
                     <div
-                      *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
-                      class="error-message" min=0>
+                      *ngIf="
+                        productForm.get('max_stock').touched &&
+                        productForm.get('max_stock').hasError('required')
+                      "
+                      class="error-message"
+                      min="0"
+                    >
                       El campo es obligatorio.
                     </div>
                     <div
-                      *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('invalidStock')"
-                      class="error-message">
+                      *ngIf="
+                        productForm.get('max_stock').touched &&
+                        productForm.get('max_stock').hasError('invalidStock')
+                      "
+                      class="error-message"
+                    >
                       El stock maxímo no puedo ser menor al stock minímo
                     </div>
                   </div>
                 </div>
                 <div class="col-md-12 form-group mb-3">
                   <label for="observation">Observación</label>
-                  <textarea type="text" class="form-control" id="observation" name="observation"
-                    formControlName="observation" [style.resize]="'none'"></textarea>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="observation"
+                    name="observation"
+                    formControlName="observation"
+                    [style.resize]="'none'"
+                  ></textarea>
                   <div
-                    *ngIf="productForm.get('observation').touched && productForm.get('observation').hasError('maxLength')"
-                    class="error-message">
+                    *ngIf="
+                      productForm.get('observation').touched &&
+                      productForm.get('observation').hasError('maxLength')
+                    "
+                    class="error-message"
+                  >
                     El campo solo puede contener 80 carácteres
                   </div>
                 </div>
-
-
               </form>
-
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary btn"
-                (click)="modal.dismiss('cancel')">Cancelar</button>
-              <button type="submit" ngbAutofocus class="btn btn-wide btn-danger btn"
-                [disabled]="!this.productForm.valid || this.productExists" (click)="modal.close('Ok')">Crear
-                Producto</button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn"
+                (click)="modal.dismiss('cancel')"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                ngbAutofocus
+                class="btn btn-wide btn-danger btn"
+                [disabled]="!this.productForm.valid || this.productExists"
+                (click)="modal.close('Ok')"
+              >
+                Crear Producto
+              </button>
             </div>
           </ng-template>
-
         </div>
-
       </div>
     </div>
   </div>
+</div>
