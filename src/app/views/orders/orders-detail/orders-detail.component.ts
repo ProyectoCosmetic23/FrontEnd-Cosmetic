@@ -226,6 +226,8 @@ export class OrdersDetailComponent implements OnInit {
           console.error("Error al obtener los productos devueltos:", error);
         }
       );
+    } else {
+      this.returnedDetail = false;
     }
   }
 
