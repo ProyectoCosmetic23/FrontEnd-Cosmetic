@@ -7,7 +7,15 @@
   </div>
 </div>
 
-<div class="row">
+<div class="separator-breadcrumb border-top"></div>
+
+<div *ngIf="showLoadingScreen" class="loading-screen">
+  <div class="loading-content">
+    <div class="spinner spinner-primary me-3"></div>
+  </div>
+</div>
+
+<div *ngIf="showLoadingScreen == false" class="row">
   <div class="col-md-12">
     <div class="card mb-4">
       <div class="card-body">
@@ -144,7 +152,9 @@
                       {{ productCtrl.get("product_name")?.value }}
                     </td>
                     <td scope="row">{{ productCtrl.get("retire")?.value }}</td>
-                    <td scope="row">{{ productCtrl.get("returnReason")?.value }}</td>
+                    <td scope="row">
+                      {{ productCtrl.get("returnReason")?.value }}
+                    </td>
                     <td>{{ productCtrl.get("product_quantity")?.value }}</td>
                   </ng-container>
 
@@ -175,7 +185,7 @@
                 </div>
               </div>
             </div>
-            <p style="color: red; margin-bottom: 0;" *ngIf="lengthError">
+            <p style="color: red; margin-bottom: 0" *ngIf="lengthError">
               Seleccione como mínimo un producto para realizar la devolución.
             </p>
             <div class="d-flex justify-content-end">
@@ -232,7 +242,7 @@
           "
           (input)="limitMaxValue($event)"
         />
-        <p style="color: red; margin-bottom: 0;" *ngIf="quantityError">
+        <p style="color: red; margin-bottom: 0" *ngIf="quantityError">
           Ingrese una cantidad válida.
         </p>
       </div>

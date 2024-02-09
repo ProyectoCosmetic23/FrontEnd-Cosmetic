@@ -71,6 +71,7 @@ export class ReturnsDetailComponent implements OnInit {
   lengthError: boolean;
   staticTotalOrder: any;
   asociatedPayments: any;
+  showLoadingScreen: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -134,6 +135,7 @@ export class ReturnsDetailComponent implements OnInit {
 
   // Método para obtener un pedido y sus detalles
   getOrder() {
+    this.showLoadingScreen = true;
     const currentRoute = this.router.url;
     if (currentRoute.includes("/orders/returns/")) {
       // Antes de cargar los datos, establece loadingData en true
@@ -169,16 +171,17 @@ export class ReturnsDetailComponent implements OnInit {
           });
           this.selected_payment_type = this.order.order.payment_type;
 
+          this.showLoadingScreen = true;
+
           this.findOrderData(idClient, idEmployee, orderDetail);
 
           this.staticTotalOrder = this.order.order.total_order;
 
-          // Después de cargar los datos, establece loadingData en false
-          this.loadingData = false;
+          this.showLoadingScreen = false;
         },
         (error) => {
           console.error("Error al obtener el pedido:", error);
-          this.loadingData = false; // En caso de error, asegúrate de desactivar la pantalla de carga
+          this.showLoadingScreen = false; // En caso de error, asegúrate de desactivar la pantalla de carga
         }
       );
     }

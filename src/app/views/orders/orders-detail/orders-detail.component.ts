@@ -362,9 +362,11 @@ export class OrdersDetailComponent implements OnInit {
           ...product,
           disabled: false,
         }));
-        this.listProducts = this.listProducts.filter(
-          (product) => product.state_product === "Activo"
-        );
+        if (this.viewMode == "new") {
+          this.listProducts = this.listProducts.filter(
+            (product) => product.state_product === "Activo"
+          );
+        }
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
