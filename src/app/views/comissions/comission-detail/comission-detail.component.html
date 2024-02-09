@@ -77,16 +77,18 @@
                         
 
                         <div class="col-md-12">
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-danger float-right"
-                                    [routerLink]="['/comisiones']">Volver</button>
-                                <div style="width: 10px;"></div>
-                                <button class="btn btn-primary" *ngIf="viewMode === 'new'" [loading]="loading"
-                                    [disabled]="noSales">
-                                    Registrar Comisión
+                            <div class="d-flex justify-content-between align-items-center">
+                              <!-- Texto "Los datos con * son obligatorios" a la izquierda -->
+                              <span *ngIf="viewMode === 'new'" class="text-danger">Los datos con * son obligatorios</span>
+                              <!-- Botón "Registrar Comisión" a la derecha -->
+                              <div>
+                                <button class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>
+                                <button class="btn btn-primary float-right ml-2" *ngIf="viewMode === 'new'" [loading]="loading" [disabled]="noSales">
+                                  Registrar Comisión
                                 </button>
+                              </div>
                             </div>
-                        </div>
+                          </div>
                     </div>
                 </form>
             </div>
