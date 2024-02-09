@@ -1,7 +1,11 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from "@angular/common/http";
+import {
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+  HttpClient,
+} from "@angular/common/http";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgxPaginationModule } from "ngx-pagination";
@@ -11,8 +15,7 @@ import { SharedModule } from "./shared/shared.module";
 import { MyInterceptor } from "interceptors/authentication-interceptor";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "./shared/services/auth.service";
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,16 +29,17 @@ import { FormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    NgbModule, 
+    NgbModule,
   ],
-  providers: [CookieService,AuthService,HttpClient,
-   {
-provide: HTTP_INTERCEPTORS,
-useClass: MyInterceptor,
+  providers: [
+    CookieService,
+    AuthService,
+    HttpClient,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MyInterceptor,
       multi: true,
-    }
-    ,
-    
+    },
   ],
 
   bootstrap: [AppComponent],

@@ -71,6 +71,7 @@ export class ReturnsDetailComponent implements OnInit {
   lengthError: boolean;
   staticTotalOrder: any;
   asociatedPayments: any;
+  showLoadingScreen: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -134,6 +135,7 @@ export class ReturnsDetailComponent implements OnInit {
 
   // Método para obtener un pedido y sus detalles
   getOrder() {
+    this.showLoadingScreen = true;
     const currentRoute = this.router.url;
     if (currentRoute.includes("/orders/returns/")) {
       // Antes de cargar los datos, establece loadingData en true
@@ -169,16 +171,17 @@ export class ReturnsDetailComponent implements OnInit {
           });
           this.selected_payment_type = this.order.order.payment_type;
 
+          this.showLoadingScreen = true;
+
           this.findOrderData(idClient, idEmployee, orderDetail);
 
           this.staticTotalOrder = this.order.order.total_order;
 
-          // Después de cargar los datos, establece loadingData en false
-          this.loadingData = false;
+          this.showLoadingScreen = false;
         },
         (error) => {
           console.error("Error al obtener el pedido:", error);
-          this.loadingData = false; // En caso de error, asegúrate de desactivar la pantalla de carga
+          this.showLoadingScreen = false; // En caso de error, asegúrate de desactivar la pantalla de carga
         }
       );
     }
@@ -336,7 +339,7 @@ export class ReturnsDetailComponent implements OnInit {
       this.productQuantity = this.max_quantity;
     }
 
-    if (inputValue < 0) {
+    if (inputValue <= 0) {
       inputElement.value = String(0);
       this.returnQuantity = this.max_quantity;
       this.productQuantity = this.max_quantity;
@@ -493,16 +496,6 @@ export class ReturnsDetailComponent implements OnInit {
     this.modalRef.close();
   }
 
-  updateProductQuantity(productId: number, quantityToSubtract: number): void {
-    const productToUpdate = this.listProducts.find(
-      (product) => product.id_product === productId
-    );
-
-    if (productToUpdate) {
-      productToUpdate.product_quantity -= quantityToSubtract;
-    }
-  }
-
   //PRODUCTOS
   getProductNameById(productId: number): string {
     const product = this.listProducts.find((p) => p.id_product === productId);
@@ -568,7 +561,7 @@ export class ReturnsDetailComponent implements OnInit {
 
     if (this.listPayments.length > 0) {
       this.listPayments.forEach((payments) => {
-        totalPayments += parseInt(payments.total_payment);
+        totalPayments += parseFloat(payments.total_payment);
       });
     } else {
       console.log("No existen pagos asociados");
@@ -599,7 +592,6 @@ export class ReturnsDetailComponent implements OnInit {
         confirmButtonText: "Continuar",
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log("Refunded ", amountToRefund);
           this._ordersService
             .AnulateOrder(this.order.order.id_order, {
               observation: message,
@@ -623,7 +615,7 @@ export class ReturnsDetailComponent implements OnInit {
     } else {
       message = productsLength
         ? `Se realizó la devolución de éste pedido, y se creó un nuevo pedido con los productos restantes no devueltos.`
-        : `Se realizó la devolución de éste pedido`;
+        : `Se realizó la devolución de éste pedido.`;
 
       Swal.fire({
         icon: "warning",
@@ -662,7 +654,6 @@ export class ReturnsDetailComponent implements OnInit {
     var error = false;
     returnedProductsArray.forEach((product) => {
       product.id_order = this.order.order.id_order;
-      console.log(product);
       this._returnsService.retireProduct(product).subscribe(
         (response) => {
           console.log("Retiro de producto exitoso:", response);
