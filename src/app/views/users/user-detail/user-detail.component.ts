@@ -393,8 +393,8 @@ export class UserDetailComponent implements OnInit {
         });
         setTimeout(() => {
           this.router.navigateByUrl("/users");
-        }, 3000);
-      }, 3000);
+        },);
+      },);
     }
   }
 

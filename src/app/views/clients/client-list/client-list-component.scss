@@ -1,14 +1,3 @@
-.no-scroll-table {
-  max-height: 500px; /* Ajusta la altura máxima según tus necesidades */
-  overflow-y: hidden;
-}
-
-
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Establece el contenedor para ocupar al menos el 100% del alto de la ventana */
-}
 
 .ngx-datatable {
   flex: 1; /* Hace que ngx-datatable ocupe el espacio disponible en el contenedor */

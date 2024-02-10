@@ -47,6 +47,10 @@ export class OrdersService {
     return this.http.get(this.url + '/api/anulated_orders');
   }
 
+  getAllReturns(): Observable<any> {
+    return this.http.get(this.url + '/api/returned_orders');
+  }
+
   getAllClients(): Observable<any> {
     return this.http.get(this.url + '/api/clients');
   }

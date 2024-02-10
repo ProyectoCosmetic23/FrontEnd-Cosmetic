@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular
 import { ClientsService } from 'src/app/shared/services/client.service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+
+
 
 
 
@@ -18,12 +19,15 @@ export class ClientListComponent implements OnInit {
     searchControl: UntypedFormControl = new UntypedFormControl();
     listClients: any[];
     filteredClients: any[];
+
+    pageSize: number = 10;
+    currentPage: number = 1;
    
     modalAbierto = false;
-    currentPage = 1; // Propiedad para rastrear la página actual
-    itemsPerPage = 6; // El número de filas por página
-    countLabel: number;
-    reasonForm: FormGroup;
+
+
+
+
    
     constructor(
         private _clientService: ClientsService,
@@ -34,7 +38,11 @@ export class ClientListComponent implements OnInit {
     ngOnInit(): void {
         
         this.getClients();
-        this.reasoniniForm();
+        this.searchControl.valueChanges
+        .pipe(debounceTime(200))
+        .subscribe(value => {
+            this.filterData(value);
+        });
         
     }
 
@@ -42,19 +50,14 @@ export class ClientListComponent implements OnInit {
         this._clientService.getAllClients().subscribe(data => {
             this.listClients = data.sort((a, b) => a.id_client - b.id_client);
             this.filteredClients = [...this.listClients];
+            this.sortListClients();
         }, error => {
             console.log(error);
         }); 
     }
 
-    @ViewChild(DatatableComponent)
-    table: DatatableComponent;
-    //  actualizar el valor visual de count según tus necesidades
-    actualizarCountLabel() {
-        this.countLabel = this.filteredClients.length;
-    }
 
-    sortListClientsById() {
+    sortListClients() {
         this.filteredClients.sort((a, b) => {
             if (a.id_client > b.id_client) {
                 return -1;
@@ -66,36 +69,32 @@ export class ClientListComponent implements OnInit {
         });
     }
 
-    onPageChange(event: any) {
-        console.log('onPageChange event:', event);
-        this.currentPage = event.offset + 1;
-       
-    }
-
-    searchClient($event){
-        
-        const value = ($event.target as HTMLInputElement).value;
-        if(value !==null && value !== undefined && value !== '')
-        {
-            this.filteredClients = this.listClients.filter(c => c.name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1
-            || this.changeClientStateDescription(c.state_client).toLowerCase().indexOf(value.toLowerCase()) !== -1)
-        }else{
-            this.filteredClients = this.listClients;
+    filterData(value: string) {
+        if (value) {
+            value = value.toLowerCase();
+        } else {
+            this.filteredClients = [...this.listClients];
+            return;
         }
-    }
 
-    changeClientStateDescription(state_client:boolean){
-        return state_client ? 'Activo':'Inactivo';}
-        
-        private reasoniniForm(): void {
-            this.reasonForm = this.formBuilder.group({
-              reason_anulate: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(220)]],
-        
-            });
-        
-          }
+        this.filteredClients = this.listClients.filter(client => {
+            const nombreMatch = client.name_client.toLowerCase().includes(value);
+            const correoMatch = client.email_client.toLowerCase().includes(value);
+            const estadoMatch = client.state_client.toLowerCase().includes(value);
+
+            return   nombreMatch || correoMatch || estadoMatch;
+        });
+
+        this.currentPage = 1;
+    }
 
     @ViewChild('deleteConfirmModal', { static: true }) deleteConfirmModal: any;
+
+
+
+
+
+
 
     openModal(idClient: number) {
         if (!this.modalAbierto) {
@@ -105,11 +104,12 @@ export class ClientListComponent implements OnInit {
                     if (result === 'Ok') {
                         this._clientService.clientChangeStatus(idClient).subscribe(
                             (data) => {
-                                this.loading = false;
+                                // this.loading = false;
                                 // this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                                // console.log(data);
+                                console.log(data);
 
                                 setTimeout(() => {
+                                    
                                     location.reload();
                                 });
                             },

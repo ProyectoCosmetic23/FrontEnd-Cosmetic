@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { OrdersService } from "src/app/shared/services/orders.service";
+import { ReturnsService } from "src/app/shared/services/returns.service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
 import { NgSelectConfig } from "@ng-select/ng-select";
 
@@ -56,6 +57,10 @@ export class OrdersDetailComponent implements OnInit {
   inventoryQuantity: any;
   message_observation: any;
   orderState: any;
+  returnedProducts: any;
+  returnedDetail: boolean;
+  returnedProductList: any[] = [];
+  totalReturnedValue: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -63,6 +68,7 @@ export class OrdersDetailComponent implements OnInit {
     private router: Router,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
+    private _returnsService: ReturnsService,
     private toastr: ToastrService,
     private ngSelectConfig: NgSelectConfig
   ) {
@@ -71,6 +77,7 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPaymentsForOrder();
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
     this.setViewMode();
@@ -121,15 +128,10 @@ export class OrdersDetailComponent implements OnInit {
 
   getPaymentsForOrder() {
     if (this.viewMode === "detail") {
-      // Convertir this.id a número usando parseInt
       const orderId = parseInt(this.id, 10);
-
-      // O alternativamente, usando Number
-      // const orderId = Number(this.id);
-
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
-          // Puedes almacenar los pagos en una propiedad del componente
+          console.log('Pagos recibidos:', payments);
           this.listPayments = payments;
         },
         (error) => {
@@ -138,6 +140,7 @@ export class OrdersDetailComponent implements OnInit {
       );
     }
   }
+
   // Método para obtener un pedido y sus detalles
   getOrder() {
     this.showLoadingScreen = true;
@@ -150,13 +153,18 @@ export class OrdersDetailComponent implements OnInit {
           const idClient = this.order.order.id_client;
           const idEmployee = this.order.order.id_employee;
           const orderDetail = this.order.order_detail;
-
+  
           this.selected_payment_type = this.order.order.payment_type;
-
+  
           this.showLoadingScreen = true;
-
+  
+          this.getReturnedProducts(this.order.order.id_order, this.order.order);
+  
           this.findOrderData(idClient, idEmployee, orderDetail);
-
+  
+          // Aquí llamamos a getPaymentsForOrder después de obtener el pedido
+          this.getPaymentsForOrder();
+  
           // Después de cargar los datos, establece loadingData en false
           this.showLoadingScreen = false;
           this.message_observation = this.order.order.observation_return;
@@ -167,6 +175,58 @@ export class OrdersDetailComponent implements OnInit {
           this.showLoadingScreen = false;
         }
       );
+    }
+  }
+
+  getReturnedProducts(id: any, order: any) {
+    console.log(order);
+    if (order.return_state == true) {
+      this._returnsService.getReturnedProducts(id).subscribe(
+        (data) => {
+          this.returnedProducts = data.return_detail;
+          console.log("Productos devueltos:", this.returnedProducts);
+
+          if (this.returnedProducts.length > 0) {
+            this.returnedDetail = true;
+
+            // Reiniciar el valor total al inicio de la función
+            this.totalReturnedValue = 0;
+
+            // Construir lista de productos devueltos con información adicional
+            this.listProducts.forEach((product) => {
+              const returnedProduct = this.returnedProducts.find(
+                (returned) => returned.id_product === product.id_product
+              );
+
+              if (returnedProduct) {
+                // Si se encuentra un producto devuelto, agregar a la lista con información adicional
+                const returnedProductInfo = {
+                  id_product: returnedProduct.id_product,
+                  name_product: product.name_product,
+                  selling_price: parseFloat(product.selling_price),
+                  return_quantity: returnedProduct.return_quantity,
+                  return_reason: returnedProduct.return_reason,
+                  return_type: returnedProduct.return_type,
+                  subtotal:
+                    product.selling_price * returnedProduct.return_quantity,
+                };
+
+                // Agregar el producto devuelto a la lista
+                this.returnedProductList.push(returnedProductInfo);
+
+                // Actualizar el valor total
+                this.totalReturnedValue += returnedProductInfo.subtotal;
+              }
+            });
+          }
+        },
+        (error) => {
+          // Manejar el error aquí
+          console.error("Error al obtener los productos devueltos:", error);
+        }
+      );
+    } else {
+      this.returnedDetail = false;
     }
   }
 
@@ -303,9 +363,11 @@ export class OrdersDetailComponent implements OnInit {
           ...product,
           disabled: false,
         }));
-        this.listProducts = this.listProducts.filter(
-          (product) => product.state_product === "Activo"
-        );
+        if (this.viewMode == "new") {
+          this.listProducts = this.listProducts.filter(
+            (product) => product.state_product === "Activo"
+          );
+        }
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
@@ -390,12 +452,14 @@ export class OrdersDetailComponent implements OnInit {
       // Limpia el valor del campo de cantidad al seleccionar un nuevo producto
       this.formulario.get("product_quantity").setValue(null);
 
-      this.formulario.get("product_quantity").valueChanges.subscribe((value) => {
-        this.product_quantity = value;
-        this.formulario
-          .get("subtotal")
-          .setValue(this.productPrice * this.product_quantity);
-      });
+      this.formulario
+        .get("product_quantity")
+        .valueChanges.subscribe((value) => {
+          this.product_quantity = value;
+          this.formulario
+            .get("subtotal")
+            .setValue(this.productPrice * this.product_quantity);
+        });
     }
   }
 
@@ -540,7 +604,7 @@ export class OrdersDetailComponent implements OnInit {
 
   // -------------- INICIO: Métodos para crear un nuevo Pedido -------------- //
 
-  // Función principal para crear el pedido 
+  // Función principal para crear el pedido
   createOrder() {
     try {
       if (!this.formBasic.valid) {
@@ -589,6 +653,7 @@ export class OrdersDetailComponent implements OnInit {
           total_order: total_order,
           products: products,
           directSale: this.directSale,
+          isReturn: false,
         };
 
         this.submitOrder(newOrder);

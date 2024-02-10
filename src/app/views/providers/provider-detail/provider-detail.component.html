@@ -253,16 +253,20 @@
                                 rows="6"></textarea>
                         </div>
                         <div class="col-md-12">
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-danger float-right"
-                                    [routerLink]="['/proveedores']">Volver</button>
-                                <div style="width: 10px;"></div>
-                                <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary"
-                                    [loading]="loading">Registrar
-                                    Proveedor</btn-loading>
-                                <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary"
-                                    [loading]="loading">Editar
-                                    Proveedor</btn-loading>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span *ngIf="viewMode === 'new'" class="text-danger">Los datos con * son obligatorios</span>
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-danger" [routerLink]="['/proveedores']">Volver</button>
+                                    <div style="width: 10px;"></div>
+                                    <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">
+                                        Registrar Proveedor
+                                    </btn-loading>
+                                    <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">
+                                        Editar Proveedor
+                                    </btn-loading>
+                                </div>
                             </div>
                         </div>
                     </div>
