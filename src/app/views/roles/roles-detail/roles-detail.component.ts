@@ -91,7 +91,6 @@ export class RolesDetailComponent implements OnInit {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/edit/") || currentRoute.includes("/detail/")) {
       this.id = this.route.snapshot.params["id_role"];
-      console.log(this.id);
       this._rolesService.getRoleById(this.id).subscribe(
         (data) => {
           this.role = data;
@@ -99,8 +98,6 @@ export class RolesDetailComponent implements OnInit {
           this.new_role.name_role = this.role.name_role;
           this.roleStatus = this.role.state_role;
           this.showLoadingScreen = false;
-
-          console.log(this.selected_modules);
         },
         (error) => {
           console.error("Error al obtener rol:", error);
@@ -120,11 +117,7 @@ export class RolesDetailComponent implements OnInit {
       this.selected_modules.push(module);
     }
     const moduleCount = this.selected_modules.length;
-    console.log(moduleCount);
     this.showErrorMessageModules = moduleCount < 1;
-    if (moduleCount < 1) {
-      console.log(this.showErrorMessageModules);
-    }
   }
 
   handleNameSelection(event: any) {
@@ -171,7 +164,6 @@ export class RolesDetailComponent implements OnInit {
         } else {
           // Si todas las validaciones pasan, actualizar el valor en tu objeto
           this.new_role.name_role = inputValue;
-          console.log(this.new_role.name_role);
         }
       },
       (error) => {
@@ -211,9 +203,7 @@ export class RolesDetailComponent implements OnInit {
   createRole() {
     const currentRoute = this.router.url;
     this.new_role.modules_role = this.selected_modules;
-    console.log(currentRoute);
     if (currentRoute.includes("/new")) {
-      console.log(this.new_role);
       this._rolesService.createRole(this.new_role).subscribe(
         (data) => {
           this.loading = true;
@@ -242,18 +232,14 @@ export class RolesDetailComponent implements OnInit {
 
   editRole() {
     const currentRoute = this.router.url;
-    console.log(currentRoute);
     if (currentRoute.includes("/edit")) {
       if (this.id && this.new_role) {
         this.new_role.modules_role = this.selected_modules;
-        console.log(this.selected_modules);
-        console.log(this.new_role);
         this._rolesService.editRole(this.id, this.new_role).subscribe(
           (data) => {
             this.loading = false;
 
             // Asegúrate de que la respuesta del servicio contiene los datos esperados
-            console.log("Respuesta del servicio editRole:", data);
 
             this.toastr.success(
               "Rol actualizado con éxito.",

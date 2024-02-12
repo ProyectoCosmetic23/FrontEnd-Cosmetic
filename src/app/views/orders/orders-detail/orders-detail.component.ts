@@ -134,7 +134,6 @@ export class OrdersDetailComponent implements OnInit {
       const orderId = parseInt(this.id, 10);
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
-          console.log('Pagos recibidos:', payments);
           this.listPayments = payments;
         },
         (error) => {
@@ -182,13 +181,10 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   getReturnedProducts(id: any, order: any) {
-    console.log(order);
     if (order.return_state == true) {
       this._returnsService.getReturnedProducts(id).subscribe(
         (data) => {
           this.returnedProducts = data.return_detail;
-          console.log("Productos devueltos:", this.returnedProducts);
-
           if (this.returnedProducts.length > 0) {
             this.returnedDetail = true;
 
@@ -436,8 +432,6 @@ export class OrdersDetailComponent implements OnInit {
       (product) => product.id_product === selectedProductId
     );
 
-    console.log(this.selectedProduct);
-
     if (this.selectedProduct) {
       this.productPrice = this.selectedProduct.selling_price;
       this.formulario.get("product_price").setValue(this.productPrice);
@@ -590,8 +584,6 @@ export class OrdersDetailComponent implements OnInit {
 
     // Actualiza la cantidad de productos
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-
-    console.log(this.productsFormArray.value);
   }
 
   calculateTotal() {
@@ -677,7 +669,6 @@ export class OrdersDetailComponent implements OnInit {
     }
 
     const productsArray = this.productsFormArray.value;
-    console.log(productsArray);
     for (const product of productsArray) {
       if (
         !product.id_product ||

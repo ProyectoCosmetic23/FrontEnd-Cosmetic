@@ -324,7 +324,6 @@ export class OrdersListComponent implements OnInit {
                     this.message_observation = "";
                     this.modalAbierto = false;
                   }
-                  console.log("El mensaje:", this.message_observation);
                   if (usage === "Enviar") {
                     subscribe_method =
                       this._ordersService.updateOrderStatus(idOrder);
@@ -499,23 +498,18 @@ export class OrdersListComponent implements OnInit {
       this.new_payment.total_payment = totalPayment;
       this.new_payment.id_client = id_client;
       this.new_payment.id_order = id_order;
-
-      console.log(this.new_payment);
     }
   }
 
   handleClientSelection(event: any) {
     this.new_payment.id_client = this.id_client;
-    console.log(this.new_payment.id_client);
   }
 
   handleOrderSelection(event: any) {
     this.new_payment.id_order = event.target.value;
-    console.log(this.new_payment.id_order);
   }
 
   submit() {
-    console.log("llamado a submit");
     this.createPayment();
   }
 
@@ -523,7 +517,6 @@ export class OrdersListComponent implements OnInit {
   openPayments(idOrder: number) {
     if (!this.modalPayment) {
       this.modalPayment = true;
-      console.log("ID de la orden:", idOrder);
       this.formBasic.patchValue({
         total_remaining: null,
         total_payment: null, // o tu valor inicial
@@ -574,7 +567,6 @@ export class OrdersListComponent implements OnInit {
               (result) => {
                 if (result === "yes" && result.value) {
                   this.createPayment();
-                  console.log(result);
                 }
                 this.modalPayment = false;
                 this.activTab = "formulario";
@@ -595,8 +587,6 @@ export class OrdersListComponent implements OnInit {
   }
 
   asignarPago() {
-    console.log('Botón "Asignar" clickeado');
-
     // Verifica si modalRef está definido antes de intentar cerrar el modal
     if (this.modalRef) {
       this.createPayment();

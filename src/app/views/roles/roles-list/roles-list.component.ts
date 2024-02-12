@@ -52,7 +52,6 @@ export class RolesListComponent implements OnInit {
           if (pageCountElement) {
             const innerText = pageCountElement.innerText;
             pageCountElement.innerText = this.originalRowCount + " registros.";
-            console.log("Inner text de .page-count:", innerText);
           }
         });
         this.sortListRolesByState(); // Llama a la nueva función de ordenamiento
@@ -138,12 +137,9 @@ export class RolesListComponent implements OnInit {
     endIndex += rowsToAdd;
 
     this.filteredRoles = this.listRoles.slice(startIndex, endIndex);
-
-    console.log("load data charged");
   }
 
   onPageChange(event: any) {
-    console.log("onPageChange event:", event);
     this.currentPage = event.offset + 1;
     this.loadData();
   }
@@ -151,8 +147,6 @@ export class RolesListComponent implements OnInit {
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
   openModal(idRole: number, stateRole: string) {
-    console.log("Open modal");
-
     if (stateRole == "Activo") {
       this.stateMessage = "¿Está seguro de que desea desactivar éste rol?";
     } else if (stateRole == "Inactivo") {
@@ -161,7 +155,6 @@ export class RolesListComponent implements OnInit {
 
     this._rolesService.getRoleById(idRole).subscribe(
       (data) => {
-        console.log(this.modalAbierto);
         if (!this.modalAbierto) {
           this.modalAbierto = true;
           this.modalService
@@ -199,7 +192,6 @@ export class RolesListComponent implements OnInit {
                               timeOut: 1000,
                             }
                           );
-                          console.log(this.message_observation);
                           setTimeout(() => {
                             this.getRoles();
                             this.updateSwitchState(idRole);
@@ -217,6 +209,7 @@ export class RolesListComponent implements OnInit {
                               timeOut: 2000,
                             }
                           );
+                          this.getRoles();
                           console.error("Error al cambiar de estado:", error);
                         }
                       );
