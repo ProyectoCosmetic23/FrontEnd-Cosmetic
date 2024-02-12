@@ -61,10 +61,12 @@ export class ComissionListComponent implements OnInit {
     openedModal = false;
     countLabel: number;
     searchControl: UntypedFormControl = new UntypedFormControl();
-    filteredComissions : any[] = [];
+    filteredComissions: any[] = [];
     commissionsMonth;
     modalRef: NgbModalRef;
     sweetAlert: any;
+    verifiedPercentage: number = 0;
+    verifiedMonth: number = 0;
 
     constructor(
         private _comissionsService: ComissionsService,
@@ -97,27 +99,18 @@ export class ComissionListComponent implements OnInit {
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             // Cargar todas las comisiones en una variable nueva
             this.allCommissions = res;
-    
+
             this._comissionsService.getAllEmployees().subscribe((employees: any[]) => {
                 employees.forEach(employee => {
                     this.employees[employee.id_employee] = employee.name_employee;
                 });
-    
+
                 this._comissionsService.getAllComsDetail().subscribe((details: any[]) => {
                     console.log('Detalles de comisiones recibidos:', details);
                     this.details = details;
-    
-                    // Obtener IDs de empleados activos
-                    // const activeEmployeeIds = employees
-                    //     .filter(employee => employee.state_employee === 'Activo')
-                    //     .map(activeEmployee => activeEmployee.id_employee);
-    
-                    // Filtrar las comisiones para incluir solo las asociadas a empleados activos
-                    // this.listComissions = this.allCommissions.filter(commission =>
-                    //     activeEmployeeIds.includes(commission.id_employee)
-                    // );
+
                     this.listComissions = this.allCommissions
-                        
+
                     // Asignar detalles de comisiones a cada comisión en la lista
                     this.listComissions.forEach(comission => {
                         const detail = details.find(detail => detail.id_commission_detail === comission.id_commission_detail);
@@ -126,7 +119,7 @@ export class ComissionListComponent implements OnInit {
                             comission.commission_percentage = detail.commission_percentage;
                         }
                     });
-    
+
                     this.originalListComissions = this.listComissions;
                     console.log('this.selectedMonth:', this.selectedMonth);
                     console.log('this.details:', this.details);
@@ -137,7 +130,7 @@ export class ComissionListComponent implements OnInit {
             });
         });
     }
-    
+
     @ViewChild(DatatableComponent)
     table: DatatableComponent;
     //  actualizar el valor visual de count según tus necesidades
@@ -170,11 +163,17 @@ export class ComissionListComponent implements OnInit {
 
     handlePerccentageSelection(event: any) {
         this.new_comissionDetail.commission_percentage = event.target.value;
+        this.verifiedPercentage = event.target.value;
+        console.log(this.verifiedPercentage, " Porcentaje elegido ")
+        console.log(this.new_comissionDetail.commission_percentage)
+        console.log(this.new_comissionDetail.month_commission)
     }
     handleMonth(event: any) {
         const selectedMonth = event.target.value;
         const currentYear = new Date().getFullYear();
         this.new_comissionDetail.month_commission = `${currentYear}-${selectedMonth.toString().padStart(2, '0')}-01`;
+        this.verifiedMonth = event.target.value;
+        console.log(this.verifiedMonth, " Mes elegido")
         console.log(this.new_comissionDetail.month_commission)
     }
     createComissionDetail() {
@@ -189,11 +188,13 @@ export class ComissionListComponent implements OnInit {
                         this.router.navigate(['/comisiones']);
                     }, 3000);
                 }, 3000);
+                this.resetComissionDetail();
             },
             (error) => {
                 this.loading = false;
                 this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
-                console.error('Ya existe un registro para este ', error);
+                console.error('Ya existe un registro para este mes', error);
+                this.resetComissionDetail();
             }
         );
     }
@@ -219,43 +220,61 @@ export class ComissionListComponent implements OnInit {
 
     pageChanged(event: any) {
         this.currentPage = event.page;
-   
+
     }
     onPageChange(event: any) {
         this.currentPage = event.offset / this.itemsPerPage + 1;
-    
-    }
 
+    }
+    resetComissionDetail() {
+        this.new_comissionDetail = {
+            commission_percentage: 0,
+            month_commission: "",
+        };
+    }
     @ViewChild('createModal', { static: true }) createModal: any;
 
     openModal() {
         if (!this.openedModal) {
-          this.openedModal = true;
-          this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
-          this.modalRef = this.modalService.open(this.createModal, { centered: true });
-      
-          this.modalRef.result.then(
-            (result) => {
-              if (result === 'Yes') {
-                this.openedModal = false;
-                this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
-                  this.loading = false;
-                  this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                  console.log(data);
-      
-                  setTimeout(() => {
+            this.verifiedMonth = 0; // Reiniciar verifiedMonth a 0
+            this.verifiedPercentage = 0; // Reiniciar verifiedPercentage a 0
+            console.log(this.verifiedMonth, this.verifiedPercentage)
+            this.openedModal = true;
+            this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
+            this.modalRef = this.modalService.open(this.createModal, { centered: true });
 
-                  }, 1000);
-                }, (error) => {
-                  this.loading = false;
-                  this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true, timeOut: 2000 });
-                });
-              }
-            },
-            (reason) => {
-              this.openedModal = false;
-            }
-          );
+            this.modalRef.result.then(
+                (result) => {
+                    if (result === 'Yes') {
+                        this.openedModal = false;
+                        this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
+                            this.loading = false;
+                            this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                            console.log(data);
+                            this.resetComissionDetail();
+                            setTimeout(() => {
+
+                            }, 1000);
+                        }, (error) => {
+                            this.loading = false;
+                            if (error.error && error.error.error) {
+                                this.toastr.error(error.error.error, 'Error', { progressBar: true });
+                            } else {
+                                this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true });
+                            }
+                            console.error('Error al asignar el porcentaje:', error);
+                            this.resetComissionDetail();
+                            console.log(error)
+                        });
+                    } else {
+                        this.resetComissionDetail();
+                    }
+                },
+                (reason) => {
+                    this.openedModal = false;
+                    this.resetComissionDetail();
+                }
+            );
         }
-      }
+    }
 }

@@ -628,12 +628,6 @@
               >
                 El monto del pago no puede ser negativo.
               </div>
-              <div
-                *ngIf="formBasic.get('total_payment').hasError('max')"
-                class="text-danger"
-              >
-                El total del pago no puede ser mayor que el total de la venta.
-              </div>
             </div>
           </div>
 
@@ -675,7 +669,7 @@
                 <div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn btn-danger" (click)="modal.close('cancel')">Cancelar</button>
-                        <button type="button" ngbAutofocus class="btn btn-wide btn-primary" (click)="asignarPago()">Pagar</button>
+                        <button type="button" ngbAutofocus class="btn btn-wide btn-primary" (click)="asignarPago()" [disabled]="!formBasic.get('total_payment').value || formBasic.get('total_payment').invalid || isNegative">Pagar</button>
                     </div>
                 </div>
             </div>
