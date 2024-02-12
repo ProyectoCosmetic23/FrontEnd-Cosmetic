@@ -273,18 +273,14 @@ export class ProductDetailComponent implements OnInit {
         return new Promise((resolve) => {
             setTimeout(() => {
                 if (combinedPattern.test(nameValue)) {
-                    const numberCount = (nameValue.match(/\d/g) || []).length;
-                    if (numberCount <= 1) {
-                        resolve(null); // Válido
-                    } else {
-                        resolve({ invalidName: true }); // No válido
-                    }
+                    resolve(null); // La validación pasa si cumple con el patrón combinado.
                 } else {
-                    resolve({ invalidName: true }); // No válido
+                    resolve({ invalidName: true }); // La validación falla si no cumple con el patrón combinado.
                 }
-            }, 0);
+            });
         });
     }
+    
     
 
     saveProductChanges(id: number, updatedData: any) {

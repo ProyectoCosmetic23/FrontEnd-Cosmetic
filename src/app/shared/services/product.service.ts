@@ -62,6 +62,10 @@ export class ProductService {
     );
   }
   
+  getCategoryById(categoryId: number): Observable<any> {
+    const url = `${this.url}/api/categories/${categoryId}`;
+    return this.http.get<any>(url);
+  }
 
 
 getValidateProductExist(id_category: number , name_product: string): Observable<boolean>{

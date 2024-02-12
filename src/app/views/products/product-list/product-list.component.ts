@@ -6,6 +6,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { debounceTime } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { CategoriesService } from 'src/app/shared/services/category.service';
 
 
 @Component({
@@ -29,17 +30,27 @@ export class ProductListComponent implements OnInit {
     returnValue: number ;
     countLabel: number;
     reasonAnulate: string = ''; 
+    categories: { [key: number]: string } = {};
 
     itemsPerPage = 6; // El número de filas por página
     constructor(
         private _productService: ProductService,
         private cookieService: CookieService,
         private modalService: NgbModal,
-        private toastr: ToastrService,) { }
+        private toastr: ToastrService,
+        private catService: CategoriesService) { }
 
-    ngOnInit(): void {
-        this.getProducts()
-       
+  ngOnInit(): void {
+        this.getProducts();
+        this.loadCategories();
+    }
+
+    loadCategories() {
+        this.catService.getAllCategory().subscribe((categorias: any[]) => {
+            categorias.forEach(categoria => {
+                this.categories[categoria.id_category] = categoria.name_category;
+            });
+        });
     }
 
             
@@ -55,12 +66,29 @@ export class ProductListComponent implements OnInit {
                 console.error('Error al obtener Productos:', error);
             }
         );
+        }
+
+    getCategoryById(categoryId: number) {
+        this._productService.getCategoryById(categoryId).subscribe(
+            (category) => {
+                console.log('Categoría obtenida:', category);
+                // Encuentra el producto correspondiente en la lista de productos
+                const productToUpdate = this.listProducts.find(p => p.id_category === categoryId);
+                // Si se encuentra el producto, actualiza el nombre de la categoría
+                if (productToUpdate) {
+                    productToUpdate.categoryName = category.name_category; // Suponiendo que el nombre de la categoría está en la propiedad 'name' del objeto 'category'
+                }
+            },
+            (error) => {
+                console.error('Error al obtener la categoría:', error);
+            }
+        );
     }
-
-
+    
     handleChange(event: any, row: any) {
         row.state_product = event.target.checked ? 'Activo' : 'Inactivo';
     }
+
 
     getProductNameById(productId: number): string {
         const product = this.listProducts.find(p => p.id_product === productId);

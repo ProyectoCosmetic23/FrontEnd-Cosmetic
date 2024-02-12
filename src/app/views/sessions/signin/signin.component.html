@@ -26,10 +26,7 @@
             <div class="input-group">
               <input type="{{ showPassword ? 'text' : 'password' }}" id="password" formControlName="password" class="form-control" />
               <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
-                  <i class="{{ showPassword ? 'i-Eye' : 'i-Eye' }}"></i>
-                  
-                </button>
+                
               </div>
             </div>
             <div *ngIf="myForm.get('password').hasError('required') && myForm.get('password').touched" class="text-danger">

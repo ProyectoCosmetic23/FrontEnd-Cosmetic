@@ -122,34 +122,36 @@ export class UserListComponent implements OnInit {
                     if (result === 'Ok') {
                         this._userService.userChangeStatus(idUser).subscribe(
                             (data) => {
-                                // this.loading = false;
-                                // this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                                console.log(data);
-
-                                setTimeout(() => {
-                                    
-                                    location.reload();
-                                });
+                                // Verificar si el cambio de estado se realizó correctamente
+                                if (data && data.msg === "Cambio de estado realizado con éxito.") {
+                                    // Manejar la respuesta exitosa
+                                    this.toastr.success(data.msg, 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+                                    // Actualizar la lista de usuarios después del cambio de estado
+                                    this.getUsers();
+                                } else {
+                                    // Manejar la respuesta de error
+                                    this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
+                                }
                             },
                             (error) => {
-                                this.loading = false;
+                                // Manejar el error en caso de que la solicitud falle
                                 this.toastr.error('Fallo al realizar el cambio de estado.', 'Error', { progressBar: true, timeOut: 2000 });
                                 console.error('Error al cambiar de estado:', error);
                             }
                         );
                     } else if (result === 'Cancel') {
                         this.modalAbierto = false;
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000);
                     }
                 },
                 (reason) => {
                     this.modalAbierto = false;
-                    location.reload();
                 }
             );
         }
     }
+    
+      
+    
+    
 
 }

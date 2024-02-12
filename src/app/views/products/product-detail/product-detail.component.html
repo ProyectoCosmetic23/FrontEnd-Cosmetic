@@ -45,10 +45,11 @@
                                             <option *ngFor="let product of listProducts" [value]="product.id_product">
                                                 {{ product.name_product }}
                                             </option>
+
                                         </select>
                                         <div *ngIf="productForm.get('id_product').touched && productForm.get('id_product').hasError('required')"
                                             class="error-message">
-                                            El camponombre producto es obligatorio.
+                                            El campo nombre producto es obligatorio.
                                         </div>
                                     </div>
                                 </div>
@@ -60,7 +61,7 @@
                                     <select class="form-control" id="id_category"
                                         (change)="handleCategorySelection($event)"
                                         [formControl]="productForm.get('id_category')">
-
+                                        <option value="" disabled selected>Seleccione la categoría</option>
                                         <option *ngFor="let category of listCategories" [value]="category.id_category">
                                             {{ category.name_category }}
                                         </option>
@@ -81,7 +82,7 @@
                                     </div>
                                 
                                     <div *ngIf="productForm.get('name_product').hasError('invalidName')" class="error-message">
-                                        El campo nombre no puede tener símbolos y solo puede tener 1 número.
+                                        El campo nombre no puede tener símbolos.
                                     </div>
                                 
                                     <div *ngIf="productForm.get('name_product').hasError('duplicateName') && productForm.get('name_product').touched">
