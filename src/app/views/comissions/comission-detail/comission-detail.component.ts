@@ -326,8 +326,16 @@ export class ComissionsDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Fallo al crear la comisión.', 'Error', { progressBar: true });
-          console.error('Error al crear la comisión:', error);
+          let backendErrorMessage: string;
+        
+          if (error.error && error.error.error) {
+            backendErrorMessage = error.error.error;
+          } else {
+            backendErrorMessage = error.message || error.toString();
+          }
+        
+          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
+          console.error("Error al crear la comisión:", error);
         }
       );
     }
