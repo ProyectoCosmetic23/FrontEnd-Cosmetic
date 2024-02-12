@@ -10,6 +10,9 @@ import {
   Validators,
 } from "@angular/forms";
 import { PaymentsService } from "src/app/shared/services/payment.service";
+import { AuthService } from "src/app/shared/services/auth.service";
+import Swal from "sweetalert2";
+import { Router } from "@angular/router";
 
 interface payment {
   id_sale: null;
@@ -58,14 +61,15 @@ export class OrdersListComponent implements OnInit {
   activeTab: string = "Pedidos Por Entregar";
   usage: string;
   isSmallScreen: boolean = false;
-
+  
   constructor(
+    private _authService: AuthService,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private el: ElementRef
+    private el: ElementRef,
   ) {
     this.formBasic = this.formBuilder.group({
       id_sale: null,
@@ -79,6 +83,7 @@ export class OrdersListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._authService.validateUserPermissions("Pedidos");
     this.getPayments();
     this.getClients();
     this.getOrders(this.order_type);

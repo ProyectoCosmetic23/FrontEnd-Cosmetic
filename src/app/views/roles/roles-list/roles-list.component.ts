@@ -4,6 +4,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ToastrService } from "ngx-toastr";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { UntypedFormControl } from "@angular/forms";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 @Component({
   selector: "app-roles-list",
@@ -29,10 +30,12 @@ export class RolesListComponent implements OnInit {
     private _rolesService: RolesService,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private el: ElementRef
+    private el: ElementRef,
+    private _authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this._authService.validateUserPermissions("Roles");
     this.getRoles();
   }
 

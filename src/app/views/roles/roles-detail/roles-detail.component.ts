@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { UntypedFormGroup, UntypedFormBuilder } from "@angular/forms";
+import { UntypedFormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RolesService } from "src/app/shared/services/roles.service";
 import { Subscription } from "rxjs";
 import { ToastrService } from "ngx-toastr";
-import { FormBuilder, FormGroup, Validator } from "@angular/forms";
-import { viewport } from "@popperjs/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 interface Role {
   name_role: string;
@@ -42,7 +42,7 @@ export class RolesDetailComponent implements OnInit {
     name_role: "",
     state_role: "Activo",
     modules_role: [],
-    observation_status: ""
+    observation_status: "",
   };
   roleStatus: string;
 
@@ -52,12 +52,14 @@ export class RolesDetailComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private _rolesService: RolesService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _authService: AuthService
   ) {
     this.formBasic = this.formBuilder.group({});
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Roles");
     this.id = this.route.snapshot.params["id_role"];
     this.isNew = !this.id;
     this.buildRolesForm(this.roles);
@@ -97,6 +99,8 @@ export class RolesDetailComponent implements OnInit {
           this.new_role.name_role = this.role.name_role;
           this.roleStatus = this.role.state_role;
           this.showLoadingScreen = false;
+
+          console.log(this.selected_modules);
         },
         (error) => {
           console.error("Error al obtener rol:", error);
@@ -122,7 +126,6 @@ export class RolesDetailComponent implements OnInit {
       console.log(this.showErrorMessageModules);
     }
   }
-
 
   handleNameSelection(event: any) {
     this.showErrorMessageName = false; // Reiniciar el estado de error
@@ -277,7 +280,6 @@ export class RolesDetailComponent implements OnInit {
         console.error("ID o new_role no definidos correctamente.");
       }
     }
-
     this.loading = true;
   }
 }

@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validator } from '@angular/forms';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/auth.service';
 //import Swal from 'sweetalert2';
 
 interface ComissionDetail {
@@ -75,7 +76,8 @@ export class ComissionListComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private _authService: AuthService
     ) {
         this.formBasic = this.formBuilder.group({
             commission_percentage: [0],
@@ -84,7 +86,7 @@ export class ComissionListComponent implements OnInit {
     currentMonthYear: string;
 
     ngOnInit(): void {
-        //this.sweetAlert = Swal;
+        this._authService.validateUserPermissions("Comisiones");
         const date = new Date();
         this.currentYear = date.getFullYear();
         const month = ('0' + (date.getMonth() + 1)).slice(-2);

@@ -6,6 +6,7 @@ import { OrdersService } from "src/app/shared/services/orders.service";
 import { ReturnsService } from "src/app/shared/services/returns.service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
 import { NgSelectConfig } from "@ng-select/ng-select";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 @Component({
   selector: "app-orders-detail",
@@ -69,6 +70,7 @@ export class OrdersDetailComponent implements OnInit {
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
     private _returnsService: ReturnsService,
+    private _authService: AuthService,
     private toastr: ToastrService,
     private ngSelectConfig: NgSelectConfig
   ) {
@@ -77,6 +79,7 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Pedidos");
     this.getPaymentsForOrder();
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;

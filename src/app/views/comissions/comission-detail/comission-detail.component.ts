@@ -5,6 +5,7 @@ import { ComissionsService } from 'src/app/shared/services/comission.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgZone } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 interface Comission {
   id_employee: number;
@@ -52,12 +53,14 @@ export class ComissionsDetailComponent implements OnInit {
     private router: Router,
     private _comissionsService: ComissionsService,
     private toastr: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _authService: AuthService
   ) {
     this.formBasic = this.formBuilder.group({});
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Comisiones");
     this.isNew = !this.id;
     this.loadSales();
     this.loadEmployees();
