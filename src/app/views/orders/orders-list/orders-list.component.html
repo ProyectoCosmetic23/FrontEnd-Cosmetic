@@ -293,7 +293,9 @@
             *ngIf="order_type == 'Entregado' || order_type == 'Ventas'"
           >
             <ng-template ngx-datatable-header-template>
-              <p style="font-size: 12px; text-align: center">Fecha de Entrega</p>
+              <p style="font-size: 12px; text-align: center">
+                Fecha de Entrega
+              </p>
             </ng-template>
             <ng-template
               ngx-datatable-cell-template
@@ -315,7 +317,11 @@
             [hidden]="isSmallScreen"
             [resizeable]="false"
             [canAutoResize]="true"
-            *ngIf="order_type == 'Por entregar' || order_type == 'Por pagar' || order_type == 'Pagado'"
+            *ngIf="
+              order_type == 'Por entregar' ||
+              order_type == 'Por pagar' ||
+              order_type == 'Pagado'
+            "
           >
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 102x; text-align: center">
@@ -666,23 +672,32 @@
             </div>
           </div>
           <div class="col-md-12">
-            <div class="d-flex justify-content-end">
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  (click)="modal.close('cancel')"
+            <div class="d-flex justify-content-between align-items-center">
+              <!-- Texto "Los datos con * son obligatorios" a la izquierda -->
+              <div>
+                <span class="text-danger"
+                  >Los datos con * son obligatorios</span
                 >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  ngbAutofocus
-                  class="btn btn-wide btn-primary"
-                  (click)="asignarPago()"
-                >
-                  Pagar
-                </button>
+              </div>
+              <!-- Contenedor de botones a la derecha -->
+              <div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn btn-danger"
+                    (click)="modal.close('cancel')"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    ngbAutofocus
+                    class="btn btn-wide btn-primary"
+                    (click)="asignarPago()"
+                  >
+                    Pagar
+                  </button>
+                </div>
               </div>
             </div>
           </div>

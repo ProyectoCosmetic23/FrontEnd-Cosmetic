@@ -53,12 +53,12 @@ export class DashboadDefaultComponent implements OnInit {
     { name: 'July', value: '7_2024'  },
     { name: 'August', value: '8_2024' },
     { name: 'September' , value: '9_2024' },
-    { name: 'October', value: '10_2023'  },
+    { name: 'October', value: '10_2024'  },
     { name: 'November', value: '11_2024' },
     { name: 'December', value: '12_2024'  },
   ];
   
-  startYear = 2023;
+  startYear = 2024;
   endYear = 2025;
   years = Array.from({ length: this.endYear - this.startYear + 1 }, (_, index) => this.startYear + index);
  // Puedes establecer el año inicial según tus necesidades
