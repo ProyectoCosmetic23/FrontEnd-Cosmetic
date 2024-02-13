@@ -7,6 +7,7 @@ import { debounceTime } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "src/app/shared/services/auth.service";
+import { CategoriesService } from 'src/app/shared/services/category.service';
 
 @Component({
   selector: "app-product-list",
@@ -29,6 +30,7 @@ export class ProductListComponent implements OnInit {
   returnValue: number;
   countLabel: number;
   reasonAnulate: string = "";
+  categories: { [key: number]: string } = {};
 
   itemsPerPage = 6; // El número de filas por página
   constructor(
@@ -36,13 +38,23 @@ export class ProductListComponent implements OnInit {
     private cookieService: CookieService,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private catService: CategoriesService
   ) {}
 
   ngOnInit(): void {
     this._authService.validateUserPermissions("Productos");
     this.getProducts();
+    this.loadCategories();
   }
+
+  loadCategories() {
+    this.catService.getAllCategory().subscribe((categorias: any[]) => {
+        categorias.forEach(categoria => {
+            this.categories[categoria.id_category] = categoria.name_category;
+        });
+    });
+}
 
   getProducts() {
     this._productService.getAllProducts().subscribe(
@@ -144,6 +156,25 @@ export class ProductListComponent implements OnInit {
         );
     }
   }
+
+  getCategoryById(categoryId: number) {
+    this._productService.getCategoryById(categoryId).subscribe(
+        (category) => {
+            console.log('Categoría obtenida:', category);
+            // Encuentra el producto correspondiente en la lista de productos
+            const productToUpdate = this.listProducts.find(p => p.id_category === categoryId);
+            // Si se encuentra el producto, actualiza el nombre de la categoría
+            if (productToUpdate) {
+                productToUpdate.categoryName = category.name_category; // Suponiendo que el nombre de la categoría está en la propiedad 'name' del objeto 'category'
+            }
+        },
+        (error) => {
+            console.error('Error al obtener la categoría:', error);
+        }
+    );
+}
+
+
 
   updateProductQuantity(productId: number, quantityToSubtract: number): void {
     // Encuentra el producto en tu lista local y resta la cantidad
