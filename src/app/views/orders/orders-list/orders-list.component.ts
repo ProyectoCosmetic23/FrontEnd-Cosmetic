@@ -10,6 +10,9 @@ import {
   Validators,
 } from "@angular/forms";
 import { PaymentsService } from "src/app/shared/services/payment.service";
+import { AuthService } from "src/app/shared/services/auth.service";
+import Swal from "sweetalert2";
+import { Router } from "@angular/router";
 
 interface payment {
   id_sale: null;
@@ -61,12 +64,13 @@ export class OrdersListComponent implements OnInit {
   isNegative: boolean = false;
 
   constructor(
+    private _authService: AuthService,
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private el: ElementRef
+    private el: ElementRef,
   ) {
     this.formBasic = this.formBuilder.group({
       id_sale: null,
@@ -80,6 +84,7 @@ export class OrdersListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._authService.validateUserPermissions("Pedidos");
     this.getPayments();
     this.getClients();
     this.getOrders(this.order_type);
@@ -320,7 +325,6 @@ export class OrdersListComponent implements OnInit {
                     this.message_observation = "";
                     this.modalAbierto = false;
                   }
-                  console.log("El mensaje:", this.message_observation);
                   if (usage === "Enviar") {
                     subscribe_method =
                       this._ordersService.updateOrderStatus(idOrder);
@@ -501,23 +505,18 @@ export class OrdersListComponent implements OnInit {
       this.new_payment.total_payment = totalPayment;
       this.new_payment.id_client = id_client;
       this.new_payment.id_order = id_order;
-
-      console.log(this.new_payment);
     }
   }
 
   handleClientSelection(event: any) {
     this.new_payment.id_client = this.id_client;
-    console.log(this.new_payment.id_client);
   }
 
   handleOrderSelection(event: any) {
     this.new_payment.id_order = event.target.value;
-    console.log(this.new_payment.id_order);
   }
 
   submit() {
-    console.log("llamado a submit");
     this.createPayment();
   }
 
@@ -525,7 +524,6 @@ export class OrdersListComponent implements OnInit {
   openPayments(idOrder: number) {
     if (!this.modalPayment) {
       this.modalPayment = true;
-      console.log("ID de la orden:", idOrder);
       this.formBasic.patchValue({
         total_remaining: null,
         total_payment: null, // o tu valor inicial
@@ -576,7 +574,6 @@ export class OrdersListComponent implements OnInit {
               (result) => {
                 if (result === "yes" && result.value) {
                   this.createPayment();
-                  console.log(result);
                 }
                 this.modalPayment = false;
                 this.activTab = "formulario";
@@ -597,8 +594,6 @@ export class OrdersListComponent implements OnInit {
   }
 
   asignarPago() {
-    console.log('Botón "Asignar" clickeado');
-
     // Verifica si modalRef está definido antes de intentar cerrar el modal
     if (this.modalRef) {
       this.createPayment();

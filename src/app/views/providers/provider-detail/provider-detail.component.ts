@@ -5,6 +5,7 @@ import { ProvidersService } from 'src/app/shared/services/provider.service';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 
 interface Provider {
@@ -61,12 +62,14 @@ export class ProvidersDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private _providersService: ProvidersService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _authService: AuthService
   ) {
     this.formBasic = this.formBuilder.group({});
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Proveedores");
     this.id = this.route.snapshot.params["id"];
     this.isNew = !this.id;
     this.buildProvidersForm(this.provider);

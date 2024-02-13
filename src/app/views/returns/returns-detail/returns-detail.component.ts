@@ -9,6 +9,7 @@ import { PaymentsService } from "src/app/shared/services/payment.service";
 import Swal from "sweetalert2";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ProductService } from "src/app/shared/services/product.service";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 // import { CookieService } from "ngx-cookie-service";
 
@@ -84,13 +85,15 @@ export class ReturnsDetailComponent implements OnInit {
     private toastr: ToastrService,
 
     private _productService: ProductService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private _authService: AuthService
   ) {
     this.productsFormArray = this.formBuilder.array([]);
     this.returnedProductsFormArray = this.formBuilder.array([]);
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Pedidos");
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
     this.setViewMode();

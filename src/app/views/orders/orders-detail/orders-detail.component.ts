@@ -6,6 +6,7 @@ import { OrdersService } from "src/app/shared/services/orders.service";
 import { ReturnsService } from "src/app/shared/services/returns.service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
 import { NgSelectConfig } from "@ng-select/ng-select";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 @Component({
   selector: "app-orders-detail",
@@ -69,6 +70,7 @@ export class OrdersDetailComponent implements OnInit {
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
     private _returnsService: ReturnsService,
+    private _authService: AuthService,
     private toastr: ToastrService,
     private ngSelectConfig: NgSelectConfig
   ) {
@@ -77,6 +79,7 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Pedidos");
     this.getPaymentsForOrder();
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
@@ -131,7 +134,6 @@ export class OrdersDetailComponent implements OnInit {
       const orderId = parseInt(this.id, 10);
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
-          console.log('Pagos recibidos:', payments);
           this.listPayments = payments;
         },
         (error) => {
@@ -179,13 +181,10 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   getReturnedProducts(id: any, order: any) {
-    console.log(order);
     if (order.return_state == true) {
       this._returnsService.getReturnedProducts(id).subscribe(
         (data) => {
           this.returnedProducts = data.return_detail;
-          console.log("Productos devueltos:", this.returnedProducts);
-
           if (this.returnedProducts.length > 0) {
             this.returnedDetail = true;
 
@@ -433,8 +432,6 @@ export class OrdersDetailComponent implements OnInit {
       (product) => product.id_product === selectedProductId
     );
 
-    console.log(this.selectedProduct);
-
     if (this.selectedProduct) {
       this.productPrice = this.selectedProduct.selling_price;
       this.formulario.get("product_price").setValue(this.productPrice);
@@ -587,8 +584,6 @@ export class OrdersDetailComponent implements OnInit {
 
     // Actualiza la cantidad de productos
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-
-    console.log(this.productsFormArray.value);
   }
 
   calculateTotal() {
@@ -674,7 +669,6 @@ export class OrdersDetailComponent implements OnInit {
     }
 
     const productsArray = this.productsFormArray.value;
-    console.log(productsArray);
     for (const product of productsArray) {
       if (
         !product.id_product ||
