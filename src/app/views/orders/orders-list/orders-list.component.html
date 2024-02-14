@@ -19,177 +19,121 @@
     </div>
     <div class="col-md-4">
       <div class="form-group">
-        <input
-          id="role"
-          placeholder="Buscar Pedido"
-          [formControl]="searchControl"
-          class="form-control"
-          type="text"
-          (input)="searchOrders($event)"
-        />
+        <input id="role" placeholder="Buscar Pedido" [formControl]="searchControl" class="form-control" type="text"
+          (input)="searchOrders($event)" />
       </div>
     </div>
   </div>
   <div class="col-md-12">
     <ul class="nav nav-tabs">
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Pedidos Por Entregar',
           'custom-tab-unselected': activeTab !== 'Pedidos Por Entregar'
-        }"
-        (click)="onTabSelect('Pedidos Por Entregar')"
-      >
-        <a class="nav-link" id="porEntregar" style="cursor: pointer"
-          >Pedidos por Entregar</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Pedidos Por Entregar')">
+        <a class="nav-link" id="porEntregar" style="cursor: pointer">Pedidos por Entregar</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Jeep" style="font-size: 1.5em">+</i>
         </div>
       </li>
 
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Pedidos Por Pagar',
           'custom-tab-unselected': activeTab !== 'Pedidos Por Pagar'
-        }"
-        (click)="onTabSelect('Pedidos Por Pagar')"
-      >
-        <a class="nav-link" id="porPagar" style="cursor: pointer"
-          >Pedidos por Pagar</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Pedidos Por Pagar')">
+        <a class="nav-link" id="porPagar" style="cursor: pointer">Pedidos por Pagar</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Financial" style="font-size: 1.5em">+</i>
         </div>
       </li>
 
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Pedidos Entregados',
           'custom-tab-unselected': activeTab !== 'Pedidos Entregados'
-        }"
-        (click)="onTabSelect('Pedidos Entregados')"
-      >
-        <a class="nav-link" id="entregados" style="cursor: pointer"
-          >Pedidos Entregados</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Pedidos Entregados')">
+        <a class="nav-link" id="entregados" style="cursor: pointer">Pedidos Entregados</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Jeep" style="font-size: 1.5em"></i>
         </div>
       </li>
 
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Pedidos Pagados',
           'custom-tab-unselected': activeTab !== 'Pedidos Pagados'
-        }"
-        (click)="onTabSelect('Pedidos Pagados')"
-      >
-        <a class="nav-link" id="pagados" style="cursor: pointer"
-          >Pedidos Pagados</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Pedidos Pagados')">
+        <a class="nav-link" id="pagados" style="cursor: pointer">Pedidos Pagados</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Financial" style="font-size: 1.5em"></i>
         </div>
       </li>
 
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Ventas Realizadas',
           'custom-tab-unselected': activeTab !== 'Ventas Realizadas'
-        }"
-        (click)="onTabSelect('Ventas Realizadas')"
-      >
-        <a class="nav-link" id="ventas" style="cursor: pointer"
-          >Ventas Realizadas</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Ventas Realizadas')">
+        <a class="nav-link" id="ventas" style="cursor: pointer">Ventas Realizadas</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Money-2 nav-icon" style="font-size: 1.5em"></i>
         </div>
       </li>
 
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Pedidos Anulados',
           'custom-tab-unselected': activeTab !== 'Pedidos Anulados'
-        }"
-        (click)="onTabSelect('Pedidos Anulados')"
-        style="margin-left: auto"
-      >
-        <a class="nav-link" id="anulados" style="cursor: pointer"
-          >Pedidos Anulados</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Pedidos Anulados')" style="margin-left: auto">
+        <a class="nav-link" id="anulados" style="cursor: pointer">Pedidos Anulados</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Close" style="font-size: 1.5em"></i>
         </div>
       </li>
 
-      <li
-        [ngClass]="{
+      <li [ngClass]="{
           'custom-tab': activeTab === 'Devoluciones',
           'custom-tab-unselected': activeTab !== 'Devoluciones'
-        }"
-        (click)="onTabSelect('Devoluciones')"
-      >
-        <a class="nav-link" id="anulados" style="cursor: pointer"
-          >Devoluciones</a
-        >
-        <div
-          style="
+        }" (click)="onTabSelect('Devoluciones')">
+        <a class="nav-link" id="anulados" style="cursor: pointer">Devoluciones</a>
+        <div style="
             height: 5vh;
             width: 10vw;
             justify-content: center;
             padding-top: 0.5rem;
             display: none;
-          "
-        >
+          ">
           <i class="i-Close" style="font-size: 1.5em"></i>
         </div>
       </li>
@@ -203,318 +147,184 @@
       </div>
 
       <div *ngIf="showLoadingScreen == false">
-        <ngx-datatable
-          class="material fullscreen"
-          style="height: 460px"
-          [columnMode]="'force'"
-          [headerHeight]="50"
-          [footerHeight]="50"
-          [rowHeight]="60"
-          [scrollbarV]="true"
-          [rows]="listOrders"
-          [externalPaging]="true"
-          [count]="listOrders.length"
-          [limit]="itemsPerPage"
-          [offset]="(currentPage - 1) * itemsPerPage"
-          (page)="onPageChange($event)"
-        >
-          <ngx-datatable-column
-            name="order_number"
-            [resizeable]="false"
-            [canAutoResize]="true"
-            [maxWidth]="60"
-          >
+        <ngx-datatable class="material fullscreen" style="height: 460px" [columnMode]="'force'" [headerHeight]="50"
+          [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [rows]="listOrders" [externalPaging]="true"
+          [count]="listOrders.length" [limit]="itemsPerPage" [offset]="(currentPage - 1) * itemsPerPage"
+          (page)="onPageChange($event)">
+          <ngx-datatable-column name="order_number" [resizeable]="false" [canAutoResize]="true" [maxWidth]="60">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 10px; text-align: center">N°</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.order_number }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            name="client"
-            [resizeable]="false"
-            [canAutoResize]="true"
-          >
+          <ngx-datatable-column name="client" [resizeable]="false" [canAutoResize]="true">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 10px; text-align: center">Cliente</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.name_client }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            name="order_date"
-            [resizeable]="false"
-            [canAutoResize]="true"
-            *ngIf="order_type !== 'Entregado'"
-          >
+          <ngx-datatable-column name="order_date" [resizeable]="false" [canAutoResize]="true"
+            *ngIf="order_type !== 'Entregado'">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Fecha de Pedido</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.order_date.split("T")[0] }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            name="order_date"
-            [resizeable]="false"
-            [canAutoResize]="true"
-            *ngIf="order_type == 'Entregado' || order_type == 'Ventas'"
-          >
+          <ngx-datatable-column name="order_date" [resizeable]="false" [canAutoResize]="true"
+            *ngIf="order_type == 'Entregado' || order_type == 'Ventas'">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">
                 Fecha de Entrega
               </p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.delivery_date }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            class="custom-datatable-column"
-            name="delivery_state"
-            [hidden]="isSmallScreen"
-            [resizeable]="false"
-            [canAutoResize]="true"
-            *ngIf="
+          <ngx-datatable-column class="custom-datatable-column" name="delivery_state" [hidden]="isSmallScreen"
+            [resizeable]="false" [canAutoResize]="true" *ngIf="
               order_type == 'Por entregar' ||
               order_type == 'Por pagar' ||
               order_type == 'Pagado'
-            "
-          >
+            ">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 102x; text-align: center">
                 Estado de Entrega
               </p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.delivery_state }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            class="custom-datatable-column"
-            [hidden]="isSmallScreen"
-            name="payment_state"
-            [resizeable]="false"
-            [canAutoResize]="true"
-            *ngIf="order_type == 'Entregado'"
-          >
+          <ngx-datatable-column class="custom-datatable-column" [hidden]="isSmallScreen" name="payment_state"
+            [resizeable]="false" [canAutoResize]="true" *ngIf="order_type == 'Entregado'">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Estado de Pago</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.payment_state }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            class="custom-datatable-column"
-            [hidden]="isSmallScreen"
-            name="payment_state"
-            [resizeable]="false"
-            [canAutoResize]="true"
-            *ngIf="order_type == 'Anulado' || order_type == 'Devoluciones'"
-          >
+          <ngx-datatable-column class="custom-datatable-column" [hidden]="isSmallScreen" name="payment_state"
+            [resizeable]="false" [canAutoResize]="true" *ngIf="order_type == 'Anulado' || order_type == 'Devoluciones'">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Razón Anulación</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.observation_return }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            name="total_order"
-            [resizeable]="false"
-            [canAutoResize]="true"
-          >
+          <ngx-datatable-column name="total_order" [resizeable]="false" [canAutoResize]="true">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Total</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <p
-                  style="font-size: 10px; text-align: center; margin-top: 12px"
-                >
+                <p style="font-size: 10px; text-align: center; margin-top: 12px">
                   {{ row.total_order | currency : "" : "symbol" : "1.2-2" }}
                 </p>
               </ng-container>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column
-            name="actions"
-            [resizeable]="false"
-            [canAutoResize]="true"
-          >
+          <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 12px; text-align: center">Acciones</p>
             </ng-template>
-            <ng-template
-              ngx-datatable-cell-template
-              let-value="value"
-              let-row="row"
-            >
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
               <ng-container *ngIf="row && row.id_order">
-                <div
-                  style="
+                <div style="
                     display: flex;
                     justify-content: space-around;
                     margin-top: 5px;
-                  "
-                >
+                  ">
                   <!-- Ver detalle -->
-                  <button
-                    ngbTooltip="Ver Detalle"
-                    class="btn btn-dark btn-sm"
-                    [routerLink]="['/orders/detail', row.id_order]"
-                  >
+                  <button ngbTooltip="Ver Detalle" class="btn btn-dark btn-sm"
+                    [routerLink]="['/orders/detail', row.id_order]">
                     <i class="i-Eye" style="font-size: 15px"></i>
                   </button>
 
                   <!-- Realizar pago -->
-                  <button
-                    ngbTooltip="Registrar Pago"
-                    class="btn btn-success btn-sm"
-                    [ngClass]="{
+                  <button ngbTooltip="Registrar Pago" class="btn btn-success btn-sm" [ngClass]="{
                       'btn-danger': row.delivery_state == 'Anulado'
-                    }"
-                    (click)="openPayments(row.id_order)"
-                    [disabled]="
+                    }" (click)="openPayments(row.id_order)" [disabled]="
                       row.payment_state == 'Pagado' ||
                       row.order_state == 'Anulado'
-                    "
-                  >
+                    ">
                     <i class="i-Financial" style="font-size: 15px"></i>
                   </button>
 
                   <!-- Enviar pedido -->
-                  <button
-                    ngbTooltip="Enviar Pedido"
-                    class="btn btn-sm"
-                    [ngClass]="{
+                  <button ngbTooltip="Enviar Pedido" class="btn btn-sm" [ngClass]="{
                       'btn-warning': row.delivery_state === 'En proceso',
                       'btn-primary':
                         row.delivery_state === 'Por entregar' ||
                         row.delivery_state === 'Entregado',
                       'btn-danger': row.delivery_state == 'Anulado'
-                    }"
-                    *ngIf="
+                    }" *ngIf="
                       [
                         'En proceso',
                         'Por entregar',
                         'Entregado',
                         'Anulado'
                       ].includes(row.delivery_state)
-                    "
-                    (click)="
+                    " (click)="
                       openModal(row.id_order, 'Enviar', row.delivery_state)
-                    "
-                    [disabled]="
+                    " [disabled]="
                       row.delivery_state == 'Entregado' ||
                       row.order_state == 'Anulado'
-                    "
-                  >
+                    ">
                     <i class="i-Jeep" style="font-size: 15px"></i>
                   </button>
 
                   <!-- Anular pedido -->
-                  <button
-                    *ngIf="
+                  <button *ngIf="
                       (row.order_state !== 'Anulado' &&
                         row.delivery_state !== 'Entregado') ||
                       row.delivery_state == 'Por entregar' ||
                       row.order_state == 'Anulado'
-                    "
-                    ngbTooltip="Anular Pedido"
-                    class="btn btn-danger btn-sm"
-                    (click)="openModal(row.id_order, 'Anular')"
-                    [disabled]="row.order_state == 'Anulado'"
-                  >
+                    " ngbTooltip="Anular Pedido" class="btn btn-danger btn-sm"
+                    (click)="openModal(row.id_order, 'Anular')" [disabled]="row.order_state == 'Anulado'">
                     <i class="i-Close" style="font-size: 15px"></i>
                   </button>
 
                   <!-- Realizar Devolución -->
-                  <button
-                    *ngIf="row.delivery_state == 'Entregado'"
-                    ngbTooltip="Realizar Devolución"
-                    class="btn btn-warning btn-sm"
-                    [disabled]="row.order_state == 'Anulado'"
-                    [routerLink]="['returns/', row.id_order]"
-                    [disabled]="row.order_state == 'Anulado'"
-                  >
+                  <button *ngIf="row.delivery_state == 'Entregado'" ngbTooltip="Realizar Devolución"
+                    class="btn btn-warning btn-sm" [disabled]="row.order_state == 'Anulado'"
+                    [routerLink]="['returns/', row.id_order]" [disabled]="row.order_state == 'Anulado'">
                     <i class="i-Close" style="font-size: 15px"></i>
                   </button>
                 </div>
@@ -535,28 +345,14 @@
     <p>
       <strong>{{ modal_message }}</strong>
     </p>
-    <textarea
-      *ngIf="usage == 'Anular'"
-      placeholder="Razón por la que se anula el pedido"
-      [(ngModel)]="message_observation"
-      class="form-control"
-      style="resize: none"
-    ></textarea>
+    <textarea *ngIf="usage == 'Anular'" placeholder="Razón por la que se anula el pedido"
+      [(ngModel)]="message_observation" class="form-control" style="resize: none"></textarea>
   </div>
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-secondary btn"
-      (click)="modal.dismiss('cancel')"
-    >
+    <button type="button" class="btn btn-outline-secondary btn" (click)="modal.dismiss('cancel')">
       Cancelar
     </button>
-    <button
-      type="button"
-      ngbAutofocus
-      class="btn btn-wide btn-danger btn"
-      (click)="modal.close('Ok')"
-    >
+    <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn" (click)="modal.close('Ok')">
       Aceptar
     </button>
   </div>
@@ -564,19 +360,11 @@
 
 <ng-template #paymentModal let-modal>
   <ul class="nav nav-tabs">
-    <li
-      class="nav-item"
-      (click)="activTab = 'formulario'"
-      style="cursor: pointer"
-    >
-      <a class="nav-link" [class.active]="activTab === 'formulario'"
-        >Registrar pago</a
-      >
+    <li class="nav-item" (click)="activTab = 'formulario'" style="cursor: pointer">
+      <a class="nav-link" [class.active]="activTab === 'formulario'">Registrar pago</a>
     </li>
     <li class="nav-item" (click)="activTab = 'abonos'" style="cursor: pointer">
-      <a class="nav-link" [class.active]="activTab === 'abonos'"
-        >Pagos registrados</a
-      >
+      <a class="nav-link" [class.active]="activTab === 'abonos'">Pagos registrados</a>
     </li>
   </ul>
 
@@ -586,88 +374,42 @@
         <div class="row">
           <div class="col-md-6 form-group mb-3">
             <label for="id_client">Nombre cliente</label>
-            <input
-              class="form-control"
-              id="id_client"
-              [readonly]="true"
-              (change)="handleClientSelection($event)"
-              formControlName="id_client"
-            />
+            <input class="form-control" id="id_client" [readonly]="true" (change)="handleClientSelection($event)"
+              formControlName="id_client" />
           </div>
 
           <div class="col-md-6 form-group mb-3">
             <label for="payment_date">Fecha de pago</label>
-            <input
-              type="text"
-              class="form-control"
-              id="payment_date"
-              [placeholder]="'Fecha de pago'"
-              [readonly]="true"
+            <input type="text" class="form-control" id="payment_date" [placeholder]="'Fecha de pago'" [readonly]="true"
               [value]="
                 formBasic.get('payment_date').value | date : 'yyyy-MM-dd'
-              "
-            />
+              " />
           </div>
           <div class="col-md-6 form-group mb-3">
-            <label for="total_payment"
-              >Monto pago<span class="text-danger">*</span></label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="total_payment"
-              [placeholder]="'Monto pago'"
-              [readonly]="viewMode === 'print'"
-              (change)="updateTotalRemaining()"
-              formControlName="total_payment"
-            />
+            <label for="total_payment">Monto pago<span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="total_payment" [placeholder]="'Monto pago'"
+              [readonly]="viewMode === 'print'" (change)="updateTotalRemaining()" formControlName="total_payment" />
             <div *ngIf="formBasic.get('total_payment').touched">
-              <div
-                *ngIf="formBasic.get('total_payment').hasError('required')"
-                class="text-danger"
-              >
-                El total del pago es obligatorio.
+              <div *ngIf="formBasic.get('total_payment').hasError('required')" class="text-danger">
+                El monto del pago es obligatorio.
               </div>
-              <div
-                *ngIf="formBasic.get('total_payment').hasError('nonNegative')"
-                class="text-danger"
-              >
+              <div *ngIf="formBasic.get('total_payment').hasError('nonNegative')" class="text-danger">
                 El monto del pago no puede ser negativo.
-              </div>
-              <div
-                *ngIf="formBasic.get('total_payment').hasError('max')"
-                class="text-danger"
-              >
-                El total del pago no puede ser mayor que el total de la venta.
               </div>
             </div>
           </div>
 
           <div class="col-md-6 form-group mb-3">
             <label for="total_order">Total pedido</label>
-            <input
-              class="form-control"
-              id="total_order"
-              [readonly]="true"
-              formControlName="total_order"
-            />
+            <input class="form-control" id="total_order" [readonly]="true" formControlName="total_order" />
           </div>
 
           <div class="col-md-6 form-group mb-3">
             <label for="total_remaining">Total restante</label>
-            <input
-              type="number"
-              class="form-control"
-              id="total_remaining"
-              [placeholder]="'Total restante'"
-              [readonly]="true"
-              [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
-              formControlName="total_remaining"
-            />
-            <div
-              *ngIf="formBasic.get('total_remaining').hasError('nonNegative')"
-              class="text-danger"
-            >
+            <input type="number" class="form-control" id="total_remaining" [placeholder]="'Total restante'"
+              [readonly]="true" [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
+              formControlName="total_remaining" />
+            <div *ngIf="formBasic.get('total_remaining').hasError('nonNegative')" class="text-danger">
               {{ mensaje }}
             </div>
           </div>
@@ -675,28 +417,14 @@
             <div class="d-flex justify-content-between align-items-center">
               <!-- Texto "Los datos con * son obligatorios" a la izquierda -->
               <div>
-                <span class="text-danger"
-                  >Los datos con * son obligatorios</span
-                >
+                <span class="text-danger">Los datos con * son obligatorios</span>
               </div>
               <!-- Contenedor de botones a la derecha -->
               <div>
                 <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn btn-danger"
-                    (click)="modal.close('cancel')"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="button"
-                    ngbAutofocus
-                    class="btn btn-wide btn-primary"
-                    (click)="asignarPago()"
-                  >
-                    Pagar
-                  </button>
+                  <button type="button" class="btn btn btn-danger" (click)="modal.close('cancel')">Cancelar</button>
+                  <button type="button" ngbAutofocus class="btn btn-wide btn-primary" (click)="asignarPago()"
+                    [disabled]="!formBasic.get('total_payment').value || formBasic.get('total_payment').invalid || isNegative">Pagar</button>
                 </div>
               </div>
             </div>
@@ -723,12 +451,12 @@
                 <td>{{ payment.payment_date | date : "yyyy-MM-dd" }}</td>
                 <td>
                   {{
-                    payment.total_payment | currency : "" : "symbol" : "1.2-2"
+                  payment.total_payment | currency : "" : "symbol" : "1.2-2"
                   }}
                 </td>
                 <td>
                   {{
-                    payment.total_remaining | currency : "" : "symbol" : "1.2-2"
+                  payment.total_remaining | currency : "" : "symbol" : "1.2-2"
                   }}
                 </td>
               </tr>

@@ -82,7 +82,7 @@ export class UserDetailComponent implements OnInit {
         },
         (error: any) => {
           console.error("Error al obtener el correo del empleado:", error);
-          this.employeeNotFoundMessage = "Empleado no encontrado"; // Establece el mensaje si no se encuentra el empleado
+          this.employeeNotFoundMessage = "El empleado ya tiene un usuario"; // Establece el mensaje si no se encuentra el empleado
           // Manejo de errores si es necesario
         }
       );

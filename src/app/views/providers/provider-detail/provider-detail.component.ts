@@ -209,10 +209,10 @@ export class ProvidersDetailComponent implements OnInit {
   createProvider() {
     const currentRoute = this.router.url;
     console.log(currentRoute);
-
+  
     if (currentRoute.includes('/registrar')) {
       console.log(this.new_provider);
-
+  
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
           console.log(data);
@@ -223,9 +223,15 @@ export class ProvidersDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error("Error al crear el proveedor:", "Error", {
-            progressBar: true,
-          });
+          let backendErrorMessage: string;
+        
+          if (error.error && error.error.error) {
+            backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
+          } else {
+            backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
+          }
+        
+          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
           console.error("Error al crear el proveedor:", error);
         }
       );
