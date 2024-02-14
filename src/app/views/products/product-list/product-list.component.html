@@ -64,15 +64,19 @@
                     </ngx-datatable-column>
                     <ngx-datatable-column name="quantity" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
-                            <p style="font-size:15px;">Cantidad</p>
+                          <p style="font-size:15px;">Cantidad</p>
                         </ng-template>
-                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" style="white-space: pre-line;">
-                            <div style="white-space: pre-line;" [ngClass]="{'low-stock': row.quantity <= stockMinimo}">
-                                {{ row.quantity }}
-                            </div>
+                        <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                          <div>
+                            <span [ngStyle]="{
+                                    'color': row.quantity <= row.min_stock ? 'white' : (row.quantity <= (row.min_stock + 10) ? 'black' : 'inherit'), 
+                                    'background-color': row.quantity <= row.min_stock ? 'red' : (row.quantity <= (row.min_stock + 10) ? 'yellow' : 'inherit'),
+                                    'padding': row.quantity <= row.min_stock ? '2px 14px' : '2px 14px'
+                                  }">{{ row.quantity }}</span>
+                          </div>
                         </ng-template>
-                    </ngx-datatable-column>
-                    
+                      </ngx-datatable-column>
+                      
                     <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true"
                         [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
