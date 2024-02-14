@@ -103,6 +103,7 @@
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                                 <button class="btn btn-dark m-1 me-3"
+                                ngbTooltip="Ver detalle"
                                     [routerLink]="['/comisiones/detalle', row.id_commission]">
                                     <i class="i-Eye"></i>
                                 </button>

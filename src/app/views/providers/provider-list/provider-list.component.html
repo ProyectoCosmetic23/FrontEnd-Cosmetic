@@ -112,18 +112,21 @@
             >
               <button
                 class="btn btn-dark m-1 me-3"
+                ngbTooltip="Ver detalle"
                 [routerLink]="['/proveedores/detalle', row.id_provider]"
               >
                 <i class="i-Eye"></i>
               </button>
               <button
                 class="btn btn-info m-1 me-3"
+                ngbTooltip="Editar proveedor"
                 [routerLink]="['/proveedores/editar', row.id_provider]"
                 [disabled]="row.state_provider == 'Inactivo'"
               >
                 <i class="i-Pen-4"></i>
               </button>
               <label
+              ngbTooltip="Cambiar estado"
                 class="switch switch-success me-3"
                 (click)="openModal(row.id_provider)"
               >
