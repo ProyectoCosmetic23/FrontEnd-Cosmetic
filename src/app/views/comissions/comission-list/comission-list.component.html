@@ -102,7 +102,7 @@
                                 <p style="font-size:15px;">Acciones</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button class="btn btn-dark m-1 me-3"
+                                <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 me-3"
                                     [routerLink]="['/comisiones/detalle', row.id_commission]">
                                     <i class="i-Eye"></i>
                                 </button>

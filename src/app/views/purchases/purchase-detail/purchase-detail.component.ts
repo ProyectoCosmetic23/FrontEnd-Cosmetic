@@ -98,11 +98,11 @@ export class PurchaseDetailComponent implements OnInit {
   private inicializateForm(id: number): void {
     this.purchaseForm = this.formBuilder.group({
       id_purchase: [""],
-      invoice_number: ["", [Validators.required]],
+      invoice_number: ["",[Validators.required, Validators.maxLength(80)]],
       id_provider: ["", [Validators.required]],
       purchase_date: ["", [Validators.required]],
       state_purchase: [""],
-      observation_purchase: ["", [Validators.maxLength(100)]],
+      observation_purchase: ["", [Validators.maxLength(80)]],
       record_date_purchase: [""],
       reason_anulate: [""],
       products: this.formBuilder.array([]),
