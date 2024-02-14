@@ -99,10 +99,10 @@
                                <p style="font-size:15px;">Acciones</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                            <button class="btn btn-dark m-1" [routerLink]="['/users/print', row.id_user]">
+                            <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/users/print', row.id_user]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]" [disabled]="row.state_user === 'Inactivo'"  >
+                            <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]" [disabled]="row.state_user === 'Inactivo'"  >
                                 <i class="i-Pen-4"></i>
                             </button>
                             <label ngbTooltip="Cambiar estado"  class="switch switch-success me-3" (click)="openFirstModal(row.id_user)">

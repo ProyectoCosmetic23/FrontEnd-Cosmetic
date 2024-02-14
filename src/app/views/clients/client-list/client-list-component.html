@@ -79,13 +79,13 @@
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
+                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label class="switch switch-success me-3" (click)="openModal(row.id_client)">
+                        <label  ngbTooltip="Cambiar Estado" class="switch switch-success me-3" (click)="openModal(row.id_client)">
                             <input type="checkbox" [checked]="row.state_client === 'Activo'">
                             <span class="slider"></span>
                         </label>
