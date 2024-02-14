@@ -8,6 +8,7 @@ import {
   FormGroup,
   UntypedFormBuilder,
   UntypedFormGroup,
+  ValidatorFn,
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -18,6 +19,21 @@ import { AuthService } from "src/app/shared/services/auth.service";
 import { CategoriesService } from "src/app/shared/services/category.service";
 import { ProductService } from "src/app/shared/services/product.service";
 import { ProductFormModel } from "../models/product.model";
+
+
+
+// Función validadora para comparar el stock mínimo y el stock máximo
+export function stockMinMaxValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const minStock = control.get('min_stock').value;
+    const maxStock = control.get('max_stock').value;
+
+    if (minStock !== null && maxStock !== null && minStock > maxStock) {
+      return { invalidStockRange: true };
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: "app-product-detail",
@@ -36,9 +52,8 @@ export class ProductDetailComponent implements OnInit {
   invoice: any = {};
   listCategories: any[] = [];
   categoriesFormArray: FormArray;
-  selected_categories: string;
-  selectedCategory: any;
-
+  selectedCategory: string;
+  activeCategories: any[];
   invoiceForm: UntypedFormGroup;
   invoiceFormSub: Subscription;
   subTotal: number;
@@ -57,7 +72,7 @@ export class ProductDetailComponent implements OnInit {
     private productsService: ProductService,
     private cookieService: CookieService,
     private datePipe: DatePipe,
-    private categoriesService: CategoriesService,
+    private _categoriesService: CategoriesService,
     private _productService: ProductService,
     private _authService: AuthService
   ) {}
@@ -68,8 +83,9 @@ export class ProductDetailComponent implements OnInit {
     this.isNew = !this.id;
     this.setViewMode();
     this.getProducts();
+    this.loadCategories();
     this.inicializateForm(Number(this.id));
-    this.getCategories();
+    
     // this.toggleEnableFields();
   }
 
@@ -83,17 +99,18 @@ export class ProductDetailComponent implements OnInit {
         [this.validateNameSimbolAndNumber],
       ],
       quantity: [null],
-      max_stock: [""],
-      min_stock: [""],
+      max_stock: ["", Validators.required],
+      min_stock: ["" , Validators.required],
       profit: [],
-      cost_price: [null],
-      selling_price: [null],
+      cost_price: [null, [Validators.required, Validators.min(0)]], // Validación para precio de costo
+      selling_price: [null, [Validators.required, Validators.min(0)]], // Validación para precio de venta
       observation: ["", [Validators.maxLength(100)]],
       state_product: [],
       creation_date_product: [],
       reason_anulate: [""],
       enableFields: [false], // Nuevo campo para el checkbox
-    });
+    }, { validators: stockMinMaxValidator() }); // Aplicar la validación
+    
 
     if (this.viewMode == "print") {
       this.productForm && this.productForm.get("id_category");
@@ -153,16 +170,22 @@ export class ProductDetailComponent implements OnInit {
     this.productForm.get("selling_price").setValue(0);
   }
 
-  getCategories() {
-    this.categoriesService.getAllCategory().subscribe(
+
+  
+
+  loadCategories() {
+    this._categoriesService.getAllCategory().subscribe(
       (data) => {
-        this.listCategories = data;
+        this.listCategories = data;  
+        // Filtrar categorías activas y agregarlas a la lista activeCategories
+        this.activeCategories = this.listCategories.filter(category => category.state_category === true);
       },
       (error) => {
-        console.error("Error al obtener proveedores:", error);
+        console.error('Error al obtener la lista de categorías:', error);
       }
     );
   }
+
 
   private getProductByID(id: number, token?: string): void {
     this.loading = true;
