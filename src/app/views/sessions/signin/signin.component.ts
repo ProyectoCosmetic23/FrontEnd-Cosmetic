@@ -77,7 +77,11 @@ export class SigninComponent implements OnInit {
     const { email, password } = this.myForm.value;
     this.authService.login(email, password).subscribe({
       next: (response: any) => {
-        if (response && response.error && response.error === "El usuario está inactivo.") {
+        if (!response) {
+          return; // No hacer nada si no hay respuesta
+        }
+  
+        if (response.error && response.error === "Credenciales incorrectas: El usuario está inactivo.") {
           this.toastr.error(response.error, "Error de validación", {
             progressBar: true,
             timeOut: 3000,
@@ -85,9 +89,16 @@ export class SigninComponent implements OnInit {
           return;
         }
   
-        this.router.navigateByUrl("/dashboard/v1");
+        if (response.user && response.token) {
+          this.router.navigateByUrl("/dashboard/v1");
+        }
       },
-      error: (errorMessage) => {
+      error: (errorMessage: any) => {
+        if (errorMessage && errorMessage.status === 400) {
+          // No hacer nada en caso de 400 Bad Request
+          return;
+        }
+  
         console.error("Error del servidor:", errorMessage);
         this.toastr.error(errorMessage, "Error de validación", {
           progressBar: true,
@@ -97,5 +108,9 @@ export class SigninComponent implements OnInit {
     });
   }
   
-}
   
+  
+  
+  
+  
+}

@@ -105,10 +105,13 @@
                             <button class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]" [disabled]="row.state_user === 'Inactivo'"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label class="switch switch-success me-3" (click)="openModal(row.id_user)">
-                                <input type="checkbox" [checked]="row.state_user === 'Activo'">
+                            <label ngbTooltip="Cambiar estado"  class="switch switch-success me-3" (click)="openFirstModal(row.id_user)">
+                                <input type="checkbox" [checked]="row.state_user === 'Activo'"(change)="handleChange($event, row)">
                                 <span class="slider"></span>
-                            </label>
+                              </label>
+                              
+                            
+
                         </ng-template>
                     </ngx-datatable-column>
                 </ngx-datatable>
@@ -119,21 +122,7 @@
 
 
 <ng-template #deleteConfirmModal let-modal>
-    <!-- <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar estado usuario</h4>
-       
-    </div>
-    <div class="modal-body">
-        <p><strong>¿Está seguro de que desea cambiar el estado del usuario?</strong></p>
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger ml-2"
-            (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-primary -m1 custom-button"
-            (click)="modal.close('Ok')">Aceptar</button>
-    </div> -->
-
+   
     <div class="modal-header">
         <h4 class="modal-title" id="modal-title">Cambiar estado del usuario</h4>
       
@@ -157,3 +146,19 @@
             (click)="modal.close('Ok')">Aceptar</button>
     </div>
 </ng-template>
+
+
+
+
+<ng-template #changeModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">Cambiar estado del Empleado</h4>
+    </div>
+    <div class="modal-body">
+      <p><strong>¿También desea cambiar el estado del empleado?</strong></p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary btn" (click)="modal.dismiss('No')">No</button>
+      <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn" (click)="modal.close('Ok')">Sí</button>
+    </div>
+  </ng-template>

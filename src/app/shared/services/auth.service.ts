@@ -4,6 +4,7 @@ import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable, of, throwError } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { ToastrService } from "ngx-toastr";
 import { RolesService } from "./roles.service";
 import { AuthStatus, LoginResponse, User } from "../interfaces";
 import { Router } from "@angular/router";
@@ -32,6 +33,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
+    private toastr: ToastrService,
     private rolesService: RolesService,
     private router: Router
   ) {}
@@ -116,6 +118,7 @@ export class AuthService {
     );
   }
 
+
   login(email: string, password: string): Observable<boolean> {
     const url = `${this.baseUrl}/api/users/login`;
     const body = { email, password };
@@ -123,26 +126,43 @@ export class AuthService {
     return this.http.post<LoginResponse>(url, body).pipe(
       switchMap(({ user, token }) => {
         // Verificar si el usuario está inactivo
-        if (user && user.state_user === "inactivo") {
-          return throwError("El usuario está inactivo.");
+        if (user && user.state_user === "Inactivo") {
+          // Mostrar mensaje de error utilizando Toastr
+          this.toastr.error("El usuario está inactivo.", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+          return of(false); // Devolver un observable de false para indicar que el inicio de sesión falló
         }
 
         // Si el usuario no está inactivo, establecer la autenticación y actualizar el estado de autenticación
         const isAuthenticationSet = this.setAuthentication(user, token);
         if (isAuthenticationSet) {
+          // Establecer el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
           return of(true);
         } else {
           return throwError("Error al autenticar al usuario.");
         }
       }),
-      catchError((error) => {
-        // Manejar el error y devolverlo como un observable de tipo booleano
-        console.error("Error durante el inicio de sesión:", error);
+      catchError((error: HttpErrorResponse) => {
+        // Mostrar mensaje de error utilizando Toastr
+        if (error.status === 403) {
+          this.toastr.error("No puedes iniciar sesión, el rol esta inactivo.", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else {
+          this.toastr.error("El usuario está inactivo.", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         return of(false);
       })
     );
   }
+
 
   getStoredUser(): User | null {
     const storedUser = sessionStorage.getItem(this.userSessionStorageKey);

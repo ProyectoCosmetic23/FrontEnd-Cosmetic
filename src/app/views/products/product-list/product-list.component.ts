@@ -7,6 +7,11 @@ import { debounceTime } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "src/app/shared/services/auth.service";
+import { CategoriesService } from 'src/app/shared/services/category.service';
+import { ProductFormModel } from "../models/product.model";
+
+
+
 
 @Component({
   selector: "app-product-list",
@@ -28,21 +33,38 @@ export class ProductListComponent implements OnInit {
   returnReason: string = "";
   returnValue: number;
   countLabel: number;
+  rowIndex: number;
   reasonAnulate: string = "";
-
+  categories: { [key: number]: string } = {};
   itemsPerPage = 6; // El número de filas por página
+
+
+
+
+  
   constructor(
     private _productService: ProductService,
     private cookieService: CookieService,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private catService: CategoriesService
   ) {}
 
   ngOnInit(): void {
     this._authService.validateUserPermissions("Productos");
     this.getProducts();
+    this.loadCategories();
+    this.rowIndex = 0;
   }
+
+  loadCategories() {
+    this.catService.getAllCategory().subscribe((categorias: any[]) => {
+        categorias.forEach(categoria => {
+            this.categories[categoria.id_category] = categoria.name_category;
+        });
+    });
+}
 
   getProducts() {
     this._productService.getAllProducts().subscribe(
@@ -57,8 +79,11 @@ export class ProductListComponent implements OnInit {
     );
   }
 
+  
+
   handleChange(event: any, row: any) {
     row.state_product = event.target.checked ? "Activo" : "Inactivo";
+ 
   }
 
   getProductNameById(productId: number): string {
@@ -101,6 +126,8 @@ export class ProductListComponent implements OnInit {
     return state_product ? "Activo" : "Inactivo";
   }
 
+  
+
   openRetireModal(productId: number, productValue: number, content: any): void {
     this.selectedProductId = productId;
     this.selectedProductValue = productValue;
@@ -112,38 +139,75 @@ export class ProductListComponent implements OnInit {
 
   retireProduct(): void {
     if (this.selectedProductId && this.returnQuantity) {
-      const data = {
-        return_quantity: this.returnQuantity,
-        return_reason: this.returnReason,
-        return_value: this.returnValue,
-      };
-
-      // Llamada a la API para dar de baja el producto
-      this._productService
-        .retireProduct(this.selectedProductId, data)
-        .subscribe(
-          (response) => {
-            this.updateProductQuantity(
-              this.selectedProductId,
-              this.returnQuantity
-            );
-            this.toastr.success(
-              "Producto dado de baja exitosamente.",
-              "Proceso Completado",
-              { progressBar: true, timeOut: 2000 }
-            );
-            this.modalService.dismissAll();
-          },
-          (error) => {
-            console.error("Error al dar de baja el producto", error);
-            this.toastr.error("Fallo al dar de baja el producto.", "Error", {
-              progressBar: true,
-              timeOut: 2000,
-            });
-          }
-        );
+      // Encuentra el producto en tu lista local
+      const productToUpdate = this.filteredProducts.find(
+        (product) => product.id_product === this.selectedProductId
+      );
+  
+      if (productToUpdate && productToUpdate.quantity >= this.returnQuantity) {
+        const data = {
+          return_quantity: this.returnQuantity,
+          return_reason: this.returnReason,
+          return_value: this.returnValue,
+        };
+  
+        // Llamada a la API para dar de baja el producto
+        this._productService.retireProduct(this.selectedProductId, data)
+          .subscribe(
+            (response) => {
+              this.updateProductQuantity(this.selectedProductId, this.returnQuantity);
+              this.toastr.success(
+                "Producto dado de baja exitosamente.",
+                "Proceso Completado",
+                { progressBar: true, timeOut: 2000 }
+              );
+              this.modalService.dismissAll();
+            },
+            (error) => {
+              console.error("Error al dar de baja el producto", error);
+              this.toastr.error("Fallo al dar de baja el producto.", "Error", {
+                progressBar: true,
+                timeOut: 2000,
+              });
+            }
+          );
+      } else {
+        this.toastr.error("La cantidad a dar de baja es mayor que la cantidad disponible.", "Error", {
+          progressBar: true,
+          timeOut: 2000,
+        });
+      }
     }
   }
+  
+
+  getCategoryById(categoryId: number) {
+    this._productService.getCategoryById(categoryId).subscribe(
+        (category) => {
+            console.log('Categoría obtenida:', category);
+            // Encuentra el producto correspondiente en la lista de productos
+            const productToUpdate = this.listProducts.find(p => p.id_category === categoryId);
+            // Si se encuentra el producto, actualiza el nombre de la categoría
+            if (productToUpdate) {
+                productToUpdate.categoryName = category.name_category; // Suponiendo que el nombre de la categoría está en la propiedad 'name' del objeto 'category'
+            }
+        },
+        (error) => {
+            console.error('Error al obtener la categoría:', error);
+        }
+    );
+}
+
+isNearMinimum(product: any): boolean {
+  console.log('Cantidad:', product.quantity);
+  console.log('Stock mínimo:', product.stockMinimo);
+  const nearMinimum = product.quantity <= product.stockMinimo;
+  console.log('¿Está cerca del mínimo?', nearMinimum);
+  return nearMinimum;
+}
+
+
+
 
   updateProductQuantity(productId: number, quantityToSubtract: number): void {
     // Encuentra el producto en tu lista local y resta la cantidad

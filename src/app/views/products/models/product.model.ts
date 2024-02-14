@@ -12,14 +12,14 @@ export class ProductFormModel {
     state_product: string;
     reason_anulate: string;
     observation: string;
-
+    stockMinimo: string; // Agregar la propiedad stockMinimo
 
     constructor(response) {
         this.id_product = response.id_product;
         this.id_category = response.id_category;
         this.name_product = response.name_product;
         this.quantity = response.quantity;
-        this.max_stock =response.max_stock;
+        this.max_stock = response.max_stock;
         this.min_stock = response.min_stock;
         this.cost_price = response.cost_price;
         this.selling_price = response.selling_price;
@@ -28,5 +28,6 @@ export class ProductFormModel {
         this.reason_anulate = response.reason_anulate;
         this.observation = response.observation;
         this.creation_date_product = response.creation_date_product;
+        this.stockMinimo = response.stockMinimo; // Asignar el valor de stockMinimo
     }
 }
