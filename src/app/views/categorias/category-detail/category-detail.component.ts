@@ -64,6 +64,7 @@ export class CategoryDetailComponent implements OnInit {
           Validators.required,
           Validators.maxLength(80),
           Validators.pattern("^[a-zA-ZáéíóúñÑ ]+$"),
+          Validators.minLength(3),
         ],
         nameValidators,
       ],
