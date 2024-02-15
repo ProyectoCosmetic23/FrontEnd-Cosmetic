@@ -184,7 +184,7 @@
                   "
                   class="error-message"
                 >
-                  El campo nombre es obligatorio.
+                  El campo nombre usuario es obligatorio.
                 </div>
                 <div
                   *ngIf="userForm.get('username').hasError('invalidName')"
@@ -213,7 +213,7 @@
                 />
               </div>
 
-              <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'print'">
+              <div class="col-md-6 form-group mb-3" *ngIf="viewMode == 'print'">
                 <label for="password">Contraseña<span class="text-danger">*</span></label>
                 <input
                   type="password"

@@ -21,8 +21,8 @@ export class UserListComponent implements OnInit {
     pageSize: number = 10;
     currentPage: number = 1;
     modalAbierto = false;
-    roles:any={};
-    employees:any={};
+    roles: any = {};
+    employees: any = {};
 
 
     constructor(
@@ -34,15 +34,15 @@ export class UserListComponent implements OnInit {
 
     ngOnInit(): void {
         this.getUsers();
-        this._rolesService.getAllRoles().subscribe((roles:any[])=>{
-            roles.forEach(role=>{
-                this.roles[role.id_role]=role.name_role;
+        this._rolesService.getAllRoles().subscribe((roles: any[]) => {
+            roles.forEach(role => {
+                this.roles[role.id_role] = role.name_role;
             });
         });
 
-        this._employeeService.getAllEmployees().subscribe((employees:any[])=>{
-            employees.forEach(employee=>{
-                this.employees[employee.id_employee]=employee.id_card_employee;
+        this._employeeService.getAllEmployees().subscribe((employees: any[]) => {
+            employees.forEach(employee => {
+                this.employees[employee.id_employee] = employee.id_card_employee;
             });
         });
         this.attachRoleNames();
@@ -71,16 +71,16 @@ export class UserListComponent implements OnInit {
 
     attachRoleNames() {
         this.filteredUsers.forEach(user => {
-            user.roleName = this.roles[user.id_role]; // Suponiendo que 'id_role' es el identificador del rol del usuario
+            user.roleName = this.roles[user.id_role];
         });
     }
 
     attachCardEmployee() {
         this.filteredUsers.forEach(user => {
-            user.employeeCard = this.employees[user.id_employee]; // Suponiendo que 'id_role' es el identificador del rol del usuario
+            user.employeeCard = this.employees[user.id_employee];
         });
     }
-    
+
 
     sortListUsers() {
         this.filteredUsers.sort((a, b) => {
@@ -93,6 +93,7 @@ export class UserListComponent implements OnInit {
             return 0;
         });
     }
+
     filterData(value: string) {
         if (value) {
             value = value.toLowerCase();
@@ -106,7 +107,7 @@ export class UserListComponent implements OnInit {
             const correoMatch = user.email.toLowerCase().includes(value);
             const estadoMatch = user.state_user.toLowerCase().includes(value);
 
-            return   nombreMatch || correoMatch || estadoMatch;
+            return nombreMatch || correoMatch || estadoMatch;
         });
 
         this.currentPage = 1;
@@ -127,7 +128,7 @@ export class UserListComponent implements OnInit {
                                 console.log(data);
 
                                 setTimeout(() => {
-                                    
+
                                     location.reload();
                                 });
                             },
