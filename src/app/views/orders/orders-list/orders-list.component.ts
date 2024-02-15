@@ -418,9 +418,6 @@ export class OrdersListComponent implements OnInit {
           progressBar: true,
           timeOut: 2000,
         });
-        setTimeout(() => {
-          location.reload();
-        }, 2000);
         this.modalRef.close("Yes");
       },
       (error) => {
@@ -520,13 +517,11 @@ export class OrdersListComponent implements OnInit {
     this.createPayment();
   }
 
-  @ViewChild("paymentModal", { static: true }) paymentModal: any;
+  @ViewChild("paymentModal", { static: true,  }) paymentModal: any;
   openPayments(idOrder: number) {
     if (!this.modalPayment) {
       this.modalPayment = true;
-      this.formBasic.patchValue({
-        total_remaining: null,
-        total_payment: null, // o tu valor inicial
+      this.formBasic.patchValue({total_remaining: null,total_payment: null, // o tu valor inicial
       });
 
       this._paymentService.getPayOrder(idOrder).subscribe(
@@ -550,12 +545,13 @@ export class OrdersListComponent implements OnInit {
             this.formBasic.patchValue({
               id_order: order.id_order,
               id_client: this.clientName,
-              total_order: order.total_order,
+              total_order:  order.total_order,
             });
 
             this.modalRef = this.modalService.open(this.paymentModal, {
               centered: true,
               size: "lg",
+              backdrop: 'static',
             });
 
             if (payments.length > 0) {

@@ -2,19 +2,13 @@
     <h1 *ngIf="viewMode === 'new'">Registrar Proveedor</h1>
     <h1 *ngIf="viewMode === 'edit'">Editar Proveedor</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</h1>
-    <ul>
-        <li><a>Proveedores</a></li>
-        <li *ngIf="viewMode === 'new'">Registrar Proveedor</li>
-        <li *ngIf="viewMode === 'edit'">Editar Proveedor</li>
-        <li *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</li>
-    </ul>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title mb-3">Formulario de Proveedor</div>
+
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
