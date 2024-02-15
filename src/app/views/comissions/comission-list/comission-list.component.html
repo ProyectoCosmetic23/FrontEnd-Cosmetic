@@ -14,8 +14,8 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-3">
-                        <button class="btn btn-primary float-right" [routerLink]="['/comisiones/registrar']">Crear comisión</button>
-                    </div>
+                        <button class="btn btn-primary float-right w-75" [routerLink]="['/comisiones/registrar']">Crear</button>
+                      </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary float-right" (click)="openModal()">Asignar porcentaje 
                             </button>
@@ -30,11 +30,11 @@
             </div>
             <div class="col-md-6 d-flex justify-content-end">
                 <div class="col-md-5" style="padding-top: 1%;">
-                    <span><b>Total Comisiones: </b>{{ totalCommissions | currency : "" : "symbol" : "1.2"}}</span>
+                  <span style="font-size: 1rem;"><b>Total Comisiones: {{ totalCommissions | currency : "" : "symbol" : "1.2"}}</b></span>
                 </div>
                 <!-- <input [formControl]="searchControl" placeholder="Buscar Comisiones por Empleado" type="text"
                     class="form-control" style="width: 50%;"> -->
-            </div>
+              </div>
         </div>
     </div>
     <div class="col-md-12">
@@ -94,7 +94,7 @@
                                 <p style="font-size:15px;">  Porcentaje Comisión</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.commission_percentage }}
+                                %{{ row.commission_percentage }}
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column [width]="120">
@@ -171,9 +171,7 @@
     </div>
     
     <div class="modal-footer d-flex justify-content-between align-items-center">
-        <div>
-            <span class="text-danger">Los datos con * son obligatorios</span>
-        </div>
+
         <div>
             <button type="button" class="btn btn-danger"
                 (click)="modal.dismiss('cancel')" style="margin-right: 5px;">Cancelar</button>

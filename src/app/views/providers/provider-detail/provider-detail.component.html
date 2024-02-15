@@ -22,8 +22,9 @@
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="nit_cedula" formControlName="nit_cedula"
                                 (change)="handleNitSelection($event)"
+                                [value]="provider?.nit_cedula"
                                 [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'"
-                                [readonly]="viewMode === 'print' || viewMode === 'edit'"
+                                [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                             <div *ngIf="viewMode === 'new' && formBasic.get('nit_cedula').invalid && (formBasic.get('nit_cedula').dirty || formBasic.get('nit_cedula').touched)"
                                 class="text-danger">
@@ -39,8 +40,6 @@
                                     está en uso.</div>
                             </div>
                         </div>
-
-
                         <div class="col-md-6 form-group mb-3">
                             <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'"
                                     class="text-danger">*</span></label>
@@ -48,6 +47,7 @@
                                 (change)="handleNameProviderSelection($event)"
                                 [placeholder]="provider?.name_provider || 'Nombre del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.name_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                             <div *ngIf="viewMode === 'new' && formBasic.get('name_provider').invalid && (formBasic.get('name_provider').dirty || formBasic.get('name_provider').touched)"
                                 class="text-danger">
@@ -74,6 +74,7 @@
                                 formControlName="email_provider"
                                 [placeholder]="provider?.email_provider || 'Correo del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.email_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('email_provider').touched">
@@ -105,6 +106,7 @@
                                 formControlName="address_provider"
                                 [placeholder]="provider?.address_provider || 'Dirección del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.address_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
 
                             <div *ngIf="viewMode === 'new' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
@@ -129,6 +131,7 @@
                                 formControlName="phone_provider"
                                 [placeholder]="provider?.phone_provider || 'Teléfono del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.phone_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('phone_provider').touched">
@@ -177,6 +180,7 @@
                                 formControlName="name_contact"
                                 [placeholder]="provider?.name_contact || 'Nombre del contacto'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.name_contact"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('name_contact').touched">
@@ -239,6 +243,7 @@
                                     (change)="handleObservationSelection($event)"
                                     [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
                                     [readonly]="viewMode === 'print'"
+                                    [value]="provider?.observation_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
                                     rows="6"></textarea>
                             </div>
@@ -254,9 +259,6 @@
                         </div>
                         <div class="col-md-12">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span *ngIf="viewMode === 'new'" class="text-danger">Los datos con * son obligatorios</span>
-                                </div>
                                 <div class="d-flex">
                                     <button class="btn btn-danger" [routerLink]="['/proveedores']">Volver</button>
                                     <div style="width: 10px;"></div>

@@ -29,6 +29,8 @@ export class ComissionsDetailComponent implements OnInit {
   formBasic: FormGroup;
   sales: any[];
   totalComs: number;
+  Commission: any;
+  Sales: any;
   month: string;
   commissionPercentage: number;
   totalSales: number;
@@ -36,6 +38,7 @@ export class ComissionsDetailComponent implements OnInit {
   selectedMonth: Date;
   message: string = "";
   selectedPercentage: number;
+  Percentage: any;
   totalSale: number;
   viewMode: 'new' | 'print' = 'new';
   id: string;
@@ -121,7 +124,12 @@ export class ComissionsDetailComponent implements OnInit {
             const idComissionDetail = this.comission.comissions.id_commission_detail;
             const idEmployee = this.comission.comissions.id_employee;
             this.totalComs = this.comission.comissions.total_commission;
+            this.Commission = this.comission.comissions.total_commission;
+            this.Commission= '$' + Number(this.Commission).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            console.log(this.Commission);
             this.totalSales = this.comission.comissions.total_sales;
+            this.Sales='$' + Number(this.totalSales).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            console.log(this.Sales)
 
             if (this.listComisionDetail && this.listEmployees) {
               this.findComsData(idComissionDetail, idEmployee);
@@ -238,8 +246,8 @@ export class ComissionsDetailComponent implements OnInit {
         console.log('Total de comisiones:', this.totalCommissions);
         // Actualizar el valor utilizando patchValue y NgZone
         this.ngZone.run(() => {
-          this.formBasic.get('total_sales')?.patchValue(this.totalSale);
-          this.formBasic.get('total_commission')?.patchValue(this.totalCommissions);
+          this.formBasic.get('total_sales')?.patchValue("$ " + this.totalSale.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+          this.formBasic.get('total_commission')?.patchValue("$ " + this.totalCommissions.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
         });
         if (this.totalSale == 0){
           this.noSales = true
@@ -268,6 +276,7 @@ export class ComissionsDetailComponent implements OnInit {
     if (detail && employee) {
       this.selectedMonth = detail.month_commission;
       this.selectedPercentage = detail.commission_percentage;
+      this.Percentage = "%" + detail.commission_percentage;
       this.selectedEmployee = employee.name_employee;
     } else {
       console.error('Error: No se pudo encontrar detalle de comisión o empleado.');

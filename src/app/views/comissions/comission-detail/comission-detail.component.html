@@ -51,7 +51,7 @@
                         <div class="col-md-6 form-group mb-3">
                             <label for="total_commission">Total comisión</label>
                             <input type="text" class="form-control" id="total_commission"
-                                [placeholder]="totalComs || 'Total Comisión'" [readonly]="true"
+                                [placeholder]="Commission || 'Total Comisión'" [readonly]="true"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}"
                                 formControlName="total_commission">
                         </div>
@@ -61,14 +61,15 @@
                             <label for="commission_percentage">Porcentaje de comisión</label>
                             <input class="form-control" id="commission_percentage" [readonly]="true"
                                 formControlName="commission_percentage"
-                                [placeholder]="selectedPercentage || 'Porcentaje'"
+                                [placeholder]="Percentage || 'Porcentaje'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
+
                         <div class="col-md-6 form-group mb-3">
                             <label for="total_sales">Total ventas</label>
                             <input class="form-control" id="total_sales" [readonly]="true"
                                 [ngClass]="{'placeholder-black': viewMode === 'print', 'text-danger': noSales}"
-                                [placeholder]="totalSales || 'No se realizó ninguna venta'"
+                                [placeholder]="Sales || 'No se realizó ninguna venta'"
                                 formControlName="total_sales">
                             <div *ngIf="viewMode === 'new' && noSales === true" class="text-danger">
                                 <div>{{message}}</div>
@@ -78,8 +79,7 @@
 
                         <div class="col-md-12">
                             <div class="d-flex justify-content-between align-items-center">
-                              <!-- Texto "Los datos con * son obligatorios" a la izquierda -->
-                              <span *ngIf="viewMode === 'new'" class="text-danger">Los datos con * son obligatorios</span>
+
                               <!-- Botón "Registrar Comisión" a la derecha -->
                               <div>
                                 <button class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>

@@ -187,6 +187,8 @@ export class ProvidersDetailComponent implements OnInit {
   }
   handleNitSelection(event: any) {
     this.new_provider.nit_cedula = event.target.value;
+    this.updatedFields.nit_cedula = event.target.value;
+    console.log(this.updatedFields.name_contact)
   }
   handleMailSelection(event: any) {
     this.new_provider.email_provider = event.target.value;
