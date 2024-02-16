@@ -2,17 +2,19 @@
     <h1 *ngIf="viewMode === 'new'">Registrar cliente</h1>
     <h1 *ngIf="viewMode === 'edit'">Editar cliente</h1>
     <h1 *ngIf="viewMode === 'print'">Ver detalle de cliente</h1>
-    <ul>
-    <li><a [routerLink]="['/clients']">Clientes</a></li>
-    <li *ngIf="viewMode === 'new'">Registrar cliente</li>
-    <li *ngIf="viewMode === 'edit'">Editar cliente</li>
-    <li *ngIf="viewMode === 'print'">Ver detalle de cliente</li>
-    </ul>
+    >
 </div>
 
 
 <div class="separator-breadcrumb border-top"></div>
 
+
+<div *ngIf="showLoadingScreen && (viewMode == 'edit' || viewMode == 'print')" class="loading-screen">
+    <div class="loading-content">
+      <div class="spinner spinner-primary me-3"></div>
+    </div>
+  </div>
+  <div *ngIf="showLoadingScreen == false || viewMode == 'new'">
 <!-- Contenido común a todas las vistas -->
 <div class="form-container">
 <!-- Vista de crear clientes -->
@@ -113,9 +115,14 @@
                         <label for="state_client">Estado<span class="text-danger">*</span></label>
                         <input class="form-control" id="state_client" placeholder="state_client" formControlName="state_client">
                     </div>
-
-                    
-              
+                    <div *ngIf="viewMode == 'print' && clientForm.get('state_client').value === 'Inactivo'" class="col-md-6 form-group mb-3">
+            
+                        <label for="reason_anulate" *ngIf=" clientForm.get('state_client').value === 'Inactivo'">Razón cambio estado </label>
+                        <input class="form-control" id="reason_anulate" placeholder="reason_anulate" formControlName="reason_anulate">
+               
+                        </div>
+                      
+                  
                     
                     <div class="form-group text-right" style="text-align: right;">
                         <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>

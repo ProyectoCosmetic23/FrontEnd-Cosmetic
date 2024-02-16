@@ -11,6 +11,7 @@ import {
 } from "@angular/forms";
 import * as flatted from "flatted";
 import { AuthService } from "src/app/shared/services/auth.service";
+import { CategoryFormMode } from "../models/category.model";
 @Component({
   selector: "app-category-list",
   templateUrl: "./category-list.component.html",
@@ -27,6 +28,10 @@ export class CategoryListComponent {
   countLabel: number;
   reasonForm: FormGroup;
   reasonAnulate = {};
+  showLoadingScreen: boolean;
+
+
+
 
   constructor(
     private _categoriesService: CategoriesService,
@@ -44,16 +49,21 @@ export class CategoryListComponent {
 
   //CONSULTA TODAS LAS CATEGORIAS
   getCategories() {
+    this.showLoadingScreen = true;
     this._categoriesService.getAllCategory().subscribe(
       (data) => {
         this.listCategories = data;
         this.filteredCategories = this.listCategories;
         this.sortListCategoriesById();
+  
       },
       (error) => {
         console.error("Error al obtener Categorías:", error);
       }
-    );
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
   }
 
   @ViewChild(DatatableComponent)
@@ -102,57 +112,87 @@ export class CategoryListComponent {
         [
           Validators.required,
           Validators.minLength(5),
-          Validators.maxLength(220),
+          Validators.maxLength(80),
         ],
       ],
     });
   }
 
+  handleChange(event: any, row: any) {
+    row.state_category = event.target.checked ? true : false;
+ 
+  }
+    
   //CAMBIAR ESTADO
 
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
-  modalStatus(IdCategory: number, $event?: any): void {
-    this.modalService
-      .open(this.deleteConfirmModal, { centered: true })
-      .result.then((result) => {
-        if (result === "Ok") {
-          const isChecked = ($event.target as HTMLInputElement).checked;
-          const reasonAnulate = this.reasonForm.get("reason_anulate").value;
-          const serializedReason = flatted.stringify(reasonAnulate);
-          this._categoriesService
-            .CategoryChangeStatus(IdCategory, reasonAnulate, isChecked)
-            .subscribe(
-              (data) => {
-                this.loading = false;
-                this.toastr.success(
-                  "Cambio de estado realizado con éxito.",
-                  "Proceso Completado",
-                  {
-                    progressBar: true,
-                    timeOut: 2000,
-                  }
-                );
-                this.getCategories();
-                this.modalAbierto = false;
-                this.reasonForm.get("reason_anulate").setValue(null);
-              },
-              (error) => {
-                this.loading = false;
-                this.toastr.error(
-                  "Fallo al realizar el cambio de estado.",
-                  "Error",
-                  {
-                    progressBar: true,
-                    timeOut: 2000,
-                  }
-                );
-                console.error("Error al cambiar de estado:", error);
-              }
-            );
-        } else if (result === "Cancel") {
-          this.modalAbierto = false;
-        }
-      });
+  currentCategoryState: any;
+
+  async modalStatus(IdCategory: number, $event?: any): Promise<void> {
+    try {
+      const currentCategoryState = await this.getCurrentCategoryState(IdCategory);
+  
+      const result = await this.modalService
+        .open(this.deleteConfirmModal, { centered: true, backdrop: 'static', keyboard: false })
+        .result;
+  
+      if (result === "Ok") {
+        const isChecked = ($event?.target as HTMLInputElement)?.checked;
+        const reasonAnulate = this.reasonForm.get("reason_anulate").value;
+  
+        this._categoriesService
+          .CategoryChangeStatus(IdCategory, reasonAnulate, isChecked)
+          .subscribe(
+            (data) => {
+              this.loading = false;
+              this.toastr.success(
+                "Cambio de estado realizado con éxito.",
+                "Proceso Completado",
+                {
+                  progressBar: true,
+                  timeOut: 2000,
+                }
+              );
+              this.getCategories();
+              this.modalAbierto = false;
+              this.reasonForm.get("reason_anulate").setValue(null);
+            },
+            (error) => {
+              this.loading = false;
+              this.toastr.error(
+                "Fallo al realizar el cambio de estado.",
+                "Error",
+                {
+                  progressBar: true,
+                  timeOut: 2000,
+                }
+              );
+              console.error("Error al cambiar de estado:", error);
+            }
+          );
+      } else if (result === "Cancel" || (result && result.dismissedWith === 'cancel')) {
+        this.getCategories();
+        this.modalAbierto = false;
+
+      }
+    } catch (error) {
+      console.error("Error al obtener detalles de la categoría:", error);
+    }
   }
+  
+  
+// Método para obtener el estado actual de la categoría (ahora es asíncrono)
+async getCurrentCategoryState(IdCategory: number): Promise<any> {
+  try {
+    const categoryDetails = await this._categoriesService.getCategoryById(IdCategory).toPromise();
+    return categoryDetails;
+  } catch (error) {
+    console.error("Error al obtener detalles de la categoría:", error);
+    throw error; // Rechaza la promesa para que se maneje en la función llamadora
+  }
+}
+  
+
+
 }

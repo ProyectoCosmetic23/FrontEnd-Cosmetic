@@ -165,6 +165,7 @@ export class PurchaseListComponent implements OnInit {
             );
         } else if (result === "Cancel") {
           this.modalAbierto = false;
+          this.reasonForm.get("reason_anulate").setValue(null);
         }
       });
   }
