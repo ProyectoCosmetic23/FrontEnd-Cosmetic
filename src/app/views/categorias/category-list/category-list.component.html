@@ -1,9 +1,6 @@
 <div class="breadcrumb">
     <h1>Categorías de Productos</h1>
-    <ul>
-        <li><a >Compras</a></li>
-        <li><a>Categorías de productos</a></li>
-    </ul>
+
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -12,7 +9,7 @@
     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
         <div class="col-md-4">
             <div class="form-group">
-                <button class="btn btn-primary" [routerLink]="['/categories/new']">Crear Categoría</button>
+                <button class="btn btn-primary" [routerLink]="['/categories/new']">Registrar Categoría</button>
             </div>
         
         </div>
@@ -26,7 +23,15 @@
 
     <div class="col-md-12">
         <div class="card o-hidden">
+            <div *ngIf="showLoadingScreen" class="loading-screen">
+                <div class="loading-content">
+                  <div class="spinner spinner-primary me-3"></div>
+                </div>
+              </div>
+        
+        
             <ngx-datatable
+          
             class="material fullscreen"
             style="height: 100px"
             [columnMode]="'force'"
@@ -70,10 +75,11 @@
                             <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label ngbTooltip="Cambiar Estado"  class="switch switch-success me-3">
-                                <input type="checkbox"  [checked]="row.state_category" (click)="modalStatus(row.id_category, $event) ">
+                            <label bTooltip="Cambiar estado" class="switch switch-success" [class.switch-success]="row.state_category" [class.switch-danger]="!row.state_category">
+                                <input type="checkbox" [checked]="row.state_category == true" (change)="handleChange($event, row)" (click)="modalStatus(row.id_category, $event)">
                                 <span class="slider"></span>
                             </label>
+                           
                             
                             
                             
@@ -93,9 +99,9 @@
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea cambiar el estado de  esta categoría?</strong></p>
         <form [formGroup]="reasonForm">
-            <div class="col-md-6 form-group mb-3">
-                <label for="reason_anulate">Motivo de Cambio de Estado</label>
-                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
+            <div class="col-md-12 form-group mb-3">
+                <label for="reason_anulate">Razón de Cambio de Estado</label>
+                <textarea class="form-control" placeholder="Ingrese la razón de cambio de estado" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'" rows="5"></textarea>
                 <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
                   El campo superar los 100 caracteres.
               </div>
@@ -103,10 +109,9 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn"
-            (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" class="btn btn-outline-secondary btn" (click)="modal.close('Cancel')">
+            Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
             (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
     </div>
 </ng-template>
-
