@@ -102,7 +102,7 @@
                                 <p style="font-size:15px;">Acciones</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button class="btn btn-dark m-1 me-3"
+                                <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 me-3"
                                     [routerLink]="['/comisiones/detalle', row.id_commission]">
                                     <i class="i-Eye"></i>
                                 </button>
@@ -169,10 +169,16 @@
             </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn-rounded"
-            (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-primary btn-rounded"
-            (click)="modal.close('Yes')">Asignar</button>
+    
+    <div class="modal-footer d-flex justify-content-between align-items-center">
+        <div>
+            <span class="text-danger">Los datos con * son obligatorios</span>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger"
+                (click)="modal.dismiss('cancel')" style="margin-right: 5px;">Cancelar</button>
+            <button type="button" ngbAutofocus class="btn btn-wide btn-primary "
+                (click)="modal.close('Yes')" [disabled]="verifiedPercentage === 0 || verifiedMonth === 0">Asignar</button>
+        </div>
     </div>
 </ng-template>

@@ -1,17 +1,14 @@
 <div class="">
     <div class="breadcrumb">
         <h1>Clientes</h1>
-        <ul>
-            <li><a >Ventas</a></li>
-            <li>Clientes</li>
-        </ul>
+  
         </div>
     
         <div class="separator-breadcrumb border-top"></div>
         <div class="col-md-12 mb-3">
             <div class="row">
                 <div class="col-md-6">
-                    <button class="btn btn-primary float-right" [routerLink]="['/clients/new']">Crear nuevo Cliente</button>
+                    <button class="btn btn-primary float-right" [routerLink]="['/clients/new']">Registrar Cliente</button>
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <input _ngcontent-vet-c167="" id="search" placeholder="Buscar cliente" type="text"
@@ -40,7 +37,7 @@
 
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Cédula o nit</p>
+                        <p style="font-size:15px;">Cédula o NIT</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         {{ row.nit_or_id_client }}
@@ -79,13 +76,13 @@
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
+                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label class="switch switch-success me-3" (click)="openModal(row.id_client)">
+                        <label  ngbTooltip="Cambiar Estado" class="switch switch-success me-3" (click)="openModal(row.id_client)">
                             <input type="checkbox" [checked]="row.state_client === 'Activo'">
                             <span class="slider"></span>
                         </label>

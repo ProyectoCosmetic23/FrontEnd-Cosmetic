@@ -148,7 +148,9 @@ table th:last-child {
   background: rgba(171, 166, 174, 0.1);
 }
 
-/* Your component's styles.css or styles.scss file */
+.ps__rail-y {
+  display: none !important;
+}
 
 /* Styling for ng-dropdown-panel-items */
 .ng-dropdown-panel-items {

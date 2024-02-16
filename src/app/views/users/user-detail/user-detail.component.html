@@ -19,7 +19,6 @@
     <div class="col-md-12">
       <div class="card mb-4">
         <div class="card-body">
-          <div class="card-title mb-3">Formulario de usuarios</div>
           <form [formGroup]="userForm" (ngSubmit)="submitUser()">
             <div class="row">
               <div class="col-md-3 form-group mb-3">
@@ -202,7 +201,7 @@
                 </div>
               </div>
 
-              <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+              <div *ngIf="viewMode == 'print'" class="col-md-3 form-group mb-3">
                 <label for="state_user"
                   >Estado<span class="text-danger">*</span></label
                 >
@@ -213,7 +212,7 @@
                 />
               </div>
 
-              <div class="col-md-6 form-group mb-3" *ngIf="viewMode == 'print'">
+              <div class="col-md-6 form-group mb-3" *ngIf="viewMode == 'new'">
                 <label for="password">Contraseña<span class="text-danger">*</span></label>
                 <input
                   type="password"

@@ -10,7 +10,6 @@
     </ul>
 </div>
 
-
 <div class="separator-breadcrumb border-top"></div>
 
 <!-- Contenido común a todas las vistas -->
@@ -45,33 +44,32 @@
                                             <option *ngFor="let product of listProducts" [value]="product.id_product">
                                                 {{ product.name_product }}
                                             </option>
+
                                         </select>
                                         <div *ngIf="productForm.get('id_product').touched && productForm.get('id_product').hasError('required')"
                                             class="error-message">
-                                            El camponombre producto es obligatorio.
+                                            El campo nombre producto es obligatorio.
                                         </div>
                                     </div>
                                 </div>
-                        
                             </div>
                             <div class="row">
                                 <div class="col-md-6 form-group mb-3">
-                                    <label for="id_category">Categoría</label>
-                                    <select class="form-control" id="id_category"
-                                        (change)="handleCategorySelection($event)"
-                                        [formControl]="productForm.get('id_category')">
-
-                                        <option *ngFor="let category of listCategories" [value]="category.id_category">
-                                            {{ category.name_category }}
-                                        </option>
+                                    <label for="id_category">Categoría<span class="text-danger">*</span></label>
+                                    <select class="form-control" id="id_category" formControlName="id_category" (change)="handleCategorySelection($event)">
+                                        <option value="" disabled selected>Seleccione la categoría</option>
+                                        <option *ngFor="let category of activeCategories" [value]="category.id_category">
+                                            
+                                                {{ category.name_category }}
+                                            </option>
+                                         
                                     </select>
                                     <div *ngIf="productForm.get('id_category').touched && productForm.get('id_category').hasError('required')"
                                         class="error-message">
                                         El campo Categoria es obligatorio.
                                     </div>
                                 </div>
-
-
+                                
                                 <div class="col-md-6 form-group mb-3">
                                     <label for="name_product">Nombre de producto<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name_product" formControlName="name_product" required>
@@ -81,7 +79,7 @@
                                     </div>
                                 
                                     <div *ngIf="productForm.get('name_product').hasError('invalidName')" class="error-message">
-                                        El campo nombre no puede tener símbolos y solo puede tener 1 número.
+                                        El campo nombre no puede tener símbolos.
                                     </div>
                                 
                                     <div *ngIf="productForm.get('name_product').hasError('duplicateName') && productForm.get('name_product').touched">
@@ -113,28 +111,38 @@
                                     <label for="min_stock">Stock Minimo<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control small-input" id="min_stock"
                                         formControlName="min_stock">
-
-                                    <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
+                                        <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
                                         class="error-message">
-                                        El campo stock minimo es obligatorio.
+                                        El campo stock mínimo es obligatorio.
+                                   </div>
+                                   <div *ngIf="productForm.get('min_stock').dirty && productForm.get('max_stock').dirty && productForm.hasError('invalidStockRange')"
+                                        class="error-message">
+                                        El stock mínimo no puede ser mayor que el stock máximo.
+                                   </div>
+                                   
+                                </div>
+
+                                <div class="col-md-2 form-group mb-3">
+                                    <label for="cost_price">Precio de costo<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="cost_price" formControlName="cost_price">
+                                    <div *ngIf="productForm.get('cost_price').touched && productForm.get('cost_price').hasError('required')" class="error-message">
+                                      El campo precio de costo es obligatorio.
                                     </div>
-
-                                </div>
-
-                                <div class="col-md-2 form-group mb-3">
-                                    <label for="cost_price">Precio Costo<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="cost_price"
-                                        formControlName="cost_price">
-
-                                </div>
-
-                                <div class="col-md-2 form-group mb-3">
-                                    <label for="selling_price">Precio Venta<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="selling_price"
-                                        formControlName="selling_price">
-
-                                </div>
-
+                                    <div *ngIf="productForm.get('cost_price').hasError('min')" class="error-message">
+                                      El precio de costo no puede ser negativo.
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="col-md-2 form-group mb-3">
+                                    <label for="selling_price">Precio de venta<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="selling_price" formControlName="selling_price">
+                                    <div *ngIf="productForm.get('selling_price').touched && productForm.get('selling_price').hasError('required')" class="error-message">
+                                      El campo precio de venta es obligatorio.
+                                    </div>
+                                    <div *ngIf="productForm.get('selling_price').hasError('min')" class="error-message">
+                                      El precio de venta no puede ser negativo.
+                                    </div>
+                                  </div>
                                 <div *ngIf="viewMode == 'print'" class="col-md-4 form-group mb-3">
                                     <label for="state_product">Estado<span class="text-danger">*</span></label>
                                     <input class="form-control" id="state_product" formControlName="state_product">

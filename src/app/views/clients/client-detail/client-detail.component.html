@@ -20,11 +20,10 @@
 <div class="col-md-12">
     <div class="card mb-4">
         <div class="card-body">
-            <div class="card-title mb-3">Formulario de clientes</div>
             <form [formGroup]="clientForm" (ngSubmit)="submitClient()">
                 <div class="row">
                     <div class="col-md-6 form-group mb-3">
-                        <label for="nit_or_id_client">Cédula o nit <span class="text-danger">*</span></label>
+                        <label for="nit_or_id_client">Cédula o NIT <span class="text-danger">*</span></label>
                         <input type="text" minlength="6" maxlength="10" class="form-control" id="nit_or_id_client" formControlName="nit_or_id_client" (change)="checkCedulaAvailability()">
                         <div *ngIf="clientForm.get('nit_or_id_client').touched && clientForm.get('nit_or_id_client').hasError('required')" class="error-message">
                             El campo cédula o nit es obligatorio.

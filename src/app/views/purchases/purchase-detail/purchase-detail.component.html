@@ -37,13 +37,14 @@
                     style="width: 100%"
                   />
                   <div
-                    *ngIf="
-                      purchaseForm.get('invoice_number').touched &&
-                      purchaseForm.get('invoice_number').hasError('required')
-                    "
-                    class="error-message"
+                    *ngIf=" purchaseForm.get('invoice_number').touched &&purchaseForm.get('invoice_number').hasError('required')" class="error-message"
                   >
                     El campo es obligatorio.
+                  </div>
+                  <div
+                    *ngIf=" purchaseForm.get('invoice_number').touched &&purchaseForm.get('invoice_number').hasError('maxLength')" class="error-message"
+                  >
+                    Este campo solo acepta 20 caracteres.
                   </div>
                 </div>
               </div>

@@ -17,6 +17,7 @@ import { EmployeesService } from "src/app/shared/services/employee.service";
 import { UserFormModel } from "../models/user-model";
 import { RolesService } from "src/app/shared/services/roles.service";
 import { number } from "echarts";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 @Component({
   selector: "app-user-detail",
@@ -49,12 +50,13 @@ export class UserDetailComponent implements OnInit {
     private toastr: ToastrService,
     private usersService: UsersService,
     private employeeService: EmployeesService,
-    private rolesService: RolesService
+    private rolesService: RolesService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Usuarios");
     this.id = this.route.snapshot.params["id_user"];
-
     this.isNew = !this.id;
     this.setViewMode();
     this.inicializateForm(Number(this.id));
@@ -70,12 +72,11 @@ export class UserDetailComponent implements OnInit {
           this.userForm.patchValue({
             email: data.email, // Actualiza el campo de correo electrónico con el valor obtenido
             id_employee: data.id_employee,
-            name_employee: data.name_employee
+            name_employee: data.name_employee,
           });
           console.log(data.email);
           console.log(data.id_employee);
           console.log(data.name_employee);
-          
 
           this.employeeNotFoundMessage = ""; // Reinicia el mensaje si se encontró el empleado
         },
@@ -94,33 +95,36 @@ export class UserDetailComponent implements OnInit {
       id_role: ["", [Validators.required]],
       id_employee: [],
       username: ["", [Validators.required, Validators.maxLength(80)]],
-      email: ['',[Validators.email]],
-      observation_user: ["", [ Validators.maxLength(100)]],
+      email: ["", [Validators.email]],
+      observation_user: ["", [Validators.maxLength(100)]],
       state_user: [],
       creation_date_user: [],
       password: ["", [Validators.required]],
       name_role: ["", []],
-      id_card_employee: ["", [Validators.required,  Validators.maxLength(10), Validators.minLength(7), Validators.pattern('^[0-9]+$')]],
-      name_employee:[]
+      id_card_employee: [
+        "",
+        [
+          Validators.required,
+          Validators.maxLength(10),
+          Validators.minLength(7),
+          Validators.pattern("^[0-9]+$"),
+        ],
+      ],
+      name_employee: [],
     });
 
     if (this.viewMode == "print" /*|| this.viewMode == 'edit'*/) {
       this.userForm.disable();
-      
     }
-    
 
     if (this.viewMode != "new") {
       this.getUserByID(id);
       this.email.disable();
       this.id_card_employee.disable();
     }
-//new
-    if (this.viewMode != "new" && this.viewMode != "print" ) {
-
+    //new
+    if (this.viewMode != "new" && this.viewMode != "print") {
       this.password.disable();
-      
-   
     }
   }
 
@@ -196,7 +200,7 @@ export class UserDetailComponent implements OnInit {
         this.state_user.setValue(this.userData.state_user),
         this.observation_user.setValue(this.userData.observation_user),
         this.userForm.setValue(this.userData);
-        this.name_employee.setValue(this.userData.name_employee)
+      this.name_employee.setValue(this.userData.name_employee);
     }
   }
 
@@ -227,7 +231,7 @@ export class UserDetailComponent implements OnInit {
       );
     }
   }
-  
+
   checkEmployeeAvailability(): void {
     if (this.id_employee && this.id_employee instanceof AbstractControl) {
       this.validateEmployeeAvailability(this.id_employee).then((result) => {
@@ -237,7 +241,7 @@ export class UserDetailComponent implements OnInit {
       });
     }
   }
-  
+
   validateEmployeeAvailability(control: AbstractControl) {
     return new Promise((resolve) => {
       if (!control.value) {
@@ -258,11 +262,6 @@ export class UserDetailComponent implements OnInit {
       }
     });
   }
-
-
-
-
-
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
@@ -393,8 +392,8 @@ export class UserDetailComponent implements OnInit {
         });
         setTimeout(() => {
           this.router.navigateByUrl("/users");
-        },);
-      },);
+        });
+      });
     }
   }
 
@@ -453,7 +452,7 @@ export class UserDetailComponent implements OnInit {
   get password() {
     return this.userForm.get("password");
   }
-  get name_employee(){
-    return this.userForm.get("name_employee")
+  get name_employee() {
+    return this.userForm.get("name_employee");
   }
 }

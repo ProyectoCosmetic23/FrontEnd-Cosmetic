@@ -6,6 +6,7 @@ import { OrdersService } from "src/app/shared/services/orders.service";
 import { ReturnsService } from "src/app/shared/services/returns.service";
 import { PaymentsService } from "src/app/shared/services/payment.service";
 import { NgSelectConfig } from "@ng-select/ng-select";
+import { AuthService } from "src/app/shared/services/auth.service";
 
 @Component({
   selector: "app-orders-detail",
@@ -69,6 +70,7 @@ export class OrdersDetailComponent implements OnInit {
     private _ordersService: OrdersService,
     private _paymentService: PaymentsService,
     private _returnsService: ReturnsService,
+    private _authService: AuthService,
     private toastr: ToastrService,
     private ngSelectConfig: NgSelectConfig
   ) {
@@ -77,6 +79,8 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Pedidos");
+    this.getPaymentsForOrder();
     this.id = this.route.snapshot.params["id_order"];
     this.isNew = !this.id;
     this.setViewMode();
@@ -127,15 +131,9 @@ export class OrdersDetailComponent implements OnInit {
 
   getPaymentsForOrder() {
     if (this.viewMode === "detail") {
-      // Convertir this.id a número usando parseInt
       const orderId = parseInt(this.id, 10);
-
-      // O alternativamente, usando Number
-      // const orderId = Number(this.id);
-
       this._paymentService.getPayOrder(orderId).subscribe(
         (payments) => {
-          // Puedes almacenar los pagos en una propiedad del componente
           this.listPayments = payments;
         },
         (error) => {
@@ -157,15 +155,18 @@ export class OrdersDetailComponent implements OnInit {
           const idClient = this.order.order.id_client;
           const idEmployee = this.order.order.id_employee;
           const orderDetail = this.order.order_detail;
-
+  
           this.selected_payment_type = this.order.order.payment_type;
-
+  
           this.showLoadingScreen = true;
-
+  
           this.getReturnedProducts(this.order.order.id_order, this.order.order);
-
+  
           this.findOrderData(idClient, idEmployee, orderDetail);
-
+  
+          // Aquí llamamos a getPaymentsForOrder después de obtener el pedido
+          this.getPaymentsForOrder();
+  
           // Después de cargar los datos, establece loadingData en false
           this.showLoadingScreen = false;
           this.message_observation = this.order.order.observation_return;
@@ -180,13 +181,10 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   getReturnedProducts(id: any, order: any) {
-    console.log(order);
     if (order.return_state == true) {
       this._returnsService.getReturnedProducts(id).subscribe(
         (data) => {
           this.returnedProducts = data.return_detail;
-          console.log("Productos devueltos:", this.returnedProducts);
-
           if (this.returnedProducts.length > 0) {
             this.returnedDetail = true;
 
@@ -226,6 +224,8 @@ export class OrdersDetailComponent implements OnInit {
           console.error("Error al obtener los productos devueltos:", error);
         }
       );
+    } else {
+      this.returnedDetail = false;
     }
   }
 
@@ -362,9 +362,11 @@ export class OrdersDetailComponent implements OnInit {
           ...product,
           disabled: false,
         }));
-        this.listProducts = this.listProducts.filter(
-          (product) => product.state_product === "Activo"
-        );
+        if (this.viewMode == "new") {
+          this.listProducts = this.listProducts.filter(
+            (product) => product.state_product === "Activo"
+          );
+        }
       },
       (error) => {
         console.error("Error al obtener Productos:", error);
@@ -429,8 +431,6 @@ export class OrdersDetailComponent implements OnInit {
     this.selectedProduct = this.listProducts.find(
       (product) => product.id_product === selectedProductId
     );
-
-    console.log(this.selectedProduct);
 
     if (this.selectedProduct) {
       this.productPrice = this.selectedProduct.selling_price;
@@ -584,8 +584,6 @@ export class OrdersDetailComponent implements OnInit {
 
     // Actualiza la cantidad de productos
     this.numberOfProducts = Object.keys(this.productsFormArray.controls).length;
-
-    console.log(this.productsFormArray.value);
   }
 
   calculateTotal() {
@@ -671,7 +669,6 @@ export class OrdersDetailComponent implements OnInit {
     }
 
     const productsArray = this.productsFormArray.value;
-    console.log(productsArray);
     for (const product of productsArray) {
       if (
         !product.id_product ||

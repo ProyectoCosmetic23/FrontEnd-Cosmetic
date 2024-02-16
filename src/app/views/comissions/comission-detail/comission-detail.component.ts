@@ -5,6 +5,7 @@ import { ComissionsService } from 'src/app/shared/services/comission.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgZone } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 interface Comission {
   id_employee: number;
@@ -52,12 +53,14 @@ export class ComissionsDetailComponent implements OnInit {
     private router: Router,
     private _comissionsService: ComissionsService,
     private toastr: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _authService: AuthService
   ) {
     this.formBasic = this.formBuilder.group({});
   }
 
   ngOnInit() {
+    this._authService.validateUserPermissions("Comisiones");
     this.isNew = !this.id;
     this.loadSales();
     this.loadEmployees();
@@ -241,7 +244,7 @@ export class ComissionsDetailComponent implements OnInit {
         if (this.totalSale == 0){
           this.noSales = true
           console.log(this.noSales)
-          this.message = "El empleado no realizó o ha realizado ventas para el mes elegido"        
+          this.message = "El empleado no realizó o no ha realizado ventas para el mes elegido"        
         }else{
           this.noSales = false;
           console.log(this.noSales)
@@ -326,8 +329,16 @@ export class ComissionsDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Fallo al crear la comisión.', 'Error', { progressBar: true });
-          console.error('Error al crear la comisión:', error);
+          let backendErrorMessage: string;
+        
+          if (error.error && error.error.error) {
+            backendErrorMessage = error.error.error;
+          } else {
+            backendErrorMessage = error.message || error.toString();
+          }
+        
+          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
+          console.error("Error al crear la comisión:", error);
         }
       );
     }

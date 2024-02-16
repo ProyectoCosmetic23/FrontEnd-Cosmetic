@@ -4,13 +4,11 @@ import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable, of, throwError } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { ToastrService } from "ngx-toastr";
 import { RolesService } from "./roles.service";
-import {
-  AuthStatus,
-  LoginResponse,
-  User,
-} from "../interfaces";
+import { AuthStatus, LoginResponse, User } from "../interfaces";
 import { Router } from "@angular/router";
+import Swal from "sweetalert2";
 
 @Injectable({
   providedIn: "root",
@@ -33,15 +31,16 @@ export class AuthService {
   }
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private cookieService: CookieService,
-    private rolesService: RolesService, 
+    private toastr: ToastrService,
+    private rolesService: RolesService,
     private router: Router
-    ) {}
+  ) {}
 
   isAuthenticated(): boolean {
     const token = this.cookieService.get("token");
-    return !!token; 
+    return !!token;
   }
 
   private setAuthentication(user: User, token: string): boolean {
@@ -53,11 +52,13 @@ export class AuthService {
     expirationDate.setHours(expirationDate.getHours() + 1);
 
     // Insertar el token en las cookies
-    this.cookieService.set("token", token
-    // , {
-    //   sameSite: "Strict",
-    //   expires: expirationDate,
-    // }
+    this.cookieService.set(
+      "token",
+      token
+      // , {
+      //   sameSite: "Strict",
+      //   expires: expirationDate,
+      // }
     );
 
     // Comprobar si el token se insertó correctamente
@@ -77,20 +78,24 @@ export class AuthService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 401) {
       // Credenciales incorrectas
-      return throwError("Credenciales incorrectas. Por favor, inténtelo de nuevo.");
+      return throwError(
+        "Credenciales incorrectas. Por favor, inténtelo de nuevo."
+      );
     } else if (error.status === 0) {
       // No se puede conectar al servidor
-      return throwError("No se puede conectar al servidor. Por favor, inténtelo más tarde.");
+      return throwError(
+        "No se puede conectar al servidor. Por favor, inténtelo más tarde."
+      );
     } else {
       // Otro tipo de error
-      let errorMessage = "Error desconocido. Por favor, contacte al soporte técnico.";
+      let errorMessage =
+        "Error desconocido. Por favor, contacte al soporte técnico.";
       if (error.error && error.error.error) {
         errorMessage = error.error.error;
       }
       return throwError(errorMessage);
     }
   }
-  
 
   private checkAuthStatusAfterLogin(): Observable<boolean> {
     return this._authStatus.pipe(
@@ -113,65 +118,105 @@ export class AuthService {
     );
   }
 
+
   login(email: string, password: string): Observable<boolean> {
     const url = `${this.baseUrl}/api/users/login`;
     const body = { email, password };
-  
+
     return this.http.post<LoginResponse>(url, body).pipe(
       switchMap(({ user, token }) => {
         // Verificar si el usuario está inactivo
-        if (user && user.state_user === "inactivo") {
-          return throwError("El usuario está inactivo.");
+        if (user && user.state_user === "Inactivo") {
+          // Mostrar mensaje de error utilizando Toastr
+          this.toastr.error("El usuario está inactivo.", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+          return of(false); // Devolver un observable de false para indicar que el inicio de sesión falló
         }
-        
+
         // Si el usuario no está inactivo, establecer la autenticación y actualizar el estado de autenticación
         const isAuthenticationSet = this.setAuthentication(user, token);
         if (isAuthenticationSet) {
+          // Establecer el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
           return of(true);
         } else {
           return throwError("Error al autenticar al usuario.");
         }
       }),
-      catchError((error) => {
-        // Manejar el error y devolverlo como un observable de tipo booleano
-        console.error("Error durante el inicio de sesión:", error);
+      catchError((error: HttpErrorResponse) => {
+        // Mostrar mensaje de error utilizando Toastr
+        if (error.status === 403) {
+          this.toastr.error("No puedes iniciar sesión, el rol esta inactivo.", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else {
+          this.toastr.error("El usuario está inactivo.", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         return of(false);
       })
     );
   }
-  
+
 
   getStoredUser(): User | null {
     const storedUser = sessionStorage.getItem(this.userSessionStorageKey);
     return storedUser ? JSON.parse(storedUser) : null;
   }
 
+  async validateUserPermissions(modulePermission: string): Promise<boolean> {
+    try {
+      const storedUser = this.getStoredUser();
+      const roleResponse = await this.rolesService.getRoleById(storedUser.id_role).toPromise(); 
 
+      // Verifica si el permissionName está presente en alguno de los módulos del rol
+      const hasPermission = roleResponse.modules_role.find(module => module === modulePermission) !== undefined;
+
+      if (!hasPermission) {
+        Swal.fire({
+          icon: "warning",
+          title: "Alerta",
+          text: `No tiene permiso para interactuar con este módulo.`,
+          confirmButtonText: "Volver al Dashboard",
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirigir al usuario al dashboard/v1
+            this.router.navigate(["/dashboard/v1"]);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error al validar permisos:", error);
+      return false;
+    }
+  }
 
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/users/recover`, { email });
   }
 
-
   changePassword(token: string, newPassword: string): Observable<any> {
     const url = `${this.baseUrl}/api/change-password/${token}`;
     console.log(url);
     const body = { token, newPassword };
-  
+
     return this.http.post(url, body).pipe(
       map((response) => {
-        
         return response;
       }),
       catchError((error) => {
         // Imprime el error completo en la consola
-        console.error('Error al cambiar la contraseña:', error);
+        console.error("Error al cambiar la contraseña:", error);
         return throwError(error);
       })
     );
   }
-  
 
   logout() {
     this._currentUser.next(null);
