@@ -33,6 +33,8 @@ export class CategoryDetailComponent implements OnInit {
   isNew: boolean;
   id: string;
   categoryData: CategoryFormMode;
+  showLoadingScreen: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -93,6 +95,7 @@ export class CategoryDetailComponent implements OnInit {
 
   //CONSULTAR LA CATEGORIA
   private getCategoryById(id: number): void {
+    this.showLoadingScreen = true;
     this.loading = true;
     this.categoriesService.getCategoryById(id).subscribe({
       next: (response: any) => {
@@ -105,6 +108,7 @@ export class CategoryDetailComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
+        this.showLoadingScreen = false;
       },
     });
   }
@@ -251,6 +255,7 @@ export class CategoryDetailComponent implements OnInit {
     } else if (currentRoute.includes("/edit/")) {
       this.viewMode = "edit"; // Corrige la ortografía de 'edit-category'
     } else if (currentRoute.includes("/detail/")) {
+      this.showLoadingScreen = true;
       this.viewMode = "print";
     }
   }

@@ -35,6 +35,7 @@ export class ClientDetailComponent implements OnInit {
   clientData: ClientFormModel;
   clientForm: FormGroup;
   clientFormSub: Subscription;
+  showLoadingScreen: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -90,6 +91,7 @@ export class ClientDetailComponent implements OnInit {
         ],
       ],
       state_client: [],
+      reason_anulate: [""],
     });
 
     if (this.viewMode == "print") {
@@ -106,6 +108,7 @@ export class ClientDetailComponent implements OnInit {
   }
 
   private getClientByID(id: number): void {
+    this.showLoadingScreen = true;
     this.loading = true;
     this.clientsService.getClientsById(id).subscribe({
       next: (response: any) => {
@@ -118,6 +121,7 @@ export class ClientDetailComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
+        this.showLoadingScreen = false;
       },
     });
   }
@@ -339,6 +343,7 @@ export class ClientDetailComponent implements OnInit {
     } else if (currentRoute.includes("/edit/")) {
       this.viewMode = "edit";
     } else if (currentRoute.includes("/print/")) {
+      this.showLoadingScreen = true;
       this.viewMode = "print";
     }
   }
