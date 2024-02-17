@@ -112,27 +112,49 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  searchProduct($event) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value !== null && value !== undefined && value !== "") {
-      this.filteredProducts = this.listProducts.filter(
-        (c) =>
-          c.name_product.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          this.changeProductStateDescription(c.state_product)
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1
-      );
-    } else {
-      this.filteredProducts = this.listProducts;
+  loadData() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    let endIndex = startIndex + this.itemsPerPage;
+
+    const totalPages = Math.ceil(
+      this.filteredProducts.length / this.itemsPerPage
+    );
+
+    if (this.currentPage === totalPages) {
+      const remainingRows = this.filteredProducts.length % this.itemsPerPage;
+      if (remainingRows > 0) {
+        endIndex = startIndex + remainingRows;
+      }
     }
+
+    // Ajusta endIndex para que sea el próximo número divisible por 6
+    const rowsToAdd = 6 - (endIndex % 6);
+    endIndex += rowsToAdd;
   }
 
-  changeProductStateDescription(state_product: boolean) {
-    return state_product ? "Activo" : "Inactivo";
+  onPageChange(event: any) {
+    this.currentPage = event.offset + 1;
+    this.loadData();
   }
+ 
+searchProduct($event) {
+  const value = ($event.target as HTMLInputElement).value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
+  if (value !== "") {
+    this.filteredProducts = this.listProducts.filter(
+      (product) =>
+        product.name_product.toLowerCase().includes(value) || // Buscar coincidencias parciales del nombre
+        (product.quantity && product.quantity.toString().toLowerCase().includes(value)) || // Buscar coincidencias parciales de la cantidad
+        (product.cost_price && product.cost_price.toString().toLowerCase().includes(value)) || 
+        (product.state_product.toLowerCase().slice(0, 3) === value.toLowerCase() || product.state_product.toLowerCase() === value.toLowerCase()) || // Buscar coincidencias de estado
+        (this.categories[product.categoryId] && (this.categories[product.categoryId].toLowerCase().includes(value) || this.categories[product.categoryId].toLowerCase() === value.toLowerCase() || this.categories[product.categoryId].toLowerCase().startsWith(value.toLowerCase()))) // Buscar coincidencias del nombre de la categoría
+    );
+  } else {
+    this.filteredProducts = this.listProducts;
+  }
+  this.loadData();
+}
 
   
-
   openRetireModal(productId: number, productValue: number, content: any): void {
     this.selectedProductId = productId;
     this.selectedProductValue = productValue;
@@ -229,9 +251,9 @@ isNearMinimum(product: any): boolean {
   openModal(idProduct: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
-      const modalRef = this.modalService.open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false});
-
-      modalRef.result.then(
+      this.modalService
+      .open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false})
+      .result.then(
         (result) => {
           if (result === "Ok") {
             // Verifica si reasonAnulate está presente y no es una cadena vacía
@@ -260,11 +282,9 @@ isNearMinimum(product: any): boolean {
                     { progressBar: true, timeOut: 2000 }
                   );
                   console.error("Error al cambiar de estado:", error);
-                  this.modalAbierto = false;
+                  
                 }
               );
-          } else {
-            this.modalAbierto = false;
           }
         },
         (reason) => {

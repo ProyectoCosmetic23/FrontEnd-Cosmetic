@@ -61,6 +61,7 @@ export class ProductDetailComponent implements OnInit {
   productData: ProductFormModel;
   isEditMode: boolean;
   isShowForm: boolean;
+  showLoadingScreen: boolean = false;
   // Agrega esta variable al inicio de tu componente
 
   constructor(
@@ -188,6 +189,7 @@ export class ProductDetailComponent implements OnInit {
 
 
   private getProductByID(id: number, token?: string): void {
+    this.showLoadingScreen = true;
     this.loading = true;
     this.productsService.getProductsById(id, token).subscribe({
       next: (response: any) => {
@@ -200,6 +202,7 @@ export class ProductDetailComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
+        this.showLoadingScreen = false;
       },
     });
   }
@@ -304,6 +307,9 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
+
+  
+
   saveProductChanges(id: number, updatedData: any) {
     const token = this.cookieService.get("token");
     this.productsService.updateProduct(id, updatedData, token).subscribe(
@@ -373,6 +379,9 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+
+
+  
   setViewMode() {
     const currentRoute = this.router.url;
     if (currentRoute.includes("/new")) {
@@ -380,10 +389,13 @@ export class ProductDetailComponent implements OnInit {
     } else if (currentRoute.includes("/edit/")) {
       this.viewMode = "edit";
     } else if (currentRoute.includes("/print/")) {
+      this.showLoadingScreen = true;
       this.viewMode = "print";
     }
   }
 
+  
+  
   print() {
     if (window) {
       window.print();

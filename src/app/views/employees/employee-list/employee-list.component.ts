@@ -105,28 +105,23 @@ export class EmployeeListComponent implements OnInit {
   }
 
   searchEmployee($event) {
-    const value = ($event.target as HTMLInputElement).value;
+    const value = ($event.target as HTMLInputElement).value.toLowerCase();
   
-    if (value !== null && value !== undefined && value !== "") {
+    if (value !== "") {
       this.filteredEmployees = this.listEmployees.filter(
         (employee) =>
-          employee.name_employee.toLowerCase().indexOf(value.toLowerCase()) !==
-            -1 ||
-          employee.id_card_employee
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1 ||
-          employee.email.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          (employee.state_employee
-            .toLowerCase()
-            .slice(0, 3) === value.toLowerCase())
+          employee.name_employee.toLowerCase().includes(value) ||
+          employee.id_card_employee.toLowerCase().includes(value) ||
+          employee.email.toLowerCase().includes(value) ||
+          (employee.state_employee.toLowerCase().slice(0, 3) === value.toLowerCase() || employee.state_employee.toLowerCase() === value.toLowerCase())
       );
     } else {
       this.filteredEmployees = this.listEmployees;
     }
   
     this.loadData();
-  }
-  
+}
+
 
   
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
