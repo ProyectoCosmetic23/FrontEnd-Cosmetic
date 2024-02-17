@@ -1,17 +1,19 @@
 <div class="breadcrumb">
     <h1 *ngIf="viewMode === 'new'">Registrar Empleado</h1>
-    <h1 *ngIf="viewMode === 'edit'">Editar Empleado</h1>
+    <h1 *ngIf="viewMode === 'edit'">Modificar Empleado</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Empleado</h1>
-    <ul>
-        <li><a>Servicios</a></li>
-        <li *ngIf="viewMode === 'new'">Registrar Empleado</li>
-        <li *ngIf="viewMode === 'edit'">Editar Empleado</li>
-        <li *ngIf="viewMode === 'print'">Ver Detalle de Empleado</li>
-    </ul>
 </div>
 
 
 <div class="separator-breadcrumb border-top"></div>
+
+<div *ngIf="showLoadingScreen && (viewMode == 'edit' || viewMode == 'print')" class="loading-screen">
+    <div class="loading-content">
+      <div class="spinner spinner-primary me-3"></div>
+    </div>
+  </div>
+  <div *ngIf="showLoadingScreen == false || viewMode == 'new'">
+
 
 <!-- Contenido común a todas las vistas -->
 <div class="form-container">
@@ -20,12 +22,11 @@
 <div class="col-md-12">
     <div class="card mb-4">
         <div class="card-body">
-            <div class="card-title mb-3">Formulario de Empleados</div>
             <form [formGroup]="employeeForm" (ngSubmit)="submitEmployee()">
                 <div class="row">
                         <div class="col-md-3 form-group mb-3">
                             <label for="id_card_employee">Cédula de empleado<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control small-input " id="id_card_employee"  formControlName="id_card_employee" (change)="checkCedulaAvailability()" >
+                            <input type="text" class="form-control  " id="id_card_employee"  formControlName="id_card_employee" (change)="checkCedulaAvailability()" >
                             <div *ngIf="employeeForm.get('id_card_employee').touched && employeeForm.get('id_card_employee').hasError('required')" class="error-message">
                                 El campo cédula es obligatorio.
                             </div>
@@ -43,7 +44,7 @@
                     
                         <div class="col-md-3 form-group mb-3">
                             <label for="phone">Teléfono<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control small-input" id="phone" formControlName="phone" required>
+                            <input type="text" class="form-control " id="phone" formControlName="phone" required>
                             <div *ngIf="employeeForm.get('phone').touched && employeeForm.get('phone').hasError('required')" class="error-message">
                                 El campo teléfono es obligatorio.
                             </div>
@@ -101,12 +102,12 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-3 form-group mb-3">
-                    <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+                    
+                    <div *ngIf="viewMode == 'print'" class="col-md-3 form-group mb-3">
                         <label for="state_employee">Estado<span class="text-danger">*</span></label>
                         <input class="form-control" id="state_employee"  formControlName="state_employee">
                     </div>
-                  </div>
+                 
                   
                     <div *ngIf="viewMode == 'print'" class="col-md-3 form-group mb-3">
                         <label for="creation_date_employee">Fecha de creacion<span class="text-danger">*</span></label>
@@ -129,8 +130,8 @@
                     
                     
                     <div class="form-group text-right" style="text-align: right;">
-                        <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
-                        <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode == 'new' ? 'Registrar Empleado' : 'Editar Empleado' }} 
+                        <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                        <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode == 'new' ? 'Registrar Empleado' : 'Modificar Empleado' }} 
                         </btn-loading>
                        
                     </div>

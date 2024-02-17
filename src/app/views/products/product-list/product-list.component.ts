@@ -37,6 +37,7 @@ export class ProductListComponent implements OnInit {
   reasonAnulate: string = "";
   categories: { [key: number]: string } = {};
   itemsPerPage = 6; // El número de filas por página
+  showLoadingScreen: boolean=false;
 
 
 
@@ -67,6 +68,7 @@ export class ProductListComponent implements OnInit {
 }
 
   getProducts() {
+    this.showLoadingScreen = true;
     this._productService.getAllProducts().subscribe(
       (data) => {
         this.listProducts = data;
@@ -76,7 +78,10 @@ export class ProductListComponent implements OnInit {
       (error) => {
         console.error("Error al obtener Productos:", error);
       }
-    );
+      )
+      .add(() => {
+        this.showLoadingScreen = false;
+    });
   }
 
   
@@ -134,7 +139,7 @@ export class ProductListComponent implements OnInit {
     this.returnQuantity = 0;
     this.returnReason = "";
     this.returnValue;
-    this.modalService.open(content, { ariaLabelledBy: "modal-basic-title" });
+    this.modalService.open(content, {  centered: true,backdrop: 'static', keyboard: false});
   }
 
   retireProduct(): void {
@@ -224,9 +229,7 @@ isNearMinimum(product: any): boolean {
   openModal(idProduct: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
-      const modalRef = this.modalService.open(this.deleteConfirmModal, {
-        centered: true,
-      });
+      const modalRef = this.modalService.open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false});
 
       modalRef.result.then(
         (result) => {
@@ -266,6 +269,7 @@ isNearMinimum(product: any): boolean {
         },
         (reason) => {
           // Manejar la cancelación del modal aquí
+          this.reasonAnulate = '';
           this.getProducts();
           this.modalAbierto = false;
         }

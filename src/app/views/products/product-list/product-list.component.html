@@ -1,10 +1,6 @@
 <div class="">
     <div class="breadcrumb">
         <h1>Listar Productos</h1>
-        <ul>
-            <li><a>Compras</a></li>
-            <li>Productos</li>
-        </ul>
     </div>
 
     <div class="separator-breadcrumb border-top"></div>
@@ -13,7 +9,7 @@
         <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
             <div class="col-md-4">
                 <div class="form-group">
-                    <button class="btn btn-primary" [routerLink]="['/products/new']">Crear nuevo Producto</button>
+                    <button class="btn btn-primary" [routerLink]="['/products/new']">Registrar Producto</button>
                 </div>
             </div>
             <div class="col-md-4">
@@ -25,6 +21,11 @@
         </div>
         <div class="col-md-12">
             <div class="card o-hidden">
+                <div *ngIf="showLoadingScreen" class="loading-screen">
+                    <div class="loading-content">
+                      <div class="spinner spinner-primary me-3"></div>
+                    </div>
+                  </div>
                 <ngx-datatable
                 class="material fullscreen"
                 style="height: 100px"
@@ -68,11 +69,14 @@
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                           <div>
-                            <span [ngStyle]="{
-                                    'color': row.quantity <= row.min_stock ? 'white' : (row.quantity <= (row.min_stock + 10) ? 'black' : 'inherit'), 
-                                    'background-color': row.quantity <= row.min_stock ? 'red' : (row.quantity <= (row.min_stock + 10) ? 'yellow' : 'inherit'),
-                                    'padding': row.quantity <= row.min_stock ? '2px 14px' : '2px 14px'
-                                  }">{{ row.quantity }}</span>
+                            <span 
+                              style="display: inline-block; width: 60px; font-size: 14px; padding: 2px; border-radius: 4px; text-align: center;"
+                              [ngStyle]="{
+                                'color': row.quantity <= row.min_stock ? 'white' : (row.quantity <= (row.min_stock + 10) ? 'black' : 'inherit')
+                              }" 
+                              [ngClass]="{'m-1': true, 'bg-danger': row.quantity <= row.min_stock, 'bg-warning': row.quantity > row.min_stock && row.quantity <= (row.min_stock + 10)}">
+                              {{ row.quantity }}
+                            </span>
                           </div>
                         </ng-template>
                       </ngx-datatable-column>
@@ -108,7 +112,7 @@
                                 [routerLink]="['/products/print', row.id_product]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button ngbTooltip="Editar" class="btn btn-info m-0"
+                            <button ngbTooltip="Modificar" class="btn btn-info m-0"
                                 [routerLink]="['/products/edit', row.id_product]"
                                 [disabled]="row.state_product == 'Inactivo'">
                                 <i class="i-Pen-4"></i>

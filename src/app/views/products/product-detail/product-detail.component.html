@@ -1,13 +1,7 @@
 <div class="breadcrumb">
     <h1 *ngIf="viewMode === 'new'">Registrar Producto</h1>
-    <h1 *ngIf="viewMode === 'edit'">Editar Producto</h1>
+    <h1 *ngIf="viewMode === 'edit'">Modificar Producto</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Producto</h1>
-    <ul>
-        <li><a>Compras</a></li>
-        <li *ngIf="viewMode === 'new'">Registrar Producto</li>
-        <li *ngIf="viewMode === 'edit'">Editar Producto</li>
-        <li *ngIf="viewMode === 'print'">Ver Detalle de Producto</li>
-    </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -22,11 +16,7 @@
                     <div class="row">
                         <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
                             <div class="row">
-                                <div class="col-md-8 form-group mb-3">
-                                    <label>Formulario de Productos </label>
-                                </div>
                                 
-                               
                                 <div *ngIf="viewMode == 'new'" class="row">
                                     <label  class="col-md-6 form-group  checkbox checkbox-primary">
                                         <input  type="checkbox" formControlName="enableFields"
@@ -176,10 +166,10 @@
 
                                 </div>
                                 <div class="form-group text-right" style="text-align: right;">
-                                    <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancel</button>
+                                    <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
                                     <btn-loading *ngIf="viewMode !== 'print'"
                                         btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode ==
-                                        'new' ? 'Registrar Producto' : 'Editar Producto'
+                                        'new' ? 'Registrar Producto' : 'Modificar Producto'
                                         }}
                                     </btn-loading>
 
