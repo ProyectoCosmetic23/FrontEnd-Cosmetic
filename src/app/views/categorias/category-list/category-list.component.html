@@ -14,9 +14,9 @@
         
         </div>
         <div class="col-md-4">
-            <div class="form-group">
-                <input id="category" placeholder="Buscar Categoría" name="category" [formControl]="searchControl" class="form-control"
+            <div class="form-group"><input id="category" placeholder="Buscar Categoría" name="category" [formControl]="searchControl" class="form-control"
                     type="category" (keyup)="searchCategory($event)">
+                
             </div>
         </div>
     </div>
@@ -29,11 +29,11 @@
                 </div>
               </div>
         
-        
-            <ngx-datatable
+              <div  class=" table-responsive">
+            <ngx-datatable 
           
             class="material fullscreen"
-            style="height: 100px"
+            style="height: 480px"
             [columnMode]="'force'"
             [headerHeight]="50"
             [footerHeight]="50"
@@ -41,9 +41,10 @@
             [rows]="filteredCategories"
             [count]="filteredCategories.length"
             [limit]="6"
-            rowHeight="700px">
+            rowHeight="700px"
+            [scrollbarH]="true">
                 
-                <ngx-datatable-column name="name_category" [resizeable]="false" [canAutoResize]="true">
+                <ngx-datatable-column name="name_category" width="150" >
                     <ng-template ngx-datatable-header-template>
                         <p style="font-size:15px;">Nombre</p> 
                     </ng-template>
@@ -53,7 +54,7 @@
                         </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="state_category" [resizeable]="false" [canAutoResize]="true">
+                <ngx-datatable-column name="state_category" >
                     <ng-template ngx-datatable-header-template>
                         <p style="font-size:15px;">Estado</p> 
                     </ng-template>
@@ -63,19 +64,19 @@
                         </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true" [minWidth]="250">
+                <ngx-datatable-column name="actions"  [minWidth]="250">
                     <ng-template ngx-datatable-header-template>
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <ng-container *ngIf="row && row.id_category">
-                            <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/categories/detail', row.id_category]">
+                            <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 btn-sm" [routerLink]="['/categories/detail', row.id_category]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
+                            <button ngbTooltip="Modificar" class="btn btn-info m-1 btn-sm" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label bTooltip="Cambiar estado" class="switch switch-success" [class.switch-success]="row.state_category" [class.switch-danger]="!row.state_category">
+                            <label bTooltip="Cambiar estado" class="switch switch-success btn-sm" [class.switch-success]="row.state_category" [class.switch-danger]="!row.state_category">
                                 <input type="checkbox" [checked]="row.state_category == true" (change)="handleChange($event, row)" (click)="modalStatus(row.id_category, $event)">
                                 <span class="slider"></span>
                             </label>
@@ -87,6 +88,7 @@
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
+        </div>
         </div>
     </div>
 </div>

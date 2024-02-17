@@ -62,6 +62,10 @@ export class PurchaseDetailComponent implements OnInit {
   productData: ProductFormModel;
   productExists: boolean;
   numberInvoiceExists: boolean;
+  showLoadingScreen: boolean;
+
+
+
 
   minDate = { year: 2023, month: 1, day: 1 };
   maxDate = {
@@ -168,6 +172,7 @@ export class PurchaseDetailComponent implements OnInit {
   }
 
   getProviders() {
+    this.showLoadingScreen = true;
     this.providersService.getAllProviders().subscribe(
       (data) => {
         this.listProviders = data;
@@ -179,6 +184,7 @@ export class PurchaseDetailComponent implements OnInit {
   }
 
   getProducts() {
+    this.showLoadingScreen = true;
     this.productsService.getAllProducts().subscribe(
       (data) => {
         this.listProducts = data;
@@ -190,6 +196,7 @@ export class PurchaseDetailComponent implements OnInit {
   }
 
   getCategories() {
+    this.showLoadingScreen = true;
     this.categoriesService.getAllCategory().subscribe(
       (data) => {
         this.listCategories = data;
@@ -245,6 +252,7 @@ export class PurchaseDetailComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
+        this.showLoadingScreen = false;
       },
     });
   }
@@ -266,6 +274,7 @@ export class PurchaseDetailComponent implements OnInit {
     if (currentRoute.includes("/new")) {
       this.viewMode = "new";
     } else if (currentRoute.includes("/detail/")) {
+      
       this.viewMode = "print";
     }
   }

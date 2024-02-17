@@ -25,9 +25,10 @@
     </div>
     <div class="col-md-12">
         <div class="card o-hidden">
+            <div  class=" table-responsive">
             <ngx-datatable
             class="material fullscreen"
-            style="height: 100px"
+            style="height: 480px"
             [columnMode]="'force'"
             [headerHeight]="50"
             [footerHeight]="50"
@@ -35,7 +36,9 @@
             [rows]="filteredEmployees"
             [count]="filteredEmployees.length"
             [limit]="6"
-            rowHeight="700px">
+            rowHeight="700px"
+            [scrollbarH]="true"
+            >
 
                 <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true"
                     [minWidth]="80">
@@ -78,16 +81,16 @@
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 "
+                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm"
                             [routerLink]="['/employees/print', row.id_employee]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1 "
+                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm"
                             [routerLink]="['/employees/edit', row.id_employee]"
                             [disabled]="row.state_employee== 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom"
+                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom btn-sm"
                             (click)="openModal(row.id_employee)">
                             <input type="checkbox" [checked]="row.state_employee === 'Activo'"
                                 (change)="handleChange($event, row)">
@@ -96,6 +99,7 @@
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
+        </div>
         </div>
     </div>
 </div>
