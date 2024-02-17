@@ -1,66 +1,164 @@
-.ngx-datatable.scroll-vertical .datatable-body {
-    overflow-x: hidden;
-}
+/* Add these styles to your existing stylesheet */
 
-.ngx-datatable.scroll-horz .datatable-body {
-    overflow-y: hidden;
-}
 
 @media print {
-    .print-view {
-      background-color: #fff;
-      padding: 20px;
-    }
-  
-    .print-title {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-  
-    .print-field {
-      margin-bottom: 20px; 
-    }
+  .print-view {
+    background-color: #fff;
+    padding: 20px;
   }
-  
 
+  .print-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .print-field {
+    margin-bottom: 20px; 
+  }
+}
 
 .btn-separator {
-    margin-right: 10px;
-  }
+  margin-right: 10px;
+}
 
-  .button-spacing {
-    margin-right: 10px; /* Ajusta el valor según el espacio deseado */
-  }
-  
-  .form-group {
-    margin-bottom: 10px; /* Ajusta el valor según el espacio deseado */
-  }
-  
-  .red-button {
-    color: red;
-    /* Otros estilos que desees aplicar */
-  }
-  
-  //para  que el nombre del proveedor no se esconda
+.button-spacing {
+  margin-right: 10px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.red-button {
+  color: red;
+}
+
 .long-text {
-    overflow: hidden;
-    word-wrap: break-word;
-    white-space: normal;
-  }
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: normal;
+}
 
-  .container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Establece el contenedor para ocupar al menos el 100% del alto de la ventana */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .ngx-datatable {
-    flex: 1; /* Hace que ngx-datatable ocupe el espacio disponible en el contenedor */
+  flex: 1;
 }
 
 .footer {
-    flex-shrink: 0; /* Evita que el pie de página se contraiga */
-    padding: 10px; /* Ajusta el espacio alrededor del pie de página según sea necesario */
-    background-color: #f0f0f0; /* Ajusta el color de fondo según sea necesario */
-    text-align: center; /* Alinea el contenido del pie de página en el centro */
+  flex-shrink: 0;
+  padding: 10px;
+  background-color: #f0f0f0;
+  text-align: center;
 }
+
+@media (max-width: 575.98px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+ }
+
+ @media (min-width: 576px) and (max-width: 767.98px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+  }
+
+@media (max-width: 767px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+ }
+
+@media (min-width: 768px) and (max-width: 991.98px) { 
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 1200px) { 
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+@media (min-width: 430px) and (max-width: 932px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 932px) and (max-width: 430px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 896px) and (max-width: 414px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 844px) and (max-width: 390px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 915px) and (max-width: 412px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 914px) and (max-width: 412px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+
+.table-responsive {
+  height: 480px;
+  width: 100;
+  overflow-x: overlay;
+}
+
+
+
+
+// @media only screen and (max-width: 768px) {
+//   .table-responsive {
+//       overflow-x: auto;
+//   }
+// }
+
+// .ngx-datatable-header-cell:nth-child(3),
+// .ngx-datatable-header-cell:nth-child(4),
+// .ngx-datatable-cell:nth-child(3),
+// .ngx-datatable-cell:nth-child(4),
+// .ngx-datatable-cell:nth-child(5) {
+//   display: none;
+// }

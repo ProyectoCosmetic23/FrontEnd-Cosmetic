@@ -7,6 +7,7 @@ import { ToastrService } from "ngx-toastr";
 import { RolesService } from "src/app/shared/services/roles.service";
 import { EmployeesService } from "src/app/shared/services/employee.service";
 import { AuthService } from "src/app/shared/services/auth.service";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 
 @Component({
   selector: "app-user-list",
@@ -16,8 +17,8 @@ import { AuthService } from "src/app/shared/services/auth.service";
 export class UserListComponent implements OnInit {
   loading: boolean;
   searchControl: UntypedFormControl = new UntypedFormControl();
-  listUsers: any[];
-  filteredUsers: any[];
+  listUsers: any[] = [];
+  filteredUsers: any[] = [];
   modalAbierto = false;
   pageSize: number = 10;
   currentPage: number = 1;
@@ -29,6 +30,7 @@ isFirstModalOpen: boolean = false;
 isSecondModalOpen: boolean = false;
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 @ViewChild("changeModal", { static: true }) changeModal: any;
+  countLabel: any;
   constructor(
     private _userService: UsersService,
     private modalService: NgbModal,
@@ -89,6 +91,14 @@ isSecondModalOpen: boolean = false;
     });
   }
 
+  @ViewChild(DatatableComponent)
+  table: DatatableComponent;
+
+  //  actualizar el valor visual de count según tus necesidades
+  actualizarCountLabel() {
+    this.countLabel = this.filteredUsers.length;
+  }
+
   sortListUsers() {
     this.filteredUsers.sort((a, b) => {
       if (a.id_user > b.id_user) {
@@ -100,26 +110,29 @@ isSecondModalOpen: boolean = false;
       return 0;
     });
   }
-  filterData(value: string) {
-    if (value) {
-      value = value.toLowerCase();
+ 
+  searchUser($event) {
+    const value = ($event.target as HTMLInputElement).value;
+    if (value !== null && value !== undefined && value !== "") {
+      this.filteredUsers = this.listUsers.filter(
+        (c) =>
+          c.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+  
+            this.changeClientStateDescription(c.state_user)
+            .toLowerCase()
+            .indexOf(value.toLowerCase()) !== -1
+            
+            )
+            
     } else {
-      this.filteredUsers = [...this.listUsers];
-      return;
+      this.filteredUsers = this.listUsers;
     }
-
-    this.filteredUsers = this.listUsers.filter((user) => {
-      const nombreMatch = user.username.toLowerCase().includes(value);
-      const correoMatch = user.email.toLowerCase().includes(value);
-      const estadoMatch = user.state_user.toLowerCase().includes(value);
-
-      return nombreMatch || correoMatch || estadoMatch;
-    });
-
-    this.currentPage = 1;
   }
 
-
+  
+  changeClientStateDescription(state_user: boolean) {
+    return state_user ? "Activo" : "Inactivo";
+  }
 
   openFirstModal(idUser: number) {
     if (!this.isFirstModalOpen) {

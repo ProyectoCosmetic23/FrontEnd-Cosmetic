@@ -36,6 +36,7 @@ export class PurchaseListComponent implements OnInit {
   countLabel: number;
   reasonForm: FormGroup;
   reasonAnulate = {};
+  showLoadingScreen: boolean;
 
   constructor(
     private _purchaseService: PurchasesService,
@@ -58,6 +59,7 @@ export class PurchaseListComponent implements OnInit {
   }
 
   getPurchases() {
+    this.showLoadingScreen = true;
     this._purchaseService.getAllPurchase().subscribe(
       (data) => {
         this.listPurchases = data;
@@ -67,7 +69,10 @@ export class PurchaseListComponent implements OnInit {
       (error) => {
         console.error("Error al obtener Categorías:", error);
       }
-    );
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
   }
 
   @ViewChild(DatatableComponent)
@@ -101,7 +106,9 @@ export class PurchaseListComponent implements OnInit {
           this.changePuchaseStateDescription(c.state_purchase)
             .toLowerCase()
             .indexOf(value.toLowerCase()) !== -1 ||
-          c.invoice_number.indexOf(value.toLowerCase()) !== -1
+          c.invoice_number.indexOf(value.toLowerCase()) !== -1 ||
+          c.purchase_date.indexOf(value.toLowerCase()) !== -1
+          || c.total_purchase.indexOf(value.toLowerCase()) !== -1
       );
     } else {
       this.filteredPurchases = this.listPurchases;
@@ -125,50 +132,76 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
+ 
+
   @ViewChild("changeStatusModal", { static: true }) changeStatusModal: any;
 
-  modalStatus(idPurchase: number, $event?: any): void {
-    this.modalService
-      .open(this.changeStatusModal, { centered: true })
-      .result.then((result) => {
-        if (result === "Ok") {
-          const reasonAnulate = this.reasonForm.get("reason_anulate").value;
-          this._purchaseService
-            .PurchaseChangeStatus(idPurchase, reasonAnulate)
-            .subscribe(
-              (data) => {
-                this.loading = false;
-                this.toastr.success(
-                  "Cambio de estado realizado con éxito.",
-                  "Proceso Completado",
-                  {
-                    progressBar: true,
-                    timeOut: 2000,
-                  }
-                );
-                this.getPurchases();
-                this.modalAbierto = false;
-                this.reasonForm.get("reason_anulate").setValue(null);
-              },
-              (error) => {
-                this.loading = false;
-                this.toastr.error(
-                  "Fallo al realizar el cambio de estado.",
-                  "Error",
-                  {
-                    progressBar: true,
-                    timeOut: 2000,
-                  }
-                );
-                console.error("Error al cambiar de estado:", error);
-              }
-            );
-        } else if (result === "Cancel") {
-          this.modalAbierto = false;
-          this.reasonForm.get("reason_anulate").setValue(null);
-        }
-      });
+  currentPurchaseState: any;
+
+  async modalStatus(IdPurchase: number, $event?: any): Promise<void> {
+    try {
+      const currentPurchaseState = await this.getCurrentPurechaseState(IdPurchase);
+  
+      const result = await this.modalService
+        .open(this.changeStatusModal, { centered: true, backdrop: 'static', keyboard: false })
+        .result;
+  
+      if (result === "Ok") {
+      
+        const reasonAnulate = this.reasonForm.get("reason_anulate").value;
+  
+        this._purchaseService
+          .PurchaseChangeStatus(IdPurchase, reasonAnulate)
+          .subscribe(
+            (data) => {
+              this.loading = false;
+              this.toastr.success(
+                "Cambio de estado realizado con éxito.",
+                "Proceso Completado",
+                {
+                  progressBar: true,
+                  timeOut: 2000,
+                }
+              );
+              this.getPurchases();
+              this.modalAbierto = false;
+              this.reasonForm.get("reason_anulate").setValue(null);
+            },
+            (error) => {
+              this.loading = false;
+              this.toastr.error(
+                "Fallo al realizar el cambio de estado.",
+                "Error",
+                {
+                  progressBar: true,
+                  timeOut: 2000,
+                }
+              );
+              console.error("Error al cambiar de estado:", error);
+            }
+          );
+      } else if (result === "Cancel" || (result && result.dismissedWith === 'cancel')) {
+        this.getPurchases();
+        this.modalAbierto = false;
+        this.reasonForm.get("reason_anulate").setValue(null);
+      }
+    } catch (error) {
+      console.error("Error al obtener detalles de la compras:", error);
+    }
   }
+  
+  
+// Método para obtener el estado actual de la categoría (ahora es asíncrono)
+async getCurrentPurechaseState(IdPurchase: number): Promise<any> {
+  try {
+    const purchaseDetails = await this._purchaseService.getPurchaseById(IdPurchase).toPromise();
+    return purchaseDetails;
+  } catch (error) {
+    console.error("Error al obtener detalles de la compras:", error);
+    throw error; // Rechaza la promesa para que se maneje en la función llamadora
+  }
+}
+  
 
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach((control) => {

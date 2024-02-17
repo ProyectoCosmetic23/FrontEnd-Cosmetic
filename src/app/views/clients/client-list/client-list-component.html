@@ -29,10 +29,10 @@
                   <div class="spinner spinner-primary me-3"></div>
                 </div>
               </div>
-        
+              <div  class=" table-responsive">
                 <ngx-datatable
                 class="material fullscreen"
-                style="height: 100px"
+                style="height: 480px"
                 [columnMode]="'force'"
                 [headerHeight]="50"
                 [footerHeight]="50"
@@ -40,7 +40,8 @@
                 [rows]="filteredClients"
                 [count]="filteredClients.length"
                 [limit]="6"
-                rowHeight="700px">
+                rowHeight="700px"
+                [scrollbarH]="true">
 
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
@@ -83,19 +84,20 @@
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
+                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 btn-sm" [routerLink]="['/clients/print', row.id_client]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label bTooltip="Cambiar estado" class="switch switch-success" (change)="handleChange($event, row)" (click)="openModal(row.id_client)">
+                        <label bTooltip="Cambiar estado" class="switch switch-success btn-sm" (change)="handleChange($event, row)" (click)="openModal(row.id_client)">
                             <input type="checkbox" [checked]="row.state_client === 'Activo'">
                             <span class="slider"></span>
                         </label>
                     </ng-template>
                 </ngx-datatable-column>
                 </ngx-datatable>
+            </div>
             </div>
         </div>
     </div>

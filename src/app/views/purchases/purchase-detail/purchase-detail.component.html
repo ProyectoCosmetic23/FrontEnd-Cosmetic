@@ -3,25 +3,33 @@
     <h1 *ngIf="viewMode === 'new'">Registrar Compra</h1>
     <h1 *ngIf="viewMode === 'print'">Detalle de Compra</h1>
     <h1 *ngIf="viewMode === 'print'"></h1>
-    <ul>
-      <li><a>Compras</a></li>
-      <li *ngIf="viewMode === 'new'">Registrar Compra</li>
-      <li *ngIf="viewMode === 'print'">Detalle de Compra</li>
-    </ul>
+  
   </div>
 </div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+
+<div *ngIf="showLoadingScreen && (viewMode == 'print')" class="loading-screen">
+  <div class="loading-content">
+    <div class="spinner spinner-primary me-3"></div>
+  </div>
+</div>
+<div *ngIf="showLoadingScreen == false || viewMode == 'new'">
+
+
 <div class="row">
   <div class="col-md-12">
     <div class="card mb-4">
       <div class="card-body">
-        <div class="card-title mb-3">Formulario de Compra</div>
+        <div class="card-title mb-3"></div>
 
         <div *ngIf="viewMode === 'new' || viewMode === 'print'">
           <form [formGroup]="purchaseForm">
             <div class="row">
               <div class="col-md-2">
                 <label for="invoice_number"
-                  >Numero Factura<span
+                  >Número Factura<span
                     class="required"
                     *ngIf="viewMode === 'new'"
                     >*</span
@@ -209,7 +217,7 @@
                 <label
                   for="reason_anulate"
                   *ngIf="!purchaseForm.get('state_purchase').value"
-                  >Motivo de anulación</label
+                  >Razón Cambio de Estado</label
                 >
                 <div *ngIf="!purchaseForm.get('state_purchase').value">
                   <textarea
@@ -286,7 +294,7 @@
                       </option>
                     </select>
                     <button
-                      ngbTooltip="Crear Producto"
+                      ngbTooltip="Registrar Producto"
                       class="btn btn-secondary"
                       (click)="openCreateProductModal(createProductModal)"
                     >
@@ -310,7 +318,7 @@
                             <div class="col-md-3 align-self-end form-container">
                               <div class="form-group">
                                 <label for="id_product"></label>
-                                <button  ngbTooltip="Crear Producto"  class="btn btn-secondary" (click)="openCreateProductModal(createProductModal)"><i class="i-Add"></i></button>
+                                <button  ngbTooltip="Registrar Producto"  class="btn btn-secondary" (click)="openCreateProductModal(createProductModal)"><i class="i-Add"></i></button>
 
                               </div>
                             </div>
@@ -564,11 +572,46 @@
                   Registrar Compra
                 </button>
               </div>
+                 <div
+                class="form-group text-right"
+                style="text-align: right"
+                *ngIf="viewMode === 'new'"
+              >
+                <button
+                  type="button"
+                  class="btn btn-danger ml-2"
+                  (click)="cancel()"
+                >
+                  Cancelar
+                </button>
+                <button
+                  class="btn btn-primary m-1 custom-button"
+                  [disabled]="loading"
+                  (click)="submitPurchase()"
+                >
+                  Registrar Compra
+                </button>
+              </div>
+
+              <div
+              class="form-group text-right"
+              style="text-align: right"
+              *ngIf="viewMode === 'print'"
+            >
+              <button
+                type="button"
+                class="btn btn-danger ml-2"
+                (click)="cancel()"
+              >
+                Volver
+              </button>
+           
+            </div>
             </div>
           </form>
           <ng-template #createProductModal let-modal>
             <div class="modal-header">
-              <h4 class="modal-title" id="modal-title">Crear Producto</h4>
+              <h4 class="modal-title" id="modal-title">Registrar Producto</h4>
             </div>
             <div class="modal-body">
               <form [formGroup]="productForm">
@@ -743,7 +786,7 @@
                 [disabled]="!this.productForm.valid || this.productExists"
                 (click)="modal.close('Ok')"
               >
-                Crear Producto
+                Registrar Producto
               </button>
             </div>
           </ng-template>

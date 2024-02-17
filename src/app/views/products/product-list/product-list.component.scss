@@ -35,3 +35,94 @@
   background-color: #f0f0f0; /* Ajusta el color de fondo según sea necesario */
   text-align: center; /* Alinea el contenido del pie de página en el centro */
 }
+
+
+
+@media (max-width: 575.98px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+ }
+
+ @media (min-width: 576px) and (max-width: 767.98px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+  }
+
+@media (max-width: 767px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+ }
+
+@media (min-width: 768px) and (max-width: 991.98px) { 
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 1200px) { 
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+@media (min-width: 430px) and (max-width: 932px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 932px) and (max-width: 430px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 896px) and (max-width: 414px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 844px) and (max-width: 390px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 915px) and (max-width: 412px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 914px) and (max-width: 412px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+.table-responsive {
+  max-width: 308% !important;
+  overflow-x: overlay !important;
+}
+
+
+.table-responsive {
+  height: 480px;
+  width: 100;
+  overflow-x: overlay;
+}
