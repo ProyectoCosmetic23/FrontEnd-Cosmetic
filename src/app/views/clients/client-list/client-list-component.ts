@@ -102,24 +102,24 @@ export class ClientListComponent implements OnInit {
   }
 
 
-  // filterData(value: string) {
-  //   if (value) {
-  //     value = value.toLowerCase();
-  //   } else {
-  //     this.filteredClients = [...this.listClients];
-  //     return;
-  //   }
+  filterData(value: string) {
+    if (value) {
+      value = value.toLowerCase();
+    } else {
+      this.filteredClients = [...this.listClients];
+      return;
+    }
 
-  //   this.filteredClients = this.listClients.filter((client) => {
-  //     const nombreMatch = client.name_client.toLowerCase().includes(value);
-  //     const correoMatch = client.email_client.toLowerCase().includes(value);
-  //     const estadoMatch = client.state_client.toLowerCase().includes(value);
+    this.filteredClients = this.listClients.filter((client) => {
+      const nombreMatch = client.name_client.toLowerCase().includes(value);
+      const correoMatch = client.email_client.toLowerCase().includes(value);
+      const estadoMatch = client.state_client.toLowerCase().includes(value);
 
-  //     return nombreMatch || correoMatch || estadoMatch;
-  //   });
+      return nombreMatch || correoMatch || estadoMatch;
+    });
 
-  //   this.currentPage = 1;
-  // }
+    this.currentPage = 1;
+  }
   searchCategory($event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value !== null && value !== undefined && value !== "") {
