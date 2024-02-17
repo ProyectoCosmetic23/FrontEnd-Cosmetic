@@ -25,9 +25,10 @@
         </div>
         <div class="col-md-12">
             <div class="card o-hidden">
+                <div  class=" table-responsive">
                 <ngx-datatable
                 class="material fullscreen"
-                style="height: 100px"
+                style="height: 480px"
                 [columnMode]="'force'"
                 [headerHeight]="50"
                 [footerHeight]="50"
@@ -35,7 +36,9 @@
                 [rows]="filteredProducts"
                 [count]="filteredProducts.length"
                 [limit]="6"
-                rowHeight="700px">
+                rowHeight="700px"
+                rowWidtht="500px"
+                [scrollbarH]="true">
 
 
                 <ngx-datatable-column name="category" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
@@ -104,20 +107,20 @@
                             <p style="font-size:15px;"> Acciones</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row" >
-                            <button ngbTooltip="Ver Estado" class="btn btn-dark m-1"
+                            <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm"
                                 [routerLink]="['/products/print', row.id_product]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button ngbTooltip="Editar" class="btn btn-info m-0"
+                            <button ngbTooltip="Editar" class="btn btn-info m-0 btn-sm"
                                 [routerLink]="['/products/edit', row.id_product]"
                                 [disabled]="row.state_product == 'Inactivo'">
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <button ngbTooltip="Dar de baja" class="btn btn-danger m-1"
+                            <button ngbTooltip="Dar de baja" class="btn btn-danger m-1 btn-sm"
                                 (click)="openRetireModal(row.id_product, row.selling_price,retireModal)">
                                 <i class="i-Down"></i>
                             </button>
-                            <label ngbTooltip="Cambiar estado" class="switch switch-success"
+                            <label ngbTooltip="Cambiar estado" class="switch switch-success btn-sm"
                                 (click)="openModal(row.id_product)">
                                 <input type="checkbox" [checked]="row.state_product== 'Activo'"
                                     (change)="handleChange($event, row)">
@@ -126,6 +129,7 @@
                         </ng-template>
                     </ngx-datatable-column>
                 </ngx-datatable>
+            </div>
             </div>
         </div>
     </div>

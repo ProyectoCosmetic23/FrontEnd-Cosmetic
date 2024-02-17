@@ -12,19 +12,22 @@
                 <div class="col-md-6">
                     <button class="btn btn-primary float-right" [routerLink]="['/users/new']">Registrar Usuario</button>
                 </div>
-                <div class="col-md-6 d-flex justify-content-end">
-                    <input _ngcontent-vet-c167="" id="search" placeholder="Buscar usuario" type="text"
-                        class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
-                        style="width: 50%;">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input id="category" placeholder="Buscar Usuario" name="category" [formControl]="searchControl" class="form-control"
+                            type="category" (keyup)="searchUser($event)">
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
 
         <div class="col-md-12">
             <div class="card o-hidden">
+                <div  class=" table-responsive">
                 <ngx-datatable
                 class="material fullscreen"
-                style="height: 100px"
+                style="height: 480px"
                 [columnMode]="'force'"
                 [headerHeight]="50"
                 [footerHeight]="50"
@@ -32,7 +35,9 @@
                 [rows]="filteredUsers"
                 [count]="filteredUsers.length"
                 [limit]="6"
-                rowHeight="700px">
+                rowHeight="700px"
+                [scrollbarH]="true"
+                >
                     <!-- <ngx-datatable-column name="id_user" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                         <ng-template ngx-datatable-header-template>
                             Id usuario
@@ -96,13 +101,13 @@
                                <p style="font-size:15px;">Acciones</p>
                         </ng-template>
                         <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                            <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/users/print', row.id_user]">
+                            <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 btn-sm" [routerLink]="['/users/print', row.id_user]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/users/edit', row.id_user]" [disabled]="row.state_user === 'Inactivo'"  >
+                            <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm" [routerLink]="['/users/edit', row.id_user]" [disabled]="row.state_user === 'Inactivo'"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label ngbTooltip="Cambiar estado"  class="switch switch-success me-3" (click)="openFirstModal(row.id_user)">
+                            <label ngbTooltip="Cambiar estado"  class="switch switch-success me-3 btn-sm" (click)="openFirstModal(row.id_user)">
                                 <input type="checkbox" [checked]="row.state_user === 'Activo'"(change)="handleChange($event, row)">
                                 <span class="slider"></span>
                               </label>
@@ -113,9 +118,10 @@
                     </ngx-datatable-column>
                 </ngx-datatable>
             </div>
+            </div>
         </div>
     </div>
-</div>
+
 
 
 <ng-template #deleteConfirmModal let-modal>

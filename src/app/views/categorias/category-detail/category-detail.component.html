@@ -1,6 +1,6 @@
 <div class="breadcrumb">
   <h1 *ngIf="viewMode === 'new'">Registrar Categoría</h1>
-  <h1 *ngIf="viewMode === 'edit'">Editar Categoría</h1>
+  <h1 *ngIf="viewMode === 'edit'">Modificar Categoría</h1>
   <h1 *ngIf="viewMode === 'print'">Ver Detalle de Categoría</h1>
 
 </div>
@@ -64,7 +64,7 @@
 
               <div class=""  *ngIf="viewMode === 'print'">
               
-                <label for="reason_anulate" *ngIf=" categoryForm.get('state_category').value === false">Razón cambio estado </label>
+                <label for="reason_anulate" *ngIf=" categoryForm.get('state_category').value === false">Razón Cambio Estado </label>
                 <div class="col-md-12 form-group mb-3" *ngIf="categoryForm.get('state_category').value === false ">
                   <div  >
                     <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"  [style.resize]="'none'" rows="5" ></textarea>
@@ -76,9 +76,11 @@
               <div *ngIf="viewMode == 'new' || viewMode == 'edit'" class="form-group text-right" style="text-align: right;">
                 <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
 
+                
                 <btn-loading  btnClass="btn btn-primary m-1 custom-button" [loading]="loading">
-                  {{viewMode == 'new' ? 'Registrar Categoría' : 'Editar Categoría'}}
+                  {{viewMode == 'new' ? 'Registrar Categoría' : 'Modificar Categoría'}}
                 </btn-loading>
+
               </div>
 
               <div *ngIf="viewMode === 'print'"class="form-group text-right" style="text-align: right;">
