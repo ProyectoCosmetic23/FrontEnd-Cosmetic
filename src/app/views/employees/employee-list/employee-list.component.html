@@ -119,8 +119,8 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary " (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger " (click)="modal.close('Ok')"
+        <button type="button" class="btn btn-wide btn-danger" (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-primary" (click)="modal.close('Ok')"
             [disabled]="reasonAnulate == ''">Aceptar</button>
     </div>
 </ng-template>

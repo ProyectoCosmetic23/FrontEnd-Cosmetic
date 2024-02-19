@@ -90,37 +90,33 @@
                                 
 
                                 <div class="col-md-2 form-group mb-3">
-                                    <label for="max_stock">Stock Maximo<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control small-input" id="max_stock"
-                                        formControlName="max_stock">
-
+                                    <label for="max_stock">Stock Máximo<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="max_stock" formControlName="max_stock" min="0" oninput="this.value = Math.abs(this.value)">
                                     <div *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
-                                        class="error-message">
-                                        El campo stock Maxino es obligatorio.
+                                         class="error-message">
+                                        El campo stock máximo es obligatorio.
                                     </div>
-                                    <div *ngIf="productForm.get('max_stock').hasError('stockMinMax')" class="error-message">
-                                        El stock máximo no puede ser menor que el stock mínimo.
+                                    <div *ngIf="productForm.get('max_stock').hasError('min')" class="error-message">
+                                        El stock máximo no puede ser negativo.
                                     </div>
                                 </div>
-
+                                
                                 <div class="col-md-2 form-group mb-3">
-                                    <label for="min_stock">Stock Minimo<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control small-input" id="min_stock"
-                                        formControlName="min_stock">
-                                        <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
-                                        class="error-message">
+                                    <label for="min_stock">Stock Mínimo<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control small-input" id="min_stock" formControlName="min_stock" min="0" oninput="this.value = Math.abs(this.value)">
+                                    <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
+                                         class="error-message">
                                         El campo stock mínimo es obligatorio.
-                                   </div>
-                                   <div *ngIf="productForm.get('min_stock').dirty && productForm.get('max_stock').dirty && productForm.hasError('invalidStockRange')"
-                                        class="error-message">
-                                        El stock mínimo no puede ser mayor que el stock máximo.
-                                   </div>
-                                   
+                                    </div>
+                                    <div *ngIf="productForm.get('min_stock').hasError('min')" class="error-message">
+                                        El stock mínimo no puede ser negativo.
+                                    </div>
                                 </div>
+                                
 
                                 <div class="col-md-2 form-group mb-3">
                                     <label for="cost_price">Precio de costo<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control small-input" id="cost_price" formControlName="cost_price">
+                                    <input type="number" class="form-control small-input" id="cost_price" formControlName="cost_price" >
                                     <div *ngIf="productForm.get('cost_price').touched && productForm.get('cost_price').hasError('required')" class="error-message">
                                       El campo precio de costo es obligatorio.
                                     </div>
@@ -171,15 +167,18 @@
                                         formControlName="observation" style="resize:none" rows="5"></textarea>
 
                                 </div>
-                                <div class="form-group text-right" style="text-align: right;">
-                                    <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                                <div *ngIf="viewMode == 'new' || viewMode == 'edit'" class="form-group text-right" style="text-align: right;">
+                                    <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                                    
                                     <btn-loading *ngIf="viewMode !== 'print'"
                                         btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode ==
                                         'new' ? 'Registrar Producto' : 'Modificar Producto'
                                         }}
                                     </btn-loading>
-
                                 </div>
+                                <div *ngIf="viewMode === 'print'"class="form-group text-right" style="text-align: right;">
+                                    <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Volver</button>
+                                  </div>
                             </div>
                         </form>
                     </div>

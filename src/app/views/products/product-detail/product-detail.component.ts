@@ -99,12 +99,12 @@ export class ProductDetailComponent implements OnInit {
         [Validators.required, Validators.maxLength(80)],
         [this.validateNameSimbolAndNumber],
       ],
-      quantity: [null],
-      max_stock: ["", Validators.required],
-      min_stock: ["" , Validators.required],
+      quantity: [0], // Establece el valor inicial en 0
+      max_stock: [0, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      min_stock: [0, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
       profit: [],
-      cost_price: [null, [Validators.required, Validators.min(0)]], // Validación para precio de costo
-      selling_price: [null, [Validators.required, Validators.min(0)]], // Validación para precio de venta
+      cost_price: [0, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
+      selling_price: [0, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
       observation: ["", [Validators.maxLength(100)]],
       state_product: [],
       creation_date_product: [],
@@ -243,6 +243,15 @@ export class ProductDetailComponent implements OnInit {
     this.setDataProduct();
   }
 
+  validateNonNegative(control: AbstractControl): { [key: string]: any } | null {
+    const value = control.value;
+    if (value < 0) {
+      return { negativeValue: true };
+    }
+    return null;
+  }
+  
+  
   createProduct() {
     Object.values(this.productForm.controls).forEach((control) => {
       control.markAsTouched();
@@ -274,7 +283,7 @@ export class ProductDetailComponent implements OnInit {
         );
       } else {
         this.toastr.error(
-          "Por favor, complete todos los campos correctamenteeeeeee.",
+          "Por favor, complete todos los campos correctamente.",
           "Error de validación",
           { progressBar: true, timeOut: 3000 }
         );

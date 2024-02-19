@@ -38,7 +38,7 @@
                 [count]="filteredProducts.length"
                 [limit]="6"
                 rowHeight="700px"
-                rowWidtht="500px"
+                
                 [scrollbarH]="true">
 
 
@@ -115,7 +115,7 @@
                                 [routerLink]="['/products/print', row.id_product]">
                                 <i class="i-Eye"></i>
                             </button>
-                            <button ngbTooltip="Modificar" class="btn btn-info m-0"
+                            <button ngbTooltip="Modificar" class="btn btn-info btn-sm"
                                 [routerLink]="['/products/edit', row.id_product]"
                                 [disabled]="row.state_product == 'Inactivo'">
                                 <i class="i-Pen-4"></i>
@@ -124,7 +124,7 @@
                                 (click)="openRetireModal(row.id_product, row.selling_price,retireModal)">
                                 <i class="i-Down"></i>
                             </button>
-                            <label ngbTooltip="Cambiar estado" class="switch switch-success btn-sm"
+                            <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom btn-sm"
                                 (click)="openModal(row.id_product)">
                                 <input type="checkbox" [checked]="row.state_product== 'Activo'"
                                     (change)="handleChange($event, row)">
@@ -141,17 +141,17 @@
 
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header" [closable]="false">
-        <h4 class="modal-title" id="modal-title">Cambiar estado producto</h4>
+        <h4 class="modal-title" id="modal-title">Cambiar Estado del Producto</h4>
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea cambiar el estado de este Producto?</strong></p>
-        <label for="reasonAnulate">Razón de cambio de estado:</label>
+        <label for="reasonAnulate">Razón de Cambio de estado:</label>
         <textarea  id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado" [(ngModel)]="reasonAnulate" style="resize:none" rows="5"></textarea>
         
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary " (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger " (click)="modal.close('Ok')" [disabled]="reasonAnulate == ''">Aceptar</button>
+        <button type="button" class="btn btn-wide btn-danger "  (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-primary"(click)="modal.close('Ok')" [disabled]="reasonAnulate == ''">Aceptar</button>
     </div>
 </ng-template>
 <ng-template #retireModal let-modal>
@@ -182,7 +182,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+            <button type="button" class="btn btn-wide btn-danger " (click)="modal.dismiss()">Cancelar</button>
             <button type="button" class="btn btn-primary" (click)="retireProduct()" [disabled]="returnReason == ''">Dar de baja</button>
         </div>
     </div>

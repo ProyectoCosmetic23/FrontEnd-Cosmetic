@@ -129,12 +129,15 @@
                     </div>
                     
                     
-                    <div class="form-group text-right" style="text-align: right;">
-                        <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                    <div *ngIf="viewMode == 'new' || viewMode == 'edit'" class="form-group text-right" style="text-align: right;">
+                        <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
                         <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode == 'new' ? 'Registrar Empleado' : 'Modificar Empleado' }} 
                         </btn-loading>
                        
                     </div>
+                    <div *ngIf="viewMode === 'print'"class="form-group text-right" style="text-align: right;">
+                        <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Volver</button>
+                      </div>
                 </div>
             </form>
         </div>
