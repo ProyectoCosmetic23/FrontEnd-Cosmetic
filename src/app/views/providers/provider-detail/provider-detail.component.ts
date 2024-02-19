@@ -126,10 +126,10 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.required,
         Validators.maxLength(10),
         Validators.minLength(7),
-        Validators.pattern(/^[0-9\s]+$/)
+        Validators.pattern(/^[0-9]+$/)
       ]],
       
-      reason_anulate:[i.reason_anulate],
+      reason_anulate:[i.reason_anulate, [Validators.maxLength(100)]],
 
       state_provider: [i.state_provider],
       observation_provider: [i.observation_provider, [
