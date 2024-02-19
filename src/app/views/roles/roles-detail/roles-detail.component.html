@@ -2,12 +2,6 @@
   <h1 *ngIf="viewMode === 'new'">Registrar Rol</h1>
   <h1 *ngIf="viewMode === 'edit'">Editar Rol</h1>
   <h1 *ngIf="viewMode === 'print'">Ver Detalle de Rol</h1>
-  <ul>
-    <li><a [routerLink]="['/roles']">Roles</a></li>
-    <li *ngIf="viewMode === 'new'">Registrar Rol</li>
-    <li *ngIf="viewMode === 'edit'">Editar Rol</li>
-    <li *ngIf="viewMode === 'print'">Ver Detalle de Rol</li>
-  </ul>
 </div>
 
 <div
@@ -26,7 +20,6 @@
     <div class="col-md-12">
       <div class="card mb-4">
         <div class="card-body">
-          <div class="card-title mb-3">Formulario de Rol</div>
           <form [formGroup]="formBasic" (ngSubmit)="saveData()">
             <div class="row">
               <div class="col-md-6 form-group mb-3">
@@ -105,7 +98,7 @@
                 </div>
               </div>
               <div class="error-message" *ngIf="showErrorMessageModules">
-                <p class="text-danger">Debe agregar al menos un módulo.</p>
+                <p class="text-danger">Debe seleccionar al menos un módulo.</p>
               </div>
               <div class="col-md-12">
                 <div class="d-flex justify-content-end">
@@ -120,13 +113,13 @@
                     *ngIf="viewMode === 'new'"
                     btnClass="btn-primary"
                     [loading]="loading"
-                    >Crear Rol</btn-loading
+                    >Registrar Rol</btn-loading
                   >
                   <btn-loading
                     *ngIf="viewMode === 'edit'"
                     btnClass="btn-primary"
                     [loading]="loading"
-                    >Editar Rol</btn-loading
+                    >Modificar Rol</btn-loading
                   >
                 </div>
               </div>

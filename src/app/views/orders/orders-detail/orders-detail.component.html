@@ -1,11 +1,6 @@
 <div class="breadcrumb">
   <h1 *ngIf="viewMode == 'new'">Registrar Pedido</h1>
   <h1 *ngIf="viewMode === 'detail'">Ver Detalle de Pedido</h1>
-  <ul>
-    <li><a [routerLink]="['/orders']">Pedidos</a></li>
-    <li *ngIf="viewMode == 'new'">Registrar Pedido</li>
-    <li *ngIf="viewMode === 'detail'">Ver Detalle de Pedido</li>
-  </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -373,7 +368,7 @@
                       *ngIf="viewMode === 'new'"
                       btnClass="btn-primary"
                       [loading]="loading"
-                      >Crear Pedido</btn-loading
+                      >Registrar Pedido</btn-loading
                     >
                   </div>
                 </div>
@@ -474,7 +469,8 @@
                 <div class="d-flex justify-content-end">
                   <button
                     class="btn btn-danger float-right"
-                    [routerLink]="['/orders']">
+                    [routerLink]="['/orders']"
+                  >
                     Volver
                   </button>
                 </div>

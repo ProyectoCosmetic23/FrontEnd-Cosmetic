@@ -308,7 +308,7 @@ export class OrdersListComponent implements OnInit {
         if (!this.modalAbierto) {
           this.modalAbierto = true;
           this.modalService
-            .open(this.deleteConfirmModal, { centered: true })
+            .open(this.deleteConfirmModal, { centered: true, backdrop: 'static' })
             .result.then(
               (result) => {
                 if (result === "Ok") {
@@ -549,6 +549,7 @@ export class OrdersListComponent implements OnInit {
             this.modalRef = this.modalService.open(this.paymentModal, {
               centered: true,
               size: "lg",
+              backdrop: 'static'
             });
 
             if (payments.length > 0) {

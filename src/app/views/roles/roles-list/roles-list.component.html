@@ -1,9 +1,5 @@
 <div class="breadcrumb">
   <h1>Roles</h1>
-  <ul>
-    <li>Configuraciones</li>
-    <li>Roles</li>
-  </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -22,7 +18,7 @@
       <div class="col-md-4">
         <div class="form-group">
           <button class="btn btn-primary" [routerLink]="['/roles/new']">
-            Crear nuevo Rol
+            Registrar Rol
           </button>
         </div>
       </div>
@@ -125,10 +121,9 @@
                 </button>
                 <button
                   *ngIf="
-                    row.name_role !== 'Administrador' ||
-                    row.name_role == 'Admin'
+                    row.name_role !== 'Administrador'
                   "
-                  ngbTooltip="Editar"
+                  ngbTooltip="Modificar"
                   class="btn btn-info m-1"
                   [routerLink]="['/roles/edit', row.id_role]"
                 >
@@ -137,17 +132,19 @@
                 <label
                   ngbTooltip="Cambiar Estado"
                   *ngIf="
-                    row.name_role !== 'Administrador' ||
-                    row.name_role == 'Admin'
+                    row.name_role !== 'Administrador'
                   "
                   class="switch switch-success me-3"
-                  (click)="openModal(row.id_role, row.state_role)"
                 >
                   <input
                     type="checkbox"
                     [checked]="row.state_role === 'Activo'"
+                    [disabled]="modalAbierto"
                   />
-                  <span class="slider"></span>
+                  <span
+                    class="slider"
+                    (click)="openModal(row.id_role, row.state_role)"
+                  ></span>
                 </label>
               </ng-container>
             </ng-template>
@@ -166,11 +163,13 @@
     <p>
       <strong>{{ stateMessage }}</strong>
     </p>
+    <label for="reasonAnulate">Razón de Cambio de estado del Rol:</label>
     <textarea
       placeholder="Razón por la que se cambia el estado del Rol"
       [(ngModel)]="message_observation"
       class="form-control"
       style="resize: none"
+      rows="5"
     ></textarea>
   </div>
   <div class="modal-footer">

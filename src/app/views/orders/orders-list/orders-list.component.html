@@ -1,9 +1,5 @@
 <div class="breadcrumb">
   <h1>Pedidos</h1>
-  <ul>
-    <li>Ventas</li>
-    <li>Pedidos</li>
-  </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
@@ -13,7 +9,7 @@
     <div class="col-md-4">
       <div class="form-group">
         <button class="btn btn-primary" [routerLink]="['/orders/new']">
-          Crear nuevo Pedido
+          Registrar Pedido
         </button>
       </div>
     </div>
@@ -535,12 +531,16 @@
     <p>
       <strong>{{ modal_message }}</strong>
     </p>
+    <label for="reasonAnulate" *ngIf="usage == 'Anular'"
+      >Razón de Cambio de estado del pedido:</label
+    >
     <textarea
       *ngIf="usage == 'Anular'"
-      placeholder="Razón por la que se anula el pedido"
+      placeholder="Ingrese la razón de cambio de estado"
       [(ngModel)]="message_observation"
       class="form-control"
       style="resize: none"
+      rows="5"
     ></textarea>
   </div>
   <div class="modal-footer">
