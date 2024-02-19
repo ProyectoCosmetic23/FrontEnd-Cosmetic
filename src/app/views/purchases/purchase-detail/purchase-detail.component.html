@@ -342,6 +342,7 @@
                         name="cost_price"
                         formControlName="cost_price"
                         style="width: 100%"
+                        appCurrencyFormat
                       />
                     </div>
                     <div
@@ -374,6 +375,7 @@
                         name="selling_price"
                         formControlName="selling_price"
                         style="width: 100%"
+                        appCurrencyFormat
                       />
                     </div>
                     <div
@@ -415,7 +417,12 @@
                         name="vat"
                         formControlName="vat"
                         style="width: 100%"
+                        [(ngModel)]="amount"
+                         [format]="currencyFormat"
+                     
+                        
                       />
+             
                       <div
                         *ngIf="
                           purchaseDetailform.get('vat').touched &&
@@ -577,20 +584,7 @@
                 style="text-align: right"
                 *ngIf="viewMode === 'new'"
               >
-                <button
-                  type="button"
-                  class="btn btn-danger ml-2"
-                  (click)="cancel()"
-                >
-                  Cancelar
-                </button>
-                <button
-                  class="btn btn-primary m-1 custom-button"
-                  [disabled]="loading"
-                  (click)="submitPurchase()"
-                >
-                  Registrar Compra
-                </button>
+
               </div>
 
               <div
@@ -774,7 +768,7 @@
             <div class="modal-footer">
               <button
                 type="button"
-                class="btn btn-outline-secondary btn"
+                class="btn  btn-danger btn"
                 (click)="modal.dismiss('cancel')"
               >
                 Cancelar
@@ -782,7 +776,7 @@
               <button
                 type="submit"
                 ngbAutofocus
-                class="btn btn-wide btn-danger btn"
+                class="btn btn-wide btn-primary btn"
                 [disabled]="!this.productForm.valid || this.productExists"
                 (click)="modal.close('Ok')"
               >
