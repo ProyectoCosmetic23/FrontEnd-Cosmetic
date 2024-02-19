@@ -35,6 +35,7 @@ export class EmployeeDetailComponent implements OnInit {
   employeeData: EmployeeFormModel;
   employeeForm: FormGroup;
   employeeFormSub: Subscription;
+  showLoadingScreen: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -94,9 +95,6 @@ export class EmployeeDetailComponent implements OnInit {
       this.employeeForm.disable();
     }
 
-    if (this.viewMode == "edit") {
-      this.cedula.disable();
-    }
 
     if (this.viewMode != "new") {
       const token = this.cookieService.get("token");
@@ -104,6 +102,7 @@ export class EmployeeDetailComponent implements OnInit {
     }
   }
   private getEmployeeByID(id: number, token?: string): void {
+    this.showLoadingScreen = true;
     this.loading = true;
     this.employeesService.getEmployeesById(id, token).subscribe({
       next: (response: any) => {
@@ -115,6 +114,7 @@ export class EmployeeDetailComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
+        this.showLoadingScreen = false;
       },
     });
   }
@@ -326,6 +326,7 @@ export class EmployeeDetailComponent implements OnInit {
     } else if (currentRoute.includes("/edit/")) {
       this.viewMode = "edit";
     } else if (currentRoute.includes("/print/")) {
+      this.showLoadingScreen = true;
       this.viewMode = "print";
     }
   }

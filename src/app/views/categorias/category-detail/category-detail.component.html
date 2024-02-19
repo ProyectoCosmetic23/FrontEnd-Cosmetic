@@ -1,28 +1,30 @@
 <div class="breadcrumb">
   <h1 *ngIf="viewMode === 'new'">Registrar Categoría</h1>
-  <h1 *ngIf="viewMode === 'edit'">Editar Categoría</h1>
+  <h1 *ngIf="viewMode === 'edit'">Modificar Categoría</h1>
   <h1 *ngIf="viewMode === 'print'">Ver Detalle de Categoría</h1>
-  <ul>
-    <li><a [routerLink]="['/categories']">Categorías</a></li>
-    <li *ngIf="viewMode === 'new'">Registrar Categoría</li>
-    <li *ngIf="viewMode === 'edit'">Editar Categoría</li>
-    <li *ngIf="viewMode === 'print'">Ver Detalle de Categoría</li>
-  </ul>
+
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
 
-<!-- Contenido común a todas las vistas -->
+
+<div *ngIf="showLoadingScreen && (viewMode == 'edit' || viewMode == 'print')" class="loading-screen">
+  <div class="loading-content">
+    <div class="spinner spinner-primary me-3"></div>
+  </div>
+</div>
+<div *ngIf="showLoadingScreen == false || viewMode == 'new'">
+
 <div class="form-container">
   <!-- Vista de crear empleados -->
   <div class="row">
-    <div class="col-md-7"> <!-- Cambiado a 8 columnas -->
+    <div class="col-md-7"> 
       <div class="card mb-4">
         <div class="card-body">
-          <div class="card-title mb-3">Formulario de Categorías</div>
+          <div class="card-title mb-3"></div>
           <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
             <label for="name_category">Nombre de Categoría<span class="text-danger" *ngIf="viewMode == 'new' || viewMode == 'edit'">*</span></label>
-              <div class="col-md-6 form-group mb-3">
+              <div class="col-md-12 form-group mb-3">
                 <input type="text" class="form-control" id="name_category"  formControlName="name_category" required>
                 <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
                   El campo nombre es obligatorio.
@@ -30,6 +32,9 @@
               <div *ngIf="categoryForm.get('name_category').hasError('pattern')"class="error-message">
                   El campo nombre no puede tener tener numeros ni simbolos.
               </div>
+              <div *ngIf="categoryForm.get('name_category').hasError('minlength')"class="error-message">
+                El campo nombre debe tener mínimo 3 carácteres.
+            </div>
               
               <div *ngIf="categoryForm.get('name_category').hasError('maxlength')"class="error-message">
                   El campo nombre no puede superar los 80 caracteres.
@@ -41,7 +46,7 @@
               
               </div>
               <label for="state_category" *ngIf="viewMode == 'print'">Estado</label>
-              <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
+              <div *ngIf="viewMode == 'print'" class="col-md-12 form-group mb-3">
                 <input type="text"
                 class="form-control text-right"
                 value="{{categoryForm.get('state_category').value  ? 'Activo' : 'Inactivo'}}"
@@ -50,8 +55,8 @@
             
               </div>
               <label for="observation" >Observación</label>
-              <div class="col-md-6 form-group mb-3">
-                <textarea class="form-control" id="observation_category"  formControlName="observation_category"  [style.resize]="'none'"></textarea>
+              <div class="col-md-12 form-group mb-3">
+                <textarea class="form-control" id="observation_category"  formControlName="observation_category"  [style.resize]="'none'" rows="5"></textarea>
                 <div *ngIf="categoryForm.get('observation_category').hasError('maxlength')"class="error-message">
                   El campo Observación no puede superar los 100 caracteres.
               </div>
@@ -59,22 +64,27 @@
 
               <div class=""  *ngIf="viewMode === 'print'">
               
-                <label for="reason_anulate" *ngIf=" categoryForm.get('state_category').value === false">Motivo cambio estado </label>
-                <div class="col-md-6 form-group mb-3" *ngIf="categoryForm.get('state_category').value === false ">
+                <label for="reason_anulate" *ngIf=" categoryForm.get('state_category').value === false">Razón Cambio Estado </label>
+                <div class="col-md-12 form-group mb-3" *ngIf="categoryForm.get('state_category').value === false ">
                   <div  >
-                    <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"  [style.resize]="'none'" ></textarea>
+                    <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate"  [style.resize]="'none'" rows="5" ></textarea>
                   </div>
                 </div>
               
               </div>
 
-             
+              <div *ngIf="viewMode == 'new' || viewMode == 'edit'" class="form-group text-right" style="text-align: right;">
+                <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
 
-              <div class="form-group text-right" style="text-align: right;">
-                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
-                <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading">
-                  {{viewMode == 'new' ? 'Registrar Categoría' : 'Editar Categoría'}}
+                
+                <btn-loading  btnClass="btn btn-primary m-1 custom-button" [loading]="loading">
+                  {{viewMode == 'new' ? 'Registrar Categoría' : 'Modificar Categoría'}}
                 </btn-loading>
+
+              </div>
+
+              <div *ngIf="viewMode === 'print'"class="form-group text-right" style="text-align: right;">
+                <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Volver</button>
               </div>
             
           </form>
@@ -82,4 +92,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

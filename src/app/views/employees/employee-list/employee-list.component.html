@@ -1,10 +1,6 @@
 <div class="">
     <div class="breadcrumb">
     <h1>Listar Empleados</h1>
-    <ul>
-        <li><a>Servicios</a></li>
-        <li>Empleados</li>
-    </ul>
 </div>
 <div class="separator-breadcrumb border-top"></div>
 
@@ -13,7 +9,7 @@
     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
         <div class="col-md-4">
             <div class="form-group">
-                <button class="btn btn-primary" [routerLink]="['/employees/new']">Crear nuevo Empleado</button>
+                <button class="btn btn-primary" [routerLink]="['/employees/new']">Registrar Empleado</button>
             </div>
         </div>
         <div class="col-md-4">
@@ -25,9 +21,15 @@
     </div>
     <div class="col-md-12">
         <div class="card o-hidden">
+            <div *ngIf="showLoadingScreen" class="loading-screen">
+                <div class="loading-content">
+                  <div class="spinner spinner-primary me-3"></div>
+                </div>
+              </div>
+            <div  class=" table-responsive">
             <ngx-datatable
             class="material fullscreen"
-            style="height: 100px"
+            style="height: 480px"
             [columnMode]="'force'"
             [headerHeight]="50"
             [footerHeight]="50"
@@ -35,12 +37,14 @@
             [rows]="filteredEmployees"
             [count]="filteredEmployees.length"
             [limit]="6"
-            rowHeight="700px">
+            rowHeight="700px"
+            [scrollbarH]="true"
+            >
 
                 <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true"
                     [minWidth]="80">
                     <ng-template ngx-datatable-header-template class="fixed-width-cell">
-                        <p style="font-size:15px;">Cedula</p>
+                        <p style="font-size:15px;">Cédula</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         {{ row.id_card_employee }}
@@ -78,16 +82,16 @@
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 "
+                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm"
                             [routerLink]="['/employees/print', row.id_employee]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1 "
+                        <button ngbTooltip="Modificar" class="btn btn-info m-1 "
                             [routerLink]="['/employees/edit', row.id_employee]"
                             [disabled]="row.state_employee== 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom"
+                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom btn-sm"
                             (click)="openModal(row.id_employee)">
                             <input type="checkbox" [checked]="row.state_employee === 'Activo'"
                                 (change)="handleChange($event, row)">
@@ -96,13 +100,15 @@
                     </ng-template>
                 </ngx-datatable-column>
             </ngx-datatable>
+        
+        </div>
         </div>
     </div>
 </div>
 
 <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header" [closable]="false">
-        <h4 class="modal-title" id="modal-title">Cambiar estado empleado</h4>
+        <h4 class="modal-title" id="modal-title">Cambiar Estado del Empleado</h4>
     </div>
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea cambiar el estado de este Empleado?</strong></p>
@@ -113,8 +119,8 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary " (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger " (click)="modal.close('Ok')"
+        <button type="button" class="btn btn-wide btn-danger" (click)="modal.dismiss('cancel')">Cancelar</button>
+        <button type="button" ngbAutofocus class="btn btn-primary" (click)="modal.close('Ok')"
             [disabled]="reasonAnulate == ''">Aceptar</button>
     </div>
 </ng-template>

@@ -61,7 +61,8 @@ export class OrdersListComponent implements OnInit {
   activeTab: string = "Pedidos Por Entregar";
   usage: string;
   isSmallScreen: boolean = false;
-  
+  isNegative: boolean = false;
+
   constructor(
     private _authService: AuthService,
     private _ordersService: OrdersService,
@@ -463,12 +464,15 @@ export class OrdersListComponent implements OnInit {
 
       // Verificar si total_payment es mayor que total_remaining antes de calcular el nuevo total_remaining
       if (totalPayment > totalOrder - totalPayments) {
+        this.isNegative = true;
         this.mensaje =
-          "El pago no puede ser mayor que el restante del último pago";
+          "El pago no puede ser mayor que el restante del último pago o el total de la venta";
         console.log(
           "Error: El total_payment no puede ser mayor que total_remaining"
         );
         // Detiene la ejecución de la función si hay un error
+      }else{
+        this.isNegative = false;
       }
 
       // Calcular el nuevo total_remaining
@@ -487,10 +491,13 @@ export class OrdersListComponent implements OnInit {
       const totalRemaining =
         Math.round((totalOrder - totalPayment) * 100) / 100;
       if (totalRemaining < 0) {
-        this.mensaje = "El pago no puede ser mayor que el total de la venta";
+        this.isNegative = true;
+        this.mensaje = "El pago no puede ser mayor que el restante del último pago o el total de la venta";
         console.log(
           "Error: El total_payment no puede ser mayor que el total de la venta"
         );
+      }else{
+        this.isNegative = false;
       }
       this.formBasic.patchValue({ total_remaining: totalRemaining });
 
