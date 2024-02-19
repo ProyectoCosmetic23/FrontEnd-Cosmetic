@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="col-md-2 form-group mb-3">
                                     <label for="quantity">Cantidad<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control small-input" id="quantity" formControlName="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    <input type="number" class="form-control small-input" id="quantity" formControlName="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  min="0" oninput="this.value = Math.abs(this.value)">
                                 </div>
                                 
 
@@ -99,6 +99,9 @@
                                     <div *ngIf="productForm.get('max_stock').hasError('min')" class="error-message">
                                         El stock máximo no puede ser negativo.
                                     </div>
+                                    <div *ngIf="productForm.get('max_stock').hasError('stockMinMax')" class="error-message">
+                                        El stock máximo no puede ser menor que el stock mínimo.
+                                    </div>
                                 </div>
                                 
                                 <div class="col-md-2 form-group mb-3">
@@ -111,12 +114,16 @@
                                     <div *ngIf="productForm.get('min_stock').hasError('min')" class="error-message">
                                         El stock mínimo no puede ser negativo.
                                     </div>
+                                    <div *ngIf="productForm.get('min_stock').dirty && productForm.get('max_stock').dirty && productForm.hasError('invalidStockRange')"
+                                    class="error-message">
+                                    El stock mínimo no puede ser mayor que el stock máximo.
+                               </div>
                                 </div>
-                                
+                               
 
                                 <div class="col-md-2 form-group mb-3">
                                     <label for="cost_price">Precio de costo<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control small-input" id="cost_price" formControlName="cost_price" >
+                                    <input type="number" class="form-control small-input" id="cost_price" formControlName="cost_price" min="0" oninput="this.value = Math.abs(this.value)">
                                     <div *ngIf="productForm.get('cost_price').touched && productForm.get('cost_price').hasError('required')" class="error-message">
                                       El campo precio de costo es obligatorio.
                                     </div>
@@ -127,7 +134,7 @@
                                   
                                   <div class="col-md-2 form-group mb-3">
                                     <label for="selling_price">Precio de venta<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control small-input" id="selling_price" formControlName="selling_price">
+                                    <input type="number" class="form-control small-input" id="selling_price" formControlName="selling_price" min="0" oninput="this.value = Math.abs(this.value)">
                                     <div *ngIf="productForm.get('selling_price').touched && productForm.get('selling_price').hasError('required')" class="error-message">
                                       El campo precio de venta es obligatorio.
                                     </div>
