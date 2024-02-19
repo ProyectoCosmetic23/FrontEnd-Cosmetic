@@ -41,6 +41,11 @@ export class UserDetailComponent implements OnInit {
   invoiceForm: UntypedFormGroup;
   invoiceFormSub: Subscription;
   employeeName: any;
+  showLoadingScreen: boolean = false;
+  id_card_employeeString: any;
+  name_employeeString: any;
+  name_roleString: any;
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,7 +57,7 @@ export class UserDetailComponent implements OnInit {
     private employeeService: EmployeesService,
     private rolesService: RolesService,
     private _authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._authService.validateUserPermissions("Usuarios");
@@ -134,7 +139,7 @@ export class UserDetailComponent implements OnInit {
     this.roleName = role ? role.name_role : "";
   }
 
-  getCardId(card: string) {}
+  getCardId(card: string) { }
 
   //Cargar la lista de roles
   loadRoles() {
@@ -157,35 +162,78 @@ export class UserDetailComponent implements OnInit {
   }
 
   private getUserByID(id: number): void {
-    this.loading = true;
+    this.showLoadingScreen = true;
     this.usersService.getUsersById(id).subscribe({
       next: (response: any) => {
+
+        this.usersService.getEmployeesById(response.id_employee).subscribe(
+          (data: any) => {
+            console.log(data
+            )
+            this.id_card_employeeString = data.id_card_employee;
+            this.name_employeeString = data.name_employee;
+          },
+          (error: any) => {
+            console.error("Error" + error)
+          }
+        );
+
+        this.rolesService.getRoleById(response.id_role).subscribe(
+          (data: any) => {
+            this.name_roleString = data.name_role;
+          },
+          (error: any) => {
+            console.error("Error" + error)
+          }
+        );
+
+        response.name_employee = this.name_employeeString;
+        response.id_card_employee = this.id_card_employee;
+        response.name_role = this.name_roleString
+        console.log(response)
         this.userData = new UserFormModel(response);
         this.setDataUser();
-        this.employeeService
-          .getEmployeesById(Number(this.userData.id_employee))
-          .subscribe({
-            next: (data) => {
-              this.employeeName = data.employee_name;
-            },
-            error: (err) => {
-              console.log("err", err);
-              this.loading = false;
-            },
-            complete: () => {
-              this.loading = false;
-            },
-          });
+
+        this.showLoadingScreen = false;
       },
       error: (err) => {
         console.log("err", err);
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      },
+        console.log(this.userData)
+      }
     });
   }
+
+  // private getUserByID(id: number): void {
+
+  //   this.loading = true;
+  //   this.usersService.getUsersById(id).subscribe({
+  //     next: (response: any) => {
+  //       this.userData = new UserFormModel(response);
+  //       this.setDataUser();
+  //       this.employeeService
+  //         .getEmployeesById(Number(this.userData.id_employee))
+  //         .subscribe({
+  //           next: (data) => {
+  //             this.employeeName = data.employee_name;
+  //           },
+  //           error: (err) => {
+  //             console.log("err", err);
+  //             this.loading = false;
+  //           },
+  //           complete: () => {
+  //             this.loading = false;
+  //           },
+  //         });
+  //     },
+  //     error: (err) => {
+  //       console.log("err", err);
+  //       this.loading = false;
+  //     },
+  //     complete: () => {
+  //       this.loading = false;
+  //     },
+  //   });
+  // }
 
   private setDataUser(): void {
     //  this.loading=true;
@@ -421,7 +469,6 @@ export class UserDetailComponent implements OnInit {
   get id_user() {
     return this.userForm.get("id_user");
   }
-
   get id_role() {
     return this.userForm.get("id_role");
   }
@@ -430,9 +477,6 @@ export class UserDetailComponent implements OnInit {
     return this.userForm.get("id_employee");
   }
 
-  get name_role() {
-    return this.userForm.get("name_role");
-  }
   get id_card_employee() {
     return this.userForm.get("id_card_employee");
   }

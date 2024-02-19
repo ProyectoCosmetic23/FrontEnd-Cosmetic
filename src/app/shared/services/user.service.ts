@@ -69,7 +69,7 @@ export class UsersService {
     );
   }
 
-  getEmployeesById(id: number, token?: string): Observable<any> {
+  getEmployeesById(id: number): Observable<any> {
     const url = `${this.url3}/${id}`;
     return this.http.get<any>(url);
   }

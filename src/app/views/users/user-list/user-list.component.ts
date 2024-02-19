@@ -24,10 +24,12 @@ export class UserListComponent implements OnInit {
   currentPage: number = 1;
   roles: any = {};
   employees: any = {};
-  // Variable para controlar si el primer modal está abierto
-  isFirstModalOpen: boolean = false;
-  // Variable para controlar si el segundo modal está abierto
-  isSecondModalOpen: boolean = false;
+  showLoadingScreen: boolean;
+
+    // Variable para controlar si el primer modal está abierto
+isFirstModalOpen: boolean = false;
+// Variable para controlar si el segundo modal está abierto
+isSecondModalOpen: boolean = false;
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 @ViewChild("changeModal", { static: true }) changeModal: any;
   countLabel: any;
@@ -38,7 +40,7 @@ export class UserListComponent implements OnInit {
     private _employeeService: EmployeesService,
     private toastr: ToastrService,
     private _authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this._authService.validateUserPermissions("Usuarios");
@@ -64,20 +66,29 @@ export class UserListComponent implements OnInit {
     //     });
   }
 
+//Consultar todos los usuarios
+
   getUsers() {
+    this.showLoadingScreen = true;
     this._userService.getAllUsers().subscribe(
       (data) => {
-        this.listUsers = data.sort((a, b) => a.id_user - b.id_user);
+        this.listUsers = data;
         this.filteredUsers = [...this.listUsers];
         this.sortListUsers();
         this.attachRoleNames();
         this.attachCardEmployee();
+  
       },
       (error) => {
-        console.log(error);
+        console.error("Error al obtener usuario:", error);
       }
-    );
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
   }
+
+
 
   attachRoleNames() {
     this.filteredUsers.forEach((user) => {
@@ -110,32 +121,35 @@ export class UserListComponent implements OnInit {
       return 0;
     });
   }
-  filterData(value: string) {
-    if (value) {
-      value = value.toLowerCase();
+
+
+  searchUser($event) {
+    const value = ($event.target as HTMLInputElement).value;
+    if (value !== null && value !== undefined && value !== "") {
+      this.filteredUsers = this.listUsers.filter(
+        (c) =>
+          c.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          this.changeUserStateDescription(c.state_user)
+            .toLowerCase()
+            .indexOf(value.toLowerCase()) !== -1
+      );
     } else {
-      this.filteredUsers = [...this.listUsers];
-      return;
+      this.filteredUsers = this.listUsers;
     }
-
-    this.filteredUsers = this.listUsers.filter((user) => {
-      const nombreMatch = user.username.toLowerCase().includes(value);
-      const correoMatch = user.email.toLowerCase().includes(value);
-      const estadoMatch = user.state_user.toLowerCase().includes(value);
-
-      return nombreMatch || correoMatch || estadoMatch;
-    });
-
-    this.currentPage = 1;
   }
+ 
 
 
+  
+  changeUserStateDescription(state_user: boolean) {
+    return state_user ? "Activo" : "Inactivo";
+  }
 
   openFirstModal(idUser: number) {
     if (!this.isFirstModalOpen) {
       this.isFirstModalOpen = true;
       const modalRef = this.modalService.open(this.deleteConfirmModal, { centered: true });
-
+  
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
@@ -154,12 +168,12 @@ export class UserListComponent implements OnInit {
       );
     }
   }
-
+  
   openSecondModal(idUser: number, changeEmployee: boolean) {
     if (!this.isSecondModalOpen) {
       this.isSecondModalOpen = true;
       const modalRef = this.modalService.open(this.changeModal, { centered: true });
-
+  
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
@@ -178,13 +192,13 @@ export class UserListComponent implements OnInit {
       );
     }
   }
-
+  
   confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
     if (changeUser) {
       this._userService.userChangeStatus(idUser).subscribe(
         (userData) => {
           if (changeEmployee) {
-            this.changeUserStatus(idUser);
+            this.changeEmployeeStatus(idUser);
           } else {
             this.toastr.success('Cambio de estado del usuario realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
           }
@@ -196,15 +210,15 @@ export class UserListComponent implements OnInit {
       );
     }
   }
-
-  changeUserStatus(idUser: number) {
-    this._userService.userChangeStatus(idUser).subscribe(
-      (userData) => {
-        this.toastr.success('Cambio de estado del usuario realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
+  
+  changeEmployeeStatus(idUser: number) {
+    this._employeeService.employeeChangeStatus(idUser).subscribe(
+      (employeeData) => {
+        this.toastr.success('Cambio de estado del empleado realizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
       },
       (error) => {
-        this.toastr.error('Fallo al cambiar el estado del usuario.', 'Error', { progressBar: true, timeOut: 2000 });
-        console.error("Error al cambiar el estado del usuario:", error);
+        this.toastr.error('Fallo al cambiar el estado del empleado.', 'Error', { progressBar: true, timeOut: 2000 });
+        console.error("Error al cambiar el estado del empleado:", error);
       }
     );
   }
