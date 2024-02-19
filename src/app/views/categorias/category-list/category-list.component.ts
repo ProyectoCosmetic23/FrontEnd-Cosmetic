@@ -172,6 +172,7 @@ export class CategoryListComponent {
             }
           );
       } else if (result === "Cancel" || (result && result.dismissedWith === 'cancel')) {
+        this.reasonForm.get("reason_anulate").setValue(null);
         this.getCategories();
         this.modalAbierto = false;
 
