@@ -9,6 +9,7 @@ import {PurchaseListComponent } from './purchase-list/purchase-list.component';
 import {PurchaseRoutingModule } from './purchase-routing.module';
 
 
+
 @NgModule({
   imports: [
     CommonModule,
