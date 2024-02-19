@@ -1,6 +1,6 @@
 <div class="breadcrumb">
     <h1 *ngIf="viewMode === 'new'">Registrar Proveedor</h1>
-    <h1 *ngIf="viewMode === 'edit'">Editar Proveedor</h1>
+    <h1 *ngIf="viewMode === 'edit'">Modificar Proveedor</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</h1>
 </div>
 
@@ -284,7 +284,7 @@
                                         Registrar Proveedor
                                     </btn-loading>
                                     <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">
-                                        Editar Proveedor
+                                        Modificar Proveedor
                                     </btn-loading>
                                 </div>
                             </div>
