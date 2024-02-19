@@ -119,6 +119,7 @@ export class ProviderListComponent implements OnInit {
                   this.toastr.success("Cambio de estado realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
                   console.log(data);
                   this.openedModal = false;
+                  this.reasonAnulate = "";
                   this.getProviders();
                 },
                 (error) => {
@@ -126,16 +127,19 @@ export class ProviderListComponent implements OnInit {
                   this.toastr.error("Fallo al realizar el cambio de estado.", "Error", { progressBar: true, timeOut: 2000 });
                   console.error("Error al cambiar de estado:", error);
                   this.openedModal = false;
+                  this.reasonAnulate = "";
                 }
               );
             } else if (result === "Cancel") {
               this.openedModal = false;
+              this.reasonAnulate = "";
               this.getProviders();
             }
           },
           (reason) => {
             this.getProviders();
             this.openedModal = false;
+            this.reasonAnulate = "";
             this.updateSwitchState(idProvider);
           }
         );

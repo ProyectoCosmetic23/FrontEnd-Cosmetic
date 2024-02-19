@@ -33,6 +33,17 @@
                                 <div *ngIf="formBasic.get('nit_cedula').hasError('cedulaNotAvailable')">La cédula ya
                                     está en uso.</div>
                             </div>
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('nit_cedula').invalid && (formBasic.get('nit_cedula').dirty || formBasic.get('nit_cedula').touched)"
+                            class="text-danger">
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('minlength')">La cédula o NIT no puede
+                                ser menor de 7 caracteres.</div>
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('maxlength')">La cédula o NIT no puede
+                                ser mayor de 10 caracteres.</div>
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('pattern')">Solo se admiten números en
+                                la cédula o NIT.</div>
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('cedulaNotAvailable')">La cédula ya
+                                está en uso.</div>
+                        </div>
                         </div>
                         <div class="col-md-6 form-group mb-3">
                             <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'"
@@ -110,11 +121,17 @@
                             <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
                                 El campo dirección no puede superar los 80 caracteres.
                             </div>
+                            <div *ngIf="formBasic.get('address_provider').hasError('minlength')" class="text-danger">
+                                El campo dirección debe tener mas de 4 caracteres.
+                            </div>
 
                             <div *ngIf="viewMode === 'edit' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
                                 class="text-danger">
                                 <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
                                     El campo dirección no puede superar los 80 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('address_provider').hasError('minlength')" class="text-danger">
+                                    El campo dirección debe tener mas de 4 caracteres.
                                 </div>
                             </div>
                         </div>
@@ -238,8 +255,14 @@
                                     [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
                                     [readonly]="viewMode === 'print'"
                                     [value]="provider?.observation_provider"
+                                    formControlName="observation_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
                                     rows="6"></textarea>
+                                    <div *ngIf="(viewMode === 'edit' || viewMode === 'new') && formBasic.get('observation_provider').touched">
+                                        <div *ngIf="formBasic.get('observation_provider').hasError('maxlength')" class="text-danger">
+                                            {{ observationError }}
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                         <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
@@ -252,9 +275,10 @@
                                 rows="6"></textarea>
                         </div>
                         <div class="col-md-12">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-end align-items-center">
                                 <div class="d-flex">
-                                    <button class="btn btn-danger" [routerLink]="['/proveedores']">Volver</button>
+                                    <button *ngIf="viewMode === 'new' || viewMode === 'edit'" class="btn btn-danger" [routerLink]="['/proveedores'] ">Cancelar</button>
+                                    <button *ngIf="viewMode === 'print'" class="btn btn-danger" [routerLink]="['/proveedores'] ">Volver</button>
                                     <div style="width: 10px;"></div>
                                     <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">
                                         Registrar Proveedor

@@ -109,7 +109,7 @@
                 [(ngModel)]="reasonAnulate" style="resize: none" rows="5"></textarea>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.dismiss('cancel')">Cancelar</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="modal.dismiss('cancel')">Cancelar</button>
       <button type="button" class="btn btn-primary" [disabled]="!reasonAnulate" (click)="modal.close('Yes')">Aceptar</button>
     </div>
   </ng-template>
