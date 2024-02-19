@@ -276,7 +276,7 @@ export class ComissionsDetailComponent implements OnInit {
     if (detail && employee) {
       this.selectedMonth = detail.month_commission;
       this.selectedPercentage = detail.commission_percentage;
-      this.Percentage = "%" + detail.commission_percentage;
+      this.Percentage = detail.commission_percentage + " %";
       this.selectedEmployee = employee.name_employee;
     } else {
       console.error('Error: No se pudo encontrar detalle de comisión o empleado.');
@@ -292,7 +292,8 @@ export class ComissionsDetailComponent implements OnInit {
     const selectedCommission = this.listComisionDetail.find((commission) => commission.id_commission_detail === selectedId);
     if (selectedCommission) {
       this.commissionPercentage = selectedCommission.commission_percentage;
-      this.formBasic.get('commission_percentage')?.setValue(selectedCommission.commission_percentage);
+      console.log(this.commissionPercentage + "Comision porcentaje")
+      this.formBasic.get('commission_percentage')?.setValue(selectedCommission.commission_percentage + " %");
     } else {
       this.commissionPercentage = 0; // O el valor predeterminado que desees asignar
       this.formBasic.get('commission_percentage')?.setValue(0);

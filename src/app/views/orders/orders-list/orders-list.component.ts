@@ -53,6 +53,7 @@ export class OrdersListComponent implements OnInit {
   countLabel: number;
   originalRowCount: any;
   showLoadingScreen: boolean = false;
+  remaining: any;
   formBasic: FormGroup;
   order_type: string = "Por entregar";
   modal_message: string;
@@ -62,6 +63,7 @@ export class OrdersListComponent implements OnInit {
   usage: string;
   isSmallScreen: boolean = false;
   isNegative: boolean = false;
+  totalOrder: number;
 
   constructor(
     private _authService: AuthService,
@@ -398,6 +400,7 @@ export class OrdersListComponent implements OnInit {
       console.log(
         "Error: El total_payment no puede ser mayor que total_remaining"
       );
+      
       return; // Detiene la ejecución de la función si hay un error
     }
     this._paymentService.getAllPayments().subscribe(
@@ -451,6 +454,7 @@ export class OrdersListComponent implements OnInit {
     const paymentsForOrder = this.payments.filter(
       (payment) => payment.id_order === id_order
     );
+    console.log(paymentsForOrder);
 
     if (paymentsForOrder.length > 0) {
       // Sumar los total_payment de los pagos
@@ -458,7 +462,8 @@ export class OrdersListComponent implements OnInit {
         (sum, payment) => sum + parseFloat(payment.total_payment),
         0
       );
-
+      this.remaining = totalOrder - totalPayments
+      console.log(this.remaining)
       // Verificar si total_payment es mayor que total_remaining antes de calcular el nuevo total_remaining
       if (totalPayment > totalOrder - totalPayments) {
         this.isNegative = true;
@@ -547,6 +552,7 @@ export class OrdersListComponent implements OnInit {
               id_client: this.clientName,
               total_order:  order.total_order,
             });
+            this.totalOrder = order.total_order;
 
             this.modalRef = this.modalService.open(this.paymentModal, {
               centered: true,

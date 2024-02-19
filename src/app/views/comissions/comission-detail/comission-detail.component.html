@@ -73,11 +73,12 @@
                         
 
                         <div class="col-md-12">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-end align-items-center">
 
                               <!-- Botón "Registrar Comisión" a la derecha -->
                               <div>
-                                <button class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>
+                                <button *ngIf="viewMode === 'print'" class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>
+                                <button *ngIf="viewMode === 'new'"  class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Cancelar</button>
                                 <button class="btn btn-primary float-right ml-2" *ngIf="viewMode === 'new'" [loading]="loading" [disabled]="!formBasic.get('total_sales').value || noSales">
                                   Registrar Comisión
                                 </button>

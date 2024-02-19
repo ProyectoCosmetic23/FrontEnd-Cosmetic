@@ -5,12 +5,12 @@
 <div class="separator-breadcrumb border-top"></div>
 
 <div class="row mb-3">
-    <div class="col-md-12 mb-3">
+    <div class="col-md-12 mb-3">    
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-3">
-                        <button class="btn btn-primary float-right w-75" [routerLink]="['/comisiones/registrar']">Comisionar</button>
+                        <button class="btn btn-primary float-right w-75" [routerLink]="['/comisiones/registrar']">Registrar</button>
                       </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary float-right" (click)="openModal()">Asignar porcentaje 
@@ -90,7 +90,7 @@
                                 <p style="font-size:15px;">  Porcentaje Comisión</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                %{{ row.commission_percentage }}
+                                {{ row.commission_percentage }} %
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column [width]="120">
@@ -128,16 +128,16 @@
                     <select class="form-control" id="commission_percentage"
                         (change)="handlePerccentageSelection($event)">
                         <option value="0">Elija el porcentaje</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
+                        <option value="1">1 %</option>
+                        <option value="2">2 %</option>
+                        <option value="3">3 %</option>
+                        <option value="4">4 %</option>
+                        <option value="5">5 %</option>
+                        <option value="6">6 %</option>
+                        <option value="7">7 %</option>
+                        <option value="8">8 %</option>
+                        <option value="9">9 %</option>
+                        <option value="10">10 %</option>
                     </select>
                 </div>
 
@@ -167,7 +167,7 @@
         </form>
     </div>
     
-    <div class="modal-footer d-flex justify-content-between align-items-center">
+    <div class="modal-footer d-flex justify-content-end align-items-center">
 
         <div>
             <button type="button" class="btn btn-danger"
