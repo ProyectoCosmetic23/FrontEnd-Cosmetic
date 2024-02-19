@@ -76,7 +76,7 @@
                             <button ngbTooltip="Modificar" class="btn btn-info m-1 btn-sm" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label bTooltip="Cambiar estado" class="switch switch-success btn-sm" [class.switch-success]="row.state_category" [class.switch-danger]="!row.state_category">
+                            <label bTooltip="Cambiar estado" class="switch switch-success btn-sm custom-switch" [class.switch-success]="row.state_category" [class.switch-danger]="!row.state_category">
                                 <input type="checkbox" [checked]="row.state_category == true" (change)="handleChange($event, row)" (click)="modalStatus(row.id_category, $event)">
                                 <span class="slider"></span>
                             </label>
@@ -111,9 +111,9 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn" (click)="modal.close('Cancel')">
+        <button type="button" class="btn btn-wide btn-danger btn" (click)="modal.close('Cancel')">
             Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
+        <button type="button" ngbAutofocus class="btn btn-wide  btn-primary btn"
             (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
     </div>
 </ng-template>

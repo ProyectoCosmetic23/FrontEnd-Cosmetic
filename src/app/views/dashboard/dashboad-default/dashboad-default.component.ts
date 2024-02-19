@@ -43,20 +43,7 @@ export class DashboadDefaultComponent implements OnInit {
     { name: 'Noviembre', value: 11 },
     { name: 'Diciembre', value: 12 },
   ];
- months2 = [
-    { name: 'January', value: '1_2024'  },
-    { name: 'February', value: '2_2024'  },
-    { name: 'March', value: '3_2024'},
-    { name: 'April', value: '4_2024' },
-    { name: 'May', value: '5_2024'  },
-    { name: 'June' , value: '6_2024' },
-    { name: 'July', value: '7_2024'  },
-    { name: 'August', value: '8_2024' },
-    { name: 'September' , value: '9_2024' },
-    { name: 'October', value: '10_2024'  },
-    { name: 'November', value: '11_2024' },
-    { name: 'December', value: '12_2024'  },
-  ];
+
   
   startYear = 2024;
   endYear = 2025;
