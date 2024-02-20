@@ -16,7 +16,9 @@
             <div class="form-group">
                 <input id="role" placeholder="Buscar Empleados" [formControl]="searchControl" class="form-control"
                     type="role" (keyup)="searchEmployee($event)">
-            </div>
+                    
+            </div>            
+            
         </div>
     </div>
     <div class="col-md-12">
@@ -27,6 +29,7 @@
                 </div>
               </div>
             <div  class=" table-responsive">
+                
             <ngx-datatable
             class="material fullscreen"
             style="height: 480px"
