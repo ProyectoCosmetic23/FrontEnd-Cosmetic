@@ -243,7 +243,7 @@ export class ComissionListComponent implements OnInit {
             console.log(this.verifiedMonth, this.verifiedPercentage)
             this.openedModal = true;
             this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
-            this.modalRef = this.modalService.open(this.createModal, { centered: true });
+            this.modalRef = this.modalService.open(this.createModal, { centered: true, backdrop: 'static' });
 
             this.modalRef.result.then(
                 (result) => {

@@ -31,6 +31,7 @@ export class ProvidersDetailComponent implements OnInit {
   formBasic: FormGroup;
   viewMode: "new" | "edit" | "print" = "new";
   id: string;
+  observationError = "";
   isNew: boolean;
   provider: Provider = {
     name_provider: "",
@@ -56,6 +57,7 @@ export class ProvidersDetailComponent implements OnInit {
     creation_date_provider: new Date(),
     reason_anulate: "",
   };
+  originalProvider: Provider;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -117,29 +119,34 @@ export class ProvidersDetailComponent implements OnInit {
     ]],
       address_provider: [i.address_provider, [
         Validators.required,
-        Validators.maxLength(80)
+        Validators.maxLength(80),
+        Validators.minLength(4)
       ]],
       phone_provider: [i.phone_provider, [
         Validators.required,
         Validators.maxLength(10),
         Validators.minLength(7),
-        Validators.pattern(/^[0-9\s]+$/)
+        Validators.pattern(/^[0-9]+$/)
       ]],
-      reason_anulate:[i.reason_anulate],
-
-      state_provider: [i.state_provider],
-      observation_provider: [i.observation_provider],
       name_contact: [i.name_contact, [
         Validators.required,
         Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+$'), // Permite solo letras y espacios
         Validators.minLength(3),
         Validators.maxLength(50)
     ]],
+      reason_anulate:[i.reason_anulate, [Validators.maxLength(100)]],
+
+      state_provider: [i.state_provider],
+      observation_provider: [i.observation_provider, [
+        Validators.maxLength(100)
+      ]],
+      
       creation_date_provider: [i.creation_date_provider],
     });
     console.log("Razon anulate", i.reason_anulate, "nombre", i.name_provider)
 
   }
+ 
   setViewMode() {
     const currentRoute = this.router.url;
 
@@ -164,7 +171,9 @@ export class ProvidersDetailComponent implements OnInit {
         (data) => {
           console.log("Datos del proveedor", data);
           this.provider = data;
+          this.originalProvider = data;
           console.log(this.provider);
+          console.log(this.originalProvider)
         },
         (error) => {
           console.error("Error al obtener proveedor:", error);
@@ -180,30 +189,72 @@ export class ProvidersDetailComponent implements OnInit {
   handleNameProviderSelection(event: any) {
     this.new_provider.name_provider = event.target.value;
     this.updatedFields.name_provider = event.target.value;
+    if (this.updatedFields.name_provider === null || this.updatedFields.name_provider === undefined || this.updatedFields.name_provider === ""){
+      console.log("Nombre vacio")
+      this.updatedFields.name_provider = this.originalProvider.name_provider;
+      console.log(this.updatedFields.name_provider)
+    }
   }
   handleNameContactSelection(event: any) {
     this.new_provider.name_contact = event.target.value;
     this.updatedFields.name_contact = event.target.value;
+    if (this.updatedFields.name_contact === null || this.updatedFields.name_contact === undefined || this.updatedFields.name_contact === ""){
+      console.log("vacio")
+      this.updatedFields.name_contact = this.originalProvider.name_contact;
+      console.log(this.updatedFields.name_contact)
+    }
   }
   handleNitSelection(event: any) {
     this.new_provider.nit_cedula = event.target.value;
+    this.updatedFields.nit_cedula = event.target.value;
+    console.log(this.updatedFields.name_contact)
+    if (this.updatedFields.nit_cedula === null || this.updatedFields.nit_cedula === undefined || this.updatedFields.nit_cedula === ""){
+      console.log(" vacio")
+      this.updatedFields.nit_cedula = this.originalProvider.nit_cedula;
+      console.log(this.updatedFields.nit_cedula)
+    }
   }
   handleMailSelection(event: any) {
     this.new_provider.email_provider = event.target.value;
     this.updatedFields.email_provider = event.target.value;
+    if (this.updatedFields.email_provider === null || this.updatedFields.email_provider === undefined || this.updatedFields.email_provider === ""){
+      console.log(" vacio")
+      this.updatedFields.email_provider = this.originalProvider.email_provider;
+      console.log(this.updatedFields.email_provider)
+    }
   }
   handleAddressSelection(event: any) {
     this.new_provider.address_provider = event.target.value;
     this.updatedFields.address_provider = event.target.value;
     console.log('Address Value:', event.target.value);
+    if (this.updatedFields.address_provider === null || this.updatedFields.address_provider === undefined || this.updatedFields.address_provider === ""){
+      console.log(" vacio")
+      this.updatedFields.address_provider = this.originalProvider.address_provider;
+      console.log(this.updatedFields.address_provider)
+    }
   }
   handleObservationSelection(event: any) {
     this.new_provider.observation_provider = event.target.value;
     this.updatedFields.observation_provider = event.target.value;
+    console.log('Observation Value:', event.target.value);
+    if (this.formBasic.get('observation_provider').hasError('maxlength')) {
+      this.formBasic.get('observation_provider').setErrors({ 'maxlength': true });
+      this.observationError = "La observacion no puede ser mayor a 100 caracteres"
+    }
+    if (this.updatedFields.observation_provider === null || this.updatedFields.observation_provider === undefined || this.updatedFields.observation_provider === ""){
+      console.log(" vacio")
+      this.updatedFields.observation_provider = this.originalProvider.observation_provider;
+      console.log(this.updatedFields.observation_provider)
+    }
   }
   handlePhoneSelection(event: any) {
     this.new_provider.phone_provider = event.target.value;
     this.updatedFields.phone_provider = event.target.value;
+    if (this.updatedFields.phone_provider === null || this.updatedFields.phone_provider === undefined || this.updatedFields.phone_provider === ""){
+      console.log(" vacio")
+      this.updatedFields.phone_provider = this.originalProvider.phone_provider;
+      console.log(this.updatedFields.phone_provider)
+    }
   }
 
   createProvider() {
@@ -252,8 +303,16 @@ export class ProvidersDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Ya existe un proveedor con estos datos.', 'Error', { progressBar: true });
-          console.error('Error al actualizar el proveedor:', error);
+          let backendErrorMessage: string;
+        
+          if (error.error && error.error.error) {
+            backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
+          } else {
+            backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
+          }
+        
+          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
+          console.error("Error al actualizar el proveedo:", error);
         }
       );
     }
@@ -266,4 +325,5 @@ export class ProvidersDetailComponent implements OnInit {
       this.updateProvider(); // Lógica de edición
     }
   }
+
 }
