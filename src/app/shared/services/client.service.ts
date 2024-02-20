@@ -46,8 +46,8 @@ export class ClientsService {
     }
 
 
-    clientChangeStatus(id: any): Observable<any> {
-        return this.http.put<boolean>(`${this.url}/change-status/${id}`, {});
+    clientChangeStatus(id: any, reason: any): Observable<any> {
+        return this.http.put<boolean>(`${this.url}/change-status/${id}`, {reasonAnulate: reason });
 
     }
 

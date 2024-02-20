@@ -9,6 +9,7 @@ import {PurchaseListComponent } from './purchase-list/purchase-list.component';
 import {PurchaseRoutingModule } from './purchase-routing.module';
 
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -16,6 +17,7 @@ import {PurchaseRoutingModule } from './purchase-routing.module';
     ReactiveFormsModule, // Solo importa ReactiveFormsModule
     NgbModule,
    PurchaseRoutingModule,
+ 
     
   ],
   declarations: [PurchaseDetailComponent, PurchaseListComponent]

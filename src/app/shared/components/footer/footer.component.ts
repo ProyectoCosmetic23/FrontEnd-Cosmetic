@@ -18,6 +18,7 @@ export class FooterComponent {
   constructor(private modalService: NgbModal) {}
 
   showTeamModal(content: any) {
-    this.modalService.open(content, { centered: true, animation: true });
+    this.modalService.open(content, { centered: true,backdrop: 'static', keyboard: false});
+  
   }
 }

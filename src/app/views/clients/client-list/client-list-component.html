@@ -1,34 +1,38 @@
 <div class="">
     <div class="breadcrumb">
         <h1>Clientes</h1>
-        <ul>
-            <li><a >Ventas</a></li>
-            <li>Clientes</li>
-        </ul>
+      
         </div>
     
         <div class="separator-breadcrumb border-top"></div>
-        <div class="col-md-12 mb-3">
-            <div class="row">
-                <div class="col-md-6">
-                    <button class="btn btn-primary float-right" [routerLink]="['/clients/new']">Crear nuevo Cliente</button>
-                </div>
-                <div class="col-md-6 d-flex justify-content-end">
-                    <input _ngcontent-vet-c167="" id="search" placeholder="Buscar cliente" type="text"
-                        class="form-control  ng-valid ng-touched ng-dirty" [formControl]="searchControl"
-                        style="width: 50%;" (keyup)="filterData($event)">
-                </div>
+    
+<div class="row mb-3">
+    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button class="btn btn-primary" [routerLink]="['/clients/new']">Registrar Cliente</button>
+            </div>
+        
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <input id="category" placeholder="Buscar Cliente" name="category" [formControl]="searchControl" class="form-control"
+                    type="category" (keyup)="searchCategory($event)">
             </div>
         </div>
-        
+    </div>
 
-        <div class="row mb-3">
-        
-        <div class="col-md-12">
-            <div class="card o-hidden">
+    <div class="col-md-12">
+        <div class="card o-hidden">
+            <div *ngIf="showLoadingScreen" class="loading-screen">
+                <div class="loading-content">
+                  <div class="spinner spinner-primary me-3"></div>
+                </div>
+              </div>
+              <div  class=" table-responsive">
                 <ngx-datatable
                 class="material fullscreen"
-                style="height: 100px"
+                style="height: 480px"
                 [columnMode]="'force'"
                 [headerHeight]="50"
                 [footerHeight]="50"
@@ -36,7 +40,8 @@
                 [rows]="filteredClients"
                 [count]="filteredClients.length"
                 [limit]="6"
-                rowHeight="700px">
+                rowHeight="700px"
+                [scrollbarH]="true">
 
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
@@ -79,19 +84,20 @@
                         <p style="font-size:15px;">Acciones</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1" [routerLink]="['/clients/print', row.id_client]">
+                        <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 btn-sm" [routerLink]="['/clients/print', row.id_client]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
+                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
-                        <label  ngbTooltip="Cambiar Estado" class="switch switch-success me-3" (click)="openModal(row.id_client)">
+                        <label bTooltip="Cambiar estado" class="switch switch-success btn-sm" (change)="handleChange($event, row)" (click)="openModal(row.id_client)">
                             <input type="checkbox" [checked]="row.state_client === 'Activo'">
                             <span class="slider"></span>
                         </label>
                     </ng-template>
                 </ngx-datatable-column>
                 </ngx-datatable>
+            </div>
             </div>
         </div>
     </div>
@@ -119,18 +125,18 @@
     <div class="modal-body">
         <p><strong>¿Está seguro de que desea cambiar el estado del cliente?</strong></p>
         <form [formGroup]="reasonForm">
-            <div class="col-md-6 form-group mb-3">
-                <label for="reason_anulate">Motivo de cambio de estado</label>
-                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
+            <div class="col-md-12 form-group mb-3">
+                <label for="reason_anulate">Razón de cambio de estado</label>
+                <textarea class="form-control" placeholder="Ingrese la razón de cambio de estado" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'" rows="5"></textarea>
                 <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
-                  El campo supera los 100 carácteres.
+                  El campo supera los 100 caracteres.
               </div>
               </div>
         </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary btn"
-            (click)="modal.dismiss('cancel')">Cancelar</button>
+            (click)="modal.dismiss('Cancel')">Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
             (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
     </div>
