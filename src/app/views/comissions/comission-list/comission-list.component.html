@@ -48,8 +48,10 @@
                     [count]="listComissions.length"
                     [limit]="6"
                     rowHeight="700px"
+                    [scrollbarH]="true"
                   >
-                        <ngx-datatable-column name="id_employee">
+                        <ngx-datatable-column name="id_employee" [resizeable]="false" [canAutoResize]="true"
+                        [minWidth]="80">
                             <ng-template ngx-datatable-header-template>
                                 
                                 <p style="font-size:15px;">Empleado</p>
@@ -58,7 +60,8 @@
                                 {{ employees[row.id_employee] }}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="total_commission">
+                        <ngx-datatable-column name="total_commission" [resizeable]="false" [canAutoResize]="true"
+                        [minWidth]="80">
                             <ng-template ngx-datatable-header-template>
                                
                                 <p style="font-size:15px;"> Total Comisión</p>
@@ -67,7 +70,8 @@
                                 {{ row.total_commission | currency : "" : "symbol" : "1.2"}}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="total_sales">
+                        <ngx-datatable-column name="total_sales" [resizeable]="false" [canAutoResize]="true"
+                        [minWidth]="80">
                             <ng-template ngx-datatable-header-template>
                                 <p style="font-size:15px;"> Total Ventas</p>
                             </ng-template>
@@ -75,7 +79,8 @@
                                 {{ row.total_sales | currency : "" : "symbol" : "1.2"}}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="month_commission">
+                        <ngx-datatable-column name="month_commission" [resizeable]="false" [canAutoResize]="true"
+                        [minWidth]="80">
                             <ng-template ngx-datatable-header-template>
                                
                                 <p style="font-size:15px;">  Mes Comisión</p>
@@ -85,7 +90,8 @@
                             </ng-template>
                         </ngx-datatable-column>
 
-                        <ngx-datatable-column name="commission_percentage">
+                        <ngx-datatable-column name="commission_percentage" [resizeable]="false" [canAutoResize]="true"
+                        [minWidth]="80">
                             <ng-template ngx-datatable-header-template>
                                 <p style="font-size:15px;">  Porcentaje Comisión</p>
                             </ng-template>
@@ -93,12 +99,12 @@
                                 {{ row.commission_percentage }} %
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column [width]="120">
+                        <ngx-datatable-column [resizeable]="false" [canAutoResize]="true">
                             <ng-template ngx-datatable-header-template>
                                 <p style="font-size:15px;">Acciones</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button class="btn btn-dark m-1 me-3"
+                                <button class="btn btn-dark m-1 btn-sm"
                                 ngbTooltip="Ver detalle"
                                     [routerLink]="['/comisiones/detalle', row.id_commission]">
                                     <i class="i-Eye"></i>

@@ -25,10 +25,20 @@
   <div class="col-md-12">
     <div class="col-md-12">
       <div class="card o-hidden">
-        <ngx-datatable class="material fullscreen" style="height: 100px" [columnMode]="'force'" [headerHeight]="50"
-          [footerHeight]="50" [rowHeight]="60" [rows]="filteredProviders" [count]="filteredProviders.length" [limit]="6"
-          rowHeight="700px">
-          <ngx-datatable-column name="name_provider">
+        <ngx-datatable 
+        class="material fullscreen" 
+        style="height: 480px" 
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50" 
+        [rowHeight]="60" 
+        [rows]="filteredProviders" 
+        [count]="filteredProviders.length" 
+        [limit]="6"
+        rowHeight="700px" 
+        [scrollbarH]="true">
+          <ngx-datatable-column name="name_provider" [resizeable]="false" [canAutoResize]="true"
+          [minWidth]="80">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 15px">Nombre Proveedor</p>
             </ng-template>
@@ -38,7 +48,8 @@
               </div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="phone_provider">
+          <ngx-datatable-column name="phone_provider" [resizeable]="false" [canAutoResize]="true"
+          [minWidth]="80">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 15px">Teléfono</p>
             </ng-template>
@@ -48,7 +59,8 @@
               </div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="name_contact">
+          <ngx-datatable-column name="name_contact" [resizeable]="false" [canAutoResize]="true"
+          [minWidth]="80">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 15px">Nombre Contacto</p>
             </ng-template>
@@ -58,7 +70,8 @@
               </div>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="state_provider">
+          <ngx-datatable-column name="state_provider" [resizeable]="false" [canAutoResize]="true"
+          [minWidth]="80">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 15px">Estado</p>
             </ng-template>
@@ -66,16 +79,18 @@
               {{ row.state_provider }}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column [width]="120">
+
+
+          <ngx-datatable-column [resizeable]="false" [canAutoResize]="true">
             <ng-template ngx-datatable-header-template>
               <p style="font-size: 15px">Acciones</p>
             </ng-template>
             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-              <button class="btn btn-dark m-1 me-3" ngbTooltip="Ver detalle"
+              <button class="btn btn-dark m-1  btn-sm" ngbTooltip="Ver detalle"
                 [routerLink]="['/proveedores/detalle', row.id_provider]">
                 <i class="i-Eye"></i>
               </button>
-              <button class="btn btn-info m-1 me-3" ngbTooltip="Modificar proveedor"
+              <button class="btn btn-info m-1 btn-sm" ngbTooltip="Modificar proveedor"
                 [routerLink]="['/proveedores/editar', row.id_provider]" [disabled]="row.state_provider == 'Inactivo'">
                 <i class="i-Pen-4"></i>
               </button>
@@ -93,19 +108,23 @@
       </div>
     </div>
   </div>
-  
+
   <ng-template #changeStateModal let-modal>
     <div class="modal-header">
-        <h4 class="Cambiar estado" id="modal-title">Cambiar Estado del Proveedor</h4>
+      <h4 class="Cambiar estado" id="modal-title">Cambiar Estado del Proveedor</h4>
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea cambiar el estado de este proveedor?</strong></p>
-        <label for="reasonAnulate">Razón de Cambio de estado del proveedor:</label>
-        <textarea id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado" [(ngModel)]="reasonAnulate" style="resize: none" rows="5"></textarea>
-        <div *ngIf="reasonAnulate.length > 100" class="text-danger">La observación no puede ser mayor a 100 caracteres</div>
+      <p><strong>¿Está seguro de que desea cambiar el estado de este proveedor?</strong></p>
+      <label for="reasonAnulate">Razón de Cambio de estado del proveedor:</label>
+      <textarea id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado"
+        [(ngModel)]="reasonAnulate" style="resize: none" rows="5"></textarea>
+      <div *ngIf="reasonAnulate.length > 100" class="text-danger">La observación no puede ser mayor a 100 caracteres
+      </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" class="btn btn-primary" [disabled]="reasonAnulate.length > 100 || !reasonAnulate" (click)="modal.close('Yes')">Aceptar</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal"
+        (click)="modal.dismiss('cancel')">Cancelar</button>
+      <button type="button" class="btn btn-primary" [disabled]="reasonAnulate.length > 100 || !reasonAnulate"
+        (click)="modal.close('Yes')">Aceptar</button>
     </div>
-</ng-template>
+  </ng-template>
