@@ -102,7 +102,10 @@ export class PurchaseDetailComponent implements OnInit {
   private inicializateForm(id: number): void {
     this.purchaseForm = this.formBuilder.group({
       id_purchase: [""],
-      invoice_number: ["",[Validators.required, Validators.maxLength(80)]],
+      invoice_number: ["",[
+        Validators.maxLength(10),
+        Validators.required, 
+        ]],
       id_provider: ["", [Validators.required]],
       purchase_date: ["", [Validators.required]],
       state_purchase: [""],
@@ -133,7 +136,7 @@ export class PurchaseDetailComponent implements OnInit {
       .setValidators([Validators.required, this.validateVat.bind(this)]);
     this.purchaseForm
       .get("invoice_number")
-      .setValidators([Validators.required]);
+      .setValidators([Validators.required, Validators.maxLength(10)]);
 
     if (this.viewMode == "print") {
       this.purchaseForm.disable();
