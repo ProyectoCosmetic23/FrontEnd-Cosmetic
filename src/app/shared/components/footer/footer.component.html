@@ -7,34 +7,17 @@
     width: 100%;
   "
 >
+<div class="app-footer" style="margin-top: 0 auto; justify-content: flex-end; bottom: 0; width: 100%;">
   <div class="row">
     <div class="col-md-9">
-      <p>
-        <strong
-          >CosmeTIC - Sistema de Ventas de Cosméticos y Productos de Belleza al
-          por Mayor</strong
-        >
-      </p>
-      <p>
-        Tu solución integral para la gestión eficiente de compras y ventas de
-        productos de belleza. ¡Potenciando tu negocio!
-      </p>
+      <p><strong>CosmeTIC - Sistema de Ventas de Cosméticos y Productos de Belleza al por Mayor</strong></p>
+      <p>Tu solución integral para la gestión eficiente de compras y ventas de productos de belleza. ¡Potenciando tu negocio!</p>
     </div>
   </div>
-  <div
-    class="footer-bottom border-top pt-3 d-flex flex-column flex-sm-row align-items-center"
-  >
-    <a
-      class="btn btn-warning mb-3 mb-sm-0"
-      target="_blank"
-      >Soporte</a
-    >
+  <div class="footer-bottom border-top pt-3 d-flex flex-column flex-sm-row align-items-center">
     <span class="flex-grow-1"></span>
     <div class="d-flex align-items-center">
-      <button
-        class="btn btn-primary ng mb-3 mb-sm-0"
-        (click)="showTeamModal(teamModal)"
-      >
+      <button class="btn btn-primary ng mb-3 mb-sm-0" (click)="showTeamModal(teamModal)">
         Equipo CosmeTIC
       </button>
       <img class="logo" src="./assets/images/logo.png" alt="Logo de CosmeTIC" />
@@ -50,18 +33,13 @@
 <ng-template #teamModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title">Equipo CosmeTIC</h4>
-    <button
-      type="button"
-      class="close"
-      (click)="modal.dismiss()"
-      aria-label="Close"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
   </div>
   <div class="modal-body">
     <ul class="list-unstyled">
       <li *ngFor="let member of teamMembers">{{ member }}</li>
     </ul>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cerrar</button>
   </div>
 </ng-template>

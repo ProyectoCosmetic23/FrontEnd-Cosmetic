@@ -76,27 +76,42 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.status === 401) {
+    if (error.status === 400) {
+      // Usuario inactivo
+      if (error.error && error.error.error === 'El usuario está inactivo.') {
+        return throwError({
+          message: error.error.error,
+          errorType: 'inactiveUser'
+        });
+      }
+    } else if (error.status === 404) {
+      // Usuario no registrado
+      return throwError({
+        message: 'El usuario no está registrado.',
+        errorType: 'notRegisteredUser'
+      });
+    } else if (error.status === 401) {
       // Credenciales incorrectas
-      return throwError(
-        "Credenciales incorrectas. Por favor, inténtelo de nuevo."
-      );
+      return throwError({
+        message: "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
+        errorType: 'incorrectCredentials'
+      });
     } else if (error.status === 0) {
       // No se puede conectar al servidor
-      return throwError(
-        "No se puede conectar al servidor. Por favor, inténtelo más tarde."
-      );
+      return throwError({
+        message: "No se puede conectar al servidor. Por favor, inténtelo más tarde.",
+        errorType: 'serverUnreachable'
+      });
     } else {
-      // Otro tipo de error
-      let errorMessage =
-        "Error desconocido. Por favor, contacte al soporte técnico.";
+      // Otros tipos de error
+      let errorMessage = "Error desconocido. Por favor, contacte al soporte técnico.";
       if (error.error && error.error.error) {
         errorMessage = error.error.error;
       }
       return throwError(errorMessage);
     }
   }
-
+  
   private checkAuthStatusAfterLogin(): Observable<boolean> {
     return this._authStatus.pipe(
       // Utilizar switchMap para esperar a que el estado de autenticación cambie a "authenticated"
@@ -122,7 +137,7 @@ export class AuthService {
   login(email: string, password: string): Observable<boolean> {
     const url = `${this.baseUrl}/api/users/login`;
     const body = { email, password };
-
+  
     return this.http.post<LoginResponse>(url, body).pipe(
       switchMap(({ user, token }) => {
         // Verificar si el usuario está inactivo
@@ -132,14 +147,19 @@ export class AuthService {
             progressBar: true,
             timeOut: 3000,
           });
-          return of(false); // Devolver un observable de false para indicar que el inicio de sesión falló
+         
         }
-
-        // Si el usuario no está inactivo, establecer la autenticación y actualizar el estado de autenticación
+  
+        // Establecer la autenticación y actualizar el estado de autenticación
         const isAuthenticationSet = this.setAuthentication(user, token);
         if (isAuthenticationSet) {
           // Establecer el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
+          // Mostrar mensaje de inicio de sesión exitoso utilizando Toastr
+          this.toastr.success("Inicio de sesión exitoso", "¡Bienvenido!", {
+            progressBar: true,
+            timeOut: 3000,
+          });
           return of(true);
         } else {
           return throwError("Error al autenticar al usuario.");
@@ -148,12 +168,13 @@ export class AuthService {
       catchError((error: HttpErrorResponse) => {
         // Mostrar mensaje de error utilizando Toastr
         if (error.status === 403) {
-          this.toastr.error("No puedes iniciar sesión, el rol esta inactivo.", "Error de autenticación", {
+          this.toastr.error("No puedes iniciar sesión, el rol está inactivo.", "Error de autenticación", {
             progressBar: true,
             timeOut: 3000,
           });
+          
         } else {
-          this.toastr.error("El usuario está inactivo.", "Error de autenticación", {
+          this.toastr.error("Credenciales erróneas", "Error de autenticación", {
             progressBar: true,
             timeOut: 3000,
           });
@@ -162,6 +183,9 @@ export class AuthService {
       })
     );
   }
+  
+  
+  
 
 
   getStoredUser(): User | null {
