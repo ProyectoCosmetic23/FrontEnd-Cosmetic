@@ -128,7 +128,12 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.minLength(7),
         Validators.pattern(/^[0-9]+$/)
       ]],
-      
+      name_contact: [i.name_contact, [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+$'), // Permite solo letras y espacios
+        Validators.minLength(3),
+        Validators.maxLength(50)
+    ]],
       reason_anulate:[i.reason_anulate, [Validators.maxLength(100)]],
 
       state_provider: [i.state_provider],
@@ -136,12 +141,6 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.maxLength(100)
       ]],
       
-      name_contact: [i.name_contact, [
-        Validators.required,
-        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+$'), // Permite solo letras y espacios
-        Validators.minLength(3),
-        Validators.maxLength(50)
-    ]],
       creation_date_provider: [i.creation_date_provider],
     });
     console.log("Razon anulate", i.reason_anulate, "nombre", i.name_provider)
@@ -304,8 +303,16 @@ export class ProvidersDetailComponent implements OnInit {
         },
         (error) => {
           this.loading = false;
-          this.toastr.error('Ya existe un proveedor con estos datos.', 'Error', { progressBar: true });
-          console.error('Error al actualizar el proveedor:', error);
+          let backendErrorMessage: string;
+        
+          if (error.error && error.error.error) {
+            backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
+          } else {
+            backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
+          }
+        
+          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
+          console.error("Error al actualizar el proveedo:", error);
         }
       );
     }
