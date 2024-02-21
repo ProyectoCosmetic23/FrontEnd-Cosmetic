@@ -62,7 +62,7 @@ export class EmployeeDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(10),
-          Validators.minLength(10),
+          Validators.minLength(6),
           Validators.pattern("^[0-9]+$"),
         ],
         [this.validateCedulaAvailability.bind(this)],
@@ -159,7 +159,8 @@ export class EmployeeDetailComponent implements OnInit {
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
-    const combinedPattern = /^[\wáéíóúñÑ´\s]+$/;
+    const combinedPattern = /^(?!.*\s{2})[\wáéíóúñÑ´\s]+$/;
+
 
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -177,6 +178,26 @@ export class EmployeeDetailComponent implements OnInit {
     });
   }
 
+  
+  public checkEmailAvailability(): void {
+    if (this.email && this.email instanceof AbstractControl) {
+      this.validateEmail(this.email).then((result) => {
+        if (result) {
+          this.email.setErrors(result);
+        }
+      });
+    }
+  }
+
+  public checkCedulaAvailability(): void {
+    if (this.cedula && this.cedula instanceof AbstractControl) {
+      this.validateCedulaAvailability(this.cedula).then((result) => {
+        if (result) {
+          this.cedula.setErrors(result);
+        }
+      });
+    }
+  } 
   validateEmail(control: AbstractControl) {
 
     const email = control.value.toLowerCase();

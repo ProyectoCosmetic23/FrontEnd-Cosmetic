@@ -75,27 +75,7 @@ export class AuthService {
     return true;
   }
 
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.status === 401) {
-      // Credenciales incorrectas
-      return throwError(
-        "Credenciales incorrectas. Por favor, inténtelo de nuevo."
-      );
-    } else if (error.status === 0) {
-      // No se puede conectar al servidor
-      return throwError(
-        "No se puede conectar al servidor. Por favor, inténtelo más tarde."
-      );
-    } else {
-      // Otro tipo de error
-      let errorMessage =
-        "Error desconocido. Por favor, contacte al soporte técnico.";
-      if (error.error && error.error.error) {
-        errorMessage = error.error.error;
-      }
-      return throwError(errorMessage);
-    }
-  }
+
 
   private checkAuthStatusAfterLogin(): Observable<boolean> {
     return this._authStatus.pipe(
@@ -119,56 +99,60 @@ export class AuthService {
   }
 
 
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 401) {
+      // Credenciales incorrectas
+      return throwError('Credenciales incorrectas. Por favor, inténtelo de nuevo.');
+    } else if (error.status === 0) {
+      // No se puede conectar al servidor
+      return throwError('No se puede conectar al servidor. Por favor, inténtelo más tarde.');
+    } else {
+      // Otro tipo de error
+      let errorMessage = 'Error desconocido. Por favor, contacte al soporte técnico.';
+      if (error.error && error.error.error) {
+        errorMessage = error.error.error;
+      }
+      return throwError(errorMessage);
+    }
+  }
+
   login(email: string, password: string): Observable<boolean> {
     const url = `${this.baseUrl}/api/users/login`;
     const body = { email, password };
-  
+
     return this.http.post<LoginResponse>(url, body).pipe(
       switchMap(({ user, token }) => {
         // Verificar si el usuario está inactivo
-        if (user && user.state_user === "Inactivo") {
+        if (user && user.state_user === 'Inactivo') {
           // Mostrar mensaje de error utilizando Toastr
-          this.toastr.error("El usuario está inactivo.", "Error de autenticación", {
+          this.toastr.error('El usuario está inactivo.', 'Error de autenticación', {
             progressBar: true,
             timeOut: 3000,
           });
-         
         }
-  
+
         // Establecer la autenticación y actualizar el estado de autenticación
         const isAuthenticationSet = this.setAuthentication(user, token);
         if (isAuthenticationSet) {
           // Establecer el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
           // Mostrar mensaje de inicio de sesión exitoso utilizando Toastr
-          this.toastr.success("Inicio de sesión exitoso", "¡Bienvenido!", {
+          this.toastr.success('Inicio de sesión exitoso', '¡Bienvenido!', {
             progressBar: true,
             timeOut: 3000,
           });
           return of(true);
         } else {
-          return throwError("Error al autenticar al usuario.");
+          return throwError('Error al autenticar al usuario.');
         }
       }),
       catchError((error: HttpErrorResponse) => {
-        // Mostrar mensaje de error utilizando Toastr
-        if (error.status === 403) {
-          this.toastr.error("No puedes iniciar sesión, el rol está inactivo.", "Error de autenticación", {
-            progressBar: true,
-            timeOut: 3000,
-          });
-          
-        } else {
-          this.toastr.error("Credenciales erróneas", "Error de autenticación", {
-            progressBar: true,
-            timeOut: 3000,
-          });
-        }
-        return of(false);
+        // Manejar el error utilizando el método handleError
+        return this.handleError(error);
       })
     );
   }
-  
+
   
   
 

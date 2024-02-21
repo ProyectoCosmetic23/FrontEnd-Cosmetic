@@ -31,10 +31,10 @@
                                 El campo cédula es obligatorio.
                             </div>
                             <div *ngIf="employeeForm.get('id_card_employee').hasError('minlength')" class="error-message">
-                                La cédula debe contener un mínimo de 10 caracteres.
+                                La cédula debe contener un mínimo de 6 numeros.
                             </div>
                             <div *ngIf="employeeForm.get('id_card_employee').hasError('maxlength')" class="error-message">
-                                El campo cédula no puede superar los 10 caracteres.
+                                El campo cédula no puede superar los 10 numeros.
                             </div>
                             <div *ngIf="employeeForm.get('id_card_employee').hasError('pattern')" class="error-message">
                                 El campo cédula debe contener solo números.
@@ -49,10 +49,10 @@
                                 El campo teléfono es obligatorio.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('minlength')" class="error-message">
-                                El campo teléfono tiene que tener mínimo los 10 caracteres.
+                                El campo teléfono tiene que tener mínimo los 10 numeros.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('maxlength')" class="error-message">
-                                El campo teléfono no puede superar los 12 caracteres.
+                                El campo teléfono no puede superar los 12 numeros.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('pattern')" class="error-message">
                                 El campo teléfono solo acepta numeros.
@@ -68,7 +68,7 @@
                             El campo nombre es obligatorio.
                         </div>
                         <div *ngIf="employeeForm.get('name_employee').hasError('invalidName')"class="error-message">
-                            El campo nombre no puede tener símbolos  y solo puede tener 1  número.
+                            El campo nombre no puede tener símbolos,ni espacios y solo puede tener 1  número.
                         </div>
                         <div *ngIf="employeeForm.get('name_employee').hasError('minlength')"class="error-message">
                             El campo nombre tiene que ser mayor a 2 caracteres.
@@ -135,7 +135,7 @@
                         <label for="observation">Observación<span class="text-danger"></span></label>
                         <textarea class="form-control" id="observation"  formControlName="observation" style="resize:none" rows="5"></textarea>
                         <div *ngIf="employeeForm.get('observation').hasError('maxlength')"class="error-message">
-                            El campo observación no puede superar los 500 caracteres.
+                            El campo observación no puede superar los 500 letras.
                         </div>
                     </div>
                     

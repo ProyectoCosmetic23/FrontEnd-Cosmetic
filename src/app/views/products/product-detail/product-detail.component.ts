@@ -298,24 +298,21 @@ export class ProductDetailComponent implements OnInit {
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
-    const combinedPattern = /^[\wáéíóúñÑ´\s]+$/;
-
+    const combinedPattern = /^[A-Za-záéíóúñÑ´\d]+\s?(?:\s[A-Za-záéíóúñÑ´\d]+)*$/;
+  
     return new Promise((resolve) => {
       setTimeout(() => {
         if (combinedPattern.test(nameValue)) {
-          const numberCount = (nameValue.match(/\d/g) || []).length;
-          if (numberCount <= 1) {
-            resolve(null); // Válido
-          } else {
-            resolve({ invalidName: true }); // No válido
-          }
+          resolve(null); // Válido
         } else {
           resolve({ invalidName: true }); // No válido
         }
       }, 0);
     });
   }
-
+  
+  
+  
 
   
 
