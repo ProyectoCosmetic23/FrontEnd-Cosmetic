@@ -60,7 +60,7 @@
                     formControlName="id_card_employee"
                     (change)="searchEmployeeByEmail()"
                     required
-                    minlength="7"
+                    minlength="6"
                     maxlength="10"
                   />
                   <input
@@ -82,7 +82,7 @@
                     "
                     class="error-message"
                   >
-                    La cédula debe contener mínimo 7 caracteres.
+                    La cédula debe contener mínimo 6 caracteres.
                   </div>
                   <div
                     *ngIf="
