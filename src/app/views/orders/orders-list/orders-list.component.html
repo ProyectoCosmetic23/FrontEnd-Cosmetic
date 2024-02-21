@@ -610,18 +610,9 @@
             />
           </div>
           <div class="col-md-6 form-group mb-3">
-            <label for="total_payment"
-              >Monto pago<span class="text-danger">*</span></label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="total_payment"
-              [placeholder]="'Monto pago'"
-              [readonly]="viewMode === 'print'"
-              (change)="updateTotalRemaining()"
-              formControlName="total_payment"
-            />
+            <label for="total_payment">Monto pago<span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="total_payment" [placeholder]="'Monto pago'"
+              [readonly]="viewMode === 'print'" (change)="updateTotalRemaining()" formControlName="total_payment" />
             <div *ngIf="formBasic.get('total_payment').touched">
               <div
                 *ngIf="formBasic.get('total_payment').hasError('required')"
@@ -634,6 +625,9 @@
                 class="text-danger"
               >
                 El monto del pago no puede ser negativo.
+              </div>
+              <div *ngIf="formBasic.get('total_payment').hasError('pattern')" class="text-danger">
+                El monto del pago debe ser un número válido.
               </div>
             </div>
           </div>
@@ -650,19 +644,10 @@
 
           <div class="col-md-6 form-group mb-3">
             <label for="total_remaining">Total restante</label>
-            <input
-              type="number"
-              class="form-control"
-              id="total_remaining"
-              [placeholder]="'Total restante'"
-              [readonly]="true"
-              [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
-              formControlName="total_remaining"
-            />
-            <div
-              *ngIf="formBasic.get('total_remaining').hasError('nonNegative')"
-              class="text-danger"
-            >
+            <input type="number" class="form-control" id="total_remaining" [placeholder]="'Total restante'"
+              [readonly]="true" [ngClass]="{ 'placeholder-black': viewMode === 'print' }"
+              formControlName="total_remaining" />
+            <div *ngIf="formBasic.get('total_remaining').hasError('nonNegative')" class="text-danger">
               {{ mensaje }}
             </div>
           </div>
@@ -670,33 +655,14 @@
             <div class="d-flex justify-content-between align-items-center">
               <!-- Texto "Los datos con * son obligatorios" a la izquierda -->
               <div>
-                <span class="text-danger"
-                  >Los datos con * son obligatorios</span
-                >
+                <span class="text-danger">Los datos con * son obligatorios</span>
               </div>
               <!-- Contenedor de botones a la derecha -->
               <div>
                 <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn btn-danger"
-                    (click)="modal.close('cancel')"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="button"
-                    ngbAutofocus
-                    class="btn btn-wide btn-primary"
-                    (click)="asignarPago()"
-                    [disabled]="
-                      !formBasic.get('total_payment').value ||
-                      formBasic.get('total_payment').invalid ||
-                      isNegative
-                    "
-                  >
-                    Pagar
-                  </button>
+                  <button type="button" class="btn btn btn-danger" (click)="modal.close('cancel')">Cancelar</button>
+                  <button type="button" ngbAutofocus class="btn btn-wide btn-primary" (click)="asignarPago()"
+                    [disabled]="!formBasic.get('total_payment').value || formBasic.get('total_payment').invalid || isNegative">Pagar</button>
                 </div>
               </div>
             </div>
@@ -716,6 +682,7 @@
                 <th scope="col">Fecha Pago</th>
                 <th scope="col">Monto Pago</th>
                 <th scope="col">Monto Restante</th>
+                <th scope="col">Total Pedido</th>
               </tr>
             </thead>
             <tbody>
@@ -731,9 +698,19 @@
                     payment.total_remaining | currency : "" : "symbol" : "1.2-2"
                   }}
                 </td>
+                <td>
+                  {{
+                    totalOrder | currency : "" : "symbol" : "1.2-2"
+                  }}
+                </td>
               </tr>
             </tbody>
           </table>
+          <div style="display: flex; align-items: center;" class="justify-content-end">
+            <button type="button" class="btn btn btn-danger" (click)="modal.close('cancel')">Cerrar</button>
+        </div>
+
+
         </div>
       </div>
     </div>

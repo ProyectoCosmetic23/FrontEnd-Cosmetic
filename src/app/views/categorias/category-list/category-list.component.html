@@ -49,8 +49,10 @@
                         <p style="font-size:15px;">Nombre</p> 
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
-                        <ng-container *ngIf="row && row.id_category">
+                        <ng-container *ngIf="row && row.id_category" class="long-text">
+                            <div style="white-space: pre-line;">
                             {{ row.name_category }}
+                            </div>
                         </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
@@ -76,7 +78,7 @@
                             <button ngbTooltip="Modificar" class="btn btn-info m-1 btn-sm" [routerLink]="['/categories/edit', row.id_category]" [disabled]="!row.state_category"  >
                                 <i class="i-Pen-4"></i>
                             </button>
-                            <label bTooltip="Cambiar estado" class="switch switch-success btn-sm custom-switch" [class.switch-success]="row.state_category" [class.switch-danger]="!row.state_category">
+                            <label bTooltip="Cambiar estado" class="switch switch-success btn-sm custom-switch">
                                 <input type="checkbox" [checked]="row.state_category == true" (change)="handleChange($event, row)" (click)="modalStatus(row.id_category, $event)">
                                 <span class="slider"></span>
                             </label>

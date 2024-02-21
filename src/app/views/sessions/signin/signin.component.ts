@@ -81,14 +81,41 @@ export class SigninComponent implements OnInit {
           return; // No hacer nada si no hay respuesta
         }
   
-        if (response.error && response.error === "Credenciales incorrectas: El usuario está inactivo.") {
-          this.toastr.error(response.error, "Error de validación", {
-            progressBar: true,
-            timeOut: 3000,
-          });
+        if (response.error) {
+          // Manejar errores específicos
+          switch (response.error) {
+            case "Correo o Contraseña incorrectas.":
+            case "Credenciales incorrectas: El usuario está inactivo.":
+            case "No tienes permisos para iniciar sesión. Contacta al administrador.":
+            case "Credenciales incorrectas: El rol del usuario está inactivo.":
+              this.toastr.error(response.error, "Error de validación", {
+                progressBar: true,
+                timeOut: 3000,
+              });
+              break;
+            default:
+              // Manejar otros errores no previstos
+              console.error("Error no manejado:", response.error);
+              this.toastr.error("Error de servidor", "Error de validación", {
+                progressBar: true,
+                timeOut: 3000,
+              });
+              break;
+          }
           return;
         }
   
+        if (response.successMessage) {
+          // Mostrar mensaje de inicio de sesión exitoso
+          this.toastr.success(response.successMessage, "¡Inicio de sesión exitoso!", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+          this.router.navigateByUrl("/dashboard/v1");
+          return;
+        }
+  
+        // Si no hay errores, continuar con el proceso de inicio de sesión
         if (response.user && response.token) {
           this.router.navigateByUrl("/dashboard/v1");
         }
@@ -107,10 +134,4 @@ export class SigninComponent implements OnInit {
       },
     });
   }
-  
-  
-  
-  
-  
-  
-}
+}  

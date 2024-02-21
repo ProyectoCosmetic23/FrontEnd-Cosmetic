@@ -129,7 +129,7 @@
                 <label for="reason_anulate">Razón de cambio de estado</label>
                 <textarea class="form-control" placeholder="Ingrese la razón de cambio de estado" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'" rows="5"></textarea>
                 <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
-                  El campo supera los 100 carácteres.
+                  El campo supera los 100 caracteres.
               </div>
               </div>
         </form>

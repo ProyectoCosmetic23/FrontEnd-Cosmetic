@@ -460,7 +460,14 @@
                     <div class="col-md-8"></div>
                     <div class="col-md-8">
                       <div class="total">
-                        <p></p>
+                        Total:
+                        {{
+                          viewMode == "new"
+                            ? (calculateTotal()
+                              | currency : "" : "symbol" : "1.2")
+                            : (order?.order?.total_order
+                              | currency : "" : "symbol" : "1.2")
+                        }}
                       </div>
                     </div>
                   </div>

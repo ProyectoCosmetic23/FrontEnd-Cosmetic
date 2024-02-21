@@ -1,17 +1,12 @@
 <div class="breadcrumb">
     <h1 *ngIf="viewMode === 'new'">Registrar Comision</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de la Comision</h1>
-    <ul>
-        <li><a>Comisiones</a></li>
-        <li *ngIf="viewMode === 'new'">Registrar Comision</li>
-        <li *ngIf="viewMode === 'print'">Ver Detalle de la Comision</li>
-    </ul>
 </div>
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title mb-3">Formulario de Comisiones</div>
+
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
@@ -51,7 +46,7 @@
                         <div class="col-md-6 form-group mb-3">
                             <label for="total_commission">Total comisión</label>
                             <input type="text" class="form-control" id="total_commission"
-                                [placeholder]="totalComs || 'Total Comisión'" [readonly]="true"
+                                [placeholder]="Commission || 'Total Comisión'" [readonly]="true"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}"
                                 formControlName="total_commission">
                         </div>
@@ -61,14 +56,15 @@
                             <label for="commission_percentage">Porcentaje de comisión</label>
                             <input class="form-control" id="commission_percentage" [readonly]="true"
                                 formControlName="commission_percentage"
-                                [placeholder]="selectedPercentage || 'Porcentaje'"
+                                [placeholder]="Percentage || 'Porcentaje'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         </div>
+
                         <div class="col-md-6 form-group mb-3">
                             <label for="total_sales">Total ventas</label>
                             <input class="form-control" id="total_sales" [readonly]="true"
                                 [ngClass]="{'placeholder-black': viewMode === 'print', 'text-danger': noSales}"
-                                [placeholder]="totalSales || 'No se realizó ninguna venta'"
+                                [placeholder]="Sales || 'No se realizó ninguna venta'"
                                 formControlName="total_sales">
                             <div *ngIf="viewMode === 'new' && noSales === true" class="text-danger">
                                 <div>{{message}}</div>
@@ -77,12 +73,12 @@
                         
 
                         <div class="col-md-12">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <!-- Texto "Los datos con * son obligatorios" a la izquierda -->
-                              <span *ngIf="viewMode === 'new'" class="text-danger">Los datos con * son obligatorios</span>
+                            <div class="d-flex justify-content-end align-items-center">
+
                               <!-- Botón "Registrar Comisión" a la derecha -->
                               <div>
-                                <button class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>
+                                <button *ngIf="viewMode === 'print'" class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>
+                                <button *ngIf="viewMode === 'new'"  class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Cancelar</button>
                                 <button class="btn btn-primary float-right ml-2" *ngIf="viewMode === 'new'" [loading]="loading" [disabled]="!formBasic.get('total_sales').value || noSales">
                                   Registrar Comisión
                                 </button>

@@ -60,8 +60,7 @@ export class CategoryDetailComponent implements OnInit {
 
     this.categoryForm = this.formBuilder.group({
       id_category: [""],
-      name_category: [
-        "",
+      name_category: ["",
         [
           Validators.required,
           Validators.maxLength(80),

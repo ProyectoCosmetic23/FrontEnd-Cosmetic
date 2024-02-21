@@ -44,16 +44,14 @@
                     formControlName="invoice_number"
                     style="width: 100%"
                   />
-                  <div
-                    *ngIf=" purchaseForm.get('invoice_number').touched &&purchaseForm.get('invoice_number').hasError('required')" class="error-message"
-                  >
+                  <div *ngIf="purchaseForm.get('invoice_number').touched && purchaseForm.get('invoice_number').hasError('maxlength')" class="error-message">
+                    El campo supera los 10 caracteres.
+                </div>
+                  <div *ngIf="purchaseForm.get('invoice_number').touched && purchaseForm.get('invoice_number').hasError('required')" class="error-message">
                     El campo es obligatorio.
                   </div>
-                  <div
-                    *ngIf=" purchaseForm.get('invoice_number').touched &&purchaseForm.get('invoice_number').hasError('maxLength')" class="error-message"
-                  >
-                    Este campo solo acepta 20 caracteres.
-                  </div>
+           
+                  
                 </div>
               </div>
               <div class="col-md-6">
@@ -189,7 +187,7 @@
                     "
                     class="error-message"
                   >
-                    El campo supera los 100 caracteres.
+                    El campo supera los 80 caracteres.
                   </div>
                 </div>
               </div>
@@ -342,7 +340,7 @@
                         name="cost_price"
                         formControlName="cost_price"
                         style="width: 100%"
-                        appCurrencyFormat
+                        
                       />
                     </div>
                     <div
@@ -669,7 +667,7 @@
                       "
                       class="error-message"
                     >
-                      El campo solo puede contener 80 carácteres
+                      El campo solo puede contener 80 caracteres
                     </div>
                     <div
                       *ngIf="
@@ -759,7 +757,7 @@
                     "
                     class="error-message"
                   >
-                    El campo solo puede contener 80 carácteres
+                    El campo solo puede contener 80 caracteres
                   </div>
                 </div>
               </form>
