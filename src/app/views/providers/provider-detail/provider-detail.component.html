@@ -1,20 +1,14 @@
 <div class="breadcrumb">
     <h1 *ngIf="viewMode === 'new'">Registrar Proveedor</h1>
-    <h1 *ngIf="viewMode === 'edit'">Editar Proveedor</h1>
+    <h1 *ngIf="viewMode === 'edit'">Modificar Proveedor</h1>
     <h1 *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</h1>
-    <ul>
-        <li><a>Proveedores</a></li>
-        <li *ngIf="viewMode === 'new'">Registrar Proveedor</li>
-        <li *ngIf="viewMode === 'edit'">Editar Proveedor</li>
-        <li *ngIf="viewMode === 'print'">Ver Detalle de Proveedor</li>
-    </ul>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title mb-3">Formulario de Proveedor</div>
+
                 <form [formGroup]="formBasic" (ngSubmit)="submit()">
                     <div class="row">
                         <div class="col-md-6 form-group mb-3">
@@ -22,8 +16,9 @@
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="nit_cedula" formControlName="nit_cedula"
                                 (change)="handleNitSelection($event)"
+                                [value]="provider?.nit_cedula"
                                 [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'"
-                                [readonly]="viewMode === 'print' || viewMode === 'edit'"
+                                [readonly]="viewMode === 'print'"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                             <div *ngIf="viewMode === 'new' && formBasic.get('nit_cedula').invalid && (formBasic.get('nit_cedula').dirty || formBasic.get('nit_cedula').touched)"
                                 class="text-danger">
@@ -38,9 +33,18 @@
                                 <div *ngIf="formBasic.get('nit_cedula').hasError('cedulaNotAvailable')">La cédula ya
                                     está en uso.</div>
                             </div>
+                            <div *ngIf="viewMode === 'edit' && formBasic.get('nit_cedula').invalid && (formBasic.get('nit_cedula').dirty || formBasic.get('nit_cedula').touched)"
+                            class="text-danger">
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('minlength')">La cédula o NIT no puede
+                                ser menor de 7 caracteres.</div>
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('maxlength')">La cédula o NIT no puede
+                                ser mayor de 10 caracteres.</div>
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('pattern')">Solo se admiten números en
+                                la cédula o NIT.</div>
+                            <div *ngIf="formBasic.get('nit_cedula').hasError('cedulaNotAvailable')">La cédula ya
+                                está en uso.</div>
                         </div>
-
-
+                        </div>
                         <div class="col-md-6 form-group mb-3">
                             <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'"
                                     class="text-danger">*</span></label>
@@ -48,6 +52,7 @@
                                 (change)="handleNameProviderSelection($event)"
                                 [placeholder]="provider?.name_provider || 'Nombre del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.name_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                             <div *ngIf="viewMode === 'new' && formBasic.get('name_provider').invalid && (formBasic.get('name_provider').dirty || formBasic.get('name_provider').touched)"
                                 class="text-danger">
@@ -74,6 +79,7 @@
                                 formControlName="email_provider"
                                 [placeholder]="provider?.email_provider || 'Correo del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.email_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('email_provider').touched">
@@ -105,6 +111,7 @@
                                 formControlName="address_provider"
                                 [placeholder]="provider?.address_provider || 'Dirección del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.address_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
 
                             <div *ngIf="viewMode === 'new' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
@@ -114,11 +121,17 @@
                             <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
                                 El campo dirección no puede superar los 80 caracteres.
                             </div>
+                            <div *ngIf="formBasic.get('address_provider').hasError('minlength')" class="text-danger">
+                                El campo dirección debe tener mas de 4 caracteres.
+                            </div>
 
                             <div *ngIf="viewMode === 'edit' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
                                 class="text-danger">
                                 <div *ngIf="formBasic.get('address_provider').hasError('maxlength')" class="text-danger">
                                     El campo dirección no puede superar los 80 caracteres.
+                                </div>
+                                <div *ngIf="formBasic.get('address_provider').hasError('minlength')" class="text-danger">
+                                    El campo dirección debe tener mas de 4 caracteres.
                                 </div>
                             </div>
                         </div>
@@ -129,6 +142,7 @@
                                 formControlName="phone_provider"
                                 [placeholder]="provider?.phone_provider || 'Teléfono del proveedor'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.phone_provider"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('phone_provider').touched">
@@ -177,6 +191,7 @@
                                 formControlName="name_contact"
                                 [placeholder]="provider?.name_contact || 'Nombre del contacto'"
                                 [readonly]="viewMode === 'print'"
+                                [value]="provider?.name_contact"
                                 [ngClass]="{'placeholder-black': viewMode === 'print'}">
                         
                             <div *ngIf="viewMode === 'new' && formBasic.get('name_contact').touched">
@@ -239,8 +254,15 @@
                                     (change)="handleObservationSelection($event)"
                                     [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
                                     [readonly]="viewMode === 'print'"
+                                    [value]="provider?.observation_provider"
+                                    formControlName="observation_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
                                     rows="6"></textarea>
+                                    <div *ngIf="(viewMode === 'edit' || viewMode === 'new') && formBasic.get('observation_provider').touched">
+                                        <div *ngIf="formBasic.get('observation_provider').hasError('maxlength')" class="text-danger">
+                                            {{ observationError }}
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                         <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
@@ -253,18 +275,16 @@
                                 rows="6"></textarea>
                         </div>
                         <div class="col-md-12">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span *ngIf="viewMode === 'new'" class="text-danger">Los datos con * son obligatorios</span>
-                                </div>
+                            <div class="d-flex justify-content-end align-items-center">
                                 <div class="d-flex">
-                                    <button class="btn btn-danger" [routerLink]="['/proveedores']">Volver</button>
+                                    <button *ngIf="viewMode === 'new' || viewMode === 'edit'" class="btn btn-danger" [routerLink]="['/proveedores'] ">Cancelar</button>
+                                    <button *ngIf="viewMode === 'print'" class="btn btn-danger" [routerLink]="['/proveedores'] ">Volver</button>
                                     <div style="width: 10px;"></div>
                                     <btn-loading *ngIf="viewMode === 'new'" btnClass="btn-primary" [loading]="loading">
                                         Registrar Proveedor
                                     </btn-loading>
                                     <btn-loading *ngIf="viewMode === 'edit'" btnClass="btn-primary" [loading]="loading">
-                                        Editar Proveedor
+                                        Modificar Proveedor
                                     </btn-loading>
                                 </div>
                             </div>

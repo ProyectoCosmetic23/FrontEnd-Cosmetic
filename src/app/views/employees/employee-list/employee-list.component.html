@@ -1,126 +1,216 @@
 <div class="">
-    <div class="breadcrumb">
+  <div class="breadcrumb">
     <h1>Listar Empleados</h1>
-    <ul>
-        <li><a>Servicios</a></li>
-        <li>Empleados</li>
-    </ul>
-</div>
-<div class="separator-breadcrumb border-top"></div>
+  </div>
+  <div class="separator-breadcrumb border-top"></div>
 
-<div class="row mb-3">
-
-    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
-        <div class="col-md-4">
-            <div class="form-group">
-                <button class="btn btn-primary" [routerLink]="['/employees/new']">Crear nuevo Empleado</button>
-            </div>
+  <div class="row mb-3">
+    <div
+      class="col-md-12 mb-3 d-flex justify-content-between align-items-center"
+    >
+      <div class="col-md-4">
+        <div class="form-group">
+          <button class="btn btn-primary" [routerLink]="['/employees/new']">
+            Registrar Empleado
+          </button>
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <input id="role" placeholder="Buscar Empleados" [formControl]="searchControl" class="form-control"
-                    type="role" (keyup)="searchEmployee($event)">
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input
+            id="role"
+            placeholder="Buscar Empleados"
+            [formControl]="searchControl"
+            class="form-control"
+            type="role"
+            (keyup)="searchEmployee($event)"
+          />
         </div>
+      </div>
     </div>
     <div class="col-md-12">
-        <div class="card o-hidden">
-            <div  class=" table-responsive">
+      <div class="card o-hidden">
+        <div *ngIf="showLoadingScreen" class="loading-screen">
+          <div class="loading-content">
+            <div class="spinner spinner-primary me-3"></div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <div *ngIf="showLoadingScreen == false">
             <ngx-datatable
-            class="material fullscreen"
-            style="height: 480px"
-            [columnMode]="'force'"
-            [headerHeight]="50"
-            [footerHeight]="50"
-            [rowHeight]="60"
-            [rows]="filteredEmployees"
-            [count]="filteredEmployees.length"
-            [limit]="6"
-            rowHeight="700px"
-            [scrollbarH]="true"
+              class="material fullscreen"
+              style="height: 480px"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="60"
+              [rows]="filteredEmployees"
+              [count]="filteredEmployees.length"
+              [limit]="6"
+              rowHeight="700px"
+              [scrollbarH]="true"
             >
+              <ngx-datatable-column
+                name="id_card_employee"
+                [resizeable]="false"
+                [canAutoResize]="true"
+                [minWidth]="80"
+              >
+                <ng-template
+                  ngx-datatable-header-template
+                  class="fixed-width-cell"
+                >
+                  <p style="font-size: 15px">Cédula</p>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-row="row"
+                >
+                  {{ row.id_card_employee }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column
+                name="name_employee"
+                [resizeable]="false"
+                [canAutoResize]="true"
+                [minWidth]="80"
+              >
+                <ng-template ngx-datatable-header-template>
+                  <p style="font-size: 15px">Nombre</p>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-row="row"
+                >
+                  {{ row.name_employee }}
+                </ng-template>
+              </ngx-datatable-column>
 
-                <ngx-datatable-column name="id_card_employee" [resizeable]="false" [canAutoResize]="true"
-                    [minWidth]="80">
-                    <ng-template ngx-datatable-header-template class="fixed-width-cell">
-                        <p style="font-size:15px;">Cedula</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.id_card_employee }}
-                    </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column name="name_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Nombre</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.name_employee }}
-                    </ng-template>
-                </ngx-datatable-column>
+              <ngx-datatable-column
+                name="email"
+                [resizeable]="false"
+                [canAutoResize]="true"
+                [minWidth]="80"
+              >
+                <ng-template ngx-datatable-header-template>
+                  <p style="font-size: 15px">Correo</p>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-row="row"
+                >
+                  {{ row.email }}
+                </ng-template>
+              </ngx-datatable-column>
 
-                <ngx-datatable-column name="email" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Correo</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.email }}
-                    </ng-template>
-                </ngx-datatable-column>
+              <ngx-datatable-column
+                name="state_employee"
+                [resizeable]="false"
+                [canAutoResize]="true"
+                [minWidth]="80"
+              >
+                <ng-template ngx-datatable-header-template>
+                  <p style="font-size: 15px">Estado</p>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-row="row"
+                >
+                  {{ row.state_employee }}
+                </ng-template>
+              </ngx-datatable-column>
 
-                <ngx-datatable-column name="state_employee" [resizeable]="false" [canAutoResize]="true" [minWidth]="80">
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Estado</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        {{ row.state_employee }}
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <ngx-datatable-column name="actions" [resizeable]="false" [canAutoResize]="true">
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Acciones</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                        <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm"
-                            [routerLink]="['/employees/print', row.id_employee]">
-                            <i class="i-Eye"></i>
-                        </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm"
-                            [routerLink]="['/employees/edit', row.id_employee]"
-                            [disabled]="row.state_employee== 'Inactivo'">
-                            <i class="i-Pen-4"></i>
-                        </button>
-                        <label ngbTooltip="Cambiar estado" class="switch switch-success me-3  btn-custom btn-sm"
-                            (click)="openModal(row.id_employee)">
-                            <input type="checkbox" [checked]="row.state_employee === 'Activo'"
-                                (change)="handleChange($event, row)">
-                            <span class="slider"></span>
-                        </label>
-                    </ng-template>
-                </ngx-datatable-column>
+              <ngx-datatable-column
+                name="actions"
+                [resizeable]="false"
+                [canAutoResize]="true"
+              >
+                <ng-template ngx-datatable-header-template>
+                  <p style="font-size: 15px">Acciones</p>
+                </ng-template>
+                <ng-template
+                  ngx-datatable-cell-template
+                  let-value="value"
+                  let-row="row"
+                >
+                  <button
+                    ngbTooltip="Ver Estado"
+                    class="btn btn-dark m-1 btn-sm"
+                    [routerLink]="['/employees/print', row.id_employee]"
+                  >
+                    <i class="i-Eye"></i>
+                  </button>
+                  <button
+                    ngbTooltip="Modificar"
+                    class="btn btn-info m-1"
+                    [routerLink]="['/employees/edit', row.id_employee]"
+                    [disabled]="row.state_employee == 'Inactivo'"
+                  >
+                    <i class="i-Pen-4"></i>
+                  </button>
+                  <label
+                    ngbTooltip="Cambiar estado"
+                    class="switch switch-success me-3 btn-custom btn-sm"
+                    (click)="openModal(row.id_employee)"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="row.state_employee === 'Activo'"
+                      (change)="handleChange($event, row)"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </ng-template>
+              </ngx-datatable-column>
             </ngx-datatable>
+          </div>
         </div>
-        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<ng-template #deleteConfirmModal let-modal>
+  <ng-template #deleteConfirmModal let-modal>
     <div class="modal-header" [closable]="false">
-        <h4 class="modal-title" id="modal-title">Cambiar estado empleado</h4>
+      <h4 class="modal-title" id="modal-title">Cambiar Estado del Empleado</h4>
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de que desea cambiar el estado de este Empleado?</strong></p>
-        <label for="reasonAnulate">Razón de cambio de estado:</label>
-        <textarea id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado"
-            [(ngModel)]="reasonAnulate" style="resize:none" rows="5"></textarea>
-
+      <p>
+        <strong
+          >¿Está seguro de que desea cambiar el estado de este Empleado?</strong
+        >
+      </p>
+      <label for="reasonAnulate">Razón de cambio de estado:</label>
+      <textarea
+        id="reasonAnulate"
+        class="form-control"
+        placeholder="Ingrese la razón de cambio de estado"
+        [(ngModel)]="reasonAnulate"
+        style="resize: none"
+        rows="5"
+      ></textarea>
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary " (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger " (click)="modal.close('Ok')"
-            [disabled]="reasonAnulate == ''">Aceptar</button>
+      <button
+        type="button"
+        class="btn btn-wide btn-danger"
+        (click)="modal.dismiss('cancel')"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        ngbAutofocus
+        class="btn btn-primary"
+        (click)="modal.close('Ok')"
+        [disabled]="reasonAnulate == ''"
+      >
+        Aceptar
+      </button>
     </div>
-</ng-template>
-
+  </ng-template>
 </div>

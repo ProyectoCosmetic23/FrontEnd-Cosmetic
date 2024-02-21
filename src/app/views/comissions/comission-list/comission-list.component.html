@@ -1,21 +1,17 @@
 <div class="breadcrumb">
     <h1>CosmeTic</h1>
-    <ul>
-        <li><a>Servicios</a></li>
-        <li>Comisiones</li>
-    </ul>
 </div>
 
 <div class="separator-breadcrumb border-top"></div>
 
 <div class="row mb-3">
-    <div class="col-md-12 mb-3">
+    <div class="col-md-12 mb-3">    
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-3">
-                        <button class="btn btn-primary float-right" [routerLink]="['/comisiones/registrar']">Crear comisión</button>
-                    </div>
+                        <button class="btn btn-primary float-right w-75" [routerLink]="['/comisiones/registrar']">Registrar</button>
+                      </div>
                     <div class="col-md-4">
                         <button class="btn btn-primary float-right" (click)="openModal()">Asignar porcentaje 
                             </button>
@@ -30,11 +26,11 @@
             </div>
             <div class="col-md-6 d-flex justify-content-end">
                 <div class="col-md-5" style="padding-top: 1%;">
-                    <span><b>Total Comisiones: </b>{{ totalCommissions | currency : "" : "symbol" : "1.2"}}</span>
+                  <span style="font-size: 1rem;"><b>Total Comisiones: {{ totalCommissions | currency : "" : "symbol" : "1.2"}}</b></span>
                 </div>
                 <!-- <input [formControl]="searchControl" placeholder="Buscar Comisiones por Empleado" type="text"
                     class="form-control" style="width: 50%;"> -->
-            </div>
+              </div>
         </div>
     </div>
     <div class="col-md-12">
@@ -94,7 +90,7 @@
                                 <p style="font-size:15px;">  Porcentaje Comisión</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.commission_percentage }}
+                                {{ row.commission_percentage }} %
                             </ng-template>
                         </ngx-datatable-column>
                         <ngx-datatable-column [width]="120">
@@ -102,7 +98,8 @@
                                 <p style="font-size:15px;">Acciones</p>
                             </ng-template>
                             <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 me-3"
+                                <button class="btn btn-dark m-1 me-3"
+                                ngbTooltip="Ver detalle"
                                     [routerLink]="['/comisiones/detalle', row.id_commission]">
                                     <i class="i-Eye"></i>
                                 </button>
@@ -131,16 +128,16 @@
                     <select class="form-control" id="commission_percentage"
                         (change)="handlePerccentageSelection($event)">
                         <option value="0">Elija el porcentaje</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
+                        <option value="1">1 %</option>
+                        <option value="2">2 %</option>
+                        <option value="3">3 %</option>
+                        <option value="4">4 %</option>
+                        <option value="5">5 %</option>
+                        <option value="6">6 %</option>
+                        <option value="7">7 %</option>
+                        <option value="8">8 %</option>
+                        <option value="9">9 %</option>
+                        <option value="10">10 %</option>
                     </select>
                 </div>
 
@@ -170,10 +167,8 @@
         </form>
     </div>
     
-    <div class="modal-footer d-flex justify-content-between align-items-center">
-        <div>
-            <span class="text-danger">Los datos con * son obligatorios</span>
-        </div>
+    <div class="modal-footer d-flex justify-content-end align-items-center">
+
         <div>
             <button type="button" class="btn btn-danger"
                 (click)="modal.dismiss('cancel')" style="margin-right: 5px;">Cancelar</button>

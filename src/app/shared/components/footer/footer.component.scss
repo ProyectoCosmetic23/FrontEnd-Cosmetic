@@ -1,0 +1,27 @@
+/* footer.component.scss */
+
+app-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .team-members {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .team-member {
+    margin-bottom: 10px;
+  }
+  
+  .team-member:last-child {
+    margin-bottom: 0;
+  }
+  
+  .team-member:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  

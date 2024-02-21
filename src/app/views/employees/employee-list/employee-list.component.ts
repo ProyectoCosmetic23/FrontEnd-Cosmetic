@@ -23,6 +23,7 @@ export class EmployeeListComponent implements OnInit {
   itemsPerPage = 6;
   countLabel: number;
   reasonAnulate: string = "";
+  showLoadingScreen: boolean=false;
 
   constructor(
     private _employeeService: EmployeesService,
@@ -42,7 +43,8 @@ export class EmployeeListComponent implements OnInit {
   }
 
   getEmployees() {
-    this.loading = true; // Puedes mostrar un indicador de carga mientras se obtienen los datos
+    this.showLoadingScreen = true;
+   
     this._employeeService.getAllEmployees().subscribe(
       (data) => {
         this.listEmployees = data.sort((a, b) => a.id_employee - b.id_employee);
@@ -55,8 +57,11 @@ export class EmployeeListComponent implements OnInit {
         this.loading = false; // Manejar el error y ocultar el indicador de carga
         console.error("Error al obtener empleados:", error);
       }
-    );
-  }
+    )
+    .add(() => {
+      this.showLoadingScreen = false;
+  });
+}
 
   irefreshListEmployees() {
     this.loadData();
@@ -100,32 +105,25 @@ export class EmployeeListComponent implements OnInit {
   }
 
   searchEmployee($event) {
-    const value = ($event.target as HTMLInputElement).value;
-
-    if (value !== null && value !== undefined && value !== "") {
+    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+  
+    if (value !== "") {
       this.filteredEmployees = this.listEmployees.filter(
         (employee) =>
-          employee.name_employee.toLowerCase().indexOf(value.toLowerCase()) !==
-            -1 ||
-          employee.id_card_employee
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1 ||
-          employee.email.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          this.changeEmployeeStateDescription(employee.state_employee)
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1
+          employee.name_employee.toLowerCase().includes(value) ||
+          employee.id_card_employee.toLowerCase().includes(value) ||
+          employee.email.toLowerCase().includes(value) ||
+          (employee.state_employee.toLowerCase().slice(0, 3) === value.toLowerCase() || employee.state_employee.toLowerCase() === value.toLowerCase())
       );
     } else {
       this.filteredEmployees = this.listEmployees;
     }
-
+  
     this.loadData();
-  }
+}
 
-  changeEmployeeStateDescription(state_employee: boolean) {
-    return state_employee ? "Activo" : "Inactivo";
-  }
 
+  
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
   openModal(idEmployee: number) {
@@ -133,7 +131,7 @@ export class EmployeeListComponent implements OnInit {
       this.modalAbierto = true;
 
       this.modalService
-        .open(this.deleteConfirmModal, { centered: true })
+        .open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false})
         .result.then(
           (result) => {
             if (result === "Ok") {
@@ -166,6 +164,7 @@ export class EmployeeListComponent implements OnInit {
           },
           (reason) => {
             // Manejar la cancelación del modal aquí
+            this.reasonAnulate = '';
             this.getEmployees();
             this.modalAbierto = false;
           }

@@ -1,36 +1,44 @@
 <div class="breadcrumb">
-    <h1>Compras</h1>
- 
+  <h1>Compras</h1>
 </div>
 <div class="separator-breadcrumb border-top"></div>
 
 <div class="row mb-3">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-6 col-sm-12">
-                <div class="form-group">
-                    <button class="btn btn-primary" [routerLink]="['/purchases/new']">Registrar Compra</button>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-12 text-end">
-                <div class="form-group">
-                    <input id="purchase" placeholder="Buscar Compra" [formControl]="searchControl" class="form-control" type="text"(keyup)="searchPurchase($event)">
-                </div>
-            </div>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <div class="form-group">
+          <button class="btn btn-primary" [routerLink]="['/purchases/new']">
+            Registrar Compra
+          </button>
         </div>
+      </div>
+      <div class="col-md-6 col-sm-12 text-end">
+        <div class="form-group">
+          <input
+            id="purchase"
+            placeholder="Buscar Compra"
+            [formControl]="searchControl"
+            class="form-control"
+            type="text"
+            (keyup)="searchPurchase($event)"
+          />
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="col-md-12">
-        <div class="card o-hidden">
-            <div class="card o-hidden">
-                <div *ngIf="showLoadingScreen" class="loading-screen">
-                    <div class="loading-content">
-                      <div class="spinner spinner-primary me-3"></div>
-                    </div>
-                  </div>
-                  
-        <div  class=" table-responsive">
-            <ngx-datatable
+  <div class="col-md-12">
+    <div class="card o-hidden">
+      <div class="card o-hidden">
+        <div *ngIf="showLoadingScreen" class="loading-screen">
+          <div class="loading-content">
+            <div class="spinner spinner-primary me-3"></div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <ngx-datatable
             class="material fullscreen"
             style="height: 480px"
             [columnMode]="'force'"
@@ -42,110 +50,138 @@
             [limit]="6"
             rowHeight="700px"
             [scrollbarH]="true"
-           
-            >
+          >
+            <ngx-datatable-column name="invoice_number">
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">#Factura</p>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <ng-container *ngIf="row && row.id_purchase">
+                  {{ row.invoice_number }}
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
 
-                <ngx-datatable-column name="invoice_number" >
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;" >#Factura</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-row="row">
-                        <ng-container *ngIf="row && row.id_purchase">
-                            {{ row.invoice_number }}
-                        </ng-container>
-                    </ng-template>
-                </ngx-datatable-column>
+            <ngx-datatable-column name="id_provider">
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">Proveedor</p>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <ng-container *ngIf="row && row.id_purchase" class="long-text">
+                  <div style="white-space: pre-line">
+                    {{ providers[row.id_provider] }}
+                  </div>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
 
-                <ngx-datatable-column name="id_provider"  >
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Proveedor</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-row="row">
-                        <ng-container *ngIf="row && row.id_purchase" class="long-text">
-                          
-                            <div style="white-space: pre-line;">
-                                {{ providers[row.id_provider] }}
-                            </div>
-                        </ng-container>
-                    </ng-template>
-                </ngx-datatable-column>
+            <ngx-datatable-column name="purchase_date">
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">Fecha de compra</p>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.purchase_date | date : "dd/MM/yyyy" }}
+              </ng-template>
+            </ngx-datatable-column>
 
-                <ngx-datatable-column name="purchase_date" >
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Fecha de compra</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.purchase_date | date: 'dd/MM/yyyy' }}
-                    </ng-template>
-                </ngx-datatable-column>
+            <ngx-datatable-column name="total_purchase">
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">Total</p>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.total_purchase | currency : "" : "symbol" : "1.0-0" }}
+              </ng-template>
+            </ngx-datatable-column>
 
-                <ngx-datatable-column name="total_purchase" >
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Total </p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.total_purchase | currency:'':'symbol':'1.0-0'}}
-                    </ng-template>
-                </ngx-datatable-column>
+            <ngx-datatable-column name="state_purchase">
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">Estado</p>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.state_purchase ? "Activo" : "Anulada" }}
+              </ng-template>
+            </ngx-datatable-column>
 
-                <ngx-datatable-column name="state_purchase"  >
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;" >Estado</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-row="row">
-                        {{ row.state_purchase ? 'Activo':'Anulada' }}
-                    </ng-template>
-                </ngx-datatable-column>
+            <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los categories -->
+            <ngx-datatable-column>
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">Acciones</p>
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <button
+                  ngbTooltip="Ver Detalle"
+                  class="btn btn-dark m-1 btn-sm"
+                  [routerLink]="['/purchases/detail', row.id_purchase]"
+                >
+                  <i class="i-Eye"></i>
+                </button>
 
-                <!-- Agrega más columnas según sea necesario para mostrar otras propiedades de los categories -->
-                <ngx-datatable-column  >
-                    <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;" >Acciones</p>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-row="row">
-                       
-                            
-                        
-                        <button  ngbTooltip="Ver Detalle"  class="btn btn-dark m-1  btn-sm" [routerLink]="['/purchases/detail', row.id_purchase]" >
-                            <i class="i-Eye"></i>
-                        </button>
-     
-                        <button  ngbTooltip="Anular"  class="btn btn-danger  btn-sm" name="state" (click)="modalStatus(row.id_purchase, $event)" [disabled]="!row.state_purchase" >
-                            <i class="i-Close"></i> 
-                        </button>
-                    
-                        
-                    </ng-template>
-                </ngx-datatable-column>
-                
-            </ngx-datatable>
-    
-</div>
+                <button
+                  ngbTooltip="Anular"
+                  class="btn btn-danger btn-sm"
+                  name="state"
+                  (click)="modalStatus(row.id_purchase, $event)"
+                  [disabled]="!row.state_purchase"
+                >
+                  <i class="i-Close"></i>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
 
-
-<ng-template #changeStatusModal let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Anular Compra</h4>
-      
-    </div>
-    <div class="modal-body">
-        <p><strong>¿Está seguro de que desea anular esta compra?</strong></p>
-        <form [formGroup]="reasonForm">
-            <div class="col-md-12 form-group mb-3">
+        <ng-template #changeStatusModal let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Anular Compra</h4>
+          </div>
+          <div class="modal-body">
+            <p>
+              <strong>¿Está seguro de que desea anular esta compra?</strong>
+            </p>
+            <form [formGroup]="reasonForm">
+              <div class="col-md-12 form-group mb-3">
                 <label for="reason_anulate">Razón Cambio Estado </label>
-                <textarea class="form-control" placeholder="Ingrese la razón de cambio de estado" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'" rows="5"></textarea>
-                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
+                <textarea
+                  class="form-control"
+                  placeholder="Ingrese la razón de cambio de estado"
+                  id="reason_anulate"
+                  formControlName="reason_anulate"
+                  [style.resize]="'none'"
+                  rows="5"
+                ></textarea>
+                <div
+                  *ngIf="
+                    reasonForm.get('reason_anulate').touched &&
+                    reasonForm.get('reason_anulate').hasError('maxlength')
+                  "
+                  class="error-message"
+                >
                   El campo superar los 100 caracteres.
+                </div>
               </div>
-              </div>
-        </form>
+            </form>
+          </div>
 
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger btn"
+              (click)="modal.close('Cancel')"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              ngbAutofocus
+              class="btn btn-wide btn-primary btn"
+              [disabled]="!this.reasonForm.valid"
+              (click)="modal.close('Ok')"
+            >
+              Aceptar
+            </button>
+          </div>
+        </ng-template>
+      </div>
     </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn"
-            (click)="modal.close('Cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn" [disabled]="!this.reasonForm.valid"
-            (click)="modal.close('Ok')">Aceptar</button>
-    </div>
-</ng-template>
+  </div>
+</div>
