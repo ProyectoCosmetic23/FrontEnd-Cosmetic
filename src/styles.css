@@ -256,3 +256,18 @@ table th:last-child {
 #productSelect .ng-dropdown-panel-items {
   max-width: 130%;
 }
+
+.table-responsive {
+  height: 480px;
+  width: 100;
+  overflow-x: overlay;
+}
+
+.row-buttons-container {
+  display: flex;
+  justify-content: center;
+}
+
+.row-buttons-container button {
+  margin: 0 5px; /* Ajusta el margen entre botones según lo necesites */
+}

@@ -311,7 +311,7 @@ export class OrdersListComponent implements OnInit {
         if (!this.modalAbierto) {
           this.modalAbierto = true;
           this.modalService
-            .open(this.deleteConfirmModal, { centered: true })
+            .open(this.deleteConfirmModal, { centered: true, backdrop: 'static' })
             .result.then(
               (result) => {
                 if (result === "Ok") {

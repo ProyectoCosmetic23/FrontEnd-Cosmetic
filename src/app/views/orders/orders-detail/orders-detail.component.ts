@@ -472,6 +472,11 @@ export class OrdersDetailComponent implements OnInit {
       inputElement.value = String(max);
       this.formulario.get("product_quantity").setValue(max);
     }
+
+    if (inputValue < 0) {
+      inputElement.value = String(max);
+      this.formulario.get("product_quantity").setValue(1);
+    }
   }
 
   calcSubtotal() {

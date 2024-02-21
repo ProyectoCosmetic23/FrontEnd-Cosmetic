@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { UntypedFormControl } from "@angular/forms";
 import { AuthService } from "src/app/shared/services/auth.service";
+import { ChangeDetectorRef } from "@angular/core";
 
 @Component({
   selector: "app-roles-list",
@@ -24,14 +25,15 @@ export class RolesListComponent implements OnInit {
   activeLayer: boolean = false;
   stateMessage: string;
   message_observation: any = "";
-  listlistRolesOriginal: any[] = [];
+  listRolesOriginal: any[] = [];
 
   constructor(
     private _rolesService: RolesService,
     private modalService: NgbModal,
     private toastr: ToastrService,
     private el: ElementRef,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +46,7 @@ export class RolesListComponent implements OnInit {
     this._rolesService.getAllRoles().subscribe(
       (data) => {
         this.listRoles = data;
-        this.listlistRolesOriginal = data;
+        this.listRolesOriginal = data;
         this.originalRowCount = this.listRoles.length;
         setTimeout(() => {
           const pageCountElement =
@@ -65,7 +67,7 @@ export class RolesListComponent implements OnInit {
     );
   }
 
-  searchOrders($event) {
+  searchRoles($event) {
     const value = ($event.target as HTMLInputElement).value.toLowerCase();
 
     if (value.trim() !== "") {
@@ -79,7 +81,7 @@ export class RolesListComponent implements OnInit {
       );
     } else {
       // Si el valor de búsqueda está vacío, restaura la lista completa
-      this.listRoles = this.listlistRolesOriginal;
+      this.listRoles = this.listRolesOriginal;
     }
   }
 
@@ -147,99 +149,90 @@ export class RolesListComponent implements OnInit {
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
   openModal(idRole: number, stateRole: string) {
+    const roleIndex = this.listRoles.findIndex((role) => role.id_role === idRole);
     if (stateRole == "Activo") {
       this.stateMessage = "¿Está seguro de que desea desactivar éste rol?";
     } else if (stateRole == "Inactivo") {
       this.stateMessage = "¿Está seguro de que desea activar éste rol?";
     }
-
-    this._rolesService.getRoleById(idRole).subscribe(
-      (data) => {
-        if (!this.modalAbierto) {
-          this.modalAbierto = true;
-          this.modalService
-            .open(this.deleteConfirmModal, { centered: true })
-            .result.then(
-              (result) => {
-                if (result === "Ok") {
-                  this.activeLayer = !this.activeLayer;
-                  if (this.message_observation == "") {
-                    this.toastr.warning(
-                      "Debe indicar el motivo por el que se cambia el estado del rol.",
-                      "Advertencia",
-                      {
-                        progressBar: true,
-                        timeOut: 1000,
-                      }
-                    );
-                    this.message_observation = "";
-                    this.modalAbierto = false;
-                    this.getRoles();
-                  } else {
-                    this._rolesService
-                      .updateRoleStatus(idRole, {
-                        observation: this.message_observation,
-                      })
-                      .subscribe(
-                        (data) => {
-                          this.modalAbierto = false;
-                          this.loading = false;
-                          this.toastr.success(
-                            "Cambio de estado realizado con éxito.",
-                            "Proceso Completado",
-                            {
-                              progressBar: true,
-                              timeOut: 1000,
-                            }
-                          );
-                          setTimeout(() => {
-                            this.getRoles();
-                            this.updateSwitchState(idRole);
-                            this.activeLayer = !this.activeLayer;
-                          }, 1000);
-                        },
-                        (error) => {
-                          this.updateSwitchState(idRole);
-                          this.loading = false;
-                          this.toastr.error(
-                            "Fallo al realizar el cambio de estado.",
-                            "Error",
-                            {
-                              progressBar: true,
-                              timeOut: 2000,
-                            }
-                          );
-                          this.getRoles();
-                          console.error("Error al cambiar de estado:", error);
+  
+    if (!this.modalAbierto) {
+      this.modalAbierto = true;
+      this.modalService
+        .open(this.deleteConfirmModal, { centered: true, backdrop: 'static' })
+        .result.then(
+          (result) => {
+            if (result === "Ok") {
+              this.activeLayer = !this.activeLayer;
+              if (this.message_observation == "") {
+                this.toastr.warning(
+                  "Debe indicar el motivo por el que se cambia el estado del rol.",
+                  "Advertencia",
+                  {
+                    progressBar: true,
+                    timeOut: 1000,
+                  }
+                );
+                this.message_observation = "";
+                this.modalAbierto = false;
+              } else {
+                this._rolesService
+                  .updateRoleStatus(idRole, {
+                    observation: this.message_observation,
+                  })
+                  .subscribe(
+                    (data) => {
+                      this.modalAbierto = false;
+                      this.loading = false;
+                      this.toastr.success(
+                        "Cambio de estado realizado con éxito.",
+                        "Proceso Completado",
+                        {
+                          progressBar: true,
+                          timeOut: 1000,
                         }
                       );
-                  }
-                } else if (result === "Cancel") {
-                  this.modalAbierto = false;
-                  this.getRoles();
-                  this.updateSwitchState(idRole);
-                }
-              },
-              (reason) => {
-                this.modalAbierto = false;
-                this.getRoles();
-                this.updateSwitchState(idRole);
+                      
+                      // Cambiar el estado del rol en listRoles
+                      if (this.listRoles[roleIndex].state_role === "Activo") {
+                        this.listRoles[roleIndex].state_role = "Inactivo";
+                      } else {
+                        this.listRoles[roleIndex].state_role = "Activo";
+                      }
+                      
+                      this.cdRef.detectChanges(); // Detectar los cambios después de actualizar listRoles
+  
+                      // Obtener el estado actualizado del rol
+                      const updatedRole = this.listRoles.find((role) => role.id_role === idRole);
+                      if (updatedRole) {
+                        this.activeLayer = !this.activeLayer;
+                      }
+                    },
+                    (error) => {
+                      this.loading = false;
+                      this.toastr.error(
+                        "Fallo al realizar el cambio de estado.",
+                        "Error",
+                        {
+                          progressBar: true,
+                        }
+                      );
+                      console.error("Error al cambiar de estado:", error);
+                    }
+                  );
               }
-            );
-        }
-      },
-      (error) => {
-        console.error("Error al obtener el rol:", error);
-        this.updateSwitchState(idRole);
-      }
-    );
-    this.message_observation = "";
-  }
-
-  updateSwitchState(idRole: number) {
-    const role = this.listRoles.find((role) => role.id_role === idRole);
-    if (role) {
-      role.state_role = role.state_role === "Activo" ? "Inactivo" : "Activo";
+            } else if (result === "Cancel") {
+              this.modalAbierto = false;
+            }
+          },
+          (reason) => {
+            this.modalAbierto = false;
+          }
+        );
     }
-  }
+    (error) => {
+      console.error("Error al obtener el rol:", error);
+    };
+    this.message_observation = "";
+  }  
 }
