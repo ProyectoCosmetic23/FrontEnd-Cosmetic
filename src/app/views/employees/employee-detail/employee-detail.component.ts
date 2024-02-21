@@ -4,8 +4,6 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
-  UntypedFormBuilder,
-  UntypedFormGroup,
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -28,7 +26,7 @@ export class EmployeeDetailComponent implements OnInit {
   id: string;
   isNew: boolean;
   invoice: any = {};
-  invoiceForm: UntypedFormGroup;
+  invoiceForm: FormGroup;
   invoiceFormSub: Subscription;
   subTotal: number;
   saving: boolean;
@@ -36,17 +34,18 @@ export class EmployeeDetailComponent implements OnInit {
   employeeForm: FormGroup;
   employeeFormSub: Subscription;
   showLoadingScreen: boolean = false;
+  originalEmail: string;
+  originalCedula: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: UntypedFormBuilder,
     private toastr: ToastrService,
     private cookieService: CookieService,
     private employeesService: EmployeesService,
     private _authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._authService.validateUserPermissions("Empleados");
@@ -63,29 +62,31 @@ export class EmployeeDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(10),
-          Validators.minLength(7),
+          Validators.minLength(10),
           Validators.pattern("^[0-9]+$"),
         ],
+        [this.validateCedulaAvailability.bind(this)],
       ],
       name_employee: [
         "",
-        [Validators.required, Validators.maxLength(45)],
+        [Validators.required, Validators.maxLength(35), Validators.minLength(2)],
         [this.validateNameSimbolAndNumber],
       ],
       email: [
         "",
         [Validators.required, Validators.email, Validators.maxLength(30)],
+        [this.validateEmail.bind(this)],
       ],
-      address: ["", [Validators.required, Validators.maxLength(50)]],
+      address: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(10)]],
       phone: [
         "",
         [
           Validators.required,
-          Validators.maxLength(10),
-          Validators.pattern("^[0-9]{10}$"),
+          Validators.maxLength(12), Validators.minLength(10),
+          Validators.pattern("^[0-9]+$"),
         ],
       ],
-      observation: ["", [Validators.maxLength(100)]],
+      observation: ["", [Validators.maxLength(500)]],
       state_employee: [],
       creation_date_employee: [],
       reason_anulate: [""],
@@ -95,12 +96,12 @@ export class EmployeeDetailComponent implements OnInit {
       this.employeeForm.disable();
     }
 
-
     if (this.viewMode != "new") {
       const token = this.cookieService.get("token");
       this.getEmployeeByID(id, token);
     }
   }
+
   private getEmployeeByID(id: number, token?: string): void {
     this.showLoadingScreen = true;
     this.loading = true;
@@ -121,6 +122,8 @@ export class EmployeeDetailComponent implements OnInit {
 
   private setDataEmployee(): void {
     if (this.employeeData) {
+      this.originalCedula = this.employeeData.id_card_employee; // Guardar la cédula original
+      this.originalEmail = this.employeeData.email; // Guardar el correo electrónico original
       this.cedula.setValue(this.employeeData.id_card_employee);
       this.employeeForm.setValue(this.employeeData);
     }
@@ -174,24 +177,15 @@ export class EmployeeDetailComponent implements OnInit {
     });
   }
 
-  public checkEmailAvailability(): void {
-    if (this.email && this.email instanceof AbstractControl) {
-      this.validateEmail(this.email).then((result) => {
-        if (result) {
-          this.email.setErrors(result);
-        }
-      });
-    }
-  }
-
   validateEmail(control: AbstractControl) {
+
     const email = control.value.toLowerCase();
     const validDomains = [
-      "gmail.com",
-      "hotmail.com",
-      "outlook.com",
-      "yahoo.com",
+      "gmail.com","gmail.co","gmail.es","gmail.mx","hotmail.com","hotmail.co","hotmail.es","hotmail.mx","outlook.com","outlook.co","outlook.es","outlook.mx","yahoo.com","yahoo.co","yahoo.es",
+      "yahoo.mx","gmail.com.co","hotmail.com.co","outlook.com.co","yahoo.com.co","gmail.com.es","hotmail.com.es","outlook.com.es","yahoo.com.es","gmail.com.mx","hotmail.com.mx","outlook.com.mx",
+      "yahoo.com.mx",
     ];
+
     const domain = email.split("@")[1];
 
     if (!email) {
@@ -203,32 +197,28 @@ export class EmployeeDetailComponent implements OnInit {
         if (!control.value) {
           resolve(null);
         } else {
-          this.employeesService.checkEmailAvailability(control.value).subscribe(
-            (isAvailable) => {
-              if (isAvailable) {
-                resolve(null); // El correo es válido y está disponible
-              } else {
-                resolve({ emailTaken: true }); // El correo no está disponible
+          // Si el correo es igual al correo original, lo consideramos válido
+          if (control.value === this.originalEmail) {
+            resolve(null);
+          } else {
+            // Verificar disponibilidad del nuevo correo
+            this.employeesService.checkEmailAvailability(control.value).subscribe(
+              (isAvailable) => {
+                if (isAvailable) {
+                  resolve(null); // El correo es válido y está disponible
+                } else {
+                  resolve({ emailTaken: true }); // El correo no está disponible
+                }
+              },
+              (error) => {
+                resolve({ emailTaken: true });
               }
-            },
-            (error) => {
-              resolve({ emailTaken: true });
-            }
-          );
+            );
+          }
         }
       });
     } else {
       return Promise.resolve({ invalidDomain: true }); // No es un correo válido en el dominio permitido
-    }
-  }
-
-  public checkCedulaAvailability(): void {
-    if (this.cedula && this.cedula instanceof AbstractControl) {
-      this.validateCedulaAvailability(this.cedula).then((result) => {
-        if (result) {
-          this.cedula.setErrors(result);
-        }
-      });
     }
   }
 
@@ -237,21 +227,27 @@ export class EmployeeDetailComponent implements OnInit {
       if (!control.value) {
         resolve(null);
       } else {
-        this.employeesService.checkCedulaAvailability(control.value).subscribe(
-          (isAvailable) => {
-            if (isAvailable) {
-              resolve(null);
-            } else {
+        // Si la cédula es igual a la cédula original, la consideramos válida
+        if (control.value === this.originalCedula) {
+          resolve(null);
+        } else {
+          this.employeesService.checkCedulaAvailability(control.value).subscribe(
+            (isAvailable) => {
+              if (isAvailable) {
+                resolve(null);
+              } else {
+                resolve({ cedulaTaken: true });
+              }
+            },
+            (error) => {
               resolve({ cedulaTaken: true });
             }
-          },
-          (error) => {
-            resolve({ cedulaTaken: true });
-          }
-        );
+          );
+        }
       }
     });
   }
+
   saveEmployeeChanges(id: number, updatedData: any) {
     const token = this.cookieService.get("token");
     this.employeesService.updateEmployee(id, updatedData, token).subscribe(
@@ -308,16 +304,24 @@ export class EmployeeDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Empleado Modificado con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
+        if (this.viewMode === "new") {
+          this.toastr.success("Empleado Registrado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else if (this.viewMode === "edit") {
+          this.toastr.success("Empleado Modificado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         setTimeout(() => {
           this.router.navigateByUrl("/employees");
         });
       });
     }
   }
+
 
   setViewMode() {
     const currentRoute = this.router.url;
