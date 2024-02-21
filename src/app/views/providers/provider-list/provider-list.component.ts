@@ -76,14 +76,14 @@ export class ProviderListComponent implements OnInit {
   }
 
   searchProvider(event: Event) {
-    const searchTerm = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
-
+    const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  
     if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
       this.filteredProviders = this.listProviders.filter(
         (provider) =>
           provider.name_provider.toLowerCase().includes(searchTerm) ||
+          provider.phone_provider.toLowerCase().includes(searchTerm) ||
+          provider.name_contact.toLowerCase().includes(searchTerm) ||
           this.changeProviderStateDescription(provider.state_provider)
             .toLowerCase()
             .includes(searchTerm)
@@ -91,7 +91,7 @@ export class ProviderListComponent implements OnInit {
     } else {
       this.filteredProviders = this.listProviders;
     }
-
+  
     this.actualizarCountLabel();
   }
 
@@ -104,48 +104,42 @@ export class ProviderListComponent implements OnInit {
   openModal(idProvider: number) {
     console.log(idProvider);
     this._providersService.getProviderById(idProvider).subscribe();
+  
     if (!this.openedModal) {
       this.openedModal = true;
-      this.modalService
-        .open(this.changeStateModal, { centered: true })
+      this.modalService.open(this.changeStateModal, { centered: true, backdrop: 'static' })
         .result.then(
           (result) => {
             if (result === "Yes") {
               console.log("razon", this.reasonAnulate);
-              this._providersService
-                .updateProviderStatus(idProvider, this.reasonAnulate)
-                .subscribe(
-                  (data) => {
-                    this.openedModal = false;
-                    this.loading = false;
-                    this.toastr.success(
-                      "Cambio de estado realizado con éxito.",
-                      "Proceso Completado",
-                      { progressBar: true, timeOut: 2000 }
-                    );
-                    console.log(data);
-                    this.openedModal = false;
-                    this.getProviders();
-                  },
-                  (error) => {
-                    this.loading = false;
-                    this.toastr.error(
-                      "Fallo al realizar el cambio de estado.",
-                      "Error",
-                      { progressBar: true, timeOut: 2000 }
-                    );
-                    console.error("Error al cambiar de estado:", error);
-                    this.openedModal = false;
-                  }
-                );
+              this._providersService.updateProviderStatus(idProvider, this.reasonAnulate).subscribe(
+                (data) => {
+                  this.openedModal = false;
+                  this.loading = false;
+                  this.toastr.success("Cambio de estado realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
+                  console.log(data);
+                  this.openedModal = false;
+                  this.reasonAnulate = "";
+                  this.getProviders();
+                },
+                (error) => {
+                  this.loading = false;
+                  this.toastr.error("Fallo al realizar el cambio de estado.", "Error", { progressBar: true, timeOut: 2000 });
+                  console.error("Error al cambiar de estado:", error);
+                  this.openedModal = false;
+                  this.reasonAnulate = "";
+                }
+              );
             } else if (result === "Cancel") {
               this.openedModal = false;
+              this.reasonAnulate = "";
               this.getProviders();
             }
           },
           (reason) => {
             this.getProviders();
             this.openedModal = false;
+            this.reasonAnulate = "";
             this.updateSwitchState(idProvider);
           }
         );
