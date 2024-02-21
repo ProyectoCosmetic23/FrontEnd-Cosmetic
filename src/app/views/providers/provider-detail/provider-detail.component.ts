@@ -33,6 +33,7 @@ export class ProvidersDetailComponent implements OnInit {
   id: string;
   observationError = "";
   isNew: boolean;
+  showLoadingScreen: boolean = false;
   provider: Provider = {
     name_provider: "",
     state_provider: "Activo",
@@ -160,6 +161,7 @@ export class ProvidersDetailComponent implements OnInit {
     console.log("viewMode:", this.viewMode);
   }
   getProvider() {
+    this.showLoadingScreen = true;
     console.log("Proveedor antes de cargar datos: ",this.provider)
     if (this.viewMode == "print" || this.viewMode == "edit") {
       this.id = this.route.snapshot.params["id_provider"];
@@ -174,9 +176,11 @@ export class ProvidersDetailComponent implements OnInit {
           this.originalProvider = data;
           console.log(this.provider);
           console.log(this.originalProvider)
+          this.showLoadingScreen = false;
         },
         (error) => {
           console.error("Error al obtener proveedor:", error);
+          this.showLoadingScreen = false;
         }
       );
     }else if(this.viewMode === "new"){

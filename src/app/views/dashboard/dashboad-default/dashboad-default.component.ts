@@ -548,7 +548,4 @@ buildReportPrediccionChartPie(data: any , selectedMonth: string ) {
     ],
   };
 }
-
-
 }
-
