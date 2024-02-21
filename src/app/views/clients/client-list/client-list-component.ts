@@ -126,6 +126,9 @@ export class ClientListComponent implements OnInit {
       this.filteredClients = this.listClients.filter(
         (c) =>
           c.name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          c.nit_or_id_client.includes(value) ||
+          c.email_client.includes(value) ||
+          
           this.changeCategoryStateDescription(c.state_client)
             .toLowerCase()
             .indexOf(value.toLowerCase()) !== -1)

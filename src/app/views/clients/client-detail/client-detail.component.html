@@ -2,7 +2,7 @@
     <h1 *ngIf="viewMode === 'new'">Registrar cliente</h1>
     <h1 *ngIf="viewMode === 'edit'">Editar cliente</h1>
     <h1 *ngIf="viewMode === 'print'">Ver detalle de cliente</h1>
-    >
+    
 </div>
 
 
@@ -32,7 +32,7 @@
                             El campo cédula o nit es obligatorio.
                         </div>
                         <div *ngIf="clientForm.get('nit_or_id_client').hasError('minlength')" class="error-message">
-                            La cédula debe contener mínimo 7 caracteres.
+                            La cédula debe contener mínimo 6 caracteres.
                         </div>
                         <div *ngIf="clientForm.get('nit_or_id_client').hasError('maxlength')" class="error-message">
                             El campo cédula no puede superar los 10 caracteres.
@@ -65,6 +65,9 @@
                         </div>
                         <div *ngIf="clientForm.get('last_name_client').hasError('invalidName')"class="error-message">
                             El campo apellidos no puede tener simbolos y solo puede tener 1 número.
+                        </div>
+                        <div *ngIf="clientForm.get('last_name_client').hasError('maxlength')"class="error-message">
+                            El campo apellidos no puede superar los 80 caracteres.
                         </div>
                        
                     </div>

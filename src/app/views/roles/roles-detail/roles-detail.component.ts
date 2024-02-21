@@ -209,7 +209,7 @@ export class RolesDetailComponent implements OnInit {
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
-            this.toastr.success("Rol creado con éxito.", "Proceso Completado", {
+            this.toastr.success("Rol registrado exitosamente.", "Proceso Completado", {
               progressBar: true,
               timeOut: 3000,
             });
@@ -242,7 +242,7 @@ export class RolesDetailComponent implements OnInit {
             // Asegúrate de que la respuesta del servicio contiene los datos esperados
 
             this.toastr.success(
-              "Rol actualizado con éxito.",
+              "Rol modificado con éxito.",
               "Proceso Completado",
               {
                 progressBar: true,

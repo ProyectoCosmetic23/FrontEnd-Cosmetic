@@ -11,7 +11,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { Subscription } from "rxjs";
+import { forkJoin, Subscription } from "rxjs";
 import { UsersService } from "src/app/shared/services/user.service";
 import { EmployeesService } from "src/app/shared/services/employee.service";
 import { UserFormModel } from "../models/user-model";
@@ -41,6 +41,10 @@ export class UserDetailComponent implements OnInit {
   invoiceForm: UntypedFormGroup;
   invoiceFormSub: Subscription;
   employeeName: any;
+  showLoadingScreen: boolean = false;
+  id_card_employeeString: any;
+  name_employeeString: any;
+  name_roleString: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -70,7 +74,7 @@ export class UserDetailComponent implements OnInit {
       this.usersService.getEmployeeByEmail(idCard).subscribe(
         (data: any) => {
           this.userForm.patchValue({
-            email: data.email, // Actualiza el campo de correo electrónico con el valor obtenido
+            email: data.email,
             id_employee: data.id_employee,
             name_employee: data.name_employee,
           });
@@ -100,7 +104,8 @@ export class UserDetailComponent implements OnInit {
       state_user: [],
       creation_date_user: [],
       password: ["", [Validators.required]],
-      name_role: ["", []],
+      name_employee: [""],
+      name_role: [""],
       id_card_employee: [
         "",
         [
@@ -110,10 +115,9 @@ export class UserDetailComponent implements OnInit {
           Validators.pattern("^[0-9]+$"),
         ],
       ],
-      name_employee: [],
     });
 
-    if (this.viewMode == "print" /*|| this.viewMode == 'edit'*/) {
+    if (this.viewMode == "print") {
       this.userForm.disable();
     }
 
@@ -122,9 +126,9 @@ export class UserDetailComponent implements OnInit {
       this.email.disable();
       this.id_card_employee.disable();
     }
-    //new
+
     if (this.viewMode != "new" && this.viewMode != "print") {
-      this.password.disable();
+      this.userForm.get("password")?.disable();
     }
   }
 
@@ -133,8 +137,6 @@ export class UserDetailComponent implements OnInit {
     const role = this.listRoles.find((role) => role.id_role === roleId);
     this.roleName = role ? role.name_role : "";
   }
-
-  getCardId(card: string) {}
 
   //Cargar la lista de roles
   loadRoles() {
@@ -157,49 +159,49 @@ export class UserDetailComponent implements OnInit {
   }
 
   private getUserByID(id: number): void {
-    this.loading = true;
+    this.showLoadingScreen = true;
     this.usersService.getUsersById(id).subscribe({
       next: (response: any) => {
-        this.userData = new UserFormModel(response);
-        this.setDataUser();
-        this.employeeService
-          .getEmployeesById(Number(this.userData.id_employee))
-          .subscribe({
-            next: (data) => {
-              this.employeeName = data.employee_name;
-            },
-            error: (err) => {
-              console.log("err", err);
-              this.loading = false;
-            },
-            complete: () => {
-              this.loading = false;
-            },
-          });
+        forkJoin({
+          employee: this.usersService.getEmployeesById(response.id_employee),
+          role: this.rolesService.getRoleById(response.id_role),
+        }).subscribe(
+          ({ employee, role }) => {
+            console.log(employee);
+            console.log(role);
+
+            response.name_employee = employee.name_employee;
+            response.id_card_employee = employee.id_card_employee;
+            response.name_role = role.name_role;
+
+            console.log(response);
+            this.userData = new UserFormModel(response);
+            this.setDataUser();
+
+            this.showLoadingScreen = false;
+          },
+          (error) => {
+            console.error("Error al obtener roles y empleados:", error);
+          }
+        );
       },
       error: (err) => {
         console.log("err", err);
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
+        console.log(this.userData);
       },
     });
   }
 
   private setDataUser(): void {
-    //  this.loading=true;
     if (this.userData) {
-      this.id_role.setValue(this.userData.id_role),
-        // this.id_card_employee.setValue(this.userData.id_card_employee),
-        this.id_employee.setValue(this.userData.id_employee);
-
-      this.username.setValue(this.userData.username),
-        this.email.setValue(this.userData.email),
-        this.password.setValue(this.userData.password),
-        this.state_user.setValue(this.userData.state_user),
-        this.observation_user.setValue(this.userData.observation_user),
-        this.userForm.setValue(this.userData);
+      this.id_role.setValue(this.userData.id_role);
+      this.id_employee.setValue(this.userData.id_employee);
+      this.username.setValue(this.userData.username);
+      this.email.setValue(this.userData.email);
+      this.password.setValue(this.userData.password);
+      this.state_user.setValue(this.userData.state_user);
+      this.observation_user.setValue(this.userData.observation_user);
+      this.userForm.setValue(this.userData);
       this.name_employee.setValue(this.userData.name_employee);
     }
   }
@@ -357,8 +359,6 @@ export class UserDetailComponent implements OnInit {
   }
 
   saveChanges() {
-    console.log("editar");
-
     if (this.userForm.valid) {
       const id = Number(this.id); // Convierte el ID a número
       const updatedData = {
@@ -408,12 +408,6 @@ export class UserDetailComponent implements OnInit {
     }
   }
 
-  print() {
-    if (window) {
-      window.print();
-    }
-  }
-
   get email() {
     return this.userForm.get("email");
   }
@@ -421,7 +415,6 @@ export class UserDetailComponent implements OnInit {
   get id_user() {
     return this.userForm.get("id_user");
   }
-
   get id_role() {
     return this.userForm.get("id_role");
   }
@@ -430,9 +423,6 @@ export class UserDetailComponent implements OnInit {
     return this.userForm.get("id_employee");
   }
 
-  get name_role() {
-    return this.userForm.get("name_role");
-  }
   get id_card_employee() {
     return this.userForm.get("id_card_employee");
   }

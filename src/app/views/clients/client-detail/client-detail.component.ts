@@ -63,7 +63,7 @@ export class ClientDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(10),
-          Validators.minLength(7),
+          Validators.minLength(6),
           Validators.pattern("^[0-9]+$"),
         ],
       ],
@@ -71,6 +71,7 @@ export class ClientDetailComponent implements OnInit {
         "",
         [Validators.required, Validators.maxLength(80)],
         [this.validateNameSimbolAndNumber],
+        
       ],
       last_name_client: [
         "",
@@ -99,7 +100,7 @@ export class ClientDetailComponent implements OnInit {
     }
 
     if (this.viewMode == "edit") {
-      this.cedula.disable();
+      //Vacio por el momento si quiero desabilitar un campo en editar aqui 
     }
 
     if (this.viewMode != "new") {
@@ -303,6 +304,7 @@ export class ClientDetailComponent implements OnInit {
         nit_or_id_client: this.cedula.value,
         name_client: this.clientForm.get("name_client").value,
         email_client: this.email_client.value,
+        last_name_client: this.last_name_client.value,
         address_client: this.clientForm.get("address_client").value,
         phone_client: this.clientForm.get("phone_client").value,
       };

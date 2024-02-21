@@ -25,7 +25,7 @@ export class RolesListComponent implements OnInit {
   activeLayer: boolean = false;
   stateMessage: string;
   message_observation: any = "";
-  listlistRolesOriginal: any[] = [];
+  listRolesOriginal: any[] = [];
 
   constructor(
     private _rolesService: RolesService,
@@ -46,7 +46,7 @@ export class RolesListComponent implements OnInit {
     this._rolesService.getAllRoles().subscribe(
       (data) => {
         this.listRoles = data;
-        this.listlistRolesOriginal = data;
+        this.listRolesOriginal = data;
         this.originalRowCount = this.listRoles.length;
         setTimeout(() => {
           const pageCountElement =
@@ -67,7 +67,7 @@ export class RolesListComponent implements OnInit {
     );
   }
 
-  searchOrders($event) {
+  searchRoles($event) {
     const value = ($event.target as HTMLInputElement).value.toLowerCase();
 
     if (value.trim() !== "") {
@@ -81,7 +81,7 @@ export class RolesListComponent implements OnInit {
       );
     } else {
       // Si el valor de búsqueda está vacío, restaura la lista completa
-      this.listRoles = this.listlistRolesOriginal;
+      this.listRoles = this.listRolesOriginal;
     }
   }
 
