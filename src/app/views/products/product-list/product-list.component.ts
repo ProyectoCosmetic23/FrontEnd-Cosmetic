@@ -38,10 +38,6 @@ export class ProductListComponent implements OnInit {
   categories: { [key: number]: string } = {};
   itemsPerPage = 6; // El número de filas por página
   showLoadingScreen: boolean=false;
-
-
-
-
   
   constructor(
     private _productService: ProductService,

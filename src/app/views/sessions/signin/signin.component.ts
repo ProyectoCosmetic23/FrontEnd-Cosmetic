@@ -83,25 +83,10 @@ export class SigninComponent implements OnInit {
   
         if (response.error) {
           // Manejar errores específicos
-          switch (response.error) {
-            case "Correo o Contraseña incorrectas.":
-            case "Credenciales incorrectas: El usuario está inactivo.":
-            case "No tienes permisos para iniciar sesión. Contacta al administrador.":
-            case "Credenciales incorrectas: El rol del usuario está inactivo.":
-              this.toastr.error(response.error, "Error de validación", {
-                progressBar: true,
-                timeOut: 3000,
-              });
-              break;
-            default:
-              // Manejar otros errores no previstos
-              console.error("Error no manejado:", response.error);
-              this.toastr.error("Error de servidor", "Error de validación", {
-                progressBar: true,
-                timeOut: 3000,
-              });
-              break;
-          }
+          this.toastr.error(response.error, "Error de validación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
           return;
         }
   
@@ -121,11 +106,6 @@ export class SigninComponent implements OnInit {
         }
       },
       error: (errorMessage: any) => {
-        if (errorMessage && errorMessage.status === 400) {
-          // No hacer nada en caso de 400 Bad Request
-          return;
-        }
-  
         console.error("Error del servidor:", errorMessage);
         this.toastr.error(errorMessage, "Error de validación", {
           progressBar: true,
@@ -134,4 +114,5 @@ export class SigninComponent implements OnInit {
       },
     });
   }
+  
 }  
