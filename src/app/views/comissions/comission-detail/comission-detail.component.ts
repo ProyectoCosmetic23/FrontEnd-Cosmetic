@@ -38,6 +38,7 @@ export class ComissionsDetailComponent implements OnInit {
   selectedMonth: Date;
   message: string = "";
   selectedPercentage: number;
+  showLoadingScreen: boolean = false;
   Percentage: any;
   totalSale: number;
   viewMode: 'new' | 'print' = 'new';
@@ -97,6 +98,7 @@ export class ComissionsDetailComponent implements OnInit {
       }
     );
     this.getComission();
+    this.showLoadingScreen = true;
     if (!this.isNew) {
       this.getComission();
     }
@@ -111,6 +113,7 @@ export class ComissionsDetailComponent implements OnInit {
     console.log('viewMode:', this.viewMode);
   }
   getComission() {
+    // this.showLoadingScreen = true;
     if (this.viewMode === "print") {
       this.id = this.route.snapshot.params['id_commission'];
       console.log(this.id);
@@ -143,9 +146,12 @@ export class ComissionsDetailComponent implements OnInit {
             console.error('Error: Objeto comission o comission.comissions no definidos correctamente.');
             this.loadingData = false;
           }
+          
+          this.showLoadingScreen = false;
         },
         (error) => {
           console.error('Error al obtener comisión:', error);
+          this.showLoadingScreen = false;
         }
       );
     }

@@ -16,6 +16,7 @@ import { AuthService } from "src/app/shared/services/auth.service";
 export class ProviderListComponent implements OnInit {
   motivo: string;
   loading: boolean;
+  showLoadingScreen: boolean = false;
   listProviders: any[] = [];
   originalListProviders: any[] = [];
   reasonAnulate: any = "";
@@ -41,17 +42,36 @@ export class ProviderListComponent implements OnInit {
     this.getProviders();
   }
 
-  getProviders() {
-    const token = this.cookieService.get("token");
+  Providers() {
     this._providersService.getAllProviders().subscribe(
       (data) => {
         console.log(data);
         this.listProviders = data;
         this.filteredProviders = this.listProviders;
         this.sortListProvidersById();
+        this.showLoadingScreen = false;
       },
       (error) => {
         console.error("Error al obtener Categorías:", error);
+        this.showLoadingScreen = false;
+      }
+    );
+  }
+  getProviders() {
+    this.showLoadingScreen = true;
+    const token = this.cookieService.get("token");
+    this._providersService.getAllProviders().subscribe(
+      (data) => {
+        console.log(data);
+        this.listProviders = data;
+        console.log(this.listProviders)
+        this.filteredProviders = this.listProviders;
+        this.sortListProvidersById();
+        this.showLoadingScreen = false;
+      },
+      (error) => {
+        console.error("Error al obtener Categorías:", error);
+        this.showLoadingScreen = false;
       }
     );
   }
@@ -120,7 +140,7 @@ export class ProviderListComponent implements OnInit {
                   console.log(data);
                   this.openedModal = false;
                   this.reasonAnulate = "";
-                  this.getProviders();
+                  this.Providers();
                 },
                 (error) => {
                   this.loading = false;
@@ -133,11 +153,11 @@ export class ProviderListComponent implements OnInit {
             } else if (result === "Cancel") {
               this.openedModal = false;
               this.reasonAnulate = "";
-              this.getProviders();
+              this.Providers();
             }
           },
           (reason) => {
-            this.getProviders();
+            this.Providers();
             this.openedModal = false;
             this.reasonAnulate = "";
             this.updateSwitchState(idProvider);
