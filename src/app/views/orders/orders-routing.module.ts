@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { OrdersListComponent } from './orders-list/orders-list.component';
-import { OrdersDetailComponent } from './orders-detail/orders-detail.component';
-import { ReturnsDetailComponent } from '../returns/returns-detail/returns-detail.component';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/shared/services/auth.guard';
+import { ReturnsDetailComponent } from '../returns/returns-detail/returns-detail.component';
+import { OrdersDetailComponent } from './orders-detail/orders-detail.component';
+import { OrdersListComponent } from './orders-list/orders-list.component';
 
 const routes: Routes = [
     {

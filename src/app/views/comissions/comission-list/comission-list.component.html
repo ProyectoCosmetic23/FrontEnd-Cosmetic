@@ -5,16 +5,17 @@
 <div class="separator-breadcrumb border-top"></div>
 
 <div class="row mb-3">
-    <div class="col-md-12 mb-3">    
+    <div class="col-md-12 mb-3">
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-3">
-                        <button class="btn btn-primary float-right w-75" [routerLink]="['/comisiones/registrar']">Registrar</button>
-                      </div>
+                        <button class="btn btn-primary float-right w-75"
+                            [routerLink]="['/comisiones/registrar']">Registrar</button>
+                    </div>
                     <div class="col-md-4">
-                        <button class="btn btn-primary float-right" (click)="openModal()">Asignar porcentaje 
-                            </button>
+                        <button class="btn btn-primary float-right" (click)="openModal()">Asignar porcentaje
+                        </button>
                     </div>
 
                     <div class="col-md-4">
@@ -26,86 +27,93 @@
             </div>
             <div class="col-md-6 d-flex justify-content-end">
                 <div class="col-md-5" style="padding-top: 1%;">
-                  <span style="font-size: 1rem;"><b>Total Comisiones: {{ totalCommissions | currency : "" : "symbol" : "1.2"}}</b></span>
+                    <span style="font-size: 1rem;"><b>Total Comisiones: {{ totalCommissions | currency : "" : "symbol" :
+                            "1.2"}}</b></span>
                 </div>
                 <!-- <input [formControl]="searchControl" placeholder="Buscar Comisiones por Empleado" type="text"
                     class="form-control" style="width: 50%;"> -->
-              </div>
+            </div>
         </div>
     </div>
     <div class="col-md-12">
         <div class="card o-hidden">
-            <div class="col-md-12">
-                <div class="card o-hidden">
-                    <ngx-datatable
-                    class="material fullscreen"
-                    style="height: 100px"
-                    [columnMode]="'force'"
-                    [headerHeight]="50"
-                    [footerHeight]="50"
-                    [rowHeight]="60"
-                    [rows]="listComissions"
-                    [count]="listComissions.length"
-                    [limit]="6"
-                    rowHeight="700px"
-                  >
-                        <ngx-datatable-column name="id_employee">
-                            <ng-template ngx-datatable-header-template>
-                                
-                                <p style="font-size:15px;">Empleado</p>
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ employees[row.id_employee] }}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="total_commission">
-                            <ng-template ngx-datatable-header-template>
-                               
-                                <p style="font-size:15px;"> Total Comisión</p>
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.total_commission | currency : "" : "symbol" : "1.2"}}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="total_sales">
-                            <ng-template ngx-datatable-header-template>
-                                <p style="font-size:15px;"> Total Ventas</p>
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.total_sales | currency : "" : "symbol" : "1.2"}}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="month_commission">
-                            <ng-template ngx-datatable-header-template>
-                               
-                                <p style="font-size:15px;">  Mes Comisión</p>
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.month_commission | date: 'yyyy-MM'}}
-                            </ng-template>
-                        </ngx-datatable-column>
 
-                        <ngx-datatable-column name="commission_percentage">
-                            <ng-template ngx-datatable-header-template>
-                                <p style="font-size:15px;">  Porcentaje Comisión</p>
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                {{ row.commission_percentage }} %
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column [width]="120">
-                            <ng-template ngx-datatable-header-template>
-                                <p style="font-size:15px;">Acciones</p>
-                            </ng-template>
-                            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                                <button class="btn btn-dark m-1 me-3"
-                                ngbTooltip="Ver detalle"
-                                    [routerLink]="['/comisiones/detalle', row.id_commission]">
-                                    <i class="i-Eye"></i>
-                                </button>
-                            </ng-template>
-                        </ngx-datatable-column>
-                    </ngx-datatable>
+            <div *ngIf="showLoadingScreen" class="loading-screen">
+                <div class="loading-content">
+                    <div class="spinner spinner-primary me-3"></div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <div *ngIf="showLoadingScreen == false">
+                    <div class="col-md-12">
+                        <div class="card o-hidden">
+                            <ngx-datatable class="material fullscreen" style="height: 100px" [columnMode]="'force'"
+                                [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [rows]="listComissions"
+                                [count]="listComissions.length" [limit]="6" rowHeight="700px" [scrollbarH]="true">
+                                <ngx-datatable-column name="id_employee" [resizeable]="false" [canAutoResize]="true"
+                                    [minWidth]="80">
+                                    <ng-template ngx-datatable-header-template>
+
+                                        <p style="font-size:15px;">Empleado</p>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                                        {{ employees[row.id_employee] }}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="total_commission" [resizeable]="false"
+                                    [canAutoResize]="true" [minWidth]="80">
+                                    <ng-template ngx-datatable-header-template>
+
+                                        <p style="font-size:15px;"> Total Comisión</p>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                                        {{ row.total_commission | currency : "" : "symbol" : "1.2"}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="total_sales" [resizeable]="false" [canAutoResize]="true"
+                                    [minWidth]="80">
+                                    <ng-template ngx-datatable-header-template>
+                                        <p style="font-size:15px;"> Total Ventas</p>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                                        {{ row.total_sales | currency : "" : "symbol" : "1.2"}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="month_commission" [resizeable]="false"
+                                    [canAutoResize]="true" [minWidth]="80">
+                                    <ng-template ngx-datatable-header-template>
+
+                                        <p style="font-size:15px;"> Mes Comisión</p>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                                        {{ row.month_commission | date: 'yyyy-MM'}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column name="commission_percentage" [resizeable]="false"
+                                    [canAutoResize]="true" [minWidth]="80">
+                                    <ng-template ngx-datatable-header-template>
+                                        <p style="font-size:15px;"> Porcentaje Comisión</p>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                                        {{ row.commission_percentage }} %
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column [resizeable]="false" [canAutoResize]="true">
+                                    <ng-template ngx-datatable-header-template>
+                                        <p style="font-size:15px;">Acciones</p>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                                        <button class="btn btn-dark m-1 btn-sm" ngbTooltip="Ver detalle"
+                                            [routerLink]="['/comisiones/detalle', row.id_commission]">
+                                            <i class="i-Eye"></i>
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -166,14 +174,14 @@
             </div>
         </form>
     </div>
-    
+
     <div class="modal-footer d-flex justify-content-end align-items-center">
 
         <div>
-            <button type="button" class="btn btn-danger"
-                (click)="modal.dismiss('cancel')" style="margin-right: 5px;">Cancelar</button>
-            <button type="button" ngbAutofocus class="btn btn-wide btn-primary "
-                (click)="modal.close('Yes')" [disabled]="verifiedPercentage === 0 || verifiedMonth === 0">Asignar</button>
+            <button type="button" class="btn btn-danger" (click)="modal.dismiss('cancel')"
+                style="margin-right: 5px;">Cancelar</button>
+            <button type="button" ngbAutofocus class="btn btn-wide btn-primary " (click)="modal.close('Yes')"
+                [disabled]="verifiedPercentage === 0 || verifiedMonth === 0">Asignar</button>
         </div>
     </div>
 </ng-template>

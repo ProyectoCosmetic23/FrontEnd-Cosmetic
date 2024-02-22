@@ -393,87 +393,110 @@ getMonths(month) {
 
 
 buildReportEmployeesChartBar(dataNames: any, dataValues: any, dataCommissions: any) {
+  // Obtén el valor máximo para establecer el rango del eje y
+  const maxValue = Math.max(...dataValues, ...dataCommissions);
 
-  // this.chartLineOption3.xAxis = [{data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}];
-
-  const maxValue = Math.max(...dataValues);
-this.employeesChartBar = {
-  legend: {
-    borderRadius: 0,
-    orient: "horizontal",
-    data: ["Total Ventas", "Comisiones"],
-  },
-  grid: {
-    left: "18px",
-    right: "94px",
-    bottom: "1px",
-    containLabel: true,
-  },
-  tooltip: {
-    show: true,
-    backgroundColor: "rgba(0, 0, 0, .8)",
-    textStyle: {
-      color: "white",
+  this.employeesChartBar = {
+    legend: {
+      borderRadius: 0,
+      orient: "horizontal",
+      data: ["Total Ventas", "Comisiones"],
     },
-  },
-  xAxis: [
-    {
-      type: "value",
-      name: "",
-      interval: 0,
-      max: maxValue,
-      splitLine: {
-        show: false,
-      },
-      axisLine: {
-        show: true,
-      },
+    grid: {
+      left: "18px",
+      right: "94px",
+      bottom: "1px",
+      containLabel: true,
     },
-  ],
-  yAxis: [
-    {
-      type: "category",
-      data: dataNames,
-      min: 0,
-      axisLine: {
-        show: false,
+    tooltip: {
+      show: true,
+      backgroundColor: "rgba(0, 0, 0, .8)",
+      textStyle: {
+        color: "white",
       },
-      splitLine: {
-        show: true,
-        interval: "auto",
-      },
+      formatter: function(params) {
+        const value = parseFloat(params.value); // Convertir a número
+        if (isNaN(value)) {
+          return; // Si no es un número válido, devuelve vacío
+        }
+        let formattedValue = '$' + Math.floor(value).toLocaleString(); // Convertir a entero y formatear con separadores de mil
+        return `${params.seriesName}: ${params.name} - ${formattedValue}`;
+      }
     },
-  ],
-  series: [
-    {
-      name: "Total Ventas",
-      data: dataValues ,
-      type: "bar",
-      barGap: 0,
-      color: "#bcbbdd",
-      label: {
-        show: true,
-        position: 'right',
-        valueAnimation: true,
-        color: "#0168c1",
+    
+    
+    
+    xAxis: [
+      {
+        type: "value",
+        name: "",
+        interval: 0,
+        max: maxValue,
+        splitLine: {
+          show: false,
+        },
+        axisLine: {
+          show: true,
+        },
       },
-    },
-    {
-      name: "Comisiones",
-      data: dataCommissions,
-      type: "bar",
-      barGap: 0,
-      color: "#639",
-      label: {
-        show: true,
-        position: 'right',
-        valueAnimation: true,
-        color: "#0168c1",
+    ],
+    yAxis: [
+      {
+        type: "category",
+        data: dataNames,
+        axisLabel: {
+          formatter: (value: any) => {
+            return value.toLocaleString('es-ES', { style: 'currency', currency: 'USD' }).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+          },
+        },
+        min: 0,
+        axisLine: {
+          show: false,
+        },
+        splitLine: {
+          show: true,
+          interval: "auto",
+        },
       },
-    },
-  ],
+    ],
+    
+    series: [
+      {
+        name: "Total Ventas",
+        data: dataValues,
+        type: "bar",
+        barGap: 0,
+        color: "#bcbbdd",
+        label: {
+          show: true,
+          position: 'right',
+          formatter: (params: any) => { // Formato del texto en la etiqueta
+            return "$ " + params.value.toLocaleString('es-ES');
+          },
+          valueAnimation: true,
+          color: "#0168c1",
+        },
+      },
+      {
+        name: "Comisiones",
+        data: dataCommissions,
+        type: "bar",
+        barGap: 0,
+        color: "#639",
+        label: {
+          show: true,
+          position: 'right',
+          formatter: (params: any) => { // Formato del texto en la etiqueta
+            return "$ " + params.value.toLocaleString('es-ES');
+          },
+          valueAnimation: true,
+          color: "#0168c1",
+        },
+      },
+    ],
+  };
 }
-};
+
 
 getReportProductsPrediccion() {
   
@@ -548,7 +571,4 @@ buildReportPrediccionChartPie(data: any , selectedMonth: string ) {
     ],
   };
 }
-
-
 }
-

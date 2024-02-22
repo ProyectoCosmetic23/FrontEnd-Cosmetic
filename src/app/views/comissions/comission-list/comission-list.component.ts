@@ -49,6 +49,7 @@ export class ComissionListComponent implements OnInit {
 
     ];
     totalCommissions: number;
+    showLoadingScreen: boolean = false;
     paginationId: string = 'comissions-pagination';
     currentPage: number = 1;
     itemsPerPage: number = 6;
@@ -98,6 +99,7 @@ export class ComissionListComponent implements OnInit {
 
     }
     getComsission() {
+        this.showLoadingScreen = true;
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             // Cargar todas las comisiones en una variable nueva
             this.allCommissions = res;
@@ -130,6 +132,7 @@ export class ComissionListComponent implements OnInit {
                     console.log(this.originalListComissions);
                 });
             });
+           
         });
     }
 
@@ -140,6 +143,7 @@ export class ComissionListComponent implements OnInit {
         this.countLabel = this.filteredComissions.length;
     }
     filterComissionsByMonth() {
+        
         console.log("actualizar por mes")
         const currentYear = new Date().getFullYear();
         const selectedDate = `${currentYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
@@ -161,6 +165,7 @@ export class ComissionListComponent implements OnInit {
             commission = Number(commission.total_commission)
             this.totalCommissions += commission
         }
+        this.showLoadingScreen = false;
     }
 
     handlePerccentageSelection(event: any) {
