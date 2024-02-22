@@ -25,7 +25,13 @@ export class AuthGuard {
       return false;
     } else {
       // AuthStatus.checking o cualquier otro estado
-      return this.authService.isAuthenticated();
+      if(this.authService.isAuthenticated()) {
+        return true;
+      }else{
+        this.router.navigateByUrl('/sessions/signin');
+        return false
+      }
+      
     }
   }
 }

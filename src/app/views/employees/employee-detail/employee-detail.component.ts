@@ -69,12 +69,12 @@ export class EmployeeDetailComponent implements OnInit {
       ],
       name_employee: [
         "",
-        [Validators.required, Validators.maxLength(35), Validators.minLength(2)],
+        [Validators.required, Validators.maxLength(35), Validators.minLength(3)],
         [this.validateNameSimbolAndNumber],
       ],
       email: [
         "",
-        [Validators.required, Validators.email, Validators.maxLength(30)],
+        [Validators.required, Validators.email, Validators.maxLength(35), Validators.minLength(19)],
         [this.validateEmail.bind(this)],
       ],
       address: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(10)]],

@@ -6,6 +6,7 @@ import { ToastrService } from "ngx-toastr";
 import { debounceTime } from "rxjs/operators";
 import { AuthService } from "src/app/shared/services/auth.service";
 import { EmployeesService } from "src/app/shared/services/employee.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-employee-list",
@@ -33,10 +34,14 @@ export class EmployeeListComponent implements OnInit {
     private _authService: AuthService
   ) {}
 
+
   ngOnInit(): void {
     this._authService.validateUserPermissions("Empleados");
     this.getEmployees();
   }
+
+  
+
 
   handleChange(event: any, row: any) {
     row.state_employee = event.target.checked ? "Activo" : "Inactivo";

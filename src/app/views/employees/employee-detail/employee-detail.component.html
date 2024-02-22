@@ -71,7 +71,7 @@
                             El campo nombre no puede tener símbolos,ni espacios y solo puede tener 1  número.
                         </div>
                         <div *ngIf="employeeForm.get('name_employee').hasError('minlength')"class="error-message">
-                            El campo nombre tiene que ser mayor a 2 caracteres.
+                            El campo nombre tiene que ser mayor a 3 caracteres.
                         </div>
                         
                         <div *ngIf="employeeForm.get('name_employee').hasError('maxlength')"class="error-message">
@@ -89,9 +89,13 @@
                         <div *ngIf="employeeForm.get('email').hasError('email')"class="error-message">
                             El campo correo debe ser un formato de correo electrónico válido.
                         </div>
-                        <div *ngIf="employeeForm.get('email').hasError('invalidDomain')" class="error-message">El dominio del correo no es válido.</div>
+                        <div *ngIf="employeeForm.get('email').hasError('invalidDomain')" class="error-message">El dominio del correo no es válido.
+                        </div>
+                        <div *ngIf="employeeForm.get('email').hasError('minlength')"class="error-message">
+                            El campo correo tiene que tener minimo  19 caracteres.
+                        </div>
                         <div *ngIf="employeeForm.get('email').hasError('maxlength')"class="error-message">
-                            El campo correo no puede superar los 30 caracteres.
+                            El campo correo no puede superar los 35 caracteres.
                         </div>
                         <div *ngIf="employeeForm.get('email').hasError('emailTaken')"class="error-message">El correo electrónico ya está en uso.</div>
 

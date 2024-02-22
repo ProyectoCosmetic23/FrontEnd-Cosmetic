@@ -166,10 +166,10 @@ export class AuthService {
     try {
       const storedUser = this.getStoredUser();
       const roleResponse = await this.rolesService.getRoleById(storedUser.id_role).toPromise(); 
-
+  
       // Verifica si el permissionName está presente en alguno de los módulos del rol
       const hasPermission = roleResponse.modules_role.find(module => module === modulePermission) !== undefined;
-
+  
       if (!hasPermission) {
         Swal.fire({
           icon: "warning",
@@ -184,11 +184,13 @@ export class AuthService {
           }
         });
       }
+      return hasPermission; // Devuelve el resultado de la validación
     } catch (error) {
       console.error("Error al validar permisos:", error);
       return false;
     }
   }
+  
 
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/users/recover`, { email });
