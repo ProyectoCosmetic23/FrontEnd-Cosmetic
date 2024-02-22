@@ -174,6 +174,7 @@ export class ProvidersDetailComponent implements OnInit {
           console.log("Datos del proveedor", data);
           this.provider = data;
           this.originalProvider = data;
+          this.buildProvidersForm(this.provider);
           console.log(this.provider);
           console.log(this.originalProvider)
           this.showLoadingScreen = false;
@@ -183,10 +184,10 @@ export class ProvidersDetailComponent implements OnInit {
           this.showLoadingScreen = false;
         }
       );
-    }else if(this.viewMode === "new"){
-      
+    }else if(this.viewMode === "new"){  
     }
   }
+  
   handleStateSelection(event: any) {
     this.new_provider.state_provider = event.target.value;
   }
@@ -297,6 +298,7 @@ export class ProvidersDetailComponent implements OnInit {
   updateProvider() {
     const currentRoute = this.router.url;
     if (currentRoute.includes('/editar')) {
+      console.log('Updating: ', this.updatedFields)
       this._providersService.updateProvider(this.id, this.updatedFields).subscribe(
         (data) => {
           console.log(data);
