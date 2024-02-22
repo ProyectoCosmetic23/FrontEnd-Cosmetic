@@ -547,15 +547,16 @@
   <div class="modal-footer">
     <button
       type="button"
-      class="btn btn-outline-secondary btn"
+      class="btn btn-danger btn"
       (click)="modal.dismiss('cancel')"
     >
       Cancelar
     </button>
     <button
       type="button"
+      [disabled]="!message_observation && usage != 'Enviar' "
       ngbAutofocus
-      class="btn btn-wide btn-danger btn"
+      class="btn btn-wide btn-primary btn"
       (click)="modal.close('Ok')"
     >
       Aceptar
