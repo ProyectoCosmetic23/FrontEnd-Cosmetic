@@ -76,37 +76,15 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.status === 400) {
-      // Usuario inactivo
-      if (error.error && error.error.error === "El usuario está inactivo.") {
-        return throwError({
-          message: error.error.error,
-          errorType: "inactiveUser",
-        });
-      }
-    } else if (error.status === 404) {
-      // Usuario no registrado
-      return throwError({
-        message: "El usuario no está registrado.",
-        errorType: "notRegisteredUser",
-      });
-    } else if (error.status === 401) {
+    if (error.status === 401) {
       // Credenciales incorrectas
-      return throwError({
-        message: "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
-        errorType: "incorrectCredentials",
-      });
+      return throwError('Credenciales incorrectas. Por favor, inténtelo de nuevo.');
     } else if (error.status === 0) {
       // No se puede conectar al servidor
-      return throwError({
-        message:
-          "No se puede conectar al servidor. Por favor, inténtelo más tarde.",
-        errorType: "serverUnreachable",
-      });
+      return throwError('No se puede conectar al servidor. Por favor, inténtelo más tarde.');
     } else {
-      // Otros tipos de error
-      let errorMessage =
-        "Error desconocido. Por favor, contacte al soporte técnico.";
+      // Otro tipo de error
+      let errorMessage = 'Error desconocido. Por favor, contacte al soporte técnico.';
       if (error.error && error.error.error) {
         errorMessage = error.error.error;
       }
@@ -153,7 +131,6 @@ export class AuthService {
             }
           );
         }
-
         // Establecer la autenticación y actualizar el estado de autenticación
         const isAuthenticationSet = this.setAuthentication(user, token);
         if (isAuthenticationSet) {
