@@ -1,11 +1,16 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthStatus } from '../interfaces';
-import { AuthService } from './auth.service';
+import { Injectable } from "@angular/core";
+import {
+  ActivatedRouteSnapshot,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from "@angular/router";
+import { Observable } from "rxjs";
+import { AuthStatus } from "../interfaces";
+import { AuthService } from "./auth.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthGuard {
   constructor(private authService: AuthService, private router: Router) {}
@@ -21,11 +26,17 @@ export class AuthGuard {
       return true;
     } else if (authStatus === AuthStatus.notAuthenticated) {
       // Redirige a la página de inicio de sesión si no está autenticado
-      this.router.navigateByUrl('/sessions/signin');
+      this.router.navigateByUrl("/sessions/signin");
       return false;
     } else {
       // AuthStatus.checking o cualquier otro estado
-      return this.authService.isAuthenticated();
+
+      if (this.authService.isAuthenticated()) {
+        return true;
+      } else {
+        this.router.navigateByUrl("/sessions/signin");
+        return false;
+      }
     }
   }
 }

@@ -170,8 +170,23 @@ export class AuthService {
         }
       }),
       catchError((error: HttpErrorResponse) => {
-        // Manejar el error utilizando el método handleError
-        return this.handleError(error);
+        // Mostrar mensaje de error utilizando Toastr
+        if (error.status === 403) {
+          this.toastr.error(
+            "No puedes iniciar sesión, el rol está inactivo.",
+            "Error de autenticación",
+            {
+              progressBar: true,
+              timeOut: 3000,
+            }
+          );
+        } else {
+          this.toastr.error("Credenciales erróneas", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
+        return of(false);
       })
     );
   }
@@ -240,6 +255,5 @@ export class AuthService {
     this._authStatus.next(AuthStatus.notAuthenticated);
     this.cookieService.deleteAll("token");
     sessionStorage.removeItem(this.userSessionStorageKey);
-    this.router.navigate(["/sessions/signin"]);
   }
 }
