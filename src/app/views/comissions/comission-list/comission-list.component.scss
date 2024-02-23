@@ -30,4 +30,26 @@
   text-align: center; /* Alinea el contenido del pie de página en el centro */
 }
 
-  
+@media (max-width: 1150px) {
+  .row .col-md-5 {
+      flex: 1 0 100%;
+  }
+
+  .col-md-5 .row {
+      flex-direction: column;
+      align-items: start;
+  }
+
+  .custom-button-register{
+    width: 150%; /* Asegurar que los elementos ocupen todo el ancho disponible */
+    margin-bottom: 5px; /* Espacio entre elementos */
+}
+.custom-button-asign{
+  width: 150%; /* Asegurar que los elementos ocupen todo el ancho disponible */
+  margin-bottom: 5px; /* Espacio entre elementos */
+}
+  .custom-select {
+      width: 100%; /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px; /* Espacio entre elementos */
+  }
+}
