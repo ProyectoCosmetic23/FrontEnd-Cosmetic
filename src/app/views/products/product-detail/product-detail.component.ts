@@ -62,6 +62,7 @@ export class ProductDetailComponent implements OnInit {
   isEditMode: boolean;
   isShowForm: boolean;
   showLoadingScreen: boolean = false;
+  productExists: boolean = false;
   // Agrega esta variable al inicio de tu componente
 
   constructor(
@@ -86,25 +87,26 @@ export class ProductDetailComponent implements OnInit {
     this.getProducts();
     this.loadCategories();
     this.inicializateForm(Number(this.id));
-    
-    // this.toggleEnableFields();
+    this.productForm.get('name_product').valueChanges.subscribe(value => {
+
+    });
   }
 
   private inicializateForm(id: number): void {
     this.productForm = this.formBuilder.group({
-      id_product: [""],
+      id_product: ["", [Validators.required]],
       id_category: ["", [Validators.required]],
       name_product: [
         "",
-        [Validators.required, Validators.maxLength(80)],
-        [this.validateNameSimbolAndNumber],
+        [Validators.required, Validators.maxLength(35),Validators.minLength(4)],
+        [this.validateNameSimbolAndNumber]
       ],
-      quantity: [0], // Establece el valor inicial en 0
-      max_stock: [0, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
-      min_stock: [0, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      quantity: ["",[Validators.required]],// Establece el valor inicial en 0
+      max_stock: ["", [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      min_stock: ["", [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
       profit: [],
-      cost_price: [0, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
-      selling_price: [0, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
+      cost_price: ["", [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
+      selling_price: ["", [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
       observation: ["", [Validators.maxLength(100)]],
       state_product: [],
       creation_date_product: [],
@@ -226,6 +228,9 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+
+  
+  
   handleCategorySelection(event: any) {
     const selectedCategoryId = event.target.value;
     const selectedCategory = this.listCategories.find(
@@ -296,25 +301,23 @@ export class ProductDetailComponent implements OnInit {
       .name_category;
   }
 
-  validateNameSimbolAndNumber(control: FormControl) {
-    const nameValue = control.value;
-    const combinedPattern = /^[A-Za-záéíóúñÑ´\d]+\s?(?:\s[A-Za-záéíóúñÑ´\d]+)*$/;
-  
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (combinedPattern.test(nameValue)) {
-          resolve(null); // Válido
-        } else {
-          resolve({ invalidName: true }); // No válido
-        }
-      }, 0);
-    });
-  }
-  
-  
-  
 
+ validateNameSimbolAndNumber(control: FormControl) {
+  const nameValue = control.value;
+  const combinedPattern = /^(?!.*\s{2})[\wáéíóúñÑ´\s]+$/;
   
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (combinedPattern.test(nameValue)) {
+        resolve(null); // Válido
+      } else {
+        resolve({ invalidName: true }); // No válido
+      }
+    }, 0);
+  });
+}
+
+
 
   saveProductChanges(id: number, updatedData: any) {
     const token = this.cookieService.get("token");
@@ -374,19 +377,26 @@ export class ProductDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Producto modificado con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
+        if (this.viewMode === 'new') {
+          this.toastr.success("Producto registrado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else if (this.viewMode === 'edit') {
+          this.toastr.success("Producto modificado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         setTimeout(() => {
           this.router.navigateByUrl("/products");
         });
       });
     }
   }
+  
 
-
-
+  
   
   setViewMode() {
     const currentRoute = this.router.url;

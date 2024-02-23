@@ -72,6 +72,9 @@ getValidateProductExist(id_category: number , name_product: string): Observable<
   return this.http.get<boolean>(`${this.url}-validate-productexist?id_category=${id_category}&&name_product=${name_product}`);
 }
 
+getValidateProduct(name_product: string): Observable<boolean> {
+  return this.http.get<boolean>(`${this.url}-validate-product?name_product=${name_product}`);
+}
 
 
 }

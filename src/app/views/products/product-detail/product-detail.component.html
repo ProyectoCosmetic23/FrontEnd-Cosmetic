@@ -85,12 +85,16 @@
                                             class="error-message">
                                             El campo nombre no puede tener espacios ni símbolos.
                                         </div>
-
-                                        <div
-                                            *ngIf="productForm.get('name_product').hasError('duplicateName') && productForm.get('name_product').touched">
-                                            <small class="text-danger">Este nombre de producto ya existe. Por favor,
-                                                elige un nombre diferente.</small>
+                                        <div *ngIf="productForm.get('name_product').hasError('minlength')"class="error-message">
+                                            El campo nombre debe tener mínimo 4 caracteres.
                                         </div>
+                                        <div *ngIf="productForm.get('name_product').hasError('maxlength')"class="error-message">
+                                            El campo nombre debe tener máximo  35 caracteres.
+                                        </div>
+                                        <div *ngIf="productForm.get('name_product').hasError('duplicateName') && productForm.get('name_product').touched">
+                                            <small class="text-danger">Este nombre de producto ya existe. Por favor, elige un nombre diferente.</small>
+                                        </div>
+                                        
                                     </div>
                                     <div class="col-md-2 form-group mb-3">
                                         <label for="quantity">Cantidad<span class="text-danger">*</span></label>
@@ -98,6 +102,10 @@
                                             formControlName="quantity"
                                             onkeypress="return event.charCode >= 48 && event.charCode <= 57" min="0"
                                             oninput="this.value = Math.abs(this.value)">
+                                            <div *ngIf="productForm.get('quantity').touched && productForm.get('quantity').hasError('required')"
+                                            class="error-message">
+                                            El campo cantidad es obligatorio.
+                                        </div>
                                     </div>
 
 
@@ -110,13 +118,12 @@
                                             class="error-message">
                                             El campo stock máximo es obligatorio.
                                         </div>
-                                        <div *ngIf="productForm.get('max_stock').hasError('min')" class="error-message">
-                                            El stock máximo no puede ser negativo.
-                                        </div>
+                                        
                                         <div *ngIf="productForm.get('max_stock').hasError('stockMinMax')"
                                             class="error-message">
                                             El stock máximo no puede ser menor que el stock mínimo.
                                         </div>
+                                        
                                     </div>
 
                                     <div class="col-md-2 form-group mb-3">
