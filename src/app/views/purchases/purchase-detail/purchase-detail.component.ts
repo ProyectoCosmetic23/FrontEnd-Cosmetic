@@ -472,11 +472,8 @@ export class PurchaseDetailComponent implements OnInit {
 
       this.purchaseDetailArray = purchaseDetailArray.map((detail) => ({
         ...detail,
-        name_product: this.getProductName(
-          detail.id_category,
-          detail.id_product
-        ),
-        name_category: this.getCategoryName(detail.id_category),
+        name_product: detail.product.name_product,
+        name_category: detail.product.product_category.name_category,
       }));
 
       // const purchaseDetailFormArray = this.formBuilder.array(purchaseDetailArray.map(detail => this.createDetailFormGroup(detail)));
