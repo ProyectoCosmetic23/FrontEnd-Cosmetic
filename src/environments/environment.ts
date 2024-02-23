@@ -4,13 +4,9 @@
 
 export const environment = {
   production: false,
-<<<<<<< HEAD
   url:'https://cosmetic-api-yrcb.onrender.com',
-  // url: "http://localhost:8080",
-=======
-  // url:'https://cosmetic-api-yrcb.onrender.com',
- url: "http://localhost:8080",
->>>>>>> 7829444393fcdb2f2615d89e865fc6154c8d035d
+  
+  //url: "http://localhost:8080",
 };
 
 // 'http://localhost:8080'
