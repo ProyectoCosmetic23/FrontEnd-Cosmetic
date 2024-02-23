@@ -344,10 +344,20 @@
       [(ngModel)]="message_observation" class="form-control" style="resize: none" rows="5"></textarea>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary btn" (click)="modal.dismiss('cancel')">
+    <button
+      type="button"
+      class="btn btn-danger btn"
+      (click)="modal.dismiss('cancel')"
+    >
       Cancelar
     </button>
-    <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn" (click)="modal.close('Ok')">
+    <button
+      type="button"
+      [disabled]="!message_observation && usage != 'Enviar' "
+      ngbAutofocus
+      class="btn btn-wide btn-primary btn"
+      (click)="modal.close('Ok')"
+    >
       Aceptar
     </button>
   </div>

@@ -72,7 +72,7 @@ export class OrdersListComponent implements OnInit {
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
     private toastr: ToastrService,
-    private el: ElementRef,
+    private el: ElementRef
   ) {
     this.formBasic = this.formBuilder.group({
       id_sale: null,
@@ -187,7 +187,7 @@ export class OrdersListComponent implements OnInit {
 
               // Si encontramos un cliente coincidente, asignamos el nombre al pedido
               if (matchingClient) {
-                order.name_client = matchingClient.name_client;
+                order.name_client = matchingClient.name_client + ' ' + matchingClient.last_name_client;
               }
             });
 
@@ -239,7 +239,15 @@ export class OrdersListComponent implements OnInit {
   getClients() {
     this._ordersService.getAllClients().subscribe(
       (data) => {
-        this.listClients = data;
+        this.listClients = data
+          .filter((client) => client.state_client === "Activo")
+          .map((client) => {
+            return {
+              ...client,
+              full_name: `${client.name_client} ${client.last_name_client}`,
+            };
+          });
+        console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -306,83 +314,79 @@ export class OrdersListComponent implements OnInit {
     } else if (usage === "Anular") {
       this.modal_message = "¿Está seguro de que desea anular el pedido?";
     }
-    this._ordersService.getOrderById(idOrder).subscribe(
-      (data) => {
-        if (!this.modalAbierto) {
-          this.modalAbierto = true;
-          this.modalService
-            .open(this.deleteConfirmModal, { centered: true, backdrop: 'static' })
-            .result.then(
-              (result) => {
-                if (result === "Ok") {
-                  if (usage === "Anular" && this.message_observation == "") {
-                    this.toastr.warning(
-                      "Debe indicar el motivo por el que se anula el pedido.",
-                      "Advertencia",
-                      {
-                        progressBar: true,
-                        timeOut: 1000,
-                      }
-                    );
-                    this.message_observation = "";
-                    this.modalAbierto = false;
+
+    if (!this.modalAbierto) {
+      this.modalAbierto = true;
+      this.modalService
+        .open(this.deleteConfirmModal, { centered: true, backdrop: "static" })
+        .result.then(
+          (result) => {
+            if (result === "Ok") {
+              if (usage === "Anular" && this.message_observation == "") {
+                this.toastr.warning(
+                  "Debe indicar el motivo por el que se anula el pedido.",
+                  "Advertencia",
+                  {
+                    progressBar: true,
+                    timeOut: 1000,
                   }
-                  if (usage === "Enviar") {
-                    subscribe_method =
-                      this._ordersService.updateOrderStatus(idOrder);
-                  } else if (usage === "Anular") {
-                    subscribe_method = this._ordersService.AnulateOrder(
-                      idOrder,
-                      (data = {
-                        observation: this.message_observation,
-                        anulationType: false,
-                      })
-                    );
-                  }
-                  subscribe_method.subscribe(
-                    (data) => {
-                      this.toastr.success(
-                        "Cambio de estado realizado con éxito.",
-                        "Proceso Completado",
-                        {
-                          progressBar: true,
-                          timeOut: 2000,
-                        }
-                      );
-                      this.getOrders(this.order_type);
-                      this.modalAbierto = false;
-                    },
-                    (error) => {
-                      this.loading = false;
-                      this.toastr.error(
-                        "Fallo al realizar el cambio de estado.",
-                        "Error",
-                        {
-                          progressBar: true,
-                          timeOut: 2000,
-                        }
-                      );
-                      this.modalAbierto = false;
-                      console.error("Error al cambiar de estado:", error);
-                    }
-                  );
-                  this.message_observation = "";
-                } else if (result === "Cancel") {
-                  this.message_observation = "";
-                  this.modalAbierto = false;
-                }
-              },
-              (reason) => {
+                );
                 this.message_observation = "";
                 this.modalAbierto = false;
               }
-            );
-        }
-      },
-      (error) => {
-        console.error("Error al obtener el pedido:", error);
-      }
-    );
+              if (usage === "Enviar") {
+                this.usage = "Enviar";
+                subscribe_method =
+                  this._ordersService.updateOrderStatus(idOrder);
+              } else if (usage === "Anular") {
+                var data: any;
+                subscribe_method = this._ordersService.AnulateOrder(
+                  idOrder,
+                  (data = {
+                    observation: this.message_observation,
+                    anulationType: false,
+                  })
+                );
+              }
+              subscribe_method.subscribe(
+                (data) => {
+                  this.toastr.success(
+                    "Cambio de estado realizado con éxito.",
+                    "Proceso Completado",
+                    {
+                      progressBar: true,
+                      timeOut: 2000,
+                    }
+                  );
+                  this.getOrders(this.order_type);
+                  this.modalAbierto = false;
+                },
+                (error) => {
+                  this.loading = false;
+                  this.toastr.error(
+                    "Fallo al realizar el cambio de estado.",
+                    "Error",
+                    {
+                      progressBar: true,
+                      timeOut: 2000,
+                    }
+                  );
+                  this.modalAbierto = false;
+                  console.error("Error al cambiar de estado:", error);
+                }
+              );
+              this.message_observation = "";
+            } else if (result === "Cancel") {
+              this.message_observation = "";
+              this.modalAbierto = false;
+            }
+          },
+          (reason) => {
+            this.message_observation = "";
+            this.modalAbierto = false;
+          }
+        );
+    }
   }
 
   //--------------- Sección de Pagos ---------------//
@@ -400,7 +404,7 @@ export class OrdersListComponent implements OnInit {
       console.log(
         "Error: El total_payment no puede ser mayor que total_remaining"
       );
-      
+
       return; // Detiene la ejecución de la función si hay un error
     }
     this._paymentService.getAllPayments().subscribe(
@@ -462,8 +466,8 @@ export class OrdersListComponent implements OnInit {
         (sum, payment) => sum + parseFloat(payment.total_payment),
         0
       );
-      this.remaining = totalOrder - totalPayments
-      console.log(this.remaining)
+      this.remaining = totalOrder - totalPayments;
+      console.log(this.remaining);
       // Verificar si total_payment es mayor que total_remaining antes de calcular el nuevo total_remaining
       if (totalPayment > totalOrder - totalPayments) {
         this.isNegative = true;
@@ -473,7 +477,7 @@ export class OrdersListComponent implements OnInit {
           "Error: El total_payment no puede ser mayor que total_remaining"
         );
         // Detiene la ejecución de la función si hay un error
-      }else{
+      } else {
         this.isNegative = false;
       }
 
@@ -494,11 +498,12 @@ export class OrdersListComponent implements OnInit {
         Math.round((totalOrder - totalPayment) * 100) / 100;
       if (totalRemaining < 0) {
         this.isNegative = true;
-        this.mensaje = "El pago no puede ser mayor que el restante del último pago o el total de la venta";
+        this.mensaje =
+          "El pago no puede ser mayor que el restante del último pago o el total de la venta";
         console.log(
           "Error: El total_payment no puede ser mayor que el total de la venta"
         );
-      }else{
+      } else {
         this.isNegative = false;
       }
       this.formBasic.patchValue({ total_remaining: totalRemaining });
@@ -522,11 +527,13 @@ export class OrdersListComponent implements OnInit {
     this.createPayment();
   }
 
-  @ViewChild("paymentModal", { static: true,  }) paymentModal: any;
+  @ViewChild("paymentModal", { static: true }) paymentModal: any;
   openPayments(idOrder: number) {
     if (!this.modalPayment) {
       this.modalPayment = true;
-      this.formBasic.patchValue({total_remaining: null,total_payment: null, // o tu valor inicial
+      this.formBasic.patchValue({
+        total_remaining: null,
+        total_payment: null, // o tu valor inicial
       });
 
       this._paymentService.getPayOrder(idOrder).subscribe(
@@ -550,14 +557,14 @@ export class OrdersListComponent implements OnInit {
             this.formBasic.patchValue({
               id_order: order.id_order,
               id_client: this.clientName,
-              total_order:  order.total_order,
+              total_order: order.total_order,
             });
             this.totalOrder = order.total_order;
 
             this.modalRef = this.modalService.open(this.paymentModal, {
               centered: true,
               size: "lg",
-              backdrop: 'static',
+              backdrop: "static",
             });
 
             if (payments.length > 0) {
