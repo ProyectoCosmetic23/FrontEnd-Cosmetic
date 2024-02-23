@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AdminLayoutSidebarCompactComponent } from "./shared/components/layouts/admin-layout-sidebar-compact/admin-layout-sidebar-compact.component";
 import { AuthLayoutComponent } from "./shared/components/layouts/auth-layout/auth-layout.component";
-import { AuthGuard } from './shared/services/auth.guard';
+import { AuthGuard } from "./shared/services/auth.guard";
 
 const adminRoutes: Routes = [
   {
@@ -107,7 +107,7 @@ const routes: Routes = [
     path: "",
     redirectTo: "",
     pathMatch: "full",
-    canActivate: [AuthGuard], // Agregado para verificar la autenticación al cargar la página de inicio
+    canActivate: [AuthGuard], 
   },
   {
     path: "",

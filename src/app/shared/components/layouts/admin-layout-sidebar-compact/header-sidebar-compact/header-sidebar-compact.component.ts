@@ -57,12 +57,7 @@ export class HeaderSidebarCompactComponent implements OnInit {
   confirmLogout() {
     // Cierra el modal
     this.modalRef.close();
-  
     // Realiza la acción de cierre de sesión
     this.authService.logout();
-    this.router.navigate(['/sessions/signin']);
   }
-  
-
-  
 }
