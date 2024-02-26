@@ -200,7 +200,6 @@ export class ComissionListComponent implements OnInit {
             (error) => {
                 this.loading = false;
                 this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
-                console.error('Ya existe un registro para este mes', error);
                 this.resetComissionDetail();
             }
         );
@@ -269,9 +268,7 @@ export class ComissionListComponent implements OnInit {
                             } else {
                                 this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true });
                             }
-                            console.error('Error al asignar el porcentaje:', error);
                             this.resetComissionDetail();
-                            console.log(error)
                         });
                     } else {
                         this.resetComissionDetail();
