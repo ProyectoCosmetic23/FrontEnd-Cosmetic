@@ -310,16 +310,16 @@ export class ProvidersDetailComponent implements OnInit {
         (error) => {
           this.loading = false;
           let backendErrorMessage: string;
-        
+      
           if (error.error && error.error.error) {
-            backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
+              backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
           } else {
-            backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
+              backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
           }
-        
+      
           this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
-          console.error("Error al actualizar el proveedo:", error);
-        }
+          console.error("Error al actualizar el proveedor:", error);
+      }
       );
     }
   }

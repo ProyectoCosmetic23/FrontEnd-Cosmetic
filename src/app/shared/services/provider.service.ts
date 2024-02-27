@@ -31,10 +31,10 @@ export class ProvidersService {
     
     // Agregamos la razón al cuerpo de la solicitud
     const body = reason ? { reason_anulate: reason } : {};
-    console.log("reason", body);
+    // console.log("reason", body);
     return this.http.put<any>(url, body).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('Error en la solicitud:', error);
+        // console.error('Error en la solicitud:', error);
         return throwError('Ocurrió un error al cambiar el estado del proveedor. Por favor, inténtalo de nuevo.');
       })
     );

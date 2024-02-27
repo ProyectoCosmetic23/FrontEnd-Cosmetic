@@ -25,7 +25,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nit_cedula" formControlName="nit_cedula"
                                     (change)="handleNitSelection($event)" [value]="provider?.nit_cedula"
-                                    [placeholder]="provider?.nit_cedula || 'Ingrese la cédula o NIT'"
+                                    [placeholder]="provider?.nit_cedula"
                                     [readonly]="viewMode === 'print'"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}">
                                 <div *ngIf="viewMode === 'new' && formBasic.get('nit_cedula').invalid && (formBasic.get('nit_cedula').dirty || formBasic.get('nit_cedula').touched)"
@@ -58,7 +58,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name_provider" formControlName="name_provider"
                                     (change)="handleNameProviderSelection($event)"
-                                    [placeholder]="provider?.name_provider || 'Nombre del proveedor'"
+                                    [placeholder]="provider?.name_provider "
                                     [readonly]="viewMode === 'print'" [value]="provider?.name_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}">
                                 <div *ngIf="viewMode === 'new' && formBasic.get('name_provider').invalid && (formBasic.get('name_provider').dirty || formBasic.get('name_provider').touched)"
@@ -88,7 +88,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email_provider"
                                     (change)="handleMailSelection($event)" formControlName="email_provider"
-                                    [placeholder]="provider?.email_provider || 'Correo del proveedor'"
+                                    [placeholder]="provider?.email_provider"
                                     [readonly]="viewMode === 'print'" [value]="provider?.email_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}">
     
@@ -119,7 +119,7 @@
                                         class="text-danger">*</span></label>
                                 <input class="form-control" id="address_provider" (change)="handleAddressSelection($event)"
                                     formControlName="address_provider"
-                                    [placeholder]="provider?.address_provider || 'Dirección del proveedor'"
+                                    [placeholder]="provider?.address_provider"
                                     [readonly]="viewMode === 'print'" [value]="provider?.address_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}">
     
@@ -152,7 +152,7 @@
                                         class="text-danger">*</span></label>
                                 <input class="form-control" id="phone_provider" (change)="handlePhoneSelection($event)"
                                     formControlName="phone_provider"
-                                    [placeholder]="provider?.phone_provider || 'Teléfono del proveedor'"
+                                    [placeholder]="provider?.phone_provider"
                                     [readonly]="viewMode === 'print'" [value]="provider?.phone_provider"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}">
     
@@ -200,7 +200,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name_contact"
                                     (change)="handleNameContactSelection($event)" formControlName="name_contact"
-                                    [placeholder]="provider?.name_contact || 'Nombre del contacto'"
+                                    [placeholder]="provider?.name_contact"
                                     [readonly]="viewMode === 'print'" [value]="provider?.name_contact"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}">
     
@@ -242,7 +242,7 @@
                                 </ng-container>
                                 <ng-template #viewModeDisplay>
                                     <input type="text" class="form-control" id="state_provider"
-                                        [placeholder]="provider?.state_provider || 'Estado del proveedor'"
+                                        [placeholder]="provider?.state_provider"
                                         [readonly]="viewMode === 'print'"
                                         [ngClass]="{'placeholder-black': viewMode === 'print'}">
                                 </ng-template>
@@ -261,7 +261,7 @@
                                     <label for="observation_provider">Observación del proveedor</label>
                                     <textarea class="form-control" id="observation_provider"
                                         (change)="handleObservationSelection($event)"
-                                        [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
+                                        [placeholder]="provider?.observation_provider"
                                         [readonly]="viewMode === 'print'" [value]="provider?.observation_provider"
                                         formControlName="observation_provider"
                                         [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
@@ -279,7 +279,7 @@
                                 <label for="observation_provider">Observación del proveedor</label>
                                 <textarea class="form-control" id="observation_provider"
                                     (change)="handleObservationSelection($event)"
-                                    [placeholder]="provider?.observation_provider || 'Observación del proveedor'"
+                                    [placeholder]="provider?.observation_provider"
                                     [readonly]="viewMode === 'print'"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
                                     rows="6"></textarea>
