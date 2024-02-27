@@ -24,17 +24,26 @@
                             <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
                                 <div class="row">
 
-                                    <div *ngIf="viewMode == 'new'" class="row">
-                                        <label class="col-md-6 form-group  checkbox checkbox-primary">
+                                    <div *ngIf="viewMode == 'new'" class="row" style="padding-right: 0px;">
+                                        <!-- <label class="col-md-6 form-group  checkbox checkbox-primary">
                                             <input type="checkbox" formControlName="enableFields"
                                                 (change)="toggleEnableFields()">
                                             <span>Click si desea agregar un producto Existente </span>
                                             <span class="checkmark"></span>
 
-                                        </label>
-                                        <div *ngIf="enableFields.value" class="col-md-6 form-group mb-3">
+                                        </label> -->
+                                        <div style="width: 35%; margin-bottom: 3%; margin-right: auto;">
+                                            <label class="checkbox checkbox-primary me-3">
+                                                <span>Click si desea agregar un producto Existente</span>
+                                                <input formControlName="enableFields" type="checkbox"
+                                                    (change)="toggleEnableFields()" />
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div *ngIf="enableFields.value" class="col-md-6 form-group mb-3 ml-3" style="padding-right: 0px;">
                                             <label for="id_product">Seleccionar producto</label>
                                             <select class="form-control" id="id_product"
+                                            style="width: 100% !important;"
                                                 (change)="handleProductSelection($event)"
                                                 [formControl]="productForm.get('id_product')">
 
@@ -96,16 +105,19 @@
                                         <label for="quantity">Cantidad<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="quantity"
                                             formControlName="quantity"
-                                            onkeypress="return event.charCode >= 48 && event.charCode <= 57" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            onkeypress="return event.charCode >= 48 && event.charCode <= 57" min="0">
+
+                                        <div *ngIf="productForm.get('quantity').touched && productForm.get('quantity').hasError('required')"
+                                            class="error-message">
+                                            El campo cantidad es obligatorio.
+                                        </div>
                                     </div>
 
 
                                     <div class="col-md-2 form-group mb-3">
                                         <label for="max_stock">Stock Máximo<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="max_stock"
-                                            formControlName="max_stock" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            formControlName="max_stock" min="0">
                                         <div *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
                                             class="error-message">
                                             El campo stock máximo es obligatorio.
@@ -119,11 +131,12 @@
                                         </div>
                                     </div>
 
+
+
                                     <div class="col-md-2 form-group mb-3">
                                         <label for="min_stock">Stock Mínimo<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="min_stock"
-                                            formControlName="min_stock" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            formControlName="min_stock" min="0">
                                         <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
                                             class="error-message">
                                             El campo stock mínimo es obligatorio.
@@ -158,8 +171,7 @@
                                         <label for="selling_price">Precio de venta<span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="selling_price"
-                                            formControlName="selling_price" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            formControlName="selling_price" min="0">
                                         <div *ngIf="productForm.get('selling_price').touched && productForm.get('selling_price').hasError('required')"
                                             class="error-message">
                                             El campo precio de venta es obligatorio.
