@@ -129,18 +129,15 @@ export class ClientListComponent implements OnInit {
           c.nit_or_id_client.includes(value) ||
           c.email_client.includes(value) ||
           c.last_name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
-          
-          this.changeCategoryStateDescription(c.state_category)
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1)
+          this.changeClientStateDescription(c.state_client).toLowerCase().indexOf(value.toLowerCase()) !== -1)
     } else {
       this.filteredClients = this.listClients;
     }
   }
 
 
-  changeCategoryStateDescription(state_category: boolean) {
-    return state_category ? "Activo" : "Inactivo";
+  changeClientStateDescription(state_client: boolean) {
+    return state_client ? "Activo" : "Inactivo";
   }
 
 
