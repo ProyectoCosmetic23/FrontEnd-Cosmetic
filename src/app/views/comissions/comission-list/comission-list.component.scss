@@ -1,33 +1,129 @@
-.datatable-pager {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  .datatable-pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .datatable-pager .pager-previous,
+  .datatable-pager .pager-next {
+    display: none;
+    /* Oculta los botones "previous" y "next" */
+  }
+
+  .datatable-pager .pager-current {
+    margin: 0 10px;
+  }
+
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Establece el contenedor para ocupar al menos el 100% del alto de la ventana */
+  }
+
+  .ngx-datatable {
+    flex: 1;
+    /* Hace que ngx-datatable ocupe el espacio disponible en el contenedor */
+  }
+
+  .footer {
+    flex-shrink: 0;
+    /* Evita que el pie de página se contraiga */
+    padding: 10px;
+    /* Ajusta el espacio alrededor del pie de página según sea necesario */
+    background-color: #f0f0f0;
+    /* Ajusta el color de fondo según sea necesario */
+    text-align: center;
+    /* Alinea el contenido del pie de página en el centro */
+  }
+
+  @media (max-width: 1150px) {
+    .row .col-md-5 {
+      flex: 1 0 100%;
+    }
+
+    .col-md-5 .row {
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .custom-button-register {
+      width: 137%;
+      /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px;
+      /* Espacio entre elementos */
+    }
+
+    .custom-button-asign {
+      width: 100%;
+      /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px;
+      /* Espacio entre elementos */
+    }
+
+    .custom-select {
+      width: 100%;
+      /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px;
+      /* Espacio entre elementos */
+    }
+  }
+
+  @media (max-width: 814px) {
+    .row .col-md-5 {
+      flex: 1 0 100%;
+    }
+
+    .col-md-5 .row {
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .custom-button-register {
+      width: 169%;
+      /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px;
+      /* Espacio entre elementos */
+    }
+
+    .custom-button-asign {
+      width: 120%;
+      /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px;
+      /* Espacio entre elementos */
+    }
+
+    .custom-select {
+      width: 150%;
+      /* Asegurar que los elementos ocupen todo el ancho disponible */
+      margin-bottom: 5px;
+      /* Espacio entre elementos */
+    }
+  }
+
+@media (max-width: 767px) {
+  .row .col-md-5 {
+    flex: 1 0 100%;
+  }
+
+  .col-md-5 .row {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .custom-button-register,
+  .custom-button-asign {
+    width: 100%;
+    /* Asegurar que los botones ocupen todo el ancho disponible */
+    margin-bottom: 5px;
+    /* Espacio entre elementos */
+  }
+
+  .custom-select {
+    width: 100%;
+    /* Asegurar que los elementos ocupen todo el ancho disponible */
+    margin-bottom: 5px;
+    /* Espacio entre elementos */
+  }
 }
-
-.datatable-pager .pager-previous, .datatable-pager .pager-next {
-  display: none; /* Oculta los botones "previous" y "next" */
-}
-
-.datatable-pager .pager-current {
-  margin: 0 10px;
-}
-
-
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Establece el contenedor para ocupar al menos el 100% del alto de la ventana */
-}
-
-.ngx-datatable {
-  flex: 1; /* Hace que ngx-datatable ocupe el espacio disponible en el contenedor */
-}
-
-.footer {
-  flex-shrink: 0; /* Evita que el pie de página se contraiga */
-  padding: 10px; /* Ajusta el espacio alrededor del pie de página según sea necesario */
-  background-color: #f0f0f0; /* Ajusta el color de fondo según sea necesario */
-  text-align: center; /* Alinea el contenido del pie de página en el centro */
-}
-
-  
