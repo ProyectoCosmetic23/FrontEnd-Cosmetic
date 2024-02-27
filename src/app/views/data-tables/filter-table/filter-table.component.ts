@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from 'src/app/shared/services/product.service';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
+import { ProductService } from 'src/app/shared/services/product.service';
 
 @Component({
   selector: 'app-filter-table',
@@ -18,7 +18,7 @@ export class FilterTableComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.productService.getProducts()
+    this.productService.getAllProducts()
     .subscribe((res: any[]) => {
       this.products = [...res];
       this.filteredProducts = res;

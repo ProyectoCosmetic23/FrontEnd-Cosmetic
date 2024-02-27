@@ -207,7 +207,6 @@ searchProduct($event) {
   getCategoryById(categoryId: number) {
     this._productService.getCategoryById(categoryId).subscribe(
         (category) => {
-            console.log('Categoría obtenida:', category);
             // Encuentra el producto correspondiente en la lista de productos
             const productToUpdate = this.listProducts.find(p => p.id_category === categoryId);
             // Si se encuentra el producto, actualiza el nombre de la categoría
@@ -222,10 +221,7 @@ searchProduct($event) {
 }
 
 isNearMinimum(product: any): boolean {
-  console.log('Cantidad:', product.quantity);
-  console.log('Stock mínimo:', product.stockMinimo);
   const nearMinimum = product.quantity <= product.stockMinimo;
-  console.log('¿Está cerca del mínimo?', nearMinimum);
   return nearMinimum;
 }
 

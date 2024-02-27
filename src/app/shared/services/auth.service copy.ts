@@ -119,9 +119,7 @@ export class AuthService {
       // Utilizar switchMap para esperar a que el estado de autenticación cambie a "authenticated"
       switchMap((status) => {
         if (status === AuthStatus.authenticated) {
-          // Si el estado es "authenticated", regenera un nuevo token aquí
-          console.log("Regenerating token...");
-
+         
           // Después de regenerar el token, actualiza el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
 
@@ -235,7 +233,6 @@ export class AuthService {
 
   changePassword(token: string, newPassword: string): Observable<any> {
     const url = `${this.baseUrl}/api/change-password/${token}`;
-    console.log(url);
     const body = { token, newPassword };
 
     return this.http.post(url, body).pipe(

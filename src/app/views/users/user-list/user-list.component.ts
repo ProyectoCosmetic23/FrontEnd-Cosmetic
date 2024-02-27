@@ -188,9 +188,9 @@ export class UserListComponent implements OnInit {
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
-            // Cambiar el estado del usuario y del empleado
-            this.confirmUserStatusChange(idUser, true, true);
-          } else if (result === "No") {
+            // Cambiar solo el estado del empleado
+            this.changeEmployeeStatus(idUser);        }
+        else if (result === "No") {
             // Cambiar solo el estado del usuario, no del empleado
             this.confirmUserStatusChange(idUser, true, changeEmployee); // Utiliza el valor pasado para changeEmployee
           }
