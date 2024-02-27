@@ -72,7 +72,7 @@ export class ClientListComponent implements OnInit {
   
       },
       (error) => {
-        console.error("Error al obtener Categorías:", error);
+        console.error("Error al obtener Clientes:", error);
       }
     )
     .add(() => {
@@ -128,8 +128,9 @@ export class ClientListComponent implements OnInit {
           c.name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
           c.nit_or_id_client.includes(value) ||
           c.email_client.includes(value) ||
+          c.last_name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
           
-          this.changeCategoryStateDescription(c.state_client)
+          this.changeCategoryStateDescription(c.state_category)
             .toLowerCase()
             .indexOf(value.toLowerCase()) !== -1)
     } else {
@@ -164,51 +165,99 @@ export class ClientListComponent implements OnInit {
 
 
 
+  // @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
+
+  // openModal(idClient: number, $event?: any) {
+  //   if (!this.modalAbierto) {
+  //     this.modalAbierto = true;
+  //     this.modalService
+  //       .open(this.deleteConfirmModal, { centered: true , backdrop: 'static', keyboard: false })
+  //       .result.then(
+  //         (result) => {
+  //           if (result === "Ok") {
+  //             const isChecked = ($event?.target as HTMLInputElement)?.checked;
+  //             const reasonAnulate = this.reasonForm.get("reason_anulate").value;
+
+  //             this._clientService.clientChangeStatus(idClient,reasonAnulate ).subscribe(
+  //               (data) => {
+  //                  this.loading = false;
+  //                  this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', 
+  //                  { 
+  //                   progressBar: true,
+  //                    timeOut: 2000 
+  //                   }
+  //                   );
+  //                   this.getClients();
+  //                   this.modalAbierto = false;
+  //                   this.reasonForm.get("reason_anulate").setValue(null);
+
+  //               },
+  //               (error) => {
+  //                 this.loading = false;
+  //                 this.toastr.error(
+  //                   "Fallo al realizar el cambio de estado.",
+  //                   "Error",
+  //                   { progressBar: true, timeOut: 2000 }
+  //                 );
+  //                 console.error("Error al cambiar de estado:", error);
+  //               }
+  //             );
+  //           } else if (result === "Cancel") {
+  //             this.modalAbierto = false;
+            
+  //           }
+  //         },
+  //         (reason) => {
+  //           this.modalAbierto = false;
+        
+  //         }
+  //       );
+  //   }
+  // }
+
+
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
-  openModal(idClient: number, $event?: any) {
+  openModal(idClient: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
+
       this.modalService
-        .open(this.deleteConfirmModal, { centered: true , backdrop: 'static', keyboard: false })
+        .open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false})
         .result.then(
           (result) => {
             if (result === "Ok") {
-              const isChecked = ($event?.target as HTMLInputElement)?.checked;
-              const reasonAnulate = this.reasonForm.get("reason_anulate").value;
-
-              this._clientService.clientChangeStatus(idClient,reasonAnulate ).subscribe(
-                (data) => {
-                   this.loading = false;
-                   this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', 
-                   { 
-                    progressBar: true,
-                     timeOut: 2000 
-                    }
+              // Modifica la llamada al servicio para enviar la razón de anulación
+              this._clientService
+                .clientChangeStatus(idClient,  this.reasonAnulate)
+                .subscribe(
+                  (data) => {
+                    this.loading = false;
+                    this.toastr.success(
+                      "Cambio de estado realizado con éxito.",
+                      "Proceso Completado",
+                      { progressBar: true, timeOut: 2000 }
                     );
                     this.getClients();
                     this.modalAbierto = false;
-                    this.reasonForm.get("reason_anulate").setValue(null);
-
-                },
-                (error) => {
-                  this.loading = false;
-                  this.toastr.error(
-                    "Fallo al realizar el cambio de estado.",
-                    "Error",
-                    { progressBar: true, timeOut: 2000 }
-                  );
-                  console.error("Error al cambiar de estado:", error);
-                }
-              );
-            } else if (result === "Cancel") {
-              this.modalAbierto = false;
-            
+                  },
+                  (error) => {
+                    this.loading = false;
+                    this.toastr.error(
+                      "Fallo al realizar el cambio de estado.",
+                      "Error",
+                      { progressBar: true, timeOut: 2000 }
+                    );
+                    console.error("Error al cambiar de estado:", error);
+                  }
+                );
             }
           },
           (reason) => {
+            // Manejar la cancelación del modal aquí
+            this.reasonAnulate = '';
+            this.getClients();
             this.modalAbierto = false;
-        
           }
         );
     }

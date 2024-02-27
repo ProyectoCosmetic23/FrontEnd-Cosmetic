@@ -1,7 +1,7 @@
 <div class="breadcrumb">
-  <h1 *ngIf="viewMode === 'new'">Registrar usuario</h1>
-  <h1 *ngIf="viewMode === 'edit'">Editar usuario</h1>
-  <h1 *ngIf="viewMode === 'print'">Ver detalle de usuario</h1>
+  <h1 *ngIf="viewMode === 'new'">Registrar Usuario</h1>
+  <h1 *ngIf="viewMode === 'edit'">Modificar Usuario</h1>
+  <h1 *ngIf="viewMode === 'print'">Ver Detalle de Usuario</h1>
 
 </div>
 
@@ -203,6 +203,12 @@
                     El campo nombre no puede tener simbolos y solo puede tener 1
                     numero.
                   </div>
+                  <div
+                  *ngIf="userForm.get('username').hasError('minlength')"
+                  class="error-message"
+                >
+                  El nombre de usuario debe contener mínimo 3 caracteres.
+                </div>
 
                   <div
                     *ngIf="userForm.get('username').hasError('maxlength')"
@@ -280,7 +286,7 @@
                     btnClass="btn btn-primary m-1 custom-button"
                   >
                     {{
-                      viewMode == "new" ? "Registrar usuario" : "Editar usuario"
+                      viewMode == "new" ? "Registrar Usuario" : "Modificar Usuario"
                     }}
                   </btn-loading>
                 </div>
