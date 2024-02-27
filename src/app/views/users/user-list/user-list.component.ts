@@ -139,6 +139,9 @@ export class UserListComponent implements OnInit {
       this.filteredUsers = this.listUsers.filter(
         (c) =>
           c.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          c.email.includes(value) ||
+          c.id_card_employee.toLowerCase().includes(value) ||
+          c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
           this.changeUserStateDescription(c.state_user)
             .toLowerCase()
             .indexOf(value.toLowerCase()) !== -1
