@@ -76,6 +76,46 @@ export class UserListComponent implements OnInit {
     );
   }
 
+  
+
+  getUsersCancel() {
+    this.showLoadingScreen = false;
+
+    forkJoin({
+      roles: this._rolesService.getAllRoles(),
+      employees: this._employeeService.getAllEmployees(),
+      users: this._userService.getAllUsers()
+    }).subscribe(
+      ({ roles, employees, users }) => {
+        this.rolesList = roles;
+        this.employeesList = employees;
+
+        for (let user of users) {
+          const role = this.rolesList.find((r) => r.id_role === user.id_role);
+          const employee = this.employeesList.find(
+            (emp) => emp.id_employee === user.id_employee
+          );
+
+          user.name_role = role ? role.name_role : "";
+          user.id_card_employee = employee ? employee.id_card_employee : "";
+
+          this.listUsers.push(user);
+
+          console.log("empleado enviado");
+        }
+
+        console.log(this.listUsers);
+        this.filteredUsers = [...this.listUsers];
+        this.sortListUsers();
+        this.showLoadingScreen = false;
+      },
+      (error) => {
+        console.error("Error al obtener roles y empleados:", error);
+      }
+    );
+  }
+
+
   getUsers() {
     this.showLoadingScreen = true;
 
