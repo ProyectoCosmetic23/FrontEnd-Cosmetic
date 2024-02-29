@@ -98,12 +98,12 @@ export class UserDetailComponent implements OnInit {
       id_user: [],
       id_role: ["", [Validators.required]],
       id_employee: [],
-      username: ["", [Validators.required, Validators.maxLength(80)]],
+      username: ["", [Validators.required, Validators.maxLength(15), Validators.minLength(3)]],
       email: ["", [Validators.email]],
       observation_user: ["", [Validators.maxLength(100)]],
       state_user: [],
       creation_date_user: [],
-      password: ["", [Validators.required]],
+      password: ["", [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
       name_employee: [""],
       name_role: [""],
       id_card_employee: [
@@ -364,6 +364,7 @@ export class UserDetailComponent implements OnInit {
       const updatedData = {
         username: this.userForm.get("username").value,
         password: this.userForm.get("password").value,
+        id_role:this.userForm.get("id_role").value,
         email: this.email.value,
         observation_user: this.userForm.get("observation_user").value,
       };

@@ -157,7 +157,7 @@
                   <i class="i-Eye"></i>
                 </button>
                 <button
-                  ngbTooltip="Editar"
+                  ngbTooltip="Modificar"
                   class="btn btn-info m-1"
                   [routerLink]="['/users/edit', row.id_user]"
                   [disabled]="row.state_user === 'Inactivo'"
@@ -198,7 +198,7 @@
       [(ngModel)]="reasonAnulate" style="resize: none" rows="5"></textarea>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-wide btn-danger" (click)="modal.dismiss('cancel')">
+    <button type="button" class="btn  btn-danger" (click)="modal.dismiss('cancel')">
       Cancelar
     </button>
     <button type="button" ngbAutofocus class="btn btn-primary" (click)="modal.close('Ok')"
@@ -233,5 +233,5 @@
       Sí
     </button>
   </div>
-    </ng-template
+  </ng-template
 >

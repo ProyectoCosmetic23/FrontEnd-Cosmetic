@@ -58,6 +58,22 @@ export class PurchaseListComponent implements OnInit {
     });
   }
 
+  getPurchasesCancel() {
+    this.showLoadingScreen = false;
+    this._purchaseService.getAllPurchase().subscribe(
+      (data) => {
+        this.listPurchases = data;
+        this.filteredPurchases = this.listPurchases;
+        this.sortListPurchases();
+      },
+      (error) => {
+        console.error("Error al obtener Categorías:", error);
+      }
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
+  }
   getPurchases() {
     this.showLoadingScreen = true;
     this._purchaseService.getAllPurchase().subscribe(
@@ -181,7 +197,7 @@ export class PurchaseListComponent implements OnInit {
             }
           );
       } else if (result === "Cancel" || (result && result.dismissedWith === 'cancel')) {
-        this.getPurchases();
+        this.getPurchasesCancel();
         this.modalAbierto = false;
         this.reasonForm.get("reason_anulate").setValue(null);
       }

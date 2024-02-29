@@ -25,7 +25,7 @@
             <form [formGroup]="employeeForm" (ngSubmit)="submitEmployee()">
                 <div class="row">
                         <div class="col-md-3 form-group mb-3">
-                            <label for="id_card_employee">Cédula de empleado<span class="text-danger">*</span></label>
+                            <label for="id_card_employee">Cédula<span class="text-danger">*</span></label>
                             <input type="text" class="form-control  " id="id_card_employee"  formControlName="id_card_employee" (change)="checkCedulaAvailability()" >
                             <div *ngIf="employeeForm.get('id_card_employee').touched && employeeForm.get('id_card_employee').hasError('required')" class="error-message">
                                 El campo cédula es obligatorio.
@@ -62,7 +62,7 @@
                     
                      
                     <div class="col-md-3 form-group mb-3">
-                        <label for="name_employee">Nombre de empleado<span class="text-danger">*</span></label>
+                        <label for="name_employee">Nombre Completo<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name_employee"  formControlName="name_employee" required>
                         <div *ngIf="employeeForm.get('name_employee').touched && employeeForm.get('name_employee').hasError('required')"class="error-message">
                             El campo nombre es obligatorio.

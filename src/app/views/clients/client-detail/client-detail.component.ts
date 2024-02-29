@@ -69,20 +69,20 @@ export class ClientDetailComponent implements OnInit {
       ],
       name_client: [
         "",
-        [Validators.required, Validators.maxLength(80)],
+        [Validators.required, Validators.maxLength(80), Validators.minLength(3)],
         [this.validateNameSimbolAndNumber],
         
       ],
       last_name_client: [
         "",
-        [Validators.required, Validators.maxLength(80)],
+        [Validators.required, Validators.maxLength(80), Validators.minLength(3)],
         [this.validateNameSimbolAndNumber],
       ],
       email_client: [
         "",
         [Validators.required, Validators.email, Validators.maxLength(80)],
       ],
-      address_client: ["", [Validators.required, Validators.maxLength(80)]],
+      address_client: ["", [Validators.required, Validators.maxLength(80), Validators.minLength(10)]],
       phone_client: [
         "",
         [
@@ -171,7 +171,7 @@ export class ClientDetailComponent implements OnInit {
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
-    const combinedPattern = /^[\wáéíóúñÑ´\s]+$/;
+    const combinedPattern = /^(?!.*\s{2})[\wáéíóúñÑ´\s]+$/;
 
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -355,6 +355,8 @@ export class ClientDetailComponent implements OnInit {
       window.print();
     }
   }
+
+  
 
   get cedula() {
     return this.clientForm.get("nit_or_id_client");
