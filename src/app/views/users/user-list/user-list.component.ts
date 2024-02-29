@@ -75,37 +75,29 @@ export class UserListComponent implements OnInit {
   
 
   getUsersCancel() {
-    this.showLoadingScreen = false;
-
+    this.showLoadingScreen = false; // Asegúrate de que la pantalla de carga esté oculta al comenzar la operación
+  
     forkJoin({
       roles: this._rolesService.getAllRoles(),
       employees: this._employeeService.getAllEmployees(),
-      users: this._userService.getAllUsers()
-      
+      users: this._userService.getAllUsers()  
     }).subscribe(
       ({ roles, employees, users }) => {
         this.rolesList = roles;
         this.employeesList = employees;
-        
-
+  
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
-          const employee = this.employeesList.find(
-            (emp) => emp.id_employee === user.id_employee
-          );
-
+          const employee = this.employeesList.find((emp) => emp.id_employee === user.id_employee);
+  
           user.name_role = role ? role.name_role : "";
           user.id_card_employee = employee ? employee.id_card_employee : "";
-
+  
           this.listUsers.push(user);
-
-          console.log("empleado enviado");
         }
-
-        console.log(this.listUsers);
+  
         this.filteredUsers = [...this.listUsers];
         this.sortListUsers();
-        this.showLoadingScreen = false;
       },
       (error) => {
         console.error("Error al obtener roles y empleados:", error);
@@ -113,6 +105,7 @@ export class UserListComponent implements OnInit {
       
     );
   }
+  
 
   getUsers() {
     this.showLoadingScreen = true;
@@ -189,7 +182,6 @@ export class UserListComponent implements OnInit {
           if (result === "Ok") {
             this.confirmUserStatusChange(idUser, true, false);
             this.openSecondModal(idUser, false);
-            this.showLoadingScreen = true; // Mostrar la pantalla de carga solo cuando se confirma el cambio de estado
           } else if (result === "Cancel") {
             this.isFirstModalOpen = false;
             // Limpiar la lista de usuarios y obtener los usuarios nuevamente
@@ -201,12 +193,11 @@ export class UserListComponent implements OnInit {
           this.isFirstModalOpen = false;
           // Limpiar la lista de usuarios y obtener los usuarios nuevamente
           this.listUsers = [];
-          this.getUsers();
+          this.getUsersCancel();
         }
       );
     }
   }
-  
   
   
   openSecondModal(idUser: number, changeEmployee: boolean) {
@@ -236,30 +227,24 @@ export class UserListComponent implements OnInit {
   }
   
 
-  confirmUserStatusChange(
-    idUser: number,
-    changeUser: boolean,
-    changeEmployee: boolean
-  ) {
+  confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
     if (changeUser) {
       this._userService.userChangeStatus(idUser).subscribe(
         (userData) => {
-          if (changeEmployee) {
-            this.changeEmployeeStatus(idUser);
+          if (userData.msg.includes("éxito")) {
+            if (changeEmployee) {
+              this.changeEmployeeStatus(idUser);
+            } else {
+              this.toastr.success("Cambio de estado del usuario realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
+              // Reinicia la bandera isFirstModalOpen después de completar el cambio de estado
+              this.isFirstModalOpen = false;
+            }
           } else {
-            this.toastr.success(
-              "Cambio de estado del usuario realizado con éxito.",
-              "Proceso Completado",
-              { progressBar: true, timeOut: 2000 }
-            );
+            this.toastr.error("Fallo al cambiar el estado del usuario.", "Error", { progressBar: true, timeOut: 2000 });
           }
         },
         (error) => {
-          this.toastr.error(
-            "Fallo al cambiar el estado del usuario.",
-            "Error",
-            { progressBar: true, timeOut: 2000 }
-          );
+          this.toastr.error("Fallo al cambiar el estado del usuario.", "Error", { progressBar: true, timeOut: 2000 });
           console.error("Error al cambiar el estado del usuario:", error);
         }
       );
