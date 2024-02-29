@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ToastrService } from "ngx-toastr";
 import { forkJoin } from "rxjs";
 import { AuthService } from "src/app/shared/services/auth.service";
@@ -19,22 +18,18 @@ export class UserListComponent implements OnInit {
   searchControl: UntypedFormControl = new UntypedFormControl();
   listUsers: any[] = [];
   filteredUsers: any[] = [];
-  modalAbierto = false;
   pageSize: number = 10;
   currentPage: number = 1;
-  roles: any = {};
-  employees: any = {};
-  showLoadingScreen: boolean;
+  rolesList: any;
+  employeesList: any[];
+  showLoadingScreen: boolean = false;
 
-  // Variable para controlar si el primer modal está abierto
+  // Variables para controlar si los modales están abiertos
   isFirstModalOpen: boolean = false;
-  // Variable para controlar si el segundo modal está abierto
   isSecondModalOpen: boolean = false;
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
   @ViewChild("changeModal", { static: true }) changeModal: any;
-  countLabel: any;
-  rolesList: any;
-  employeesList: any[];
+  
   constructor(
     private _userService: UsersService,
     private modalService: NgbModal,
@@ -49,7 +44,9 @@ export class UserListComponent implements OnInit {
     this.getUsers();
   }
 
-  //Consultar todos los usuarios
+  handleChange(event: any, row: any) {
+    row.state_user = event.target.checked ? "Activo" : "Inactivo";
+  }
 
   getRoles() {
     this._rolesService.getAllRoles().subscribe(
@@ -84,10 +81,12 @@ export class UserListComponent implements OnInit {
       roles: this._rolesService.getAllRoles(),
       employees: this._employeeService.getAllEmployees(),
       users: this._userService.getAllUsers()
+      
     }).subscribe(
       ({ roles, employees, users }) => {
         this.rolesList = roles;
         this.employeesList = employees;
+        
 
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
@@ -111,9 +110,9 @@ export class UserListComponent implements OnInit {
       (error) => {
         console.error("Error al obtener roles y empleados:", error);
       }
+      
     );
   }
-
 
   getUsers() {
     this.showLoadingScreen = true;
@@ -137,27 +136,17 @@ export class UserListComponent implements OnInit {
           user.id_card_employee = employee ? employee.id_card_employee : "";
 
           this.listUsers.push(user);
-
-          console.log("empleado enviado");
         }
 
-        console.log(this.listUsers);
         this.filteredUsers = [...this.listUsers];
         this.sortListUsers();
         this.showLoadingScreen = false;
       },
       (error) => {
         console.error("Error al obtener roles y empleados:", error);
+        this.showLoadingScreen = false;
       }
     );
-  }
-
-  @ViewChild(DatatableComponent)
-  table: DatatableComponent;
-
-  //  actualizar el valor visual de count según tus necesidades
-  actualizarCountLabel() {
-    this.countLabel = this.filteredUsers.length;
   }
 
   sortListUsers() {
@@ -165,7 +154,7 @@ export class UserListComponent implements OnInit {
       if (a.id_user > b.id_user) {
         return -1;
       }
-      if (a.id_user > b.id_user) {
+      if (a.id_user < b.id_user) {
         return 1;
       }
       return 0;
@@ -180,23 +169,17 @@ export class UserListComponent implements OnInit {
           c.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
           c.email.includes(value) ||
           c.id_card_employee.toLowerCase().includes(value) ||
-          c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          this.handleChange(c.state_user)
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1
+          c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 
       );
     } else {
       this.filteredUsers = this.listUsers;
     }
   }
 
-  handleChange(state_user: boolean) {
-    return state_user ? "Activo" : "Inactivo";
-  }
-
   openFirstModal(idUser: number) {
     if (!this.isFirstModalOpen) {
       this.isFirstModalOpen = true;
+  
       const modalRef = this.modalService.open(this.deleteConfirmModal, {
         centered: true,
       });
@@ -204,39 +187,42 @@ export class UserListComponent implements OnInit {
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
-            // Cambiar solo el estado del usuario
             this.confirmUserStatusChange(idUser, true, false);
-            // Abrir el segundo modal sin cambiar el estado del empleado
-            this.openSecondModal(idUser, false); // Envía false para indicar que no se cambie el estado del empleado en el segundo modal
+            this.openSecondModal(idUser, false);
+            this.showLoadingScreen = true; // Mostrar la pantalla de carga solo cuando se confirma el cambio de estado
           } else if (result === "Cancel") {
             this.isFirstModalOpen = false;
+            // Limpiar la lista de usuarios y obtener los usuarios nuevamente
+            this.listUsers = [];
+            this.getUsers();
           }
         },
         () => {
           this.isFirstModalOpen = false;
+          // Limpiar la lista de usuarios y obtener los usuarios nuevamente
+          this.listUsers = [];
+          this.getUsers();
         }
-      ).finally(() => {
-        // Restablecer el estado aquí en caso de cualquier resultado (confirmación o cancelación)
-        this.isFirstModalOpen = false;
-      });
+      );
     }
   }
+  
+  
   
   openSecondModal(idUser: number, changeEmployee: boolean) {
     if (!this.isSecondModalOpen) {
       this.isSecondModalOpen = true;
+
       const modalRef = this.modalService.open(this.changeModal, {
         centered: true,
       });
-  
+
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
-            // Cambiar solo el estado del empleado
             this.changeEmployeeStatus(idUser);
           } else if (result === "No") {
-            // Cambiar solo el estado del usuario, no del empleado
-            this.confirmUserStatusChange(idUser, true, changeEmployee); // Utiliza el valor pasado para changeEmployee
+            this.confirmUserStatusChange(idUser, true, changeEmployee);
           }
         },
         () => {
