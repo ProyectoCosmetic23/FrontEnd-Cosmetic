@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UntypedFormControl } from "@angular/forms";
-import { UsersService } from "src/app/shared/services/user.service";
-import { debounceTime } from "rxjs/operators";
-import { ToastrService } from "ngx-toastr";
-import { RolesService } from "src/app/shared/services/roles.service";
-import { EmployeesService } from "src/app/shared/services/employee.service";
-import { AuthService } from "src/app/shared/services/auth.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
+import { ToastrService } from "ngx-toastr";
 import { forkJoin } from "rxjs";
+import { AuthService } from "src/app/shared/services/auth.service";
+import { EmployeesService } from "src/app/shared/services/employee.service";
+import { RolesService } from "src/app/shared/services/roles.service";
+import { UsersService } from "src/app/shared/services/user.service";
 
 @Component({
   selector: "app-user-list",
@@ -142,7 +141,7 @@ export class UserListComponent implements OnInit {
           c.email.includes(value) ||
           c.id_card_employee.toLowerCase().includes(value) ||
           c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          this.changeUserStateDescription(c.state_user)
+          this.handleChange(c.state_user)
             .toLowerCase()
             .indexOf(value.toLowerCase()) !== -1
       );
@@ -151,7 +150,7 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  changeUserStateDescription(state_user: boolean) {
+  handleChange(state_user: boolean) {
     return state_user ? "Activo" : "Inactivo";
   }
 
@@ -161,7 +160,7 @@ export class UserListComponent implements OnInit {
       const modalRef = this.modalService.open(this.deleteConfirmModal, {
         centered: true,
       });
-
+  
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
@@ -173,39 +172,43 @@ export class UserListComponent implements OnInit {
             this.isFirstModalOpen = false;
           }
         },
-        (reason) => {
-          console.error("Error al abrir el primer modal:", reason);
+        () => {
           this.isFirstModalOpen = false;
         }
-      );
+      ).finally(() => {
+        // Restablecer el estado aquí en caso de cualquier resultado (confirmación o cancelación)
+        this.isFirstModalOpen = false;
+      });
     }
   }
-
+  
   openSecondModal(idUser: number, changeEmployee: boolean) {
     if (!this.isSecondModalOpen) {
       this.isSecondModalOpen = true;
       const modalRef = this.modalService.open(this.changeModal, {
         centered: true,
       });
-
+  
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
             // Cambiar solo el estado del empleado
-            this.changeEmployeeStatus(idUser);        }
-        else if (result === "No") {
+            this.changeEmployeeStatus(idUser);
+          } else if (result === "No") {
             // Cambiar solo el estado del usuario, no del empleado
             this.confirmUserStatusChange(idUser, true, changeEmployee); // Utiliza el valor pasado para changeEmployee
           }
-          this.isSecondModalOpen = false;
         },
-        (reason) => {
-          console.error("Error al abrir el segundo modal:", reason);
+        () => {
           this.isSecondModalOpen = false;
         }
-      );
+      ).finally(() => {
+        // Restablecer el estado aquí en caso de cualquier resultado (confirmación o cancelación)
+        this.isSecondModalOpen = false;
+      });
     }
   }
+  
 
   confirmUserStatusChange(
     idUser: number,
