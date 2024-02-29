@@ -23,7 +23,7 @@ export class ClientListComponent implements OnInit {
   listClients: any[] = [];
   filteredClients: any[] = [];
   reasonForm: FormGroup;
-  reasonAnulate = {};
+  reasonAnulate = '';
   pageSize: number = 10;
   currentPage: number = 1;
   countLabel: number;
@@ -49,21 +49,28 @@ export class ClientListComponent implements OnInit {
   
   }
 
-  // getClients() {
-  //   this._clientService.getAllClients().subscribe(
-  //     (data) => {
-  //       this.listClients = data.sort((a, b) => a.id_client - b.id_client);
-  //       this.filteredClients = [...this.listClients];
-  //       this.sortListClients();
-  //     },
-  //     (error) => {
-  //       console.log(error);
-  //     }
-  //   );
-  // }
+  
 
   getClients() {
     this.showLoadingScreen = true;
+    this._clientService.getAllClients().subscribe(
+      (data) => {
+        this.listClients = data;
+        this.filteredClients = [...this.listClients];
+        this.sortListClients();
+  
+      },
+      (error) => {
+        console.error("Error al obtener Clientes:", error);
+      }
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
+  }
+
+  
+  getClientsCancel() {
     this._clientService.getAllClients().subscribe(
       (data) => {
         this.listClients = data;
@@ -102,24 +109,6 @@ export class ClientListComponent implements OnInit {
   }
 
 
-  // filterData(value: string) {
-  //   if (value) {
-  //     value = value.toLowerCase();
-  //   } else {
-  //     this.filteredClients = [...this.listClients];
-  //     return;
-  //   }
-
-  //   this.filteredClients = this.listClients.filter((client) => {
-  //     const nombreMatch = client.name_client.toLowerCase().includes(value);
-  //     const correoMatch = client.email_client.toLowerCase().includes(value);
-  //     const estadoMatch = client.state_client.toLowerCase().includes(value);
-
-  //     return nombreMatch || correoMatch || estadoMatch;
-  //   });
-
-  //   this.currentPage = 1;
-  // }
   searchCategory($event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value !== null && value !== undefined && value !== "") {
@@ -162,55 +151,6 @@ export class ClientListComponent implements OnInit {
 
 
 
-  // @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
-
-  // openModal(idClient: number, $event?: any) {
-  //   if (!this.modalAbierto) {
-  //     this.modalAbierto = true;
-  //     this.modalService
-  //       .open(this.deleteConfirmModal, { centered: true , backdrop: 'static', keyboard: false })
-  //       .result.then(
-  //         (result) => {
-  //           if (result === "Ok") {
-  //             const isChecked = ($event?.target as HTMLInputElement)?.checked;
-  //             const reasonAnulate = this.reasonForm.get("reason_anulate").value;
-
-  //             this._clientService.clientChangeStatus(idClient,reasonAnulate ).subscribe(
-  //               (data) => {
-  //                  this.loading = false;
-  //                  this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', 
-  //                  { 
-  //                   progressBar: true,
-  //                    timeOut: 2000 
-  //                   }
-  //                   );
-  //                   this.getClients();
-  //                   this.modalAbierto = false;
-  //                   this.reasonForm.get("reason_anulate").setValue(null);
-
-  //               },
-  //               (error) => {
-  //                 this.loading = false;
-  //                 this.toastr.error(
-  //                   "Fallo al realizar el cambio de estado.",
-  //                   "Error",
-  //                   { progressBar: true, timeOut: 2000 }
-  //                 );
-  //                 console.error("Error al cambiar de estado:", error);
-  //               }
-  //             );
-  //           } else if (result === "Cancel") {
-  //             this.modalAbierto = false;
-            
-  //           }
-  //         },
-  //         (reason) => {
-  //           this.modalAbierto = false;
-        
-  //         }
-  //       );
-  //   }
-  // }
 
 
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
@@ -218,7 +158,6 @@ export class ClientListComponent implements OnInit {
   openModal(idClient: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
-
       this.modalService
         .open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false})
         .result.then(
@@ -235,7 +174,7 @@ export class ClientListComponent implements OnInit {
                       "Proceso Completado",
                       { progressBar: true, timeOut: 2000 }
                     );
-                    this.getClients();
+                    this.getClientsCancel();
                     this.modalAbierto = false;
                   },
                   (error) => {
@@ -253,7 +192,7 @@ export class ClientListComponent implements OnInit {
           (reason) => {
             // Manejar la cancelación del modal aquí
             this.reasonAnulate = '';
-            this.getClients();
+           this.getClients();
             this.modalAbierto = false;
           }
         );
