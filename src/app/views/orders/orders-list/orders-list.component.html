@@ -435,7 +435,7 @@
           Pagos del pedido {{ currentOrder?.order_number }}
         </h1>
         <div>
-          <div *ngIf = "!paymentsForOrder.length === 0 || !paymentsForOrder === null || !paymentsForOrder === undefined">
+          <div *ngIf = "paymentsForOrder && paymentsForOrder.length > 0">
             <table class="table table-bordered table-hover">
               <thead class="bg-gray-300">
                 <tr>
@@ -467,7 +467,7 @@
               </tbody>
             </table>
           </div>
-          <div>
+          <div *ngIf="!paymentsForOrder || paymentsForOrder.length === 0">
             <h3>No se han realizado pagos para este pedido.</h3>
           </div>
           <div style="display: flex; align-items: center;" class="justify-content-end">

@@ -337,7 +337,7 @@ export class OrdersDetailComponent implements OnInit {
               full_name: `${client.name_client} ${client.last_name_client}`,
             };
           });
-        console.log(this.listClients);
+        // console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -364,7 +364,7 @@ export class OrdersDetailComponent implements OnInit {
     this._ordersService.getAllProducts().subscribe(
       (data) => {
         // Inicializa la propiedad isDisabled en false para cada producto
-        console.log(data)
+        // console.log(data)
         this.listProducts = data.map((product) => ({
           ...product,
           disabled: false,
