@@ -25,7 +25,7 @@
             <form [formGroup]="userForm" (ngSubmit)="submitUser()">
               <div class="row">
                 <div class="col-md-3 form-group mb-3">
-                  <label for="name_role"
+                  <label for="name_ role"
                     >Rol<span class="text-danger">*</span></label
                   >
                   <select
@@ -288,7 +288,11 @@
                   </div>
                 </div>
 
-                <div class="form-group text-right" style="text-align: right">
+                <div
+                  *ngIf="viewMode == 'new' || viewMode == 'edit'"
+                  class="form-group text-right"
+                  style="text-align: right"
+                >
                   <button
                     type="button"
                     class="btn btn-danger ml-2"
@@ -299,6 +303,7 @@
                   <btn-loading
                     *ngIf="viewMode !== 'print'"
                     btnClass="btn btn-primary m-1 custom-button"
+                    [loading]="loading"
                   >
                     {{
                       viewMode == "new"
@@ -306,6 +311,19 @@
                         : "Modificar Usuario"
                     }}
                   </btn-loading>
+                </div>
+                <div
+                  *ngIf="viewMode === 'print'"
+                  class="form-group text-right"
+                  style="text-align: right"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-danger ml-2"
+                    (click)="cancel()"
+                  >
+                    Volver
+                  </button>
                 </div>
               </div>
             </form>

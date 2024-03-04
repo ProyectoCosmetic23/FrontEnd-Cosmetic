@@ -142,6 +142,7 @@ export class UserListComponent implements OnInit {
           c.email.includes(value) ||
           c.id_card_employee.toLowerCase().includes(value) ||
           c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          c.state_user.toLowerCase().indexOf(value.toLowerCase()) !== -1||
           this.changeUserStateDescription(c.state_user)
             .toLowerCase()
             .indexOf(value.toLowerCase()) !== -1

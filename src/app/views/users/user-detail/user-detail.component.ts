@@ -56,7 +56,7 @@ export class UserDetailComponent implements OnInit {
     private employeeService: EmployeesService,
     private rolesService: RolesService,
     private _authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._authService.validateUserPermissions("Usuarios");
@@ -69,7 +69,11 @@ export class UserDetailComponent implements OnInit {
 
   searchEmployeeByEmail() {
     const idCard = this.userForm.get("id_card_employee").value;
-
+    this.userForm.patchValue({
+      email: '',
+      id_employee: '',
+      name_employee: '',
+    }); 
     if (idCard) {
       this.usersService.getEmployeeByEmail(idCard).subscribe(
         (data: any) => {
@@ -78,20 +82,26 @@ export class UserDetailComponent implements OnInit {
             id_employee: data.id_employee,
             name_employee: data.name_employee,
           });
-          console.log(data.email);
-          console.log(data.id_employee);
-          console.log(data.name_employee);
 
-          this.employeeNotFoundMessage = ""; // Reinicia el mensaje si se encontró el empleado
+          if (data.status == 404) {
+            console.log('Status Code:', data.status);
+            this.employeeNotFoundMessage = "No se encontró el empleado.";
+          } else if (data.status == 403) {
+            console.log('Status Code:', data.status);
+            this.employeeNotFoundMessage = "Ya existe un usuario para el empleado.";
+          } else {
+            this.employeeNotFoundMessage = "";
+          }
         },
         (error: any) => {
-          console.error("Error al obtener el correo del empleado:", error);
-          this.employeeNotFoundMessage = "El empleado ya tiene un usuario"; // Establece el mensaje si no se encuentra el empleado
-          // Manejo de errores si es necesario
+          console.log('Status Code:', error.status);
+          this.employeeNotFoundMessage = "Error al realizar la petición.";
         }
       );
     }
   }
+
+
 
   private inicializateForm(id: number): void {
     this.userForm = this.formBuilder.group({
@@ -111,7 +121,7 @@ export class UserDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(10),
-          Validators.minLength(7),
+          Validators.minLength(6),
           Validators.pattern("^[0-9]+$"),
         ],
       ],
@@ -364,7 +374,7 @@ export class UserDetailComponent implements OnInit {
       const updatedData = {
         username: this.userForm.get("username").value,
         password: this.userForm.get("password").value,
-        id_role:this.userForm.get("id_role").value,
+        id_role: this.userForm.get("id_role").value,
         email: this.email.value,
         observation_user: this.userForm.get("observation_user").value,
       };

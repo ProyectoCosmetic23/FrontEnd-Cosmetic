@@ -129,10 +129,12 @@ export class ClientListComponent implements OnInit {
           c.nit_or_id_client.includes(value) ||
           c.email_client.includes(value) ||
           c.last_name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
+          c.state_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
           this.changeClientStateDescription(c.state_client).toLowerCase().indexOf(value.toLowerCase()) !== -1)
     } else {
       this.filteredClients = this.listClients;
     }
+    
   }
 
 
@@ -156,7 +158,7 @@ export class ClientListComponent implements OnInit {
   }
 
   handleChange(event: any, row: any) {
-    row.state_category = event.target.checked ? 'Activo' : 'Inactivo';
+    row.state_client = event.target.checked ? 'Activo' : 'Inactivo';
  
   }
 
