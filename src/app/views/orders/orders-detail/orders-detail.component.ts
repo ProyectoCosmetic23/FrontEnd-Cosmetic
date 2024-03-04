@@ -691,7 +691,6 @@ export class OrdersDetailComponent implements OnInit {
         allConditionsMet = false;
       }
     }
-
     return allConditionsMet;
   }
 
