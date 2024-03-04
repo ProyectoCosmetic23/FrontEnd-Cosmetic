@@ -1,142 +1,347 @@
 <div class="breadcrumb">
-    <h1 *ngIf="viewMode === 'new'">Registrar cliente</h1>
-    <h1 *ngIf="viewMode === 'edit'">Editar cliente</h1>
-    <h1 *ngIf="viewMode === 'print'">Ver detalle de cliente</h1>
-    
+  <h1 *ngIf="viewMode === 'new'">Registrar Cliente</h1>
+  <h1 *ngIf="viewMode === 'edit'">Modificar Cliente</h1>
+  <h1 *ngIf="viewMode === 'print'">Ver Detalle de Cliente</h1>
 </div>
-
 
 <div class="separator-breadcrumb border-top"></div>
 
-
-<div *ngIf="showLoadingScreen && (viewMode == 'edit' || viewMode == 'print')" class="loading-screen">
-    <div class="loading-content">
-      <div class="spinner spinner-primary me-3"></div>
-    </div>
+<div
+  *ngIf="showLoadingScreen && (viewMode == 'edit' || viewMode == 'print')"
+  class="loading-screen"
+>
+  <div class="loading-content">
+    <div class="spinner spinner-primary me-3"></div>
   </div>
-  <div *ngIf="showLoadingScreen == false || viewMode == 'new'">
-<!-- Contenido común a todas las vistas -->
-<div class="form-container">
-<!-- Vista de crear clientes -->
-<div class="row">
-<div class="col-md-12">
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="card-title mb-3">Formulario de clientes</div>
+</div>
+<div *ngIf="showLoadingScreen == false || viewMode == 'new'">
+  <!-- Contenido común a todas las vistas -->
+  <div class="form-container">
+    <!-- Vista de crear clientes -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="card-title mb-3"></div>
             <form [formGroup]="clientForm" (ngSubmit)="submitClient()">
-                <div class="row">
-                    <div class="col-md-6 form-group mb-3">
-                        <label for="nit_or_id_client">Cédula o nit <span class="text-danger">*</span></label>
-                        <input type="text" minlength="6" maxlength="10" class="form-control" id="nit_or_id_client" formControlName="nit_or_id_client" (change)="checkCedulaAvailability()">
-                        <div *ngIf="clientForm.get('nit_or_id_client').touched && clientForm.get('nit_or_id_client').hasError('required')" class="error-message">
-                            El campo cédula o nit es obligatorio.
-                        </div>
-                        <div *ngIf="clientForm.get('nit_or_id_client').hasError('minlength')" class="error-message">
-                            La cédula debe contener mínimo 6 caracteres.
-                        </div>
-                        <div *ngIf="clientForm.get('nit_or_id_client').hasError('maxlength')" class="error-message">
-                            El campo cédula no puede superar los 10 caracteres.
-                        </div>
-                        <div *ngIf="clientForm.get('nit_or_id_client').hasError('pattern')" class="error-message">
-                            El campo cédula debe contener solo números.
-                        </div>
-                        <div *ngIf="clientForm.get('nit_or_id_client').hasError('cedulaTaken')" class="error-message">La cédula ya está en uso.</div>
-                    </div>
-                    <div class="col-md-6 form-group mb-3">
-                        <label for="name_client">Nombre<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name_client" formControlName="name_client" required>
-                        <div *ngIf="clientForm.get('name_client').touched && clientForm.get('name_client').hasError('required')"class="error-message">
-                            El campo nombre es obligatorio.
-                        </div>
-                        <div *ngIf="clientForm.get('name_client').hasError('invalidName')"class="error-message">
-                            El campo nombre no puede tener simbolos y solo puede tener 1  número.
-                        </div>
-                        
-                        <div *ngIf="clientForm.get('name_client').hasError('maxlength')"class="error-message">
-                            El campo nombre no puede superar los 80 caracteres.
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 form-group mb-3">
-                        <label for="last_name_client">Apellidos<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="last_name_client" formControlName="last_name_client" required>
-                        <div *ngIf="clientForm.get('last_name_client').touched && clientForm.get('last_name_client').hasError('required')"class="error-message">
-                            El campo apellidos es obligatorio.
-                        </div>
-                        <div *ngIf="clientForm.get('last_name_client').hasError('invalidName')"class="error-message">
-                            El campo apellidos no puede tener simbolos y solo puede tener 1 número.
-                        </div>
-                        <div *ngIf="clientForm.get('last_name_client').hasError('maxlength')"class="error-message">
-                            El campo apellidos no puede superar los 80 caracteres.
-                        </div>
-                       
-                    </div>
-                    
-                    
-                    <div class="col-md-6 form-group mb-3">
-                        <label for="email_client">Correo<span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email_client" formControlName="email_client" (change)="checkEmailAvailability">
-                        <div *ngIf="clientForm.get('email_client').touched && clientForm.get('email_client').hasError('required')"class="error-message">
-                            El campo correo es obligatorio.
-                        </div>
-                        <div *ngIf="clientForm.get('email_client').hasError('email')"class="error-message">
-                            El campo correo debe ser un formato de correo válido  example@gmail.com, example@hotmail.com, example@outlook.com ó example@yahoo.com
-                        </div>
-                        <div *ngIf="clientForm.get('email_client').hasError('invalidDomain')" class="error-message">El dominio del correo no es válido.</div>
-                        <div *ngIf="clientForm.get('email_client').hasError('maxlength')"class="error-message">
-                            El campo correo no puede superar los 80 caracteres.
-                        </div>
-                        <div *ngIf="clientForm.get('email_client').hasError('emailTaken')"class="error-message">El correo electrónico ya está en uso.</div>
-
-                    </div>
-                    
-                    <div class="col-md-6 form-group mb-3">
-                        <label for="address_client">Dirección<span class="text-danger">*</span></label>
-                        <input class="form-control" id="address_client" formControlName="address_client" required>
-                        <div *ngIf="clientForm.get('address_client').touched && clientForm.get('address_client').hasError('required')"class="error-message">
-                            El campo dirección es obligatorio.
-                        </div>
-                        <div *ngIf="clientForm.get('address_client').hasError('maxlength')"class="error-message">
-                            El campo dirección no puede superar los 80 caracteres.
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6 form-group mb-3">
-                        <label for="phone_client">Teléfono<span class="text-danger">*</span></label>
-                        <input class="form-control" minlength="9" maxlength="10" id="phone_client" formControlName="phone_client" required>
-                        <div *ngIf="clientForm.get('phone_client').touched && clientForm.get('phone_client').hasError('required')"class="error-message">
-                            El campo teléfono es obligatorio.
-                        </div>
-                        <div *ngIf="clientForm.get('phone_client').hasError('maxlength')"class="error-message">
-                            El campo teléfono no puede superar los 80 caracteres.
-                        </div>
-                        <div *ngIf="clientForm.get('phone_client').hasError('pattern')"class="error-message">
-                            El campo teléfono debe tener 10 números y sin espacios.
-                        </div>
-                    </div>
-                    <div *ngIf="viewMode == 'print'" class="col-md-6 form-group mb-3">
-                        <label for="state_client">Estado<span class="text-danger">*</span></label>
-                        <input class="form-control" id="state_client" placeholder="state_client" formControlName="state_client">
-                    </div>
-                    <div *ngIf="viewMode == 'print' && clientForm.get('state_client').value === 'Inactivo'" class="col-md-6 form-group mb-3">
-            
-                        <label for="reason_anulate" *ngIf=" clientForm.get('state_client').value === 'Inactivo'">Razón cambio estado </label>
-                        <input class="form-control" id="reason_anulate" placeholder="reason_anulate" formControlName="reason_anulate">
-               
-                        </div>
-                      
-                  
-                    
-                    <div class="form-group text-right" style="text-align: right;">
-                        <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
-                        <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" > {{viewMode == 'new' ? 'Registrar cliente' : 'Editar cliente' }} 
-                        </btn-loading>
-                       
-                    </div>
+              <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                  <label for="nit_or_id_client"
+                    >Cédula o NIT <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    minlength="6"
+                    maxlength="10"
+                    class="form-control"
+                    id="nit_or_id_client"
+                    formControlName="nit_or_id_client"
+                    (change)="checkCedulaAvailability()"
+                  />
+                  <div
+                    *ngIf="
+                      clientForm.get('nit_or_id_client').touched &&
+                      clientForm.get('nit_or_id_client').hasError('required')
+                    "
+                    class="error-message"
+                  >
+                    El campo cédula o nit es obligatorio.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('nit_or_id_client').hasError('minlength')
+                    "
+                    class="error-message"
+                  >
+                    La cédula debe contener mínimo 6 caracteres.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('nit_or_id_client').hasError('maxlength')
+                    "
+                    class="error-message"
+                  >
+                    El campo cédula no puede superar los 10 caracteres.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('nit_or_id_client').hasError('pattern')
+                    "
+                    class="error-message"
+                  >
+                    El campo cédula debe contener solo números.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('nit_or_id_client').hasError('cedulaTaken')
+                    "
+                    class="error-message"
+                  >
+                    La cédula ya está en uso.
+                  </div>
                 </div>
-            </form>
-        </div>
-    </div>
+                <div class="col-md-6 form-group mb-3">
+                  <label for="name_client"
+                    >Nombre<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name_client"
+                    formControlName="name_client"
+                    required
+                  />
+                  <div
+                    *ngIf="
+                      clientForm.get('name_client').touched &&
+                      clientForm.get('name_client').hasError('required')
+                    "
+                    class="error-message"
+                  >
+                    El campo nombre es obligatorio.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('name_client').hasError('invalidName')
+                    "
+                    class="error-message"
+                  >
+                    El campo nombre no puede tener simbolos y solo puede tener 1
+                    número.
+                  </div>
 
+                  <div
+                    *ngIf="clientForm.get('name_client').hasError('maxlength')"
+                    class="error-message"
+                  >
+                    El campo nombre no puede superar los 80 caracteres.
+                  </div>
+
+                  <div
+                  *ngIf="clientForm.get('name_client').hasError('minlength')"
+                  class="error-message"
+                >
+                  El nombre debe contener mínimo 3 letras.
+                </div>
+
+
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label for="last_name_client"
+                    >Apellidos<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="last_name_client"
+                    formControlName="last_name_client"
+                    required
+                  />
+                  <div
+                    *ngIf="
+                      clientForm.get('last_name_client').touched &&
+                      clientForm.get('last_name_client').hasError('required')
+                    "
+                    class="error-message"
+                  >
+                    El campo apellidos es obligatorio.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('last_name_client').hasError('invalidName')
+                    "
+                    class="error-message"
+                  >
+                    El campo apellidos no puede tener espacios al inicio y al final, simbolos y solo puede
+                    tener 1 número.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('last_name_client').hasError('maxlength')
+                    "
+                    class="error-message"
+                  >
+                    El campo apellidos no puede superar los 80 caracteres.
+                  </div>
+
+                  <div
+                  *ngIf="clientForm.get('last_name_client').hasError('minlength')"
+                  class="error-message"
+                >
+                  El apellido debe contener mínimo 3 letras.
+                </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label for="email_client"
+                    >Correo<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email_client"
+                    formControlName="email_client"
+                    (change)="(checkEmailAvailability)"
+                  />
+                  <div
+                    *ngIf="
+                      clientForm.get('email_client').touched &&
+                      clientForm.get('email_client').hasError('required')
+                    "
+                    class="error-message"
+                  >
+                    El campo correo es obligatorio.
+                  </div>
+                  <div
+                    *ngIf="clientForm.get('email_client').hasError('email')"
+                    class="error-message"
+                  >
+                    El campo correo debe ser un formato de correo válido
+                    example@gmail.com, example@hotmail.com, example@outlook.com
+                    ó example@yahoo.com
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('email_client').hasError('invalidDomain')
+                    "
+                    class="error-message"
+                  >
+                    El dominio del correo no es válido.
+                  </div>
+                  <div
+                    *ngIf="clientForm.get('email_client').hasError('maxlength')"
+                    class="error-message"
+                  >
+                    El campo correo no puede superar los 80 caracteres.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('email_client').hasError('emailTaken')
+                    "
+                    class="error-message"
+                  >
+                    El correo electrónico ya está en uso.
+                  </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label for="address_client"
+                    >Dirección<span class="text-danger">*</span></label
+                  >
+                  <input
+                    class="form-control"
+                    id="address_client"
+                    formControlName="address_client"
+                    required
+                  />
+                  <div
+                    *ngIf="
+                      clientForm.get('address_client').touched &&
+                      clientForm.get('address_client').hasError('required')
+                    "
+                    class="error-message"
+                  >
+                    El campo dirección es obligatorio.
+                  </div>
+                  <div
+                    *ngIf="
+                      clientForm.get('address_client').hasError('maxlength')
+                    "
+                    class="error-message"
+                  >
+                    El campo dirección no puede superar los 80 caracteres.
+                  </div>
+                  <div
+                  *ngIf="clientForm.get('address_client').hasError('minlength')"
+                  class="error-message"
+                >
+                  La dirección debe contener mínimo 10 caracteres.
+                </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                  <label for="phone_client"
+                    >Teléfono<span class="text-danger">*</span></label
+                  >
+                  <input
+                    class="form-control"
+                    minlength="9"
+                    maxlength="10"
+                    id="phone_client"
+                    formControlName="phone_client"
+                    required
+                  />
+                  <div
+                    *ngIf="
+                      clientForm.get('phone_client').touched &&
+                      clientForm.get('phone_client').hasError('required')
+                    "
+                    class="error-message"
+                  >
+                    El campo teléfono es obligatorio.
+                  </div>
+                  <div
+                    *ngIf="clientForm.get('phone_client').hasError('maxlength')"
+                    class="error-message"
+                  >
+                    El campo teléfono no puede superar los 80 caracteres.
+                  </div>
+                  <div
+                    *ngIf="clientForm.get('phone_client').hasError('pattern')"
+                    class="error-message"
+                  >
+                    El campo teléfono debe tener 10 números y sin espacios.
+                  </div>
+                </div>
+                <div
+                  *ngIf="viewMode == 'print'"
+                  class="col-md-6 form-group mb-3"
+                >
+                  <label for="state_client"
+                    >Estado<span class="text-danger">*</span></label
+                  >
+                  <input
+                    class="form-control"
+                    id="state_client"
+                    placeholder="state_client"
+                    formControlName="state_client"
+                  />
+                </div>
+
+                <div
+                  *ngIf="
+                    viewMode == 'print' &&
+                    clientForm.get('state_client').value === 'Inactivo'
+                  "
+                  class="col-md-6 form-group mb-3"
+                >
+                  <label
+                    for="reason_anulate"
+                    *ngIf="clientForm.get('state_client').value === 'Inactivo'"
+                    >Razón cambio estado
+                  </label>
+                  <input
+                    class="form-control"
+                    id="reason_anulate"
+                    formControlName="reason_anulate"
+                  />
+                </div>
+
+                <div *ngIf="viewMode == 'new' || viewMode == 'edit'" class="form-group text-right" style="text-align: right;">
+                  <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                  <btn-loading *ngIf="viewMode !== 'print'" btnClass="btn btn-primary m-1 custom-button" [loading]="loading"> {{viewMode == 'new' ? 'Registrar Cliente' : 'Modificar Cliente' }} 
+                  </btn-loading>
+                 
+              </div>
+                <div *ngIf="viewMode === 'print'"class="form-group text-right" style="text-align: right;">
+                  <button  type="button" class="btn btn-danger ml-2" (click)="cancel()">Volver</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -42,6 +42,28 @@ export class EmployeeListComponent implements OnInit {
     row.state_employee = event.target.checked ? "Activo" : "Inactivo";
   }
 
+  
+  getEmployeesCancel() {
+    this.showLoadingScreen = false;
+   
+    this._employeeService.getAllEmployees().subscribe(
+      (data) => {
+        this.listEmployees = data.sort((a, b) => a.id_employee - b.id_employee);
+        this.filteredEmployees = [...this.listEmployees];
+        this.sortListEmployeesById();
+        this.irefreshListEmployees();
+        this.loading = false; // Oculta el indicador de carga después de obtener los datos
+      },
+      (error) => {
+        this.loading = false; // Manejar el error y ocultar el indicador de carga
+        console.error("Error al obtener empleados:", error);
+      }
+    )
+    .add(() => {
+      this.showLoadingScreen = false;
+  });
+}
+
   getEmployees() {
     this.showLoadingScreen = true;
    
@@ -147,7 +169,7 @@ export class EmployeeListComponent implements OnInit {
                       "Proceso Completado",
                       { progressBar: true, timeOut: 2000 }
                     );
-                    this.getEmployees();
+                    this.reasonAnulate = '';
                     this.modalAbierto = false;
                   },
                   (error) => {
@@ -165,7 +187,7 @@ export class EmployeeListComponent implements OnInit {
           (reason) => {
             // Manejar la cancelación del modal aquí
             this.reasonAnulate = '';
-            this.getEmployees();
+            this.getEmployeesCancel();
             this.modalAbierto = false;
           }
         );

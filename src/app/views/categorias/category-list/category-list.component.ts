@@ -66,6 +66,24 @@ export class CategoryListComponent {
     });
   }
 
+  getCategoriesCancel() {
+    this.showLoadingScreen = false;
+    this._categoriesService.getAllCategory().subscribe(
+      (data) => {
+        this.listCategories = data;
+        this.filteredCategories = this.listCategories;
+        this.sortListCategoriesById();
+  
+      },
+      (error) => {
+        console.error("Error al obtener Categorías:", error);
+      }
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
+  }
+
   @ViewChild(DatatableComponent)
   table: DatatableComponent;
 
@@ -154,7 +172,7 @@ export class CategoryListComponent {
                   timeOut: 2000,
                 }
               );
-              this.getCategories();
+        
               this.modalAbierto = false;
               this.reasonForm.get("reason_anulate").setValue(null);
             },
@@ -173,7 +191,7 @@ export class CategoryListComponent {
           );
       } else if (result === "Cancel" || (result && result.dismissedWith === 'cancel')) {
         this.reasonForm.get("reason_anulate").setValue(null);
-        this.getCategories();
+        this.getCategoriesCancel();
         this.modalAbierto = false;
 
       }

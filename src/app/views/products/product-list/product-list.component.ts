@@ -80,6 +80,22 @@ export class ProductListComponent implements OnInit {
     });
   }
 
+  getProductsCancel() {
+    this.showLoadingScreen = false;
+    this._productService.getAllProducts().subscribe(
+      (data) => {
+        this.listProducts = data;
+        this.filteredProducts = this.listProducts;
+        this.sortListProdcuctsById();
+      },
+      (error) => {
+        console.error("Error al obtener Productos:", error);
+      }
+      )
+      .add(() => {
+        this.showLoadingScreen = false;
+    });
+  }
   
 
   handleChange(event: any, row: any) {
@@ -263,7 +279,7 @@ isNearMinimum(product: any): boolean {
                     "Proceso Completado",
                     { progressBar: true, timeOut: 2000 }
                   );
-                  this.getProducts();
+                  this.reasonAnulate = '';
                   this.modalAbierto = false;
                 },
                 (error) => {
@@ -282,7 +298,7 @@ isNearMinimum(product: any): boolean {
         (reason) => {
           // Manejar la cancelación del modal aquí
           this.reasonAnulate = '';
-          this.getProducts();
+          this.getProductsCancel();
           this.modalAbierto = false;
         }
       );
