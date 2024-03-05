@@ -127,3 +127,32 @@
     /* Espacio entre elementos */
   }
 }
+
+@media (min-width: 1151px) {
+
+
+  .col-md-5 .row {
+    align-items: start;
+  }
+
+  .custom-button-register {
+    width: 100%;
+    /* Asegurar que los elementos ocupen todo el ancho disponible */
+    margin-bottom: 5px;
+    /* Espacio entre elementos */
+  }
+
+  .custom-button-asign {
+    width: 100%;
+    /* Asegurar que los elementos ocupen todo el ancho disponible */
+    margin-bottom: 5px;
+    /* Espacio entre elementos */
+  }
+
+  .custom-select {
+    width: 100%;
+    /* Asegurar que los elementos ocupen todo el ancho disponible */
+    margin-bottom: 5px;
+    /* Espacio entre elementos */
+  }
+}
