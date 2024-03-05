@@ -1,14 +1,12 @@
 <div class="">
   <div class="breadcrumb">
-    <h1>Listar Productos</h1>
+    <h1>Productos</h1>
   </div>
 
   <div class="separator-breadcrumb border-top"></div>
 
   <div class="row mb-3">
-    <div
-      class="col-md-12 mb-3 d-flex justify-content-between align-items-center"
-    >
+    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center">
       <div class="col-md-4">
         <div class="form-group">
           <button class="btn btn-primary" [routerLink]="['/products/new']">
@@ -18,14 +16,8 @@
       </div>
       <div class="col-md-4">
         <div class="form-group">
-          <input
-            id="role"
-            placeholder="Buscar Productos"
-            [formControl]="searchControl"
-            class="form-control"
-            type="role"
-            (keyup)="searchProduct($event)"
-          />
+          <input id="role" placeholder="Buscar Productos" [formControl]="searchControl" class="form-control" type="role"
+            (keyup)="searchProduct($event)" />
         </div>
       </div>
     </div>
@@ -38,190 +30,105 @@
         </div>
         <div *ngIf="showLoadingScreen == false">
           <div class="table-responsive">
-            <ngx-datatable
-              class="material fullscreen"
-              style="height: 480px"
-              [columnMode]="'force'"
-              [headerHeight]="50"
-              [footerHeight]="50"
-              [rowHeight]="60"
-              [rows]="filteredProducts"
-              [count]="filteredProducts.length"
-              [limit]="6"
-              rowHeight="700px"
-              [scrollbarH]="true"
-            >
-              <ngx-datatable-column
-                name="category"
-                [resizeable]="false"
-                [canAutoResize]="true"
-                [minWidth]="100"
-              >
-                <ng-template
-                  ngx-datatable-header-template
-                  class="fixed-width-cell"
-                >
+            <ngx-datatable class="material fullscreen" style="height: 480px" [columnMode]="'force'" [headerHeight]="50"
+              [footerHeight]="50" [rowHeight]="60" [rows]="filteredProducts" [count]="filteredProducts.length"
+              [limit]="6" rowHeight="700px" [scrollbarH]="true">
+              <ngx-datatable-column name="category" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+                <ng-template ngx-datatable-header-template class="fixed-width-cell">
                   <p style="font-size: 15px">Categoría</p>
                 </ng-template>
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ categories[row.id_category] }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column
-                name="name_product"
-                [resizeable]="false"
-                [canAutoResize]="true"
-                [minWidth]="100"
-              >
+              <ngx-datatable-column name="name_product" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                 <ng-template ngx-datatable-header-template>
                   <p style="font-size: 15px">Nombre</p>
                 </ng-template>
-                <ng-template
-                  ngx-datatable-cell-template
-                  let-value="value"
-                  let-row="row"
-                  style="white-space: pre-line"
-                >
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row" style="white-space: pre-line">
                   <div style="white-space: pre-line">
                     {{ row.name_product }}
                   </div>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column
-                name="quantity"
-                [resizeable]="false"
-                [canAutoResize]="true"
-                [minWidth]="100"
-              >
+              <ngx-datatable-column name="quantity" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                 <ng-template ngx-datatable-header-template>
                   <p style="font-size: 15px">Cantidad</p>
                 </ng-template>
-                <ng-template
-                  ngx-datatable-cell-template
-                  let-value="value"
-                  let-row="row"
-                >
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                   <div>
-                    <span
-                      style="
+                    <span style="
                         display: inline-block;
                         width: 60px;
                         font-size: 14px;
                         padding: 2px;
                         border-radius: 4px;
                         text-align: center;
-                      "
-                      [ngStyle]="{
+                      " [ngStyle]="{
                         color:
                           row.quantity <= row.min_stock
                             ? 'white'
                             : row.quantity <= row.min_stock + 10
                             ? 'black'
                             : 'inherit'
-                      }"
-                      [ngClass]="{
+                      }" [ngClass]="{
                         'm-1': true,
                         'bg-danger': row.quantity <= row.min_stock,
                         'bg-warning':
                           row.quantity > row.min_stock &&
                           row.quantity <= row.min_stock + 10
-                      }"
-                    >
+                      }">
                       {{ row.quantity }}
                     </span>
                   </div>
                 </ng-template>
               </ngx-datatable-column>
 
-              <ngx-datatable-column
-                name="cost_price"
-                [resizeable]="false"
-                [canAutoResize]="true"
-                [minWidth]="100"
-              >
+              <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                 <ng-template ngx-datatable-header-template>
                   <p style="font-size: 15px">Precio de costo</p>
                 </ng-template>
-                <ng-template
-                  ngx-datatable-cell-template
-                  let-value="value"
-                  let-row="row"
-                >
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                   {{ row.cost_price | currency : "" : "symbol" : "1.0-0" }}
                 </ng-template>
               </ngx-datatable-column>
 
-              <ngx-datatable-column
-                name="state_product"
-                [resizeable]="false"
-                [canAutoResize]="true"
-                [minWidth]="100"
-              >
+              <ngx-datatable-column name="state_product" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                 <ng-template ngx-datatable-header-template>
                   <p style="font-size: 15px">Estado</p>
                 </ng-template>
-                <ng-template
-                  ngx-datatable-cell-template
-                  let-value="value"
-                  let-row="row"
-                >
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                   {{ row.state_product }}
                 </ng-template>
               </ngx-datatable-column>
 
               <!-- Puedes agregar más columnas según tus necesidades -->
-              <ngx-datatable-column
-                name="actions"
-                [resizeable]="false"
-                [width]="180"
-              >
+              <ngx-datatable-column name="actions" [resizeable]="false" [width]="180">
                 <ng-template ngx-datatable-header-template>
                   <p style="font-size: 15px">Acciones</p>
                 </ng-template>
-                <ng-template
-                  ngx-datatable-cell-template
-                  let-value="value"
-                  let-row="row"
-                >
-                  <button
-                    ngbTooltip="Ver Estado"
-                    class="btn btn-dark m-1 btn-sm"
-                    [routerLink]="['/products/print', row.id_product]"
-                  >
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                  <button ngbTooltip="Ver Estado" class="btn btn-dark m-1 btn-sm"
+                    [routerLink]="['/products/print', row.id_product]">
                     <i class="i-Eye"></i>
                   </button>
-                  <button
-                    ngbTooltip="Modificar"
-                    class="btn btn-info btn-sm"
-                    [routerLink]="['/products/edit', row.id_product]"
-                    [disabled]="row.state_product == 'Inactivo'"
-                  >
+                  <button ngbTooltip="Modificar" class="btn btn-info btn-sm"
+                    [routerLink]="['/products/edit', row.id_product]" [disabled]="row.state_product == 'Inactivo'">
                     <i class="i-Pen-4"></i>
                   </button>
-                  <button
-                    ngbTooltip="Dar de baja"
-                    class="btn btn-danger m-1 btn-sm"
-                    (click)="
+                  <button ngbTooltip="Dar de baja" class="btn btn-danger m-1 btn-sm" (click)="
                       openRetireModal(
                         row.id_product,
                         row.selling_price,
                         retireModal
                       )
-                    "
-                  >
+                    ">
                     <i class="i-Down"></i>
                   </button>
-                  <label
-                    ngbTooltip="Cambiar estado"
-                    class="switch switch-success me-3 btn-custom btn-sm"
-                    (click)="openModal(row.id_product)"
-                  >
-                    <input
-                      style="margin-right: 20px;"
-                      type="checkbox"
-                      [checked]="row.state_product == 'Activo'"
-                      (change)="handleChange($event, row)"
-                    />
+                  <label ngbTooltip="Cambiar estado" class="switch switch-success me-3 btn-custom btn-sm"
+                    (click)="openModal(row.id_product)">
+                    <input style="margin-right: 20px;" type="checkbox" [checked]="row.state_product == 'Activo'"
+                      (change)="handleChange($event, row)" />
                     <span class="slider"></span>
                   </label>
                 </ng-template>
@@ -240,35 +147,18 @@
   </div>
   <div class="modal-body">
     <p>
-      <strong
-        >¿Está seguro de que desea cambiar el estado de este Producto?</strong
-      >
+      <strong>¿Está seguro de que desea cambiar el estado de este Producto?</strong>
     </p>
     <label for="reasonAnulate">Razón de Cambio de estado:</label>
-    <textarea
-      id="reasonAnulate"
-      class="form-control"
-      placeholder="Ingrese la razón de cambio de estado"
-      [(ngModel)]="reasonAnulate"
-      style="resize: none"
-      rows="5"
-    ></textarea>
+    <textarea id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado"
+      [(ngModel)]="reasonAnulate" style="resize: none" rows="5"></textarea>
   </div>
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-wide btn-danger"
-      (click)="modal.dismiss('cancel')"
-    >
+    <button type="button" class="btn btn-wide btn-danger" (click)="modal.dismiss('cancel')">
       Cancelar
     </button>
-    <button
-      type="button"
-      ngbAutofocus
-      class="btn btn-primary"
-      (click)="modal.close('Ok')"
-      [disabled]="reasonAnulate == ''"
-    >
+    <button type="button" ngbAutofocus class="btn btn-primary" (click)="modal.close('Ok')"
+      [disabled]="reasonAnulate == ''">
       Aceptar
     </button>
   </div>
@@ -282,56 +172,28 @@
     <div class="row mb-3">
       <div class="col-md-8">
         <label for="selectedProductId">Producto:</label>
-        <input
-          type="text"
-          id="selectedProductId"
-          class="form-control readonly-input"
-          readonly
-          [value]="getProductNameById(selectedProductId)"
-        />
+        <input type="text" id="selectedProductId" class="form-control readonly-input" readonly
+          [value]="getProductNameById(selectedProductId)" />
       </div>
       <div class="col-md-4">
         <label for="returnQuantity">Cantidad:</label>
-        <input
-          type="number"
-          id="returnQuantity"
-          class="form-control"
-          [(ngModel)]="returnQuantity"
-          (ngModelChange)="
+        <input type="number" id="returnQuantity" class="form-control" [(ngModel)]="returnQuantity" (ngModelChange)="
             returnValue = calculateUpdatedValue(selectedProductValue)
-          "
-          min="0"
-          oninput="this.value = Math.abs(this.value)"
-        />
+          " min="0" oninput="this.value = Math.abs(this.value)" />
       </div>
 
       <p></p>
       <div class="col-md-12">
         <label for="returnReason">Motivo:</label>
-        <textarea
-          type="textarea"
-          id="returnReason"
-          class="form-control"
-          [(ngModel)]="returnReason"
-          style="resize: none"
-          rows="5"
-        ></textarea>
+        <textarea type="textarea" id="returnReason" class="form-control" [(ngModel)]="returnReason" style="resize: none"
+          rows="5"></textarea>
       </div>
     </div>
     <div class="modal-footer">
-      <button
-        type="button"
-        class="btn btn-wide btn-danger"
-        (click)="modal.dismiss()"
-      >
+      <button type="button" class="btn  btn-danger" (click)="modal.dismiss()">
         Cancelar
       </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        (click)="retireProduct()"
-        [disabled]="returnReason == ''"
-      >
+      <button type="button" class="btn btn-primary" (click)="retireProduct()" [disabled]="returnReason == ''">
         Dar de baja
       </button>
     </div>

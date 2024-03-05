@@ -155,18 +155,18 @@ export class OrdersDetailComponent implements OnInit {
           const idClient = this.order.order.id_client;
           const idEmployee = this.order.order.id_employee;
           const orderDetail = this.order.order_detail;
-  
+
           this.selected_payment_type = this.order.order.payment_type;
-  
+
           this.showLoadingScreen = true;
-  
+
           this.getReturnedProducts(this.order.order.id_order, this.order.order);
-  
+
           this.findOrderData(idClient, idEmployee, orderDetail);
-  
+
           // Aquí llamamos a getPaymentsForOrder después de obtener el pedido
           this.getPaymentsForOrder();
-  
+
           // Después de cargar los datos, establece loadingData en false
           this.showLoadingScreen = false;
           this.message_observation = this.order.order.observation_return;
@@ -251,7 +251,7 @@ export class OrdersDetailComponent implements OnInit {
           (client) => client.id_client === clientId
         );
         if (client) {
-          this.selected_client = client.name_client;
+          this.selected_client = client.name_client + client.last_name_client;
         }
       };
 
@@ -329,9 +329,15 @@ export class OrdersDetailComponent implements OnInit {
   getClients() {
     this._ordersService.getAllClients().subscribe(
       (data) => {
-        this.listClients = data.filter(
-          (client) => client.state_client === "Activo"
-        );
+        this.listClients = data
+          .filter((client) => client.state_client === "Activo")
+          .map((client) => {
+            return {
+              ...client,
+              full_name: `${client.name_client} ${client.last_name_client}`,
+            };
+          });
+        // console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -358,13 +364,14 @@ export class OrdersDetailComponent implements OnInit {
     this._ordersService.getAllProducts().subscribe(
       (data) => {
         // Inicializa la propiedad isDisabled en false para cada producto
+        // console.log(data)
         this.listProducts = data.map((product) => ({
           ...product,
           disabled: false,
         }));
         if (this.viewMode == "new") {
           this.listProducts = this.listProducts.filter(
-            (product) => product.state_product === "Activo"
+            (product) => product.state_product === "Activo" && product.quantity > 0
           );
         }
       },
@@ -684,7 +691,6 @@ export class OrdersDetailComponent implements OnInit {
         allConditionsMet = false;
       }
     }
-
     return allConditionsMet;
   }
 

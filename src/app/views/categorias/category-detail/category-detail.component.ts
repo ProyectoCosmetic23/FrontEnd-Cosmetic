@@ -204,8 +204,7 @@ export class CategoryDetailComponent implements OnInit {
 
   //GUARDAR EL CREAR
   saveChanges() {
-    console.log("editar");
-
+  
     if (this.categoryForm.valid) {
       const id = Number(this.id); // Convierte el ID a número
       const updatedData = {
@@ -235,14 +234,25 @@ export class CategoryDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Categoría registrada con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
-        setTimeout(() => {
-          this.router.navigateByUrl("/categories");
-        });
-      });
+      
+        if (this.viewMode === 'new') {
+          this.toastr.success("Categoría registrada con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+          setTimeout(() => {
+            this.router.navigateByUrl("/categories");
+          });
+        } else if (this.viewMode === 'edit') {
+          this.toastr.success("Categoría modificada con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+          setTimeout(() => {
+            this.router.navigateByUrl("/categories");
+          });
+        }
+      }, 0);
     }
   }
 

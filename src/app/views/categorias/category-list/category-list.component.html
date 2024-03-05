@@ -29,7 +29,7 @@
                 </div>
               </div>
         
-              <div  class=" table-responsive">
+              <div  class=" table-responsive" *ngIf="showLoadingScreen == false">
             <ngx-datatable 
           
             class="material fullscreen"
@@ -82,13 +82,11 @@
                                 <input type="checkbox" [checked]="row.state_category == true" (change)="handleChange($event, row)" (click)="modalStatus(row.id_category, $event)">
                                 <span class="slider"></span>
                             </label>
-                           
-                            
-                            
-                            
+ 
                         </ng-container>
                     </ng-template>
                 </ngx-datatable-column>
+            
             </ngx-datatable>
         </div>
         </div>
@@ -113,7 +111,7 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-wide btn-danger btn" (click)="modal.close('Cancel')">
+        <button type="button" class="btn btn-danger btn" (click)="modal.close('Cancel')">
             Cancelar</button>
         <button type="button" ngbAutofocus class="btn btn-wide  btn-primary btn"
             (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>

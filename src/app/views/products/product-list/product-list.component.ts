@@ -38,10 +38,6 @@ export class ProductListComponent implements OnInit {
   categories: { [key: number]: string } = {};
   itemsPerPage = 6; // El número de filas por página
   showLoadingScreen: boolean=false;
-
-
-
-
   
   constructor(
     private _productService: ProductService,
@@ -84,6 +80,22 @@ export class ProductListComponent implements OnInit {
     });
   }
 
+  getProductsCancel() {
+    this.showLoadingScreen = false;
+    this._productService.getAllProducts().subscribe(
+      (data) => {
+        this.listProducts = data;
+        this.filteredProducts = this.listProducts;
+        this.sortListProdcuctsById();
+      },
+      (error) => {
+        console.error("Error al obtener Productos:", error);
+      }
+      )
+      .add(() => {
+        this.showLoadingScreen = false;
+    });
+  }
   
 
   handleChange(event: any, row: any) {
@@ -211,7 +223,6 @@ searchProduct($event) {
   getCategoryById(categoryId: number) {
     this._productService.getCategoryById(categoryId).subscribe(
         (category) => {
-            console.log('Categoría obtenida:', category);
             // Encuentra el producto correspondiente en la lista de productos
             const productToUpdate = this.listProducts.find(p => p.id_category === categoryId);
             // Si se encuentra el producto, actualiza el nombre de la categoría
@@ -226,10 +237,7 @@ searchProduct($event) {
 }
 
 isNearMinimum(product: any): boolean {
-  console.log('Cantidad:', product.quantity);
-  console.log('Stock mínimo:', product.stockMinimo);
   const nearMinimum = product.quantity <= product.stockMinimo;
-  console.log('¿Está cerca del mínimo?', nearMinimum);
   return nearMinimum;
 }
 
@@ -271,7 +279,7 @@ isNearMinimum(product: any): boolean {
                     "Proceso Completado",
                     { progressBar: true, timeOut: 2000 }
                   );
-                  this.getProducts();
+                  this.reasonAnulate = '';
                   this.modalAbierto = false;
                 },
                 (error) => {
@@ -290,7 +298,7 @@ isNearMinimum(product: any): boolean {
         (reason) => {
           // Manejar la cancelación del modal aquí
           this.reasonAnulate = '';
-          this.getProducts();
+          this.getProductsCancel();
           this.modalAbierto = false;
         }
       );

@@ -247,12 +247,15 @@
                       formControlName="id_category"
                       (change)="handleCategorySelection($event, i)"
                     >
+                   
+                    <ng-container *ngFor="let category of listCategories">
                       <option
-                        *ngFor="let category of listCategories"
+                        *ngIf="category.state_category === true"
                         [value]="category.id_category"
                       >
                         {{ category.name_category }}
                       </option>
+                    </ng-container>
                     </select>
                     <div
                       *ngIf="
@@ -312,16 +315,6 @@
                     </div>
                   </div>
                 </div>
-                <!--                          
-                            <div class="col-md-3 align-self-end form-container">
-                              <div class="form-group">
-                                <label for="id_product"></label>
-                                <button  ngbTooltip="Registrar Producto"  class="btn btn-secondary" (click)="openCreateProductModal(createProductModal)"><i class="i-Add"></i></button>
-
-                              </div>
-                            </div>
-                          -->
-
                 <div class="row">
                   <div class="col-md-3">
                     <label for="cost_price"
@@ -476,14 +469,14 @@
               </div>
               <br />
 
-              <div class="col-md-12"></div>
-            </div>
-            <div
-              class="col-md-8 d-flex justify-content-start"
-              *ngIf="viewMode === 'print'"
-            ></div>
-            <div class="col-md-12 table-responsive">
-              <table class="table table-hover mb-6">
+            <div class="col-md-12"></div>
+          </div>
+          <div
+          class="col-md-8 d-flex justify-content-start"
+          *ngIf="viewMode === 'print'"
+        ></div>
+            <div class="col-md-12 table-responsive mt-6" >
+              <table class="table table-hover">
                 <thead class="bg-gray-300">
                   <tr>
                     <th scope="col">#</th>
@@ -555,51 +548,16 @@
                   {{ calculateTotal() | currency : "" : "symbol" : "1.0-0" }}
                 </div>
               </div>
-            </div>
-            <div class="col-md-12" style="margin-top: 20px">
-              <div
-                class="form-group text-right"
-                style="text-align: right"
-                *ngIf="viewMode === 'new'"
-              >
-                <button
-                  type="button"
-                  class="btn btn-danger ml-2"
-                  (click)="cancel()"
-                >
-                  Cancelar
-                </button>
-                <button
-                  class="btn btn-primary m-1 custom-button"
-                  [disabled]="loading"
-                  (click)="submitPurchase()"
-                >
-                  Registrar Compra
-                </button>
+              <div class="form-group text-right" style="text-align: right; margin-top: 0px;" *ngIf="viewMode === 'new'">
+                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Cancelar</button>
+                <button class="btn btn-primary m-1 custom-button" [disabled]="loading" (click)="submitPurchase()">Registrar Compra</button>
               </div>
-                 <div
-                class="form-group text-right"
-                style="text-align: right"
-                *ngIf="viewMode === 'new'"
-              >
-
+              <div class="form-group text-right" style="text-align: right; margin-top: 0px;" *ngIf="viewMode === 'print'">
+                <button type="button" class="btn btn-danger ml-2" (click)="cancel()">Volver</button>
               </div>
-
-              <div
-              class="form-group text-right"
-              style="text-align: right"
-              *ngIf="viewMode === 'print'"
-            >
-              <button
-                type="button"
-                class="btn btn-danger ml-2"
-                (click)="cancel()"
-              >
-                Volver
-              </button>
-           
-            </div>
-            </div>
+            </div>         
+         
+      
           </form>
           <ng-template #createProductModal let-modal>
             <div class="modal-header">

@@ -25,7 +25,7 @@ export class ComissionsService {
 
   getAllEmployees(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
-    console.log("Los headers", headers);
+    // console.log("Los headers", headers);
     return this.http.get<any[]>(this.url3, { headers });
   }
 
@@ -39,7 +39,7 @@ export class ComissionsService {
 
   getAllComsDetail(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
-    console.log("Los headers de detalle comisiones", headers);
+    // console.log("Los headers de detalle comisiones", headers);
     return this.http.get<any[]>(this.url2, { headers });
   }
 
@@ -48,7 +48,7 @@ export class ComissionsService {
   }
   getAllComs(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
-    console.log("Los headers", headers);
+    // console.log("Los headers", headers);
     return this.http.get<any[]>(this.baseUrl, { headers });
   }
 

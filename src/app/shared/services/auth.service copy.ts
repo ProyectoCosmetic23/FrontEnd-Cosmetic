@@ -76,15 +76,37 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.status === 401) {
+    if (error.status === 400) {
+      // Usuario inactivo
+      if (error.error && error.error.error === "El usuario está inactivo.") {
+        return throwError({
+          message: error.error.error,
+          errorType: "inactiveUser",
+        });
+      }
+    } else if (error.status === 404) {
+      // Usuario no registrado
+      return throwError({
+        message: "El usuario no está registrado.",
+        errorType: "notRegisteredUser",
+      });
+    } else if (error.status === 401) {
       // Credenciales incorrectas
-      return throwError('Credenciales incorrectas. Por favor, inténtelo de nuevo.');
+      return throwError({
+        message: "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
+        errorType: "incorrectCredentials",
+      });
     } else if (error.status === 0) {
       // No se puede conectar al servidor
-      return throwError('No se puede conectar al servidor. Por favor, inténtelo más tarde.');
+      return throwError({
+        message:
+          "No se puede conectar al servidor. Por favor, inténtelo más tarde.",
+        errorType: "serverUnreachable",
+      });
     } else {
-      // Otro tipo de error
-      let errorMessage = 'Error desconocido. Por favor, contacte al soporte técnico.';
+      // Otros tipos de error
+      let errorMessage =
+        "Error desconocido. Por favor, contacte al soporte técnico.";
       if (error.error && error.error.error) {
         errorMessage = error.error.error;
       }
@@ -97,7 +119,7 @@ export class AuthService {
       // Utilizar switchMap para esperar a que el estado de autenticación cambie a "authenticated"
       switchMap((status) => {
         if (status === AuthStatus.authenticated) {
-          // Si el estado es "authenticated", regenera un nuevo token aquí
+         
           // Después de regenerar el token, actualiza el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
 
@@ -129,6 +151,7 @@ export class AuthService {
             }
           );
         }
+
         // Establecer la autenticación y actualizar el estado de autenticación
         const isAuthenticationSet = this.setAuthentication(user, token);
         if (isAuthenticationSet) {
@@ -145,8 +168,23 @@ export class AuthService {
         }
       }),
       catchError((error: HttpErrorResponse) => {
-        // Manejar el error utilizando el método handleError
-        return this.handleError(error);
+        // Mostrar mensaje de error utilizando Toastr
+        if (error.status === 403) {
+          this.toastr.error(
+            "No puedes iniciar sesión, el rol está inactivo.",
+            "Error de autenticación",
+            {
+              progressBar: true,
+              timeOut: 3000,
+            }
+          );
+        } else {
+          this.toastr.error("Credenciales erróneas", "Error de autenticación", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
+        return of(false);
       })
     );
   }
@@ -214,6 +252,5 @@ export class AuthService {
     this._authStatus.next(AuthStatus.notAuthenticated);
     this.cookieService.deleteAll("token");
     sessionStorage.removeItem(this.userSessionStorageKey);
-    this.router.navigate(["/sessions/signin"]);
   }
 }

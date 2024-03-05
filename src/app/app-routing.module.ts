@@ -107,7 +107,7 @@ const routes: Routes = [
     path: "",
     redirectTo: "",
     pathMatch: "full",
-    canActivate: [AuthGuard], // Agregado para verificar la autenticación al cargar la página de inicio
+    canActivate: [AuthGuard], 
   },
   {
     path: "",

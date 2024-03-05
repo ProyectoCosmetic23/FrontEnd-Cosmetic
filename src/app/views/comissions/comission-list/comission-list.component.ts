@@ -49,6 +49,7 @@ export class ComissionListComponent implements OnInit {
 
     ];
     totalCommissions: number;
+    showLoadingScreen: boolean = false;
     paginationId: string = 'comissions-pagination';
     currentPage: number = 1;
     itemsPerPage: number = 6;
@@ -98,6 +99,7 @@ export class ComissionListComponent implements OnInit {
 
     }
     getComsission() {
+        this.showLoadingScreen = true;
         this._comissionsService.getAllComs().subscribe((res: any[]) => {
             // Cargar todas las comisiones en una variable nueva
             this.allCommissions = res;
@@ -108,7 +110,7 @@ export class ComissionListComponent implements OnInit {
                 });
 
                 this._comissionsService.getAllComsDetail().subscribe((details: any[]) => {
-                    console.log('Detalles de comisiones recibidos:', details);
+                    // console.log('Detalles de comisiones recibidos:', details);
                     this.details = details;
 
                     this.listComissions = this.allCommissions
@@ -123,13 +125,14 @@ export class ComissionListComponent implements OnInit {
                     });
 
                     this.originalListComissions = this.listComissions;
-                    console.log('this.selectedMonth:', this.selectedMonth);
-                    console.log('this.details:', this.details);
+                    // console.log('this.selectedMonth:', this.selectedMonth);
+                    // console.log('this.details:', this.details);
                     this.filterByMonth();
                     this.calculateTotalCommission();
-                    console.log(this.originalListComissions);
+                    // console.log(this.originalListComissions);
                 });
             });
+           
         });
     }
 
@@ -140,12 +143,13 @@ export class ComissionListComponent implements OnInit {
         this.countLabel = this.filteredComissions.length;
     }
     filterComissionsByMonth() {
-        console.log("actualizar por mes")
+        
+        // console.log("actualizar por mes")
         const currentYear = new Date().getFullYear();
         const selectedDate = `${currentYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
         const selectedDetail = this.details.find(detail => detail.month_commission === selectedDate);
-        console.log('selectedDate:', selectedDate);
-        console.log('selectedDetail:', selectedDetail);
+        // console.log('selectedDate:', selectedDate);
+        // console.log('selectedDetail:', selectedDetail);
 
         if (selectedDetail) {
             this.listComissions = this.originalListComissions.filter(comission => comission.id_commission_detail === selectedDetail.id_commission_detail);
@@ -161,22 +165,23 @@ export class ComissionListComponent implements OnInit {
             commission = Number(commission.total_commission)
             this.totalCommissions += commission
         }
+        this.showLoadingScreen = false;
     }
 
     handlePerccentageSelection(event: any) {
         this.new_comissionDetail.commission_percentage = event.target.value;
         this.verifiedPercentage = event.target.value;
-        console.log(this.verifiedPercentage, " Porcentaje elegido ")
-        console.log(this.new_comissionDetail.commission_percentage)
-        console.log(this.new_comissionDetail.month_commission)
+        // console.log(this.verifiedPercentage, " Porcentaje elegido ")
+        // console.log(this.new_comissionDetail.commission_percentage)
+        // console.log(this.new_comissionDetail.month_commission)
     }
     handleMonth(event: any) {
         const selectedMonth = event.target.value;
         const currentYear = new Date().getFullYear();
         this.new_comissionDetail.month_commission = `${currentYear}-${selectedMonth.toString().padStart(2, '0')}-01`;
         this.verifiedMonth = event.target.value;
-        console.log(this.verifiedMonth, " Mes elegido")
-        console.log(this.new_comissionDetail.month_commission)
+        // console.log(this.verifiedMonth, " Mes elegido")
+        // console.log(this.new_comissionDetail.month_commission)
     }
     createComissionDetail() {
         this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe(
@@ -195,7 +200,6 @@ export class ComissionListComponent implements OnInit {
             (error) => {
                 this.loading = false;
                 this.toastr.error('Ya existe un registro para este mes', 'Error', { progressBar: true });
-                console.error('Ya existe un registro para este mes', error);
                 this.resetComissionDetail();
             }
         );
@@ -213,7 +217,7 @@ export class ComissionListComponent implements OnInit {
     }
 
     filterByMonth() {
-        console.log("actualizar por mes")
+        // console.log("actualizar por mes")
         this.filterComissionsByMonth();
     }
 
@@ -240,7 +244,7 @@ export class ComissionListComponent implements OnInit {
         if (!this.openedModal) {
             this.verifiedMonth = 0; // Reiniciar verifiedMonth a 0
             this.verifiedPercentage = 0; // Reiniciar verifiedPercentage a 0
-            console.log(this.verifiedMonth, this.verifiedPercentage)
+            // console.log(this.verifiedMonth, this.verifiedPercentage)
             this.openedModal = true;
             this.buildProvidersForm(); // Puedes inicializar el formulario aquí si es necesario
             this.modalRef = this.modalService.open(this.createModal, { centered: true, backdrop: 'static' });
@@ -252,7 +256,7 @@ export class ComissionListComponent implements OnInit {
                         this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe((data) => {
                             this.loading = false;
                             this.toastr.success('Porcentaje asignado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 2000 });
-                            console.log(data);
+                            // console.log(data);
                             this.resetComissionDetail();
                             setTimeout(() => {
 
@@ -264,9 +268,7 @@ export class ComissionListComponent implements OnInit {
                             } else {
                                 this.toastr.error('Error al asignar el porcentaje.', 'Error', { progressBar: true });
                             }
-                            console.error('Error al asignar el porcentaje:', error);
                             this.resetComissionDetail();
-                            console.log(error)
                         });
                     } else {
                         this.resetComissionDetail();

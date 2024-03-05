@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" *ngIf="showLoadingScreen == false"> 
           <ngx-datatable
             class="material fullscreen"
             style="height: 480px"
