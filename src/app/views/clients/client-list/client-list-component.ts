@@ -120,6 +120,7 @@ export class ClientListComponent implements OnInit {
           c.last_name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
           c.state_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
           this.changeClientStateDescription(c.state_client).toLowerCase().indexOf(value.toLowerCase()) !== -1)
+          
     } else {
       this.filteredClients = this.listClients;
     }

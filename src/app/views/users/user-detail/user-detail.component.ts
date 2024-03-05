@@ -100,6 +100,11 @@ export class UserDetailComponent implements OnInit {
       );
     }
   }
+  clearEmployeeValidation() {
+    this.employeeNotFoundMessage = ''; 
+   
+  }
+  
 
 
 
@@ -397,10 +402,17 @@ export class UserDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Usuario registrado con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
+        if (this.viewMode === "new") {
+          this.toastr.success("Usuario registrado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else if (this.viewMode === "edit") {
+          this.toastr.success("Usuario modificado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         setTimeout(() => {
           this.router.navigateByUrl("/users");
         });

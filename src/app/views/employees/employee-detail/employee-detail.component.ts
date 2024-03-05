@@ -326,12 +326,12 @@ export class EmployeeDetailComponent implements OnInit {
       setTimeout(() => {
         this.loading = false;
         if (this.viewMode === "new") {
-          this.toastr.success("Empleado Registrado con éxito.", "Éxito", {
+          this.toastr.success("Empleado registrado con éxito.", "Éxito", {
             progressBar: true,
             timeOut: 3000,
           });
         } else if (this.viewMode === "edit") {
-          this.toastr.success("Empleado Modificado con éxito.", "Éxito", {
+          this.toastr.success("Empleado modificado con éxito.", "Éxito", {
             progressBar: true,
             timeOut: 3000,
           });

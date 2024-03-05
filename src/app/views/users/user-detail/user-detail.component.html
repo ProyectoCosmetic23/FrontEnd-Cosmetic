@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-md-3 form-group mb-3" *ngIf="viewMode == 'new'">
                   <label for="id_card_employee"
-                    >Cédula empleado <span class="text-danger">*</span></label
+                    >Cédula Empleado <span class="text-danger">*</span></label
                   >
                   <input
                     type="text"
@@ -61,6 +61,7 @@
                     id="id_card_employee"
                     formControlName="id_card_employee"
                     (change)="searchEmployeeByEmail()"
+                    (input)="clearEmployeeValidation()"
                     required
                     minlength="6"
                     maxlength="10"
@@ -166,7 +167,7 @@
 
                 <div class="col-md-3 form-group mb-3" *ngIf="viewMode == 'new'">
                   <label for="name_employee"
-                    >Nombre empleado<span class="text-danger"></span
+                    >Nombre Empleado<span class="text-danger"></span
                   ></label>
                   <input
                     type="text"
@@ -180,7 +181,7 @@
 
                 <div class="col-md-6 form-group mb-3">
                   <label for="username"
-                    >Nombre usuario<span class="text-danger">*</span></label
+                    >Nombre Usuario<span class="text-danger">*</span></label
                   >
                   <input
                     type="text"
