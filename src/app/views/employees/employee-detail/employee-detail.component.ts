@@ -82,7 +82,7 @@ export class EmployeeDetailComponent implements OnInit {
         "",
         [
           Validators.required,
-          Validators.maxLength(12), Validators.minLength(10),
+          Validators.maxLength(10), Validators.minLength(10),
           Validators.pattern("^[0-9]+$"),
         ],
       ],

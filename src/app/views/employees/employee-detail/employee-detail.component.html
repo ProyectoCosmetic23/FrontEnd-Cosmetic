@@ -49,13 +49,13 @@
                                 El campo teléfono es obligatorio.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('minlength')" class="error-message">
-                                El campo teléfono tiene que tener mínimo los 10 numeros.
+                                El campo teléfono tiene que tener mínimo los 10 números.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('maxlength')" class="error-message">
-                                El campo teléfono no puede superar los 12 numeros.
+                                El campo teléfono no puede superar los 10 números.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('pattern')" class="error-message">
-                                El campo teléfono solo acepta numeros.
+                                El campo teléfono solo acepta números.
                             </div>
                         </div>
                   
