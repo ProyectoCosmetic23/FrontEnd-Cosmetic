@@ -133,12 +133,12 @@ export class RolesDetailComponent implements OnInit {
       return;
     }
 
-    // Validar que no haya espacios
-    if (/\s/.test(inputValue)) {
-      this.showErrorMessageName = true;
-      this.nameErrorMessage = "El nombre del rol no puede contener espacios.";
-      return;
-    }
+    // // Validar que no haya espacios
+    // if (/\s/.test(inputValue)) {
+    //   this.showErrorMessageName = true;
+    //   this.nameErrorMessage = "El nombre del rol no puede contener espacios.";
+    //   return;
+    // }
 
     // Validar que no haya números
     if (/\d/.test(inputValue)) {
@@ -147,8 +147,7 @@ export class RolesDetailComponent implements OnInit {
       return;
     }
 
-    // Validar que no haya símbolos
-    if (/[^a-zA-Z]/.test(inputValue)) {
+    if (/[^a-zA-Z\s]/.test(inputValue)) {
       this.showErrorMessageName = true;
       this.nameErrorMessage = "El nombre del rol no puede contener símbolos.";
       return;
@@ -163,7 +162,7 @@ export class RolesDetailComponent implements OnInit {
           this.nameErrorMessage = "Este nombre de rol ya está en uso.";
         } else {
           // Si todas las validaciones pasan, actualizar el valor en tu objeto
-          this.new_role.name_role = inputValue;
+          this.new_role.name_role = inputValue.trim();
         }
       },
       (error) => {
@@ -209,10 +208,14 @@ export class RolesDetailComponent implements OnInit {
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
-            this.toastr.success("Rol registrado exitosamente.", "Proceso Completado", {
-              progressBar: true,
-              timeOut: 3000,
-            });
+            this.toastr.success(
+              "Rol registrado exitosamente.",
+              "Proceso Completado",
+              {
+                progressBar: true,
+                timeOut: 3000,
+              }
+            );
             setTimeout(() => {
               this.router.navigate(["/roles"]);
             }, 3000);
