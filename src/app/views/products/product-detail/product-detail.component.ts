@@ -298,7 +298,7 @@ export class ProductDetailComponent implements OnInit {
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
-    const combinedPattern = /^[A-Za-záéíóúñÑ´\d]+\s?(?:\s[A-Za-záéíóúñÑ´\d]+)*$/;
+    const combinedPattern = /^(?!.*\s{2})[A-Za-záéíóúñÑ´](?:[A-Za-záéíóúñÑ´\d]*[A-Za-záéíóúñÑ´\d])?(\s[A-Za-záéíóúñÑ´\d]+)*$/;
   
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -309,7 +309,8 @@ export class ProductDetailComponent implements OnInit {
         }
       }, 0);
     });
-  }
+}
+
   
   
   

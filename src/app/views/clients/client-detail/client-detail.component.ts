@@ -322,15 +322,23 @@ export class ClientDetailComponent implements OnInit {
     this.router.navigateByUrl("/clients");
   }
 
+
   submit() {
     if (!this.loading) {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Cliente registrado con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
+        if (this.viewMode === "new") {
+          this.toastr.success("Cliente registrado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else if (this.viewMode === "edit") {
+          this.toastr.success("Cliente modificado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         setTimeout(() => {
           this.router.navigateByUrl("/clients");
         });

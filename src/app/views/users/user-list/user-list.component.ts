@@ -29,7 +29,7 @@ export class UserListComponent implements OnInit {
   isSecondModalOpen: boolean = false;
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
   @ViewChild("changeModal", { static: true }) changeModal: any;
-  
+
   constructor(
     private _userService: UsersService,
     private modalService: NgbModal,
@@ -37,7 +37,7 @@ export class UserListComponent implements OnInit {
     private _employeeService: EmployeesService,
     private toastr: ToastrService,
     private _authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this._authService.validateUserPermissions("Usuarios");
@@ -72,40 +72,40 @@ export class UserListComponent implements OnInit {
     );
   }
 
-  
+
 
   getUsersCancel() {
     this.showLoadingScreen = false; // Asegúrate de que la pantalla de carga esté oculta al comenzar la operación
-  
+
     forkJoin({
       roles: this._rolesService.getAllRoles(),
       employees: this._employeeService.getAllEmployees(),
-      users: this._userService.getAllUsers()  
+      users: this._userService.getAllUsers()
     }).subscribe(
       ({ roles, employees, users }) => {
         this.rolesList = roles;
         this.employeesList = employees;
-  
+
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
           const employee = this.employeesList.find((emp) => emp.id_employee === user.id_employee);
-  
+
           user.name_role = role ? role.name_role : "";
           user.id_card_employee = employee ? employee.id_card_employee : "";
-  
+
           this.listUsers.push(user);
         }
-  
+
         this.filteredUsers = [...this.listUsers];
         this.sortListUsers();
       },
       (error) => {
         console.error("Error al obtener roles y empleados:", error);
       }
-      
+
     );
   }
-  
+
 
   getUsers() {
     this.showLoadingScreen = true;
@@ -118,6 +118,10 @@ export class UserListComponent implements OnInit {
       ({ roles, employees, users }) => {
         this.rolesList = roles;
         this.employeesList = employees;
+        // Obtén el usuario actual
+        const currentUser = this._authService.getCurrentUser();
+        // Filtra el usuario actual de la lista
+        users = users.filter(user => user.id_user !== currentUser?.id_user);
 
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
@@ -162,7 +166,8 @@ export class UserListComponent implements OnInit {
           c.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
           c.email.includes(value) ||
           c.id_card_employee.toLowerCase().includes(value) ||
-          c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 
+          c.name_role.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          c.state_user.toLowerCase().indexOf(value.toLowerCase()) !== -1
       );
     } else {
       this.filteredUsers = this.listUsers;
@@ -172,11 +177,11 @@ export class UserListComponent implements OnInit {
   openFirstModal(idUser: number) {
     if (!this.isFirstModalOpen) {
       this.isFirstModalOpen = true;
-  
+
       const modalRef = this.modalService.open(this.deleteConfirmModal, {
         centered: true,
       });
-  
+
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
@@ -198,8 +203,8 @@ export class UserListComponent implements OnInit {
       );
     }
   }
-  
-  
+
+
   openSecondModal(idUser: number, changeEmployee: boolean) {
     if (!this.isSecondModalOpen) {
       this.isSecondModalOpen = true;
@@ -225,7 +230,7 @@ export class UserListComponent implements OnInit {
       });
     }
   }
-  
+
 
   confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
     if (changeUser) {
