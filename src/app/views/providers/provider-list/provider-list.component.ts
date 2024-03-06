@@ -97,23 +97,29 @@ export class ProviderListComponent implements OnInit {
 
   searchProvider(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    const normalizedSearchTerm = this.normalizeString(searchTerm);
   
-    if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
+    if (normalizedSearchTerm !== "") {
       this.filteredProviders = this.listProviders.filter(
         (provider) =>
-          provider.name_provider.toLowerCase().includes(searchTerm) ||
-          provider.phone_provider.toLowerCase().includes(searchTerm) ||
-          provider.name_contact.toLowerCase().includes(searchTerm) ||
-          this.changeProviderStateDescription(provider.state_provider)
-            .toLowerCase()
-            .includes(searchTerm)
+          this.normalizeString(provider.name_provider).includes(normalizedSearchTerm) ||
+          this.normalizeString(provider.phone_provider).includes(normalizedSearchTerm) ||
+          this.normalizeString(provider.name_contact).includes(normalizedSearchTerm) ||
+          this.normalizeString(this.changeProviderStateDescription(provider.state_provider))
+            .includes(normalizedSearchTerm)
       );
     } else {
       this.filteredProviders = this.listProviders;
     }
-  
     this.actualizarCountLabel();
   }
+  
+  //El NFD separa las letras de las tildes 
+  normalizeString(str: string): string {
+    //Las [\u0300-\u036f] busca y reemplaza los caracteres con tilde, dieresis, etc y las g significa que buscando en toda la cadena y reconstruye la palabra eliminando los caracteres sueltos de las tildes 
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+  
 
   changeProviderStateDescription(state_provider: boolean) {
     return state_provider ? "Activo" : "Inactivo";
