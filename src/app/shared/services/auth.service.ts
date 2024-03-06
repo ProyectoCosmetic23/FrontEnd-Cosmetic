@@ -216,4 +216,11 @@ export class AuthService {
     sessionStorage.removeItem(this.userSessionStorageKey);
     this.router.navigate(["/sessions/signin"]);
   }
+
+
+  //Metodo para ocultar el usuario logueado en la lista de usuarios
+  getCurrentUser(): User | null {
+    const storedUser = sessionStorage.getItem(this.userSessionStorageKey);
+    return storedUser ? JSON.parse(storedUser) : null;
+  }
 }

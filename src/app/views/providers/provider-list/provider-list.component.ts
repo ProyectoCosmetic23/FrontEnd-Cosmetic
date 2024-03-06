@@ -45,14 +45,14 @@ export class ProviderListComponent implements OnInit {
   Providers() {
     this._providersService.getAllProviders().subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.listProviders = data;
         this.filteredProviders = this.listProviders;
         this.sortListProvidersById();
         this.showLoadingScreen = false;
       },
       (error) => {
-        console.error("Error al obtener Categorías:", error);
+        // console.error("Error al obtener Categorías:", error);
         this.showLoadingScreen = false;
       }
     );
@@ -62,15 +62,15 @@ export class ProviderListComponent implements OnInit {
     const token = this.cookieService.get("token");
     this._providersService.getAllProviders().subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.listProviders = data;
-        console.log(this.listProviders)
+        // console.log(this.listProviders)
         this.filteredProviders = this.listProviders;
         this.sortListProvidersById();
         this.showLoadingScreen = false;
       },
       (error) => {
-        console.error("Error al obtener Categorías:", error);
+        // console.error("Error al obtener Categorías:", error);
         this.showLoadingScreen = false;
       }
     );
@@ -122,7 +122,7 @@ export class ProviderListComponent implements OnInit {
   @ViewChild("changeStateModal", { static: true }) changeStateModal: any;
 
   openModal(idProvider: number) {
-    console.log(idProvider);
+    // console.log(idProvider);
     this._providersService.getProviderById(idProvider).subscribe();
   
     if (!this.openedModal) {
@@ -131,13 +131,13 @@ export class ProviderListComponent implements OnInit {
         .result.then(
           (result) => {
             if (result === "Yes") {
-              console.log("razon", this.reasonAnulate);
+              // console.log("razon", this.reasonAnulate);
               this._providersService.updateProviderStatus(idProvider, this.reasonAnulate).subscribe(
                 (data) => {
                   this.openedModal = false;
                   this.loading = false;
                   this.toastr.success("Cambio de estado realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
-                  console.log(data);
+                  // console.log(data);
                   this.openedModal = false;
                   this.reasonAnulate = "";
                   this.Providers();
@@ -145,7 +145,7 @@ export class ProviderListComponent implements OnInit {
                 (error) => {
                   this.loading = false;
                   this.toastr.error("Fallo al realizar el cambio de estado.", "Error", { progressBar: true, timeOut: 2000 });
-                  console.error("Error al cambiar de estado:", error);
+                  // console.error("Error al cambiar de estado:", error);
                   this.openedModal = false;
                   this.reasonAnulate = "";
                 }
