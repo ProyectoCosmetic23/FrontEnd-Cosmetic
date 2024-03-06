@@ -93,8 +93,9 @@
                         <div *ngIf="employeeForm.get('email').hasError('maxlength')"class="error-message">
                             El campo correo no puede superar los 30 caracteres.
                         </div>
+                        
                         <div *ngIf="employeeForm.get('email').hasError('emailTaken')"class="error-message">El correo electrónico ya está en uso.</div>
-
+                        
                     </div>
 
                     

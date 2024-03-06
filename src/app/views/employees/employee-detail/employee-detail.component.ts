@@ -157,26 +157,26 @@ export class EmployeeDetailComponent implements OnInit {
     }
   }
 
-  validateNameSimbolAndNumber(control: FormControl) {
-    const nameValue = control.value;
-    const combinedPattern = /^(?!.*\s{2})[\wáéíóúñÑ´\s]+$/;
+ validateNameSimbolAndNumber(control: FormControl) {
+  const nameValue = control.value;
+  const combinedPattern = /^(?!.*\s{2})[a-zA-ZáéíóúÁÉÍÓÚñÑ][a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*[a-zA-ZáéíóúÁÉÍÓÚñÑ]$/;
 
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (combinedPattern.test(nameValue)) {
-          const numberCount = (nameValue.match(/\d/g) || []).length;
-          if (numberCount <= 1) {
-            resolve(null); // Válido
-          } else {
-            resolve({ invalidName: true }); // No válido
-          }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (combinedPattern.test(nameValue)) {
+        const numberCount = (nameValue.match(/\d/g) || []).length;
+        if (numberCount <= 1) {
+          resolve(null); // Válido
         } else {
           resolve({ invalidName: true }); // No válido
         }
-      }, 0);
-    });
-  }
+      } else {
+        resolve({ invalidName: true }); // No válido
+      }
+    }, 0);
+  });
+}
+
 
   
   public checkEmailAvailability(): void {

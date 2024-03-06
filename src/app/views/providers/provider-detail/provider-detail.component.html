@@ -80,6 +80,8 @@
                                     <div *ngIf="formBasic.get('name_provider').hasError('pattern')">El nombre solo puede
                                         tener caracteres alfabéticos, números, espacios y los símbolos: ., ', -, & y !
                                     </div>
+                                    <div *ngIf="formBasic.get('name_provider').hasError('leadingOrTrailingSpaces')">El nombre del proveedor no puede contener espacios al principio o al final.</div>
+
                                 </div>
                                 <div *ngIf="viewMode === 'edit' && formBasic.get('name_provider').invalid && (formBasic.get('name_provider').dirty || formBasic.get('name_provider').touched)"
                                     class="text-danger">
@@ -92,6 +94,7 @@
                                     <div *ngIf="formBasic.get('name_provider').hasError('pattern')">El nombre solo puede
                                         tener caracteres alfabéticos, números, espacios y los símbolos: ., ', -, & y !
                                     </div>
+                                    <div *ngIf="formBasic.get('name_provider').hasError('leadingOrTrailingSpaces')">El nombre del proveedor no puede contener espacios al principio o al final.</div>
                                 </div>
                             </div>
 
@@ -150,6 +153,7 @@
                                     class="text-danger">
                                     El campo dirección debe tener mas de 4 caracteres.
                                 </div>
+                                <div *ngIf="formBasic.get('address_provider').hasError('leadingOrTrailingSpaces')" class="text-danger">La dirección del proveedor no puede contener espacios al principio o al final.</div>
 
                                 <div *ngIf="viewMode === 'edit' && formBasic.get('address_provider').touched && formBasic.get('address_provider').hasError('required')"
                                     class="text-danger">
@@ -161,6 +165,7 @@
                                         class="text-danger">
                                         El campo dirección debe tener mas de 4 caracteres.
                                     </div>
+                                    <div *ngIf="formBasic.get('address_provider').hasError('leadingOrTrailingSpaces')" class="text-danger">La dirección del proveedor no puede contener espacios al principio o al final.</div>
                                 </div>
                             </div>
 
@@ -242,6 +247,7 @@
                                         class="text-danger">
                                         El nombre del contacto no puede superar los 50 caracteres.
                                     </div>
+                                    <div *ngIf="formBasic.get('name_contact').hasError('leadingOrTrailingSpaces')" class="text-danger">El nombre de contacto no puede contener espacios al principio o al final.</div>
                                 </div>
                                 <div *ngIf="viewMode === 'edit' && formBasic.get('name_contact').touched">
                                     <div *ngIf="formBasic.get('name_contact').hasError('pattern')" class="text-danger">
@@ -255,6 +261,7 @@
                                         class="text-danger">
                                         El nombre del contacto no puede superar los 50 caracteres.
                                     </div>
+                                    <div *ngIf="formBasic.get('name_contact').hasError('leadingOrTrailingSpaces')" class="text-danger">El nombre de contacto no puede contener espacios al principio o al final.</div>
                                 </div>
                             </div>
 
@@ -297,6 +304,7 @@
                                             class="text-danger">
                                             {{ observationError }}
                                         </div>
+                                        <div *ngIf="formBasic.get('observation_provider').hasError('leadingOrTrailingSpaces')" class="text-danger">La observación del proveedor no puede contener espacios al principio o al final.</div>
                                     </div>
                                 </div>
                             </div>
