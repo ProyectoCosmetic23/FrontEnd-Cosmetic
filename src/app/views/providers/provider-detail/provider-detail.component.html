@@ -21,7 +21,7 @@
                     <form [formGroup]="formBasic" (ngSubmit)="submit()">
                         <div class="row">
                             <div class="col-md-6 form-group mb-3">
-                                <label for="nit_cedula">Cédula o NIT del proveedor<span *ngIf="viewMode === 'new'"
+                                <label for="nit_cedula">Cédula o NIT <span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="nit_cedula" formControlName="nit_cedula"
                                     (change)="handleNitSelection($event)" [value]="provider?.nit_cedula"
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group mb-3">
-                                <label for="name_provider">Nombre del proveedor<span *ngIf="viewMode === 'new'"
+                                <label for="name_provider">Nombre <span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name_provider"
                                     formControlName="name_provider" (change)="handleNameProviderSelection($event)"
@@ -99,7 +99,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-3">
-                                <label for="email_provider">Correo del proveedor<span *ngIf="viewMode === 'new'"
+                                <label for="email_provider">Correo <span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email_provider"
                                     (change)="handleMailSelection($event)" formControlName="email_provider"
@@ -133,7 +133,7 @@
 
 
                             <div class="col-md-6 form-group mb-3">
-                                <label for="address_provider">Dirección del proveedor<span *ngIf="viewMode === 'new'"
+                                <label for="address_provider">Dirección<span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
                                 <input class="form-control" id="address_provider"
                                     (change)="handleAddressSelection($event)" formControlName="address_provider"
@@ -170,7 +170,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-3">
-                                <label for="phone_provider">Teléfono del proveedor<span *ngIf="viewMode === 'new'"
+                                <label for="phone_provider">Teléfono<span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
                                 <input class="form-control" id="phone_provider" (change)="handlePhoneSelection($event)"
                                     formControlName="phone_provider" [placeholder]="provider?.phone_provider"
@@ -215,7 +215,7 @@
 
 
                             <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new' && viewMode !== 'edit'">
-                                <label for="creation_date_provider">Fecha de creación</label>
+                                <label for="creation_date_provider">Fecha de Creación</label>
                                 <input type="date" class="form-control" id="creation_date_provider"
                                     [placeholder]="viewMode === 'print' ? 'Fecha de creación' : ''"
                                     [readonly]="viewMode === 'print' || viewMode === 'edit'"
@@ -224,7 +224,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-3">
-                                <label for="name_contact">Nombre del contacto<span *ngIf="viewMode === 'new'"
+                                <label for="name_contact">Nombre<span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name_contact"
                                     (change)="handleNameContactSelection($event)" formControlName="name_contact"
@@ -266,7 +266,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-3" *ngIf="viewMode !== 'new' && viewMode !== 'edit'">
-                                <label for="state_provider">Estado del proveedor</label>
+                                <label for="state_provider">Estado</label>
                                 <ng-container *ngIf="viewMode === 'edit'; else viewModeDisplay">
                                     <select class="form-control" id="state_provider"
                                         (change)="handleStateSelection($event)">
@@ -282,7 +282,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
-                                <label for="reason_anulate">Razón de cambio de estado</label>
+                                <label for="reason_anulate">Razón de Cambio de Estado</label>
                                 <textarea class="form-control" id="reason_anulate"
                                     [placeholder]="provider?.reason_anulate" [readonly]="viewMode === 'print'"
                                     [ngClass]="{'placeholder-black': viewMode === 'print'}" style="resize: none;"
@@ -291,7 +291,7 @@
 
                             <div *ngIf="viewMode !== 'print'">
                                 <div class="col-md-12 form-group mb-3">
-                                    <label for="observation_provider">Observación del proveedor</label>
+                                    <label for="observation_provider">Observación</label>
                                     <textarea class="form-control" id="observation_provider"
                                         (change)="handleObservationSelection($event)"
                                         [placeholder]="provider?.observation_provider" [readonly]="viewMode === 'print'"
@@ -309,7 +309,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group mb-3" *ngIf="viewMode === 'print'">
-                                <label for="observation_provider">Observación del proveedor</label>
+                                <label for="observation_provider">Observación</label>
                                 <textarea class="form-control" id="observation_provider"
                                     (change)="handleObservationSelection($event)"
                                     [placeholder]="provider?.observation_provider" [readonly]="viewMode === 'print'"

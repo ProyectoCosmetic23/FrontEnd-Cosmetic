@@ -23,14 +23,14 @@
         <div class="card-body">
           <div class="card-title mb-3"></div>
           <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
-            <label for="name_category">Nombre de Categoría<span class="text-danger" *ngIf="viewMode == 'new' || viewMode == 'edit'">*</span></label>
+            <label for="name_category">Nombre<span class="text-danger" *ngIf="viewMode == 'new' || viewMode == 'edit'">*</span></label>
               <div class="col-md-12 form-group mb-3">
                 <input type="text" class="form-control" id="name_category"  formControlName="name_category" required>
                 <div *ngIf="categoryForm.get('name_category').touched && categoryForm.get('name_category').hasError('required')"class="error-message">
                   El campo nombre es obligatorio.
               </div>
               <div *ngIf="categoryForm.get('name_category').hasError('pattern')"class="error-message">
-                  El campo nombre no puede tener tener numeros ni simbolos.
+                  El campo nombre no puede tener tener números, símbolos ni  espacios al inicio o al final.
               </div>
               <div *ngIf="categoryForm.get('name_category').hasError('minlength')"class="error-message">
                 El campo nombre debe tener mínimo 3 caracteres.

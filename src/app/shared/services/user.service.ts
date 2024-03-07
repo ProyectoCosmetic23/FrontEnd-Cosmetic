@@ -50,8 +50,12 @@ export class UsersService {
     return this.http.get<any>(`${this.url}/${id}`);
   }
 
-  userChangeStatus(id: any): Observable<any> {
-    return this.http.put<boolean>(`${this.url}/state/${id}`, {});
+  userChangeStatus(id: any, reason?: string): Observable<any> {
+     // Agregamos la razón al cuerpo de la solicitud
+     
+     const body = reason ? { reason_anulate: reason } : {};
+    return this.http.put<boolean>(`${this.url}/state/${id}`,body, {});
+    
   }
 
   getAllRoles(): Observable<any> {

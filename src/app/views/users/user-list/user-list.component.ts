@@ -23,7 +23,7 @@ export class UserListComponent implements OnInit {
   rolesList: any;
   employeesList: any[];
   showLoadingScreen: boolean = false;
-
+  reasonAnulate: string = "";
   // Variables para controlar si los modales están abiertos
   isFirstModalOpen: boolean = false;
   isSecondModalOpen: boolean = false;
@@ -178,9 +178,8 @@ export class UserListComponent implements OnInit {
     if (!this.isFirstModalOpen) {
       this.isFirstModalOpen = true;
 
-      const modalRef = this.modalService.open(this.deleteConfirmModal, {
-        centered: true,
-      });
+      const modalRef = this.modalService.open(this.deleteConfirmModal, {centered: true,backdrop: 'static', keyboard: false}
+      );
 
       modalRef.result.then(
         (result) => {
@@ -188,10 +187,11 @@ export class UserListComponent implements OnInit {
             this.confirmUserStatusChange(idUser, true, false);
             this.openSecondModal(idUser, false);
           } else if (result === "Cancel") {
+            this.reasonAnulate = '';
             this.isFirstModalOpen = false;
             // Limpiar la lista de usuarios y obtener los usuarios nuevamente
             this.listUsers = [];
-            this.getUsers();
+            this.getUsersCancel();
           }
         },
         () => {
@@ -205,6 +205,7 @@ export class UserListComponent implements OnInit {
   }
 
 
+
   openSecondModal(idUser: number, changeEmployee: boolean) {
     if (!this.isSecondModalOpen) {
       this.isSecondModalOpen = true;
@@ -216,7 +217,9 @@ export class UserListComponent implements OnInit {
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
-            this.changeEmployeeStatus(idUser);
+            const idEmployee = this.listUsers.find(user => user.id_user === idUser).id_employee;
+            console.log("ID del empleado:", idEmployee); // Añadir esta línea para verificar el id_employee
+            this.changeEmployeeStatus(idEmployee);
           } else if (result === "No") {
             this.confirmUserStatusChange(idUser, true, changeEmployee);
           }
@@ -225,27 +228,32 @@ export class UserListComponent implements OnInit {
           this.isSecondModalOpen = false;
         }
       ).finally(() => {
-        // Restablecer el estado aquí en caso de cualquier resultado (confirmación o cancelación)
         this.isSecondModalOpen = false;
       });
     }
   }
-
+  
 
   confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
+    const reasonAnulate = String(this.reasonAnulate);
+
     if (changeUser) {
-      this._userService.userChangeStatus(idUser).subscribe(
+      this._userService.userChangeStatus(idUser, reasonAnulate).subscribe(
         (userData) => {
           if (userData.msg.includes("éxito")) {
             if (changeEmployee) {
-              this.changeEmployeeStatus(idUser);
+              const idEmployee = this.listUsers.find(user => user.id_user === idUser).id_employee;
+
+              this.changeEmployeeStatus(idEmployee);
             } else {
               this.toastr.success("Cambio de estado del usuario realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
               // Reinicia la bandera isFirstModalOpen después de completar el cambio de estado
+              this.reasonAnulate = '';
               this.isFirstModalOpen = false;
             }
           } else {
             this.toastr.error("Fallo al cambiar el estado del usuario.", "Error", { progressBar: true, timeOut: 2000 });
+            console.log(typeof this.reasonAnulate);
           }
         },
         (error) => {
@@ -254,9 +262,7 @@ export class UserListComponent implements OnInit {
         }
       );
     }
-  }
-
-  changeEmployeeStatus(idUser: number) {
+  }  changeEmployeeStatus(idUser: number) {
     this._employeeService.employeeChangeStatus(idUser).subscribe(
       (employeeData) => {
         this.toastr.success(
