@@ -126,7 +126,7 @@ export class ProviderListComponent implements OnInit {
   }
 
   @ViewChild("changeStateModal", { static: true }) changeStateModal: any;
-
+x
   openModal(idProvider: number) {
     // console.log(idProvider);
     this._providersService.getProviderById(idProvider).subscribe();
