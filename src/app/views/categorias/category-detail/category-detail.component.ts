@@ -47,7 +47,6 @@ export class CategoryDetailComponent implements OnInit {
   ngOnInit() {
     this._authService.validateUserPermissions("Categorías de Productos");
     this.id = this.route.snapshot.params["id_category"];
-    console.log(this.id);
     this.isNew = !this.id;
     this.setViewMode();
     this.initializeForm(Number(this.id));

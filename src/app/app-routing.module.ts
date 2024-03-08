@@ -14,7 +14,6 @@ const adminRoutes: Routes = [
         (m) => m.DashboardModule
       ),
   },
-
   {
     path: "proveedores",
     canActivate: [AuthGuard],
