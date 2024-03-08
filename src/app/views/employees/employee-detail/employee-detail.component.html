@@ -112,6 +112,9 @@
                         <div *ngIf="employeeForm.get('address').hasError('minlength')"class="error-message">
                             El campo dirección tiene que tener minimo 10 caracteres.
                         </div>
+                        <div *ngIf="employeeForm.get('address').hasError('pattern')"class="error-message">
+                            El campo dirección no debe contener espacio al inicio o al final.
+                        </div>
                     </div>
                     
                     

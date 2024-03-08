@@ -130,7 +130,7 @@
 
                     <select class="form-control" id="commission_percentage"
                         (change)="handlePerccentageSelection($event)">
-                        <option value="0">Elija el porcentaje</option>
+                        <option value="1.5">Elija el porcentaje</option>
                         <option value="1">1 %</option>
                         <option value="2">2 %</option>
                         <option value="3">3 %</option>
@@ -148,7 +148,7 @@
                 <div class="col-md-5 form-group mb-3">
                     <label for="month_commission">Mes comisión<span class="text-danger">*</span></label>
                     <select class="form-control" id="commission_percentage" (change)="handleMonth($event)">
-                        <option value="0">Elija el mes</option>
+                        <option value="1.5">Elija el mes</option>
                         <option value="1">Enero</option>
                         <option value="2">Febrero</option>
                         <option value="3">Marzo</option>
@@ -176,7 +176,7 @@
             <button type="button" class="btn btn-danger" (click)="modal.dismiss('cancel')"
                 style="margin-right: 5px;">Cancelar</button>
             <button type="button" ngbAutofocus class="btn btn-wide btn-primary " (click)="modal.close('Yes')"
-                [disabled]="verifiedPercentage === 0 || verifiedMonth === 0">Asignar</button>
+                [disabled]="verifiedPercentage === 0 || verifiedMonth === 0 || disable">Asignar</button>
         </div>
     </div>
 </ng-template>

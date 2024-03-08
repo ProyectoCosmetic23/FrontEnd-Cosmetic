@@ -202,6 +202,15 @@
                   />
                 </div>
 
+                <div *ngIf="viewMode === 'print' && userForm.get('state_user').value === 'Inactivo'"
+                class="col-md-3 form-group mb-3">
+                <label for="reason_anulate">Razón de Cambio de Estado<span
+                        class="text-danger">*</span></label>
+                <input class="form-control" id="reason_anulate"
+                    formControlName="reason_anulate">
+            </div>
+
+                
                 <div class="col-md-6 form-group mb-3" *ngIf="viewMode == 'new'">
                   <label for="password"
                     >Contraseña<span class="text-danger">*</span></label

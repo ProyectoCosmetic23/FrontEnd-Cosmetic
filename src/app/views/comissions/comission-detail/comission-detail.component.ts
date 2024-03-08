@@ -277,7 +277,12 @@ export class ComissionsDetailComponent implements OnInit {
           this.noSales = true
           // console.log(this.noSales)
           this.message = "El empleado no realizó o no ha realizado ventas para el mes elegido"        
-        }else{
+        }else if (this.formBasic.get('id_commission_detail').value == 1.5) {
+          // console.log("Id 1.5")
+          this.noSales = true
+          this.formBasic.get('total_sales')?.patchValue("$ 0")
+        }
+        else{
           this.noSales = false;
           // console.log(this.noSales)
         }

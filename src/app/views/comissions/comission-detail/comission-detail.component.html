@@ -43,7 +43,7 @@
                                 <div *ngIf="viewMode === 'new'">
                                     <select class="form-control" id="id_comission_detail"
                                         formControlName="id_commission_detail" (change)="updateComs()">
-                                        <option value="">Elija el mes de la comisión</option>
+                                        <option value="1.5">Elija el mes de la comisión</option>
                                         <option *ngFor="let detail of listComisionDetail"
                                             [value]="detail.id_commission_detail">
                                             {{ detail.month_commission | date: 'yyyy-MM' }}</option>
@@ -93,7 +93,7 @@
                                   <div>
                                     <button *ngIf="viewMode === 'print'" class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Volver</button>
                                     <button *ngIf="viewMode === 'new'"  class="btn btn-danger float-right" [routerLink]="['/comisiones']" style="margin-right: 5px;">Cancelar</button>
-                                    <button class="btn btn-primary float-right ml-2" *ngIf="viewMode === 'new'" [loading]="loading" [disabled]="!formBasic.get('total_sales').value || noSales">
+                                    <button class="btn btn-primary float-right ml-2" *ngIf="viewMode === 'new'" [loading]="loading" [disabled]="!formBasic.get('total_sales').value || noSales || formBasic.get('id_commission_detail').value == 1.5">
                                       Registrar Comisión
                                     </button>
                                   </div>
