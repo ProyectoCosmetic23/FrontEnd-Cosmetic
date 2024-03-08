@@ -106,7 +106,8 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.required,
         Validators.minLength(5),
         Validators.maxLength(50),
-        Validators.pattern(/^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s&\-\'0-9.!]+$/) // Quita las comillas
+        Validators.pattern(/^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s&\-\'0-9.!]+$/) ,
+        this.noLeadingOrTrailingSpaces
       ]],
       nit_cedula: [i.nit_cedula, [
         Validators.required,
@@ -117,12 +118,14 @@ export class ProvidersDetailComponent implements OnInit {
       email_provider: [i.email_provider, [
         Validators.required,
         Validators.email,
-        Validators.maxLength(80)
+        Validators.maxLength(80),
+        this.noLeadingOrTrailingSpaces
     ]],
       address_provider: [i.address_provider, [
         Validators.required,
         Validators.maxLength(80),
-        Validators.minLength(4)
+        Validators.minLength(4),
+        this.noLeadingOrTrailingSpaces
       ]],
       phone_provider: [i.phone_provider, [
         Validators.required,
@@ -134,19 +137,30 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+$'), // Permite solo letras y espacios
         Validators.minLength(3),
-        Validators.maxLength(50)
+        Validators.maxLength(50),
+        this.noLeadingOrTrailingSpaces
     ]],
-      reason_anulate:[i.reason_anulate, [Validators.maxLength(100)]],
+      reason_anulate:[i.reason_anulate, [Validators.maxLength(100),
+        this.noLeadingOrTrailingSpaces]],
 
       state_provider: [i.state_provider],
       observation_provider: [i.observation_provider, [
-        Validators.maxLength(100)
+        Validators.maxLength(100),
+        this.noLeadingOrTrailingSpaces
+
       ]],
       
       creation_date_provider: [i.creation_date_provider],
     });
     // console.log("Razon anulate", i.reason_anulate, "nombre", i.name_provider)
 
+  }
+
+  noLeadingOrTrailingSpaces(control: AbstractControl): { [key: string]: boolean } | null {
+    if (control.value && (control.value.trim() !== control.value)) {
+      return { 'leadingOrTrailingSpaces': true };
+    }
+    return null;
   }
  
   setViewMode() {
@@ -335,13 +349,12 @@ export class ProvidersDetailComponent implements OnInit {
           let backendErrorMessage: string;
       
           if (error.error && error.error.error) {
-              backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
+              backendErrorMessage = error.error.error; 
+              this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
           } else {
-              backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
+              backendErrorMessage = "Ya existe un proveedor con estos datos"; 
           }
       
-          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
-          // console.error("Error al actualizar el proveedor:", error);
       }
       );
     }

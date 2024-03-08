@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  //  url:'https://cosmetic-api-yrcb.onrender.com',
+    //url:'https://cosmetic-api-yrcb.onrender.com',
   url: "http://localhost:8080",
 };
 

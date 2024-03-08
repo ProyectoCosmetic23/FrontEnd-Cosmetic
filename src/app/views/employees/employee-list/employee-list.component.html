@@ -89,28 +89,29 @@
               </ngx-datatable-column>
 
               <ngx-datatable-column
-                name="email"
-                [resizeable]="false"
-                [canAutoResize]="true"
-                [minWidth]="80"
+              name="email"
+              [resizeable]="false"
+              [canAutoResize]="true"
+              [minWidth]="250"
+            >
+              <ng-template ngx-datatable-header-template>
+                <p style="font-size: 15px">Correo</p>
+              </ng-template>
+              <ng-template
+                ngx-datatable-cell-template
+                let-value="value"
+                let-row="row"
               >
-                <ng-template ngx-datatable-header-template>
-                  <p style="font-size: 15px">Correo</p>
-                </ng-template>
-                <ng-template
-                  ngx-datatable-cell-template
-                  let-value="value"
-                  let-row="row"
-                >
-                  {{ row.email }}
-                </ng-template>
-              </ngx-datatable-column>
+                {{ row.email }}
+              </ng-template>
+            </ngx-datatable-column>
+            
 
               <ngx-datatable-column
                 name="state_employee"
                 [resizeable]="false"
                 [canAutoResize]="true"
-                [minWidth]="80"
+                [minWidth]="20"
               >
                 <ng-template ngx-datatable-header-template>
                   <p style="font-size: 15px">Estado</p>
@@ -146,7 +147,7 @@
                   </button>
                   <button
                     ngbTooltip="Modificar"
-                    class="btn btn-info m-1"
+                    class="btn btn-info m-1 btn-sm"
                     [routerLink]="['/employees/edit', row.id_employee]"
                     [disabled]="row.state_employee == 'Inactivo'"
                   >

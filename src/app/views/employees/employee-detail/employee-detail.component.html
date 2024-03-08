@@ -49,13 +49,13 @@
                                 El campo teléfono es obligatorio.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('minlength')" class="error-message">
-                                El campo teléfono tiene que tener mínimo los 10 numeros.
+                                El campo teléfono tiene que tener mínimo los 10 números.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('maxlength')" class="error-message">
-                                El campo teléfono no puede superar los 12 numeros.
+                                El campo teléfono no puede superar los 10 números.
                             </div>
                             <div *ngIf="employeeForm.get('phone').hasError('pattern')" class="error-message">
-                                El campo teléfono solo acepta numeros.
+                                El campo teléfono solo acepta números.
                             </div>
                         </div>
                   
@@ -93,8 +93,9 @@
                         <div *ngIf="employeeForm.get('email').hasError('maxlength')"class="error-message">
                             El campo correo no puede superar los 30 caracteres.
                         </div>
+                        
                         <div *ngIf="employeeForm.get('email').hasError('emailTaken')"class="error-message">El correo electrónico ya está en uso.</div>
-
+                        
                     </div>
 
                     
@@ -110,6 +111,9 @@
                         </div>
                         <div *ngIf="employeeForm.get('address').hasError('minlength')"class="error-message">
                             El campo dirección tiene que tener minimo 10 caracteres.
+                        </div>
+                        <div *ngIf="employeeForm.get('address').hasError('pattern')"class="error-message">
+                            El campo dirección no debe contener espacio al inicio o al final.
                         </div>
                     </div>
                     

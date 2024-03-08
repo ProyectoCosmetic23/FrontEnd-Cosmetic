@@ -32,6 +32,7 @@ export class ComissionListComponent implements OnInit {
         month_commission: "",
     };
     loading: boolean;
+    disable: boolean = false;
     details: any[] = [];
     months = [
         { value: 1, label: 'Enero' },
@@ -171,9 +172,11 @@ export class ComissionListComponent implements OnInit {
     handlePerccentageSelection(event: any) {
         this.new_comissionDetail.commission_percentage = event.target.value;
         this.verifiedPercentage = event.target.value;
-        // console.log(this.verifiedPercentage, " Porcentaje elegido ")
-        // console.log(this.new_comissionDetail.commission_percentage)
-        // console.log(this.new_comissionDetail.month_commission)
+        const percent = event.target.value;
+        // console.log(percent, " Porcentaje elegido ")
+        // console.log(this.new_comissionDetail.month_commission, " Mes elegido ")
+        this.disable = percent === "1.5";
+
     }
     handleMonth(event: any) {
         const selectedMonth = event.target.value;
@@ -181,12 +184,13 @@ export class ComissionListComponent implements OnInit {
         this.new_comissionDetail.month_commission = `${currentYear}-${selectedMonth.toString().padStart(2, '0')}-01`;
         this.verifiedMonth = event.target.value;
         // console.log(this.verifiedMonth, " Mes elegido")
-        // console.log(this.new_comissionDetail.month_commission)
+        // console.log(selectedMonth)
+        this.disable = selectedMonth === "1.5";
     }
     createComissionDetail() {
         this._comssionDetailService.createDetailCom(this.new_comissionDetail).subscribe(
             (data) => {
-                console.log(data);
+                // console.log(data);
                 this.loading = true;
                 setTimeout(() => {
                     this.loading = false;
@@ -220,10 +224,6 @@ export class ComissionListComponent implements OnInit {
         // console.log("actualizar por mes")
         this.filterComissionsByMonth();
     }
-
-
-
-
     pageChanged(event: any) {
         this.currentPage = event.page;
 
