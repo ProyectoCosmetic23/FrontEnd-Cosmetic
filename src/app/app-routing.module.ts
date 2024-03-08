@@ -129,7 +129,7 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: "",
+    redirectTo: "dashboard/v1",
   },
 ];
 

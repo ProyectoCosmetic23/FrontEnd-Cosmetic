@@ -208,15 +208,17 @@ export class UserListComponent implements OnInit {
   openSecondModal(idUser: number, changeEmployee: boolean) {
     if (!this.isSecondModalOpen) {
       this.isSecondModalOpen = true;
-
+  
       const modalRef = this.modalService.open(this.changeModal, {
         centered: true,
       });
-
+  
       modalRef.result.then(
         (result) => {
           if (result === "Ok") {
-            this.changeEmployeeStatus(idUser);
+            const idEmployee = this.listUsers.find(user => user.id_user === idUser).id_employee;
+            console.log("ID del empleado:", idEmployee); // Añadir esta línea para verificar el id_employee
+            this.changeEmployeeStatus(idEmployee);
           } else if (result === "No") {
             this.confirmUserStatusChange(idUser, true, changeEmployee);
           }
@@ -225,11 +227,12 @@ export class UserListComponent implements OnInit {
           this.isSecondModalOpen = false;
         }
       ).finally(() => {
-        // Restablecer el estado aquí en caso de cualquier resultado (confirmación o cancelación)
         this.isSecondModalOpen = false;
       });
     }
   }
+  
+  
 
 
   confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
@@ -238,7 +241,9 @@ export class UserListComponent implements OnInit {
         (userData) => {
           if (userData.msg.includes("éxito")) {
             if (changeEmployee) {
-              this.changeEmployeeStatus(idUser);
+              // Obtener el id_employee correspondiente al idUser
+              const idEmployee = this.listUsers.find(user => user.id_user === idUser).id_employee;
+              this.changeEmployeeStatus(idEmployee); // Pasar idEmployee en lugar de idUser
             } else {
               this.toastr.success("Cambio de estado del usuario realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
               // Reinicia la bandera isFirstModalOpen después de completar el cambio de estado
@@ -256,14 +261,16 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  changeEmployeeStatus(idUser: number) {
-    this._employeeService.employeeChangeStatus(idUser).subscribe(
+
+  changeEmployeeStatus(idEmployee: number) { // Cambiar el parámetro a idEmployee
+    this._employeeService.employeeChangeStatus(idEmployee).subscribe(
       (employeeData) => {
         this.toastr.success(
           "Cambio de estado del empleado realizado con éxito.",
           "Proceso Completado",
           { progressBar: true, timeOut: 2000 }
         );
+        // También podrías actualizar la lista de empleados aquí si es necesario
       },
       (error) => {
         this.toastr.error("Fallo al cambiar el estado del empleado.", "Error", {
@@ -274,4 +281,5 @@ export class UserListComponent implements OnInit {
       }
     );
   }
+
 }
