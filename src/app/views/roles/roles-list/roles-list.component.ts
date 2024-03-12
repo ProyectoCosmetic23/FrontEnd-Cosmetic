@@ -67,22 +67,33 @@ export class RolesListComponent implements OnInit {
     );
   }
 
-  searchRoles($event) {
-    const value = ($event.target as HTMLInputElement).value.toLowerCase();
-
-    if (value.trim() !== "") {
-      this.listRoles = this.listRoles.filter((order) =>
-        Object.values(order).some(
-          (field) =>
-            field !== null &&
-            field !== undefined &&
-            field.toString().toLowerCase().includes(value)
-        )
+  searchRoles(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value
+      .trim()
+      .toLowerCase();
+    if (searchTerm !== "") {
+      this.listRoles = this.listRolesOriginal.filter(
+        (role) =>
+          (role.name_role &&
+            this.normalizeString(role.name_role).includes(
+              this.normalizeString(searchTerm)
+            )) ||
+          (role.state_role &&
+            this.normalizeString(role.state_role) ===
+              this.normalizeString(searchTerm))
       );
     } else {
-      // Si el valor de búsqueda está vacío, restaura la lista completa
       this.listRoles = this.listRolesOriginal;
     }
+  }
+
+  normalizeString(str: string): string {
+    return str
+      ? str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+      : "";
   }
 
   @ViewChild(DatatableComponent)
@@ -149,17 +160,19 @@ export class RolesListComponent implements OnInit {
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
   openModal(idRole: number, stateRole: string) {
-    const roleIndex = this.listRoles.findIndex((role) => role.id_role === idRole);
+    const roleIndex = this.listRoles.findIndex(
+      (role) => role.id_role === idRole
+    );
     if (stateRole == "Activo") {
       this.stateMessage = "¿Está seguro de que desea desactivar éste rol?";
     } else if (stateRole == "Inactivo") {
       this.stateMessage = "¿Está seguro de que desea activar éste rol?";
     }
-  
+
     if (!this.modalAbierto) {
       this.modalAbierto = true;
       this.modalService
-        .open(this.deleteConfirmModal, { centered: true, backdrop: 'static' })
+        .open(this.deleteConfirmModal, { centered: true, backdrop: "static" })
         .result.then(
           (result) => {
             if (result === "Ok") {
@@ -192,18 +205,20 @@ export class RolesListComponent implements OnInit {
                           timeOut: 1000,
                         }
                       );
-                      
+
                       // Cambiar el estado del rol en listRoles
                       if (this.listRoles[roleIndex].state_role === "Activo") {
                         this.listRoles[roleIndex].state_role = "Inactivo";
                       } else {
                         this.listRoles[roleIndex].state_role = "Activo";
                       }
-                      
+
                       this.cdRef.detectChanges(); // Detectar los cambios después de actualizar listRoles
-  
+
                       // Obtener el estado actualizado del rol
-                      const updatedRole = this.listRoles.find((role) => role.id_role === idRole);
+                      const updatedRole = this.listRoles.find(
+                        (role) => role.id_role === idRole
+                      );
                       if (updatedRole) {
                         this.activeLayer = !this.activeLayer;
                       }
@@ -234,5 +249,5 @@ export class RolesListComponent implements OnInit {
       console.error("Error al obtener el rol:", error);
     };
     this.message_observation = "";
-  }  
+  }
 }
