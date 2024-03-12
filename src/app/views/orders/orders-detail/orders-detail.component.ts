@@ -371,7 +371,8 @@ export class OrdersDetailComponent implements OnInit {
         }));
         if (this.viewMode == "new") {
           this.listProducts = this.listProducts.filter(
-            (product) => product.state_product === "Activo" && product.quantity > 0
+            (product) =>
+              product.state_product === "Activo" && product.quantity > 0
           );
         }
       },
@@ -673,25 +674,29 @@ export class OrdersDetailComponent implements OnInit {
   }
 
   checkProducts(): boolean {
-    let allConditionsMet = true;
+    let allConditionsMet: any; //1
 
     if (this.productsFormArray.length === 0) {
-      this.showFormWarning("Agrega al menos un producto al pedido");
+      // 2
+      this.showFormWarning("Agrega al menos un producto al pedido"); //3
       allConditionsMet = false;
+    } else {
+      const productsArray = this.productsFormArray.value; // 4
+      for (const product of productsArray) {
+        if (
+          product.id_product ||
+          product.product_price ||
+          product.product_quantity
+        ) {
+          // 5
+          allConditionsMet = true; // 6
+        } else {
+          this.showFormWarning("Completa todos los campos del producto");
+          allConditionsMet = false; // 7
+        }
+      } // 8
     }
-
-    const productsArray = this.productsFormArray.value;
-    for (const product of productsArray) {
-      if (
-        !product.id_product ||
-        !product.product_price ||
-        !product.product_quantity
-      ) {
-        this.showFormWarning("Completa todos los campos del producto");
-        allConditionsMet = false;
-      }
-    }
-    return allConditionsMet;
+    return allConditionsMet; //9
   }
 
   checkConditions(): boolean {
