@@ -397,18 +397,23 @@ export class PurchaseDetailComponent implements OnInit {
   }
 
   handleProviderSelection(event: any, i: number) {
-    const selectedProviderId = this.providersFormArray
-      .at(i)
-      .get("id_provider").value;
+    // Ensure providersFormArray is defined
+    if (!this.providersFormArray || !this.providersFormArray.at(i)) {
+        console.log("Providers form array or item not found.");
+        return;
+    }
+    
+    const selectedProviderId = this.providersFormArray.at(i).get("id_provider").value;
 
     const selectedProvider = this.listProviders.find(
       (provider) => provider.id_provider == selectedProviderId
     );
     if (selectedProvider) {
+        // Do something with selectedProvider
     } else {
-      console.log("Proveedor no encontrado.");
+        console.log("Proveedor no encontrado.");
     }
-  }
+}
 
   handleCategorySelection(event: any, i: number) {
     const selectedCategoryId = event.target.value;
@@ -421,24 +426,28 @@ export class PurchaseDetailComponent implements OnInit {
       this.products = this.listProducts.filter(
         (product) => product.id_category == selectedCategoryId
       );
-      this.purchaseDetailArray[i].id_category = selectedCategory.id_category;
+      
     }
   }
 
   handleProductSelection(event: any, i: number) {
-    const selectedProductId = this.productsFormSelect
-      .at(i)
-      .get("id_product").value;
+    // Ensure productsFormSelect is defined
+    if (!this.productsFormSelect || !this.productsFormSelect.at(i)) {
+        console.log("Products form array or item not found.");
+        return;
+    }
+
+    const selectedProductId = this.productsFormSelect.at(i).get("id_product").value;
 
     const selectedProduct = this.listProducts.find(
       (product) => product.id_product == selectedProductId
     );
     if (selectedProduct) {
+        // Do something with selectedProduct
     } else {
-      console.log("Producto no encontrado.");
+        console.log("Producto no encontrado.");
     }
-  }
-
+}
   //SET PARA PINTAR DETALL
   private setDataPurchase(): void {
     if (this.purchaseData) {

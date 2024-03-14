@@ -110,26 +110,31 @@ export class PurchaseListComponent implements OnInit {
       return 0;
     });
   }
-
+ 
   searchPurchase($event) {
+    const normalizeString = (str) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+  
     const value = ($event.target as HTMLInputElement).value;
-    if (value !== null && value !== undefined && value !== "") {
+    const normalizedValue = normalizeString(value);
+  
+    if (normalizedValue !== null && normalizedValue !== undefined && normalizedValue !== "") {
       this.filteredPurchases = this.listPurchases.filter(
         (c) =>
-          c.provider.name_provider
+          normalizeString(c.provider.name_provider.toLowerCase()).indexOf(normalizedValue.toLowerCase()) !== -1 ||
+          normalizeString(this.changePuchaseStateDescription(c.state_purchase))
             .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1 ||
-          this.changePuchaseStateDescription(c.state_purchase)
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1 ||
-          c.invoice_number.indexOf(value.toLowerCase()) !== -1 ||
-          c.purchase_date.indexOf(value.toLowerCase()) !== -1
-          || c.total_purchase.indexOf(value.toLowerCase()) !== -1
+            .indexOf(normalizedValue.toLowerCase()) !== -1 ||
+          normalizeString(c.invoice_number).indexOf(normalizedValue.toLowerCase()) !== -1 ||
+          normalizeString(c.purchase_date).indexOf(normalizedValue.toLowerCase()) !== -1 ||
+          normalizeString(c.total_purchase).indexOf(normalizedValue.toLowerCase()) !== -1
       );
     } else {
       this.filteredPurchases = this.listPurchases;
     }
   }
+  
 
   changePuchaseStateDescription(state_purchase: boolean) {
     return state_purchase ? "Activo" : "Anulada";
