@@ -45,6 +45,7 @@ export class UserDetailComponent implements OnInit {
   id_card_employeeString: any;
   name_employeeString: any;
   name_roleString: any;
+  
 
   constructor(
     private formBuilder: FormBuilder,
@@ -84,17 +85,14 @@ export class UserDetailComponent implements OnInit {
           });
 
           if (data.status == 404) {
-            console.log('Status Code:', data.status);
             this.employeeNotFoundMessage = "No se encontró el empleado.";
           } else if (data.status == 403) {
-            console.log('Status Code:', data.status);
             this.employeeNotFoundMessage = "Ya existe un usuario para el empleado.";
           } else {
             this.employeeNotFoundMessage = "";
           }
         },
         (error: any) => {
-          console.log('Status Code:', error.status);
           this.employeeNotFoundMessage = "Error al realizar la petición.";
         }
       );
@@ -136,11 +134,16 @@ export class UserDetailComponent implements OnInit {
     if (this.viewMode == "print") {
       this.userForm.disable();
     }
+    if (this.viewMode == "new") {
+      this.email.disable();
+      this.name_employee.disable();
+
+    }
 
     if (this.viewMode != "new") {
       this.getUserByID(id);
-      this.email.disable();
-      this.id_card_employee.disable();
+      // this.email.disable();
+      // this.id_card_employee.disable();
     }
 
     if (this.viewMode != "new" && this.viewMode != "print") {
@@ -158,7 +161,9 @@ export class UserDetailComponent implements OnInit {
   loadRoles() {
     this.usersService.getAllRoles().subscribe(
       (data) => {
-        this.listRoles = data;
+        // Filtra solo los roles con estado 'Activo'
+        this.listRoles = data.filter((role) => role.state_role === 'Activo');
+  
         const roleIdString = this.route.snapshot.paramMap.get("id_role");
         const roleId = Number(roleIdString);
         this.getRoleName(roleId);
@@ -183,14 +188,11 @@ export class UserDetailComponent implements OnInit {
           role: this.rolesService.getRoleById(response.id_role),
         }).subscribe(
           ({ employee, role }) => {
-            console.log(employee);
-            console.log(role);
-
+         
             response.name_employee = employee.name_employee;
             response.id_card_employee = employee.id_card_employee;
             response.name_role = role.name_role;
 
-            console.log(response);
             this.userData = new UserFormModel(response);
             this.setDataUser();
 
@@ -431,6 +433,8 @@ export class UserDetailComponent implements OnInit {
       this.viewMode = "print";
     }
   }
+
+  
 
   get email() {
     return this.userForm.get("email");

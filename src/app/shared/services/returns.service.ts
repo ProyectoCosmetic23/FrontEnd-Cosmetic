@@ -29,7 +29,6 @@ export class ReturnsService {
 
   getAllEmployees(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
-    console.log("Los headers", headers);
     return this.http.get<any[]>(this.url + '/api/employees', { headers });
   }
 

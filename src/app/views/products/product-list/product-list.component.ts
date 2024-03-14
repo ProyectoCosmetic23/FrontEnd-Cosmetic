@@ -149,22 +149,30 @@ export class ProductListComponent implements OnInit {
     this.loadData();
   }
  
-searchProduct($event) {
-  const value = ($event.target as HTMLInputElement).value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
-  if (value !== "") {
-    this.filteredProducts = this.listProducts.filter(
-      (product) =>
-        product.name_product.toLowerCase().includes(value) || // Buscar coincidencias parciales del nombre
-        (product.quantity && product.quantity.toString().toLowerCase().includes(value)) || // Buscar coincidencias parciales de la cantidad
-        (product.cost_price && product.cost_price.toString().toLowerCase().includes(value)) || 
-        (product.state_product.toLowerCase().slice(0, 3) === value.toLowerCase() || product.state_product.toLowerCase() === value.toLowerCase()) || // Buscar coincidencias de estado
-        (this.categories[product.categoryId] && (this.categories[product.categoryId].toLowerCase().includes(value) || this.categories[product.categoryId].toLowerCase() === value.toLowerCase() || this.categories[product.categoryId].toLowerCase().startsWith(value.toLowerCase()))) // Buscar coincidencias del nombre de la categoría
-    );
-  } else {
-    this.filteredProducts = this.listProducts;
+  searchProduct($event) {
+    const normalizeString = (str: string) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+  
+    const value = ($event.target as HTMLInputElement).value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
+    const normalizedValue = normalizeString(value);
+  
+    if (normalizedValue !== "") {
+      this.filteredProducts = this.listProducts.filter(
+        (product) =>
+          normalizeString(product.name_product.toLowerCase()).includes(normalizedValue) || // Buscar coincidencias parciales del nombre
+          (product.quantity && product.quantity.toString().toLowerCase().includes(normalizedValue)) || // Buscar coincidencias parciales de la cantidad
+          (product.cost_price && product.cost_price.toString().toLowerCase().includes(normalizedValue)) || 
+          (normalizeString(product.state_product.toLowerCase()).slice(0, 3) === normalizedValue || normalizeString(product.state_product.toLowerCase()) === normalizedValue) || // Buscar coincidencias de estado
+          (this.categories[product.categoryId] && (normalizeString(this.categories[product.categoryId].toLowerCase()).includes(normalizedValue) || normalizeString(this.categories[product.categoryId].toLowerCase()) === normalizedValue || normalizeString(this.categories[product.categoryId].toLowerCase()).startsWith(normalizedValue))) // Buscar coincidencias del nombre de la categoría
+      );
+    } else {
+      this.filteredProducts = this.listProducts;
+    }
+  
+    this.loadData();
   }
-  this.loadData();
-}
+  
 
   
   openRetireModal(productId: number, productValue: number, content: any): void {
