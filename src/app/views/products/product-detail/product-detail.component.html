@@ -117,7 +117,7 @@
                                             El campo stock máximo es obligatorio.
                                         </div>
                                         <div *ngIf="productForm.get('max_stock').hasError('min')" class="error-message">
-                                            El stock máximo no puede ser negativo.
+                                            El stock máximo no puede ser 0 o negativo.
                                         </div>
                                         <div *ngIf="productForm.get('max_stock').hasError('stockMinMax')"
                                             class="error-message">
@@ -136,7 +136,7 @@
                                             El campo stock mínimo es obligatorio.
                                         </div>
                                         <div *ngIf="productForm.get('min_stock').hasError('min')" class="error-message">
-                                            El stock mínimo no puede ser negativo.
+                                            El stock mínimo no puede ser 0 o  negativo.
                                         </div>
                                         <div *ngIf="productForm.get('min_stock').dirty && productForm.get('max_stock').dirty && productForm.hasError('invalidStockRange')"
                                             class="error-message">
@@ -145,7 +145,7 @@
                                     </div>
 
 
-                                    <div class="col-md-2 form-group mb-3">
+                                    <div class="col-md-2 form-group mb-4">
                                         <label for="cost_price">Precio de costo<span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="cost_price"
@@ -157,11 +157,11 @@
                                         </div>
                                         <div *ngIf="productForm.get('cost_price').hasError('min')"
                                             class="error-message">
-                                            El precio de costo no puede ser negativo.
+                                            El precio de costo no puede ser 0 o negativo.
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 form-group mb-3">
+                                    <div class="col-md-2 form-group mb-4">
                                         <label for="selling_price">Precio de venta<span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="selling_price"
