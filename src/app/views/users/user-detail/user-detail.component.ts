@@ -134,6 +134,7 @@ export class UserDetailComponent implements OnInit {
       this.userForm.disable();
     }
     if (this.viewMode == "new") {
+      
       this.email.disable();
       this.name_employee.disable();
 
@@ -234,6 +235,7 @@ export class UserDetailComponent implements OnInit {
           this.submit();
         },
         (error) => {
+         
           this.loading = false;
           console.error("Error al crear el usuario: ", this.toastr.error);
           const errorMessage = error.error
@@ -368,7 +370,9 @@ export class UserDetailComponent implements OnInit {
   }
 
   public submitUser(): void {
-    if (this.viewMode == "new") {
+    const userData = this.userForm.value;
+    if (this.viewMode == "new"  && this.email.disabled) {
+      userData.email = this.email.value;
       this.createUser();
     } else if (this.viewMode == "edit") {
       this.saveChanges();
