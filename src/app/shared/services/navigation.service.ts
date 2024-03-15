@@ -108,8 +108,8 @@ export class NavigationService {
 
   async validateUserModulesPermission() {
     const storedUser = this.getStoredUser();
-
-    const roleResponse = await this.rolesService
+    if (storedUser !== null) {
+      const roleResponse = await this.rolesService
       .getRoleById(storedUser.id_role)
       .toPromise();
 
@@ -292,6 +292,8 @@ export class NavigationService {
     } else {
       this.defaultMenu[configObjIndex].disabled = false;
     }
+    }
+    
   }
 
   cleanItems() {
