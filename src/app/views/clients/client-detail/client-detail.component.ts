@@ -172,7 +172,6 @@ export class ClientDetailComponent implements OnInit {
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
     const combinedPattern = /^(?!.*\s{2})[\wáéíóúñÑ´\s]+$/;
-
     return new Promise((resolve) => {
       setTimeout(() => {
         if (combinedPattern.test(nameValue)) {

@@ -187,7 +187,10 @@ export class OrdersListComponent implements OnInit {
 
               // Si encontramos un cliente coincidente, asignamos el nombre al pedido
               if (matchingClient) {
-                order.name_client = matchingClient.name_client + ' ' + matchingClient.last_name_client;
+                order.name_client =
+                  matchingClient.name_client +
+                  " " +
+                  matchingClient.last_name_client;
               }
             });
 
@@ -218,22 +221,32 @@ export class OrdersListComponent implements OnInit {
     );
   }
 
-  searchOrders($event) {
-    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+  searchOrders(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value
+      .trim()
+      .toLowerCase();
 
-    if (value.trim() !== "") {
-      this.listOrders = this.listOrders.filter((order) =>
+    if (searchTerm !== "") {
+      this.listOrders = this.listOrdersOriginal.filter((order) =>
         Object.values(order).some(
           (field) =>
             field !== null &&
             field !== undefined &&
-            field.toString().toLowerCase().includes(value)
+            this.normalizeString(field.toString()).includes(
+              this.normalizeString(searchTerm)
+            )
         )
       );
     } else {
-      // Si el valor de búsqueda está vacío, restaura la lista completa
       this.listOrders = this.listOrdersOriginal;
     }
+  }
+
+  normalizeString(str: string): string {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
   }
 
   getClients() {

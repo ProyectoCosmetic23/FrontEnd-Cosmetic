@@ -105,7 +105,8 @@ export class SigninComponent implements OnInit {
         }
       },
       error: (errorMessage: any) => {
-        console.error("Error del servidor:", errorMessage);
+        // Comenta o elimina la línea que imprime el mensaje de error en la consola
+        // console.error("Error del servidor:", errorMessage);
         this.toastr.error(errorMessage, "Error de validación", {
           progressBar: true,
           timeOut: 3000,

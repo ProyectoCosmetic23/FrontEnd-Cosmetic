@@ -112,20 +112,26 @@ export class ClientListComponent implements OnInit {
   searchCategory($event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value !== null && value !== undefined && value !== "") {
+      const normalizedValue = this.normalizeString(value);
+  
       this.filteredClients = this.listClients.filter(
         (c) =>
-          c.name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          this.normalizeString(c.name_client).toLowerCase().includes(normalizedValue.toLowerCase()) ||
           c.nit_or_id_client.includes(value) ||
           c.email_client.includes(value) ||
-          c.last_name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
-          c.state_client.toLowerCase().indexOf(value.toLowerCase()) !== -1||
-          this.changeClientStateDescription(c.state_client).toLowerCase().indexOf(value.toLowerCase()) !== -1)
-          
+          this.normalizeString(c.last_name_client).toLowerCase().includes(normalizedValue.toLowerCase()) ||
+          this.normalizeString(c.state_client).toLowerCase().includes(normalizedValue.toLowerCase()) ||
+          this.normalizeString(this.changeClientStateDescription(c.state_client)).toLowerCase().includes(normalizedValue.toLowerCase())
+      );
     } else {
       this.filteredClients = this.listClients;
     }
-    
   }
+  
+  private normalizeString(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+  
 
 
   changeClientStateDescription(state_client: boolean) {

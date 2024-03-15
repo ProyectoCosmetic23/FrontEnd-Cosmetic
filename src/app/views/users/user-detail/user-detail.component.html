@@ -25,12 +25,12 @@
             <form [formGroup]="userForm" (ngSubmit)="submitUser()">
               <div class="row">
                 <div class="col-md-3 form-group mb-3">
-                  <label for="name_ role"
+                  <label for="id_ role"
                     >Rol<span class="text-danger">*</span></label
                   >
                   <select
                     class="form-control"
-                    id="name_role"
+                    id="id_role"
                     formControlName="id_role"
                   >
                     <option value="" disabled selected>Elija el rol</option>
@@ -43,8 +43,8 @@
                   </select>
                   <div
                     *ngIf="
-                      userForm.get('name_role').touched &&
-                      userForm.get('name_role').hasError('required')
+                      userForm.get('id_role').touched &&
+                      userForm.get('id_role').hasError('required')
                     "
                     class="error-message"
                   >
@@ -62,7 +62,6 @@
                     formControlName="id_card_employee"
                     (change)="searchEmployeeByEmail()"
                     (input)="clearEmployeeValidation()"
-                    required
                     minlength="6"
                     maxlength="10"
                   />
@@ -71,7 +70,6 @@
                     class="form-control ng-touched ng-dirty ng-invalid"
                     id="id_employee"
                     formControlName="id_employee"
-                    disabled
                   />
                   <div
                     *ngIf="userForm.get('id_card_employee').hasError('pattern')"
@@ -120,8 +118,7 @@
                     class="form-control"
                     id="email"
                     formControlName="email"
-                    required
-                    disabled
+                    
                   />
                   <div
                     *ngIf="userForm.get('email').hasError('emailTaken')"
@@ -141,8 +138,7 @@
                     class="form-control"
                     id="name_employee"
                     formControlName="name_employee"
-                    required
-                    disabled
+                    
                   />
                 </div>
 
