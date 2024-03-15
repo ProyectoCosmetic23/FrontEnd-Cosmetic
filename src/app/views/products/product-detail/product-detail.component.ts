@@ -100,11 +100,11 @@ export class ProductDetailComponent implements OnInit {
         [this.validateNameSimbolAndNumber],
       ],
       quantity: [null, [Validators.required]], // Establece el valor inicial en 0
-      max_stock: [null, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
-      min_stock: [null, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      max_stock: [null, [Validators.required, Validators.min(1), this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      min_stock: [null, [Validators.required, Validators.min(1), this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
       profit: [],
       cost_price: [null, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
-      selling_price: [null, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
+      selling_price: [null, [Validators.required, Validators.min(1)]], // Establece el valor inicial en 0 y agrega validador mínimo
       observation: ["", [Validators.maxLength(100)]],
       state_product: [],
       creation_date_product: [],

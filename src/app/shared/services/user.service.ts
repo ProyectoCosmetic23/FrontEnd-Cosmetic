@@ -10,7 +10,7 @@ export class UsersService {
   getEmployeeById(id: number) {
       throw new Error("Method not implemented.");
   }
-  url = environment.url + "/api/Users";
+  url = environment.url + "/api/users";
   url2 = environment.url + "/api/roles";
   url3 = environment.url + "/api/employees";
 

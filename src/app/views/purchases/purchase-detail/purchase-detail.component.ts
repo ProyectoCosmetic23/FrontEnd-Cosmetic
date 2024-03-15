@@ -51,7 +51,7 @@ export class PurchaseDetailComponent implements OnInit {
   selected_categories: string;
   selected_providers: string;
   selected_product: string;
-  providersFormArray: FormArray;
+  providersFormArray: FormArray = this.formBuilder.array([]);
   categoriesFormArray: FormArray;
   productsFormSelect: FormArray;
   products: any[] = [];
@@ -96,6 +96,7 @@ export class PurchaseDetailComponent implements OnInit {
     this.setViewMode();
     this.inicializateForm(Number(this.id));
     this.inicializateProductForm(Number(this.id));
+    this.providersFormArray.push(this.formBuilder.control(''));
   }
 
   //FORMULARIO PARA MANEJAR EN EL LOS METODOS
@@ -395,11 +396,8 @@ export class PurchaseDetailComponent implements OnInit {
     // Remove the product from the local array
     this.purchaseDetailArray.splice(index, 1);
   }
-
   handleProviderSelection(event: any, i: number) {
-    const selectedProviderId = this.providersFormArray
-      .at(i)
-      .get("id_provider").value;
+    const selectedProviderId = event.target.value;
 
     const selectedProvider = this.listProviders.find(
       (provider) => provider.id_provider == selectedProviderId
@@ -410,34 +408,38 @@ export class PurchaseDetailComponent implements OnInit {
     }
   }
 
-  handleCategorySelection(event: any, i: number) {
+  handleCategorySelection(event: any) {
     const selectedCategoryId = event.target.value;
-    let selectedCategory = this.listCategories.find(
-      (category) =>
-        category.id_category == selectedCategoryId && category.state_category
+    const selectedCategory = this.listCategories.find(
+        (category) =>
+            category.id_category == selectedCategoryId && category.state_category
     );
 
     if (selectedCategory) {
-      this.products = this.listProducts.filter(
-        (product) => product.id_category == selectedCategoryId
-      );
-      this.purchaseDetailArray[i].id_category = selectedCategory.id_category;
+        this.products = this.listProducts.filter(
+            (product) => product.id_category == selectedCategoryId
+        );
+
+        // Si solo hay un producto en la categoría seleccionada, seleccionarlo automáticamente
+        if (this.products.length === 1) {
+            const selectedProduct = this.products[0];
+            this.purchaseDetailform.get('id_product').setValue(selectedProduct.id_product);
+        }
     }
-  }
+}
 
-  handleProductSelection(event: any, i: number) {
-    const selectedProductId = this.productsFormSelect
-      .at(i)
-      .get("id_product").value;
-
+handleProductSelection(selectedProductId: number) {
     const selectedProduct = this.listProducts.find(
-      (product) => product.id_product == selectedProductId
+        (product) => product.id_product == selectedProductId
     );
+
     if (selectedProduct) {
+        // Hacer algo con selectedProduct
+        console.log("Producto seleccionado:", selectedProduct);
     } else {
-      console.log("Producto no encontrado.");
+        console.log("Producto no encontrado.");
     }
-  }
+}
 
   //SET PARA PINTAR DETALL
   private setDataPurchase(): void {
@@ -602,6 +604,7 @@ export class PurchaseDetailComponent implements OnInit {
           this.loading = false;
           console.log("Éxito al crear  producto desde compras: ", response);
           this.submitProduct();
+          this.getProducts();
         },
         (error) => {
           this.loading = false;
@@ -636,6 +639,7 @@ export class PurchaseDetailComponent implements OnInit {
         (result) => {
           if (result === "Ok") {
             this.createProduct();
+            this.getProducts();
           } else if (result === "Cancel") {
             // Lógica adicional si es necesario después de cancelar el modal
             this.modalAbierto = false;

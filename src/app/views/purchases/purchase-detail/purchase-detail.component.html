@@ -72,12 +72,14 @@
                     (change)="handleProviderSelection($event, i)"
                     [disabled]="viewMode === 'print'"
                   >
+                  <ng-container *ngFor="let provider of listProviders">
                     <option
-                      *ngFor="let provider of listProviders"
-                      [value]="provider.id_provider"
+                    *ngIf="provider.state_provider === 'Activo'"
+                    [value]="provider.id_provider"
                     >
                       {{ provider.name_provider }}
                     </option>
+                  </ng-container>
                   </select>
                   <div
                     *ngIf="
@@ -245,7 +247,7 @@
                       id="id_category"
                       name="id_category"
                       formControlName="id_category"
-                      (change)="handleCategorySelection($event, i)"
+                      (change)="handleCategorySelection($event)"
                     >
                    
                     <ng-container *ngFor="let category of listCategories">
@@ -273,7 +275,7 @@
 
                 <div class="col-md-5 form-container">
                   <label for="id_product"
-                    >Producto<span class="required" *ngIf="products.length == 0"
+                    >Producto<span class="required"
                       >*</span
                     ></label
                   >
@@ -285,7 +287,7 @@
                       name="id_product"
                       formControlName="id_product"
                       [ngClass]="products.length == 0 ? 'bloqueado' : ''"
-                      (change)="handleProductSelection($event, i)"
+                      (change)="handleProductSelection($event.target.value)"
                     >
                       <option
                         *ngFor="let product of products"
@@ -537,12 +539,7 @@
                 </tbody>
               </table>
               <div class="table-footer">
-                <div class="col-md-8" *ngIf="viewMode === 'new'">
-                  <div class="total">
-                    Total:
-                    {{ calculateTotal() | currency : "" : "symbol" : "1.0-0" }}
-                  </div>
-                </div>
+                
                 <div class="total" style="font-size: 20px">
                   Total:
                   {{ calculateTotal() | currency : "" : "symbol" : "1.0-0" }}
@@ -577,12 +574,15 @@
                       formControlName="id_category"
                       (change)="handleCategorySelection($event, i)"
                     >
+                   
+                    <ng-container *ngFor="let category of listCategories">
                       <option
-                        *ngFor="let category of listCategories"
+                        *ngIf="category.state_category === true"
                         [value]="category.id_category"
                       >
                         {{ category.name_category }}
                       </option>
+                    </ng-container>
                     </select>
                     <div
                       *ngIf="
@@ -735,6 +735,7 @@
                 class="btn btn-wide btn-primary btn"
                 [disabled]="!this.productForm.valid || this.productExists"
                 (click)="modal.close('Ok')"
+                [loading]="loading"
               >
                 Registrar Producto
               </button>

@@ -103,22 +103,27 @@ export class CategoryListComponent {
       return 0;
     });
   }
-
   searchCategory($event) {
+    const normalizeString = (str) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+  
     const value = ($event.target as HTMLInputElement).value;
-    if (value !== null && value !== undefined && value !== "") {
+    const normalizedValue = normalizeString(value);
+  
+    if (normalizedValue !== null && normalizedValue !== undefined && normalizedValue !== "") {
       this.filteredCategories = this.listCategories.filter(
         (c) =>
-          c.name_category.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          this.changeCategoryStateDescription(c.state_category)
+          normalizeString(c.name_category.toLowerCase()).indexOf(normalizedValue.toLowerCase()) !== -1 ||
+          normalizeString(this.changeCategoryStateDescription(c.state_category))
             .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1
+            .indexOf(normalizedValue.toLowerCase()) !== -1
       );
     } else {
       this.filteredCategories = this.listCategories;
     }
   }
-
+  
   changeCategoryStateDescription(state_category: boolean) {
     return state_category ? "Activo" : "Inactivo";
   }
