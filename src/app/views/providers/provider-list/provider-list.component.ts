@@ -45,14 +45,14 @@ export class ProviderListComponent implements OnInit {
   Providers() {
     this._providersService.getAllProviders().subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.listProviders = data;
         this.filteredProviders = this.listProviders;
         this.sortListProvidersById();
         this.showLoadingScreen = false;
       },
       (error) => {
-        console.error("Error al obtener Categorías:", error);
+        // console.error("Error al obtener Categorías:", error);
         this.showLoadingScreen = false;
       }
     );
@@ -62,15 +62,15 @@ export class ProviderListComponent implements OnInit {
     const token = this.cookieService.get("token");
     this._providersService.getAllProviders().subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.listProviders = data;
-        console.log(this.listProviders)
+        // console.log(this.listProviders)
         this.filteredProviders = this.listProviders;
         this.sortListProvidersById();
         this.showLoadingScreen = false;
       },
       (error) => {
-        console.error("Error al obtener Categorías:", error);
+        // console.error("Error al obtener Categorías:", error);
         this.showLoadingScreen = false;
       }
     );
@@ -97,32 +97,38 @@ export class ProviderListComponent implements OnInit {
 
   searchProvider(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    const normalizedSearchTerm = this.normalizeString(searchTerm);
   
-    if (searchTerm !== null && searchTerm !== undefined && searchTerm !== "") {
+    if (normalizedSearchTerm !== "") {
       this.filteredProviders = this.listProviders.filter(
         (provider) =>
-          provider.name_provider.toLowerCase().includes(searchTerm) ||
-          provider.phone_provider.toLowerCase().includes(searchTerm) ||
-          provider.name_contact.toLowerCase().includes(searchTerm) ||
-          this.changeProviderStateDescription(provider.state_provider)
-            .toLowerCase()
-            .includes(searchTerm)
+          this.normalizeString(provider.name_provider).includes(normalizedSearchTerm) ||
+          this.normalizeString(provider.phone_provider).includes(normalizedSearchTerm) ||
+          this.normalizeString(provider.name_contact).includes(normalizedSearchTerm) ||
+          this.normalizeString(this.changeProviderStateDescription(provider.state_provider))
+            .includes(normalizedSearchTerm)
       );
     } else {
       this.filteredProviders = this.listProviders;
     }
-  
     this.actualizarCountLabel();
   }
+  
+  //El NFD separa las letras de las tildes 
+  normalizeString(str: string): string {
+    //Las [\u0300-\u036f] busca y reemplaza los caracteres con tilde, dieresis, etc y las g significa que buscando en toda la cadena y reconstruye la palabra eliminando los caracteres sueltos de las tildes 
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+  
 
   changeProviderStateDescription(state_provider: boolean) {
     return state_provider ? "Activo" : "Inactivo";
   }
 
   @ViewChild("changeStateModal", { static: true }) changeStateModal: any;
-
+x
   openModal(idProvider: number) {
-    console.log(idProvider);
+    // console.log(idProvider);
     this._providersService.getProviderById(idProvider).subscribe();
   
     if (!this.openedModal) {
@@ -131,13 +137,13 @@ export class ProviderListComponent implements OnInit {
         .result.then(
           (result) => {
             if (result === "Yes") {
-              console.log("razon", this.reasonAnulate);
+              // console.log("razon", this.reasonAnulate);
               this._providersService.updateProviderStatus(idProvider, this.reasonAnulate).subscribe(
                 (data) => {
                   this.openedModal = false;
                   this.loading = false;
                   this.toastr.success("Cambio de estado realizado con éxito.", "Proceso Completado", { progressBar: true, timeOut: 2000 });
-                  console.log(data);
+                  // console.log(data);
                   this.openedModal = false;
                   this.reasonAnulate = "";
                   this.Providers();
@@ -145,7 +151,7 @@ export class ProviderListComponent implements OnInit {
                 (error) => {
                   this.loading = false;
                   this.toastr.error("Fallo al realizar el cambio de estado.", "Error", { progressBar: true, timeOut: 2000 });
-                  console.error("Error al cambiar de estado:", error);
+                  // console.error("Error al cambiar de estado:", error);
                   this.openedModal = false;
                   this.reasonAnulate = "";
                 }

@@ -76,7 +76,7 @@ export class ProvidersDetailComponent implements OnInit {
     this.id = this.route.snapshot.params["id"];
     this.isNew = !this.id;
     this.buildProvidersForm(this.provider);
-    console.log('Formulario construido:', this.formBasic); // Agrega esta línea
+    // console.log('Formulario construido:', this.formBasic); // Agrega esta línea
     this.setViewMode();
     this.getProvider();
     if (!this.isNew) {
@@ -100,12 +100,14 @@ export class ProvidersDetailComponent implements OnInit {
   updatedFields: any = {};
 
   buildProvidersForm(i: any = {}) {
-    console.log("formulario: ", i)
+    // console.log("formulario: ", i)
     this.formBasic = this.formBuilder.group({
       name_provider: [i.name_provider, [
         Validators.required,
         Validators.minLength(5),
-        Validators.maxLength(50)
+        Validators.maxLength(50),
+        Validators.pattern(/^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s&\-\'0-9.!]+$/) ,
+        this.noLeadingOrTrailingSpaces
       ]],
       nit_cedula: [i.nit_cedula, [
         Validators.required,
@@ -116,12 +118,14 @@ export class ProvidersDetailComponent implements OnInit {
       email_provider: [i.email_provider, [
         Validators.required,
         Validators.email,
-        Validators.maxLength(80)
+        Validators.maxLength(80),
+        this.noLeadingOrTrailingSpaces
     ]],
       address_provider: [i.address_provider, [
         Validators.required,
         Validators.maxLength(80),
-        Validators.minLength(4)
+        Validators.minLength(4),
+        this.noLeadingOrTrailingSpaces
       ]],
       phone_provider: [i.phone_provider, [
         Validators.required,
@@ -133,19 +137,30 @@ export class ProvidersDetailComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+$'), // Permite solo letras y espacios
         Validators.minLength(3),
-        Validators.maxLength(50)
+        Validators.maxLength(50),
+        this.noLeadingOrTrailingSpaces
     ]],
-      reason_anulate:[i.reason_anulate, [Validators.maxLength(100)]],
+      reason_anulate:[i.reason_anulate, [Validators.maxLength(100),
+        this.noLeadingOrTrailingSpaces]],
 
       state_provider: [i.state_provider],
       observation_provider: [i.observation_provider, [
-        Validators.maxLength(100)
+        Validators.maxLength(100),
+        this.noLeadingOrTrailingSpaces
+
       ]],
       
       creation_date_provider: [i.creation_date_provider],
     });
-    console.log("Razon anulate", i.reason_anulate, "nombre", i.name_provider)
+    // console.log("Razon anulate", i.reason_anulate, "nombre", i.name_provider)
 
+  }
+
+  noLeadingOrTrailingSpaces(control: AbstractControl): { [key: string]: boolean } | null {
+    if (control.value && (control.value.trim() !== control.value)) {
+      return { 'leadingOrTrailingSpaces': true };
+    }
+    return null;
   }
  
   setViewMode() {
@@ -158,29 +173,29 @@ export class ProvidersDetailComponent implements OnInit {
     } else if (currentRoute.includes("/detalle/")) {
       this.viewMode = "print";
     }
-    console.log("viewMode:", this.viewMode);
+    // console.log("viewMode:", this.viewMode);
   }
   getProvider() {
     this.showLoadingScreen = true;
-    console.log("Proveedor antes de cargar datos: ",this.provider)
+    // console.log("Proveedor antes de cargar datos: ",this.provider)
     if (this.viewMode == "print" || this.viewMode == "edit") {
       this.id = this.route.snapshot.params["id_provider"];
-      console.log(this.id);
+      // console.log(this.id);
 
       const providerId = parseInt(this.id, 10); // Convierte this.id a un número
 
       this._providersService.getProviderById(providerId).subscribe(
         (data) => {
-          console.log("Datos del proveedor", data);
+          // console.log("Datos del proveedor", data);
           this.provider = data;
           this.originalProvider = data;
           this.buildProvidersForm(this.provider);
-          console.log(this.provider);
-          console.log(this.originalProvider)
+          // console.log(this.provider);
+          // console.log(this.originalProvider)
           this.showLoadingScreen = false;
         },
         (error) => {
-          console.error("Error al obtener proveedor:", error);
+          // console.error("Error al obtener proveedor:", error);
           this.showLoadingScreen = false;
         }
       );
@@ -192,86 +207,108 @@ export class ProvidersDetailComponent implements OnInit {
     this.new_provider.state_provider = event.target.value;
   }
   handleNameProviderSelection(event: any) {
-    this.new_provider.name_provider = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.name_provider = event.target.value;
+    }
+    
     this.updatedFields.name_provider = event.target.value;
-    if (this.updatedFields.name_provider === null || this.updatedFields.name_provider === undefined || this.updatedFields.name_provider === ""){
-      console.log("Nombre vacio")
+    if (this.updatedFields.name_provider === null || this.updatedFields.name_provider === undefined || this.updatedFields.name_provider === "" && this.viewMode === "edit"){
+      // console.log("Nombre vacio")
       this.updatedFields.name_provider = this.originalProvider.name_provider;
-      console.log(this.updatedFields.name_provider)
+      // console.log(this.updatedFields.name_provider)
     }
   }
   handleNameContactSelection(event: any) {
-    this.new_provider.name_contact = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.name_contact = event.target.value;
+    }
+
+   
     this.updatedFields.name_contact = event.target.value;
-    if (this.updatedFields.name_contact === null || this.updatedFields.name_contact === undefined || this.updatedFields.name_contact === ""){
-      console.log("vacio")
+    if (this.updatedFields.name_contact === null || this.updatedFields.name_contact === undefined || this.updatedFields.name_contact === "" && this.viewMode === "edit"){
+      // console.log("vacio")
       this.updatedFields.name_contact = this.originalProvider.name_contact;
-      console.log(this.updatedFields.name_contact)
+      // console.log(this.updatedFields.name_contact)
     }
   }
   handleNitSelection(event: any) {
-    this.new_provider.nit_cedula = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.nit_cedula = event.target.value;
+    }
+    // console.log(this.new_provider.nit_cedula)
     this.updatedFields.nit_cedula = event.target.value;
-    console.log(this.updatedFields.name_contact)
-    if (this.updatedFields.nit_cedula === null || this.updatedFields.nit_cedula === undefined || this.updatedFields.nit_cedula === ""){
-      console.log(" vacio")
+    // console.log(this.updatedFields.nit_cedula)
+    if (this.updatedFields.nit_cedula === null || this.updatedFields.nit_cedula === undefined || this.updatedFields.nit_cedula === "" && this.viewMode === "edit"){
+      // console.log(" vacio")
       this.updatedFields.nit_cedula = this.originalProvider.nit_cedula;
-      console.log(this.updatedFields.nit_cedula)
+      // console.log(this.updatedFields.nit_cedula)
     }
   }
   handleMailSelection(event: any) {
-    this.new_provider.email_provider = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.email_provider = event.target.value;
+    }
+    
     this.updatedFields.email_provider = event.target.value;
-    if (this.updatedFields.email_provider === null || this.updatedFields.email_provider === undefined || this.updatedFields.email_provider === ""){
-      console.log(" vacio")
+    if (this.updatedFields.email_provider === null || this.updatedFields.email_provider === undefined || this.updatedFields.email_provider === "" && this.viewMode === "edit"){
+      // console.log(" vacio")
       this.updatedFields.email_provider = this.originalProvider.email_provider;
-      console.log(this.updatedFields.email_provider)
+      // console.log(this.updatedFields.email_provider)
     }
   }
   handleAddressSelection(event: any) {
-    this.new_provider.address_provider = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.address_provider = event.target.value;
+    }
+    
     this.updatedFields.address_provider = event.target.value;
-    console.log('Address Value:', event.target.value);
-    if (this.updatedFields.address_provider === null || this.updatedFields.address_provider === undefined || this.updatedFields.address_provider === ""){
-      console.log(" vacio")
+    // console.log('Address Value:', event.target.value);
+    if (this.updatedFields.address_provider === null || this.updatedFields.address_provider === undefined || this.updatedFields.address_provider === "" && this.viewMode === "edit"){
+      // console.log(" vacio")
       this.updatedFields.address_provider = this.originalProvider.address_provider;
-      console.log(this.updatedFields.address_provider)
+      // console.log(this.updatedFields.address_provider)
     }
   }
   handleObservationSelection(event: any) {
-    this.new_provider.observation_provider = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.observation_provider = event.target.value;
+    }
+    
     this.updatedFields.observation_provider = event.target.value;
-    console.log('Observation Value:', event.target.value);
+    // console.log('Observation Value:', event.target.value);
     if (this.formBasic.get('observation_provider').hasError('maxlength')) {
       this.formBasic.get('observation_provider').setErrors({ 'maxlength': true });
       this.observationError = "La observacion no puede ser mayor a 100 caracteres"
     }
-    if (this.updatedFields.observation_provider === null || this.updatedFields.observation_provider === undefined || this.updatedFields.observation_provider === ""){
-      console.log(" vacio")
+    if (this.updatedFields.observation_provider === null || this.updatedFields.observation_provider === undefined || this.updatedFields.observation_provider === "" && this.viewMode === "edit"){
+      // console.log(" vacio")
       this.updatedFields.observation_provider = this.originalProvider.observation_provider;
       console.log(this.updatedFields.observation_provider)
     }
   }
   handlePhoneSelection(event: any) {
-    this.new_provider.phone_provider = event.target.value;
+    if (event.target.value != undefined && this.viewMode === "new") {
+      this.new_provider.phone_provider = event.target.value;
+    }
+    
     this.updatedFields.phone_provider = event.target.value;
-    if (this.updatedFields.phone_provider === null || this.updatedFields.phone_provider === undefined || this.updatedFields.phone_provider === ""){
-      console.log(" vacio")
+    if (this.updatedFields.phone_provider === null || this.updatedFields.phone_provider === undefined || this.updatedFields.phone_provider === "" && this.viewMode === "edit"){
+      // console.log(" vacio")
       this.updatedFields.phone_provider = this.originalProvider.phone_provider;
-      console.log(this.updatedFields.phone_provider)
+      // console.log(this.updatedFields.phone_provider)
     }
   }
 
   createProvider() {
     const currentRoute = this.router.url;
-    console.log(currentRoute);
+    // console.log(currentRoute);
   
     if (currentRoute.includes('/registrar')) {
-      console.log(this.new_provider);
+      // console.log(this.new_provider);
   
       this._providersService.createProvider(this.new_provider).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
           this.loading = true;
           this.loading = false;
           this.toastr.success('Proveedor creado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
@@ -288,7 +325,7 @@ export class ProvidersDetailComponent implements OnInit {
           }
         
           this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
-          console.error("Error al crear el proveedor:", error);
+          // console.error("Error al crear el proveedor:", error);
         }
       );
     }
@@ -298,10 +335,10 @@ export class ProvidersDetailComponent implements OnInit {
   updateProvider() {
     const currentRoute = this.router.url;
     if (currentRoute.includes('/editar')) {
-      console.log('Updating: ', this.updatedFields)
+      // console.log('Updating: ', this.updatedFields)
       this._providersService.updateProvider(this.id, this.updatedFields).subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
           this.loading = true;
           this.loading = false;
           this.toastr.success('Proveedor actualizado con éxito.', 'Proceso Completado', { progressBar: true, timeOut: 3000 });
@@ -310,16 +347,15 @@ export class ProvidersDetailComponent implements OnInit {
         (error) => {
           this.loading = false;
           let backendErrorMessage: string;
-        
+      
           if (error.error && error.error.error) {
-            backendErrorMessage = error.error.error; // Access error message like this if it's available at error.error.error
+              backendErrorMessage = error.error.error; 
+              this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
           } else {
-            backendErrorMessage = error.message || error.toString(); // Otherwise, access it like this
+              backendErrorMessage = "Ya existe un proveedor con estos datos"; 
           }
-        
-          this.toastr.error(backendErrorMessage, 'Error', { progressBar: true });
-          console.error("Error al actualizar el proveedo:", error);
-        }
+      
+      }
       );
     }
   }

@@ -20,7 +20,6 @@ export class ComissionsDetailService {
   }
   getAllDetails(): Observable<any[]> {
     const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
-    console.log("Los headers", headers);
     return this.http.get<any[]>(this.baseUrl, { headers });
   }
 

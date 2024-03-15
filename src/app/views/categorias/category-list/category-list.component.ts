@@ -66,6 +66,24 @@ export class CategoryListComponent {
     });
   }
 
+  getCategoriesCancel() {
+    this.showLoadingScreen = false;
+    this._categoriesService.getAllCategory().subscribe(
+      (data) => {
+        this.listCategories = data;
+        this.filteredCategories = this.listCategories;
+        this.sortListCategoriesById();
+  
+      },
+      (error) => {
+        console.error("Error al obtener Categorías:", error);
+      }
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
+  }
+
   @ViewChild(DatatableComponent)
   table: DatatableComponent;
 
@@ -85,22 +103,27 @@ export class CategoryListComponent {
       return 0;
     });
   }
-
   searchCategory($event) {
+    const normalizeString = (str) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+  
     const value = ($event.target as HTMLInputElement).value;
-    if (value !== null && value !== undefined && value !== "") {
+    const normalizedValue = normalizeString(value);
+  
+    if (normalizedValue !== null && normalizedValue !== undefined && normalizedValue !== "") {
       this.filteredCategories = this.listCategories.filter(
         (c) =>
-          c.name_category.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
-          this.changeCategoryStateDescription(c.state_category)
+          normalizeString(c.name_category.toLowerCase()).indexOf(normalizedValue.toLowerCase()) !== -1 ||
+          normalizeString(this.changeCategoryStateDescription(c.state_category))
             .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1
+            .indexOf(normalizedValue.toLowerCase()) !== -1
       );
     } else {
       this.filteredCategories = this.listCategories;
     }
   }
-
+  
   changeCategoryStateDescription(state_category: boolean) {
     return state_category ? "Activo" : "Inactivo";
   }
@@ -154,7 +177,7 @@ export class CategoryListComponent {
                   timeOut: 2000,
                 }
               );
-              this.getCategories();
+        
               this.modalAbierto = false;
               this.reasonForm.get("reason_anulate").setValue(null);
             },
@@ -173,7 +196,7 @@ export class CategoryListComponent {
           );
       } else if (result === "Cancel" || (result && result.dismissedWith === 'cancel')) {
         this.reasonForm.get("reason_anulate").setValue(null);
-        this.getCategories();
+        this.getCategoriesCancel();
         this.modalAbierto = false;
 
       }

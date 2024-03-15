@@ -24,17 +24,20 @@
                             <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
                                 <div class="row">
 
-                                    <div *ngIf="viewMode == 'new'" class="row">
-                                        <label class="col-md-6 form-group  checkbox checkbox-primary">
-                                            <input type="checkbox" formControlName="enableFields"
-                                                (change)="toggleEnableFields()">
-                                            <span>Click si desea agregar un producto Existente </span>
-                                            <span class="checkmark"></span>
-
-                                        </label>
-                                        <div *ngIf="enableFields.value" class="col-md-6 form-group mb-3">
+                                    <div *ngIf="viewMode == 'new'" class="row" style="padding-right: 0px;">
+                                      
+                                        <div style="width: 37%; margin-bottom: 3%; margin-right: auto;">
+                                            <label class="checkbox checkbox-primary me-3">
+                                                <span>Click si desea agregar un producto Existente</span>
+                                                <input formControlName="enableFields" type="checkbox"
+                                                    (change)="toggleEnableFields()" />
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div *ngIf="enableFields.value" class="col-md-6 form-group mb-3 ml-3" style="padding-right: 0px;">
                                             <label for="id_product">Seleccionar producto</label>
                                             <select class="form-control" id="id_product"
+                                            style="width: 100% !important;"
                                                 (change)="handleProductSelection($event)"
                                                 [formControl]="productForm.get('id_product')">
 
@@ -56,7 +59,7 @@
                                         <label for="id_category">Categoría<span class="text-danger">*</span></label>
                                         <select class="form-control" id="id_category" formControlName="id_category"
                                             (change)="handleCategorySelection($event)">
-                                            <option value="" disabled selected>Seleccione la categoría</option>
+                                            <option value=""  selected>Seleccione la categoría</option>
                                             <option *ngFor="let category of activeCategories"
                                                 [value]="category.id_category">
 
@@ -71,7 +74,7 @@
                                     </div>
 
                                     <div class="col-md-6 form-group mb-3">
-                                        <label for="name_product">Nombre de producto<span
+                                        <label for="name_product">Nombre<span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="name_product"
                                             formControlName="name_product" required>
@@ -83,7 +86,7 @@
 
                                         <div *ngIf="productForm.get('name_product').hasError('invalidName')"
                                             class="error-message">
-                                            El campo nombre no puede tener espacios ni símbolos.
+                                            El campo nombre no puede tener espacios,numeros solos  ni símbolos.
                                         </div>
 
                                         <div
@@ -96,22 +99,25 @@
                                         <label for="quantity">Cantidad<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="quantity"
                                             formControlName="quantity"
-                                            onkeypress="return event.charCode >= 48 && event.charCode <= 57" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            onkeypress="return event.charCode >= 48 && event.charCode <= 57" min="0">
+
+                                        <div *ngIf="productForm.get('quantity').touched && productForm.get('quantity').hasError('required')"
+                                            class="error-message">
+                                            El campo cantidad es obligatorio.
+                                        </div>
                                     </div>
 
 
                                     <div class="col-md-2 form-group mb-3">
                                         <label for="max_stock">Stock Máximo<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="max_stock"
-                                            formControlName="max_stock" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            formControlName="max_stock" min="0">
                                         <div *ngIf="productForm.get('max_stock').touched && productForm.get('max_stock').hasError('required')"
                                             class="error-message">
                                             El campo stock máximo es obligatorio.
                                         </div>
                                         <div *ngIf="productForm.get('max_stock').hasError('min')" class="error-message">
-                                            El stock máximo no puede ser negativo.
+                                            El stock máximo no puede ser 0 o negativo.
                                         </div>
                                         <div *ngIf="productForm.get('max_stock').hasError('stockMinMax')"
                                             class="error-message">
@@ -119,17 +125,18 @@
                                         </div>
                                     </div>
 
+
+
                                     <div class="col-md-2 form-group mb-3">
                                         <label for="min_stock">Stock Mínimo<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="min_stock"
-                                            formControlName="min_stock" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            formControlName="min_stock" min="0">
                                         <div *ngIf="productForm.get('min_stock').touched && productForm.get('min_stock').hasError('required')"
                                             class="error-message">
                                             El campo stock mínimo es obligatorio.
                                         </div>
                                         <div *ngIf="productForm.get('min_stock').hasError('min')" class="error-message">
-                                            El stock mínimo no puede ser negativo.
+                                            El stock mínimo no puede ser 0 o  negativo.
                                         </div>
                                         <div *ngIf="productForm.get('min_stock').dirty && productForm.get('max_stock').dirty && productForm.hasError('invalidStockRange')"
                                             class="error-message">
@@ -138,7 +145,7 @@
                                     </div>
 
 
-                                    <div class="col-md-2 form-group mb-3">
+                                    <div class="col-md-2 form-group mb-4">
                                         <label for="cost_price">Precio de costo<span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="cost_price"
@@ -150,16 +157,15 @@
                                         </div>
                                         <div *ngIf="productForm.get('cost_price').hasError('min')"
                                             class="error-message">
-                                            El precio de costo no puede ser negativo.
+                                            El precio de costo no puede ser 0 o negativo.
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 form-group mb-3">
+                                    <div class="col-md-2 form-group mb-4">
                                         <label for="selling_price">Precio de venta<span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control small-input" id="selling_price"
-                                            formControlName="selling_price" min="0"
-                                            oninput="this.value = Math.abs(this.value)">
+                                            formControlName="selling_price" min="0">
                                         <div *ngIf="productForm.get('selling_price').touched && productForm.get('selling_price').hasError('required')"
                                             class="error-message">
                                             El campo precio de venta es obligatorio.
@@ -176,7 +182,7 @@
 
                                     <div *ngIf="viewMode === 'print' && productForm.get('state_product').value === 'Inactivo'"
                                         class="col-md-3 form-group mb-3">
-                                        <label for="reason_anulate">Razón de Anulación<span
+                                        <label for="reason_anulate">Razón de Cambio de Estado<span
                                                 class="text-danger">*</span></label>
                                         <input class="form-control" id="reason_anulate"
                                             formControlName="reason_anulate">
@@ -188,7 +194,7 @@
 
                                     </div>
                                     <div *ngIf="viewMode == 'print'" class="col-md-4 form-group mb-3">
-                                        <label for="creation_date_product">Fecha de creacion<span
+                                        <label for="creation_date_product">Fecha de Creación<span
                                                 class="text-danger">*</span></label>
                                         <input class="form-control" id="creation_date_product"
                                             formControlName="creation_date_product">

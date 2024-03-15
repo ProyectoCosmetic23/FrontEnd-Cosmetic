@@ -80,6 +80,22 @@ export class ProductListComponent implements OnInit {
     });
   }
 
+  getProductsCancel() {
+    this.showLoadingScreen = false;
+    this._productService.getAllProducts().subscribe(
+      (data) => {
+        this.listProducts = data;
+        this.filteredProducts = this.listProducts;
+        this.sortListProdcuctsById();
+      },
+      (error) => {
+        console.error("Error al obtener Productos:", error);
+      }
+      )
+      .add(() => {
+        this.showLoadingScreen = false;
+    });
+  }
   
 
   handleChange(event: any, row: any) {
@@ -133,22 +149,30 @@ export class ProductListComponent implements OnInit {
     this.loadData();
   }
  
-searchProduct($event) {
-  const value = ($event.target as HTMLInputElement).value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
-  if (value !== "") {
-    this.filteredProducts = this.listProducts.filter(
-      (product) =>
-        product.name_product.toLowerCase().includes(value) || // Buscar coincidencias parciales del nombre
-        (product.quantity && product.quantity.toString().toLowerCase().includes(value)) || // Buscar coincidencias parciales de la cantidad
-        (product.cost_price && product.cost_price.toString().toLowerCase().includes(value)) || 
-        (product.state_product.toLowerCase().slice(0, 3) === value.toLowerCase() || product.state_product.toLowerCase() === value.toLowerCase()) || // Buscar coincidencias de estado
-        (this.categories[product.categoryId] && (this.categories[product.categoryId].toLowerCase().includes(value) || this.categories[product.categoryId].toLowerCase() === value.toLowerCase() || this.categories[product.categoryId].toLowerCase().startsWith(value.toLowerCase()))) // Buscar coincidencias del nombre de la categoría
-    );
-  } else {
-    this.filteredProducts = this.listProducts;
+  searchProduct($event) {
+    const normalizeString = (str: string) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+  
+    const value = ($event.target as HTMLInputElement).value.trim().toLowerCase(); // Eliminar espacios en blanco y convertir a minúsculas
+    const normalizedValue = normalizeString(value);
+  
+    if (normalizedValue !== "") {
+      this.filteredProducts = this.listProducts.filter(
+        (product) =>
+          normalizeString(product.name_product.toLowerCase()).includes(normalizedValue) || // Buscar coincidencias parciales del nombre
+          (product.quantity && product.quantity.toString().toLowerCase().includes(normalizedValue)) || // Buscar coincidencias parciales de la cantidad
+          (product.cost_price && product.cost_price.toString().toLowerCase().includes(normalizedValue)) || 
+          (normalizeString(product.state_product.toLowerCase()).slice(0, 3) === normalizedValue || normalizeString(product.state_product.toLowerCase()) === normalizedValue) || // Buscar coincidencias de estado
+          (this.categories[product.categoryId] && (normalizeString(this.categories[product.categoryId].toLowerCase()).includes(normalizedValue) || normalizeString(this.categories[product.categoryId].toLowerCase()) === normalizedValue || normalizeString(this.categories[product.categoryId].toLowerCase()).startsWith(normalizedValue))) // Buscar coincidencias del nombre de la categoría
+      );
+    } else {
+      this.filteredProducts = this.listProducts;
+    }
+  
+    this.loadData();
   }
-  this.loadData();
-}
+  
 
   
   openRetireModal(productId: number, productValue: number, content: any): void {
@@ -207,7 +231,6 @@ searchProduct($event) {
   getCategoryById(categoryId: number) {
     this._productService.getCategoryById(categoryId).subscribe(
         (category) => {
-            console.log('Categoría obtenida:', category);
             // Encuentra el producto correspondiente en la lista de productos
             const productToUpdate = this.listProducts.find(p => p.id_category === categoryId);
             // Si se encuentra el producto, actualiza el nombre de la categoría
@@ -222,10 +245,7 @@ searchProduct($event) {
 }
 
 isNearMinimum(product: any): boolean {
-  console.log('Cantidad:', product.quantity);
-  console.log('Stock mínimo:', product.stockMinimo);
   const nearMinimum = product.quantity <= product.stockMinimo;
-  console.log('¿Está cerca del mínimo?', nearMinimum);
   return nearMinimum;
 }
 
@@ -267,7 +287,7 @@ isNearMinimum(product: any): boolean {
                     "Proceso Completado",
                     { progressBar: true, timeOut: 2000 }
                   );
-                  this.getProducts();
+                  this.reasonAnulate = '';
                   this.modalAbierto = false;
                 },
                 (error) => {
@@ -286,7 +306,7 @@ isNearMinimum(product: any): boolean {
         (reason) => {
           // Manejar la cancelación del modal aquí
           this.reasonAnulate = '';
-          this.getProducts();
+          this.getProductsCancel();
           this.modalAbierto = false;
         }
       );

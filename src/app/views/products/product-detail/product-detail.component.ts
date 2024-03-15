@@ -99,12 +99,12 @@ export class ProductDetailComponent implements OnInit {
         [Validators.required, Validators.maxLength(80)],
         [this.validateNameSimbolAndNumber],
       ],
-      quantity: [0], // Establece el valor inicial en 0
-      max_stock: [0, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
-      min_stock: [0, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      quantity: [null, [Validators.required]], // Establece el valor inicial en 0
+      max_stock: [null, [Validators.required, Validators.min(1), this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      min_stock: [null, [Validators.required, Validators.min(1), this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
       profit: [],
-      cost_price: [0, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
-      selling_price: [0, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
+      cost_price: [null, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
+      selling_price: [null, [Validators.required, Validators.min(1)]], // Establece el valor inicial en 0 y agrega validador mínimo
       observation: ["", [Validators.maxLength(100)]],
       state_product: [],
       creation_date_product: [],
@@ -298,7 +298,7 @@ export class ProductDetailComponent implements OnInit {
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
-    const combinedPattern = /^[A-Za-záéíóúñÑ´\d]+\s?(?:\s[A-Za-záéíóúñÑ´\d]+)*$/;
+    const combinedPattern = /^(?!.*\s{2})[A-Za-záéíóúñÑ´](?:[A-Za-záéíóúñÑ´\d]*[A-Za-záéíóúñÑ´\d])?(\s[A-Za-záéíóúñÑ´\d]+)*$/;
   
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -309,7 +309,8 @@ export class ProductDetailComponent implements OnInit {
         }
       }, 0);
     });
-  }
+}
+
   
   
   
@@ -374,16 +375,24 @@ export class ProductDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Producto modificado con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
+        if (this.viewMode === 'new') {
+          this.toastr.success("Producto registrado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else if (this.viewMode === 'edit') {
+          this.toastr.success("Producto modificado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         setTimeout(() => {
           this.router.navigateByUrl("/products");
         });
       });
     }
   }
+  
 
 
 

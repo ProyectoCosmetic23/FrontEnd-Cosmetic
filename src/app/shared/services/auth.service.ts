@@ -9,6 +9,7 @@ import { RolesService } from "./roles.service";
 import { AuthStatus, LoginResponse, User } from "../interfaces";
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
+import { NavigationService } from "./navigation.service";
 
 @Injectable({
   providedIn: "root",
@@ -35,6 +36,7 @@ export class AuthService {
     private cookieService: CookieService,
     private toastr: ToastrService,
     private rolesService: RolesService,
+    private navigationService: NavigationService,
     private router: Router
   ) {}
 
@@ -98,8 +100,6 @@ export class AuthService {
       switchMap((status) => {
         if (status === AuthStatus.authenticated) {
           // Si el estado es "authenticated", regenera un nuevo token aquí
-          console.log("Regenerating token...");
-
           // Después de regenerar el token, actualiza el estado de autenticación
           this._authStatus.next(AuthStatus.authenticated);
 
@@ -141,6 +141,7 @@ export class AuthService {
             progressBar: true,
             timeOut: 3000,
           });
+          this.navigationService.validateUserModulesPermission();
           return of(true);
         } else {
           return throwError("Error al autenticar al usuario.");
@@ -164,7 +165,6 @@ export class AuthService {
       const roleResponse = await this.rolesService
         .getRoleById(storedUser.id_role)
         .toPromise();
-
       // Verifica si el permissionName está presente en alguno de los módulos del rol
       const hasPermission =
         roleResponse.modules_role.find(
@@ -197,7 +197,6 @@ export class AuthService {
 
   changePassword(token: string, newPassword: string): Observable<any> {
     const url = `${this.baseUrl}/api/change-password/${token}`;
-    console.log(url);
     const body = { token, newPassword };
 
     return this.http.post(url, body).pipe(
@@ -218,5 +217,13 @@ export class AuthService {
     this.cookieService.deleteAll("token");
     sessionStorage.removeItem(this.userSessionStorageKey);
     this.router.navigate(["/sessions/signin"]);
+    this.navigationService.cleanItems();
+  }
+
+
+  //Metodo para ocultar el usuario logueado en la lista de usuarios
+  getCurrentUser(): User | null {
+    const storedUser = sessionStorage.getItem(this.userSessionStorageKey);
+    return storedUser ? JSON.parse(storedUser) : null;
   }
 }

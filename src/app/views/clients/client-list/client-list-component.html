@@ -45,7 +45,7 @@
 
                 <ngx-datatable-column name="nit_or_id_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                     <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Cédula o nit</p>
+                        <p style="font-size:15px;">Cédula o NIT</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         {{ row.nit_or_id_client }}
@@ -53,7 +53,7 @@
                 </ngx-datatable-column>
                 <ngx-datatable-column name="name_client" [resizeable]="false" [canAutoResize]="true" [minWidth]="200">
                     <ng-template ngx-datatable-header-template>
-                        <p style="font-size:15px;">Nombres</p>
+                        <p style="font-size:15px;">Nombre Completo</p>
                     </ng-template>
                     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
                         <div style="white-space: pre-line;">
@@ -87,7 +87,7 @@
                         <button ngbTooltip="Ver Detalle" class="btn btn-dark m-1 btn-sm" [routerLink]="['/clients/print', row.id_client]">
                             <i class="i-Eye"></i>
                         </button>
-                        <button ngbTooltip="Editar" class="btn btn-info m-1 btn-sm" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
+                        <button ngbTooltip="Modificar" class="btn btn-info m-1 btn-sm" [routerLink]="['/clients/edit', row.id_client]" [disabled]="row.state_client == 'Inactivo'">
                             <i class="i-Pen-4"></i>
                         </button>
                         <label bTooltip="Cambiar estado" class="switch switch-success btn-sm" (change)="handleChange($event, row)" (click)="openModal(row.id_client)">
@@ -103,41 +103,45 @@
     </div>
 </div>
 
+
+
 <ng-template #deleteConfirmModal let-modal>
-    <!-- <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar estado cliente</h4>
-
+    <div class="modal-header" [closable]="false">
+      <h4 class="modal-title" id="modal-title">Cambiar estado del cliente</h4>
     </div>
     <div class="modal-body">
-        <p><strong>¿Está seguro de cambiar el estado del cliente?</strong></p>
+      <p>
+        <strong
+          >¿Está seguro de que desea cambiar el estado de este cliente?</strong
+        >
+      </p>
+      <label for="reasonAnulate">Razón de cambio de estado:</label>
+      <textarea
+        id="reasonAnulate"
+        class="form-control"
+        placeholder="Ingrese la razón de cambio de estado"
+        [(ngModel)]="reasonAnulate"
+        style="resize: none"
+        rows="5"
+      ></textarea>
+    </div>
 
-    </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger ml-2"
-            (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-primary -m1 custom-button"
-            (click)="modal.close('Ok')">Aceptar</button>
-    </div> -->
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar estado del cliente</h4>
-      
+      <button
+        type="button"
+        class="btn  btn-danger"
+        (click)="modal.dismiss('cancel')"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        ngbAutofocus
+        class="btn btn-primary"
+        (click)="modal.close('Ok')"
+        [disabled]="reasonAnulate == ''"
+      >
+        Aceptar
+      </button>
     </div>
-    <div class="modal-body">
-        <p><strong>¿Está seguro de que desea cambiar el estado del cliente?</strong></p>
-        <form [formGroup]="reasonForm">
-            <div class="col-md-12 form-group mb-3">
-                <label for="reason_anulate">Razón de cambio de estado</label>
-                <textarea class="form-control" placeholder="Ingrese la razón de cambio de estado" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'" rows="5"></textarea>
-                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
-                  El campo supera los 100 caracteres.
-              </div>
-              </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn"
-            (click)="modal.dismiss('Cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
-            (click)="modal.close('Ok')" [disabled]="!this.reasonForm.valid">Aceptar</button>
-    </div>
-</ng-template>
+  </ng-template>

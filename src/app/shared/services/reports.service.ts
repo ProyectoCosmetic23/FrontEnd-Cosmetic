@@ -8,8 +8,6 @@ import { environment } from 'src/environments/environment';
 })
 export class ReportService {
     url = environment.url + '/api/';
-    urlPrediccion = 'https://cosmeticproyecto.pythonanywhere.com/get_top_products'
-
     constructor(private http: HttpClient) { }
 
     getReportProducts(report_is_yearly:boolean, year_data:number, month_data:number): Observable<any> {
@@ -28,8 +26,5 @@ export class ReportService {
         return this.http.get(`${this.url}report-employees?report_is_yearly=${report_is_yearly}&&year_data=${year_data}&&month_data=${month_data}`);
     }
 
-    getPredictions(){
-       return this.http.get(this.urlPrediccion)
-    }
 
 }

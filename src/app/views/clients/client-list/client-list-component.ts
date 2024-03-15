@@ -23,7 +23,7 @@ export class ClientListComponent implements OnInit {
   listClients: any[] = [];
   filteredClients: any[] = [];
   reasonForm: FormGroup;
-  reasonAnulate = {};
+  reasonAnulate = '';
   pageSize: number = 10;
   currentPage: number = 1;
   countLabel: number;
@@ -49,18 +49,7 @@ export class ClientListComponent implements OnInit {
   
   }
 
-  // getClients() {
-  //   this._clientService.getAllClients().subscribe(
-  //     (data) => {
-  //       this.listClients = data.sort((a, b) => a.id_client - b.id_client);
-  //       this.filteredClients = [...this.listClients];
-  //       this.sortListClients();
-  //     },
-  //     (error) => {
-  //       console.log(error);
-  //     }
-  //   );
-  // }
+  
 
   getClients() {
     this.showLoadingScreen = true;
@@ -72,7 +61,25 @@ export class ClientListComponent implements OnInit {
   
       },
       (error) => {
-        console.error("Error al obtener Categorías:", error);
+        console.error("Error al obtener Clientes:", error);
+      }
+    )
+    .add(() => {
+      this.showLoadingScreen = false; // Establecer en false después de la carga
+    });
+  }
+
+  
+  getClientsCancel() {
+    this._clientService.getAllClients().subscribe(
+      (data) => {
+        this.listClients = data;
+        this.filteredClients = [...this.listClients];
+        this.sortListClients();
+  
+      },
+      (error) => {
+        console.error("Error al obtener Clientes:", error);
       }
     )
     .add(() => {
@@ -102,44 +109,33 @@ export class ClientListComponent implements OnInit {
   }
 
 
-  // filterData(value: string) {
-  //   if (value) {
-  //     value = value.toLowerCase();
-  //   } else {
-  //     this.filteredClients = [...this.listClients];
-  //     return;
-  //   }
-
-  //   this.filteredClients = this.listClients.filter((client) => {
-  //     const nombreMatch = client.name_client.toLowerCase().includes(value);
-  //     const correoMatch = client.email_client.toLowerCase().includes(value);
-  //     const estadoMatch = client.state_client.toLowerCase().includes(value);
-
-  //     return nombreMatch || correoMatch || estadoMatch;
-  //   });
-
-  //   this.currentPage = 1;
-  // }
   searchCategory($event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value !== null && value !== undefined && value !== "") {
+      const normalizedValue = this.normalizeString(value);
+  
       this.filteredClients = this.listClients.filter(
         (c) =>
-          c.name_client.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
+          this.normalizeString(c.name_client).toLowerCase().includes(normalizedValue.toLowerCase()) ||
           c.nit_or_id_client.includes(value) ||
           c.email_client.includes(value) ||
-          
-          this.changeCategoryStateDescription(c.state_client)
-            .toLowerCase()
-            .indexOf(value.toLowerCase()) !== -1)
+          this.normalizeString(c.last_name_client).toLowerCase().includes(normalizedValue.toLowerCase()) ||
+          this.normalizeString(c.state_client).toLowerCase().includes(normalizedValue.toLowerCase()) ||
+          this.normalizeString(this.changeClientStateDescription(c.state_client)).toLowerCase().includes(normalizedValue.toLowerCase())
+      );
     } else {
       this.filteredClients = this.listClients;
     }
   }
+  
+  private normalizeString(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+  
 
 
-  changeCategoryStateDescription(state_category: boolean) {
-    return state_category ? "Activo" : "Inactivo";
+  changeClientStateDescription(state_client: boolean) {
+    return state_client ? "Activo" : "Inactivo";
   }
 
 
@@ -158,57 +154,55 @@ export class ClientListComponent implements OnInit {
   }
 
   handleChange(event: any, row: any) {
-    row.state_category = event.target.checked ? 'Activo' : 'Inactivo';
+    row.state_client = event.target.checked ? 'Activo' : 'Inactivo';
  
   }
 
 
 
+
+
   @ViewChild("deleteConfirmModal", { static: true }) deleteConfirmModal: any;
 
-  openModal(idClient: number, $event?: any) {
+  openModal(idClient: number) {
     if (!this.modalAbierto) {
       this.modalAbierto = true;
       this.modalService
-        .open(this.deleteConfirmModal, { centered: true , backdrop: 'static', keyboard: false })
+        .open(this.deleteConfirmModal, {  centered: true,backdrop: 'static', keyboard: false})
         .result.then(
           (result) => {
             if (result === "Ok") {
-              const isChecked = ($event?.target as HTMLInputElement)?.checked;
-              const reasonAnulate = this.reasonForm.get("reason_anulate").value;
-
-              this._clientService.clientChangeStatus(idClient,reasonAnulate ).subscribe(
-                (data) => {
-                   this.loading = false;
-                   this.toastr.success('Cambio de estado realizado con éxito.', 'Proceso Completado', 
-                   { 
-                    progressBar: true,
-                     timeOut: 2000 
-                    }
+              // Modifica la llamada al servicio para enviar la razón de anulación
+              this._clientService
+                .clientChangeStatus(idClient,  this.reasonAnulate)
+                .subscribe(
+                  (data) => {
+                    this.loading = false;
+                    this.toastr.success(
+                      "Cambio de estado realizado con éxito.",
+                      "Proceso Completado",
+                      { progressBar: true, timeOut: 2000 }
                     );
-                    this.getClients();
+                    this.getClientsCancel();
                     this.modalAbierto = false;
-                    this.reasonForm.get("reason_anulate").setValue(null);
-
-                },
-                (error) => {
-                  this.loading = false;
-                  this.toastr.error(
-                    "Fallo al realizar el cambio de estado.",
-                    "Error",
-                    { progressBar: true, timeOut: 2000 }
-                  );
-                  console.error("Error al cambiar de estado:", error);
-                }
-              );
-            } else if (result === "Cancel") {
-              this.modalAbierto = false;
-            
+                  },
+                  (error) => {
+                    this.loading = false;
+                    this.toastr.error(
+                      "Fallo al realizar el cambio de estado.",
+                      "Error",
+                      { progressBar: true, timeOut: 2000 }
+                    );
+                    console.error("Error al cambiar de estado:", error);
+                  }
+                );
             }
           },
           (reason) => {
+            // Manejar la cancelación del modal aquí
+            this.reasonAnulate = '';
+           this.getClients();
             this.modalAbierto = false;
-        
           }
         );
     }

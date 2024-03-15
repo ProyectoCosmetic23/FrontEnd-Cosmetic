@@ -45,6 +45,7 @@ export class UserDetailComponent implements OnInit {
   id_card_employeeString: any;
   name_employeeString: any;
   name_roleString: any;
+  
 
   constructor(
     private formBuilder: FormBuilder,
@@ -56,7 +57,7 @@ export class UserDetailComponent implements OnInit {
     private employeeService: EmployeesService,
     private rolesService: RolesService,
     private _authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._authService.validateUserPermissions("Usuarios");
@@ -69,7 +70,11 @@ export class UserDetailComponent implements OnInit {
 
   searchEmployeeByEmail() {
     const idCard = this.userForm.get("id_card_employee").value;
-
+    this.userForm.patchValue({
+      email: '',
+      id_employee: '',
+      name_employee: '',
+    }); 
     if (idCard) {
       this.usersService.getEmployeeByEmail(idCard).subscribe(
         (data: any) => {
@@ -78,32 +83,41 @@ export class UserDetailComponent implements OnInit {
             id_employee: data.id_employee,
             name_employee: data.name_employee,
           });
-          console.log(data.email);
-          console.log(data.id_employee);
-          console.log(data.name_employee);
 
-          this.employeeNotFoundMessage = ""; // Reinicia el mensaje si se encontró el empleado
+          if (data.status == 404) {
+            this.employeeNotFoundMessage = "No se encontró el empleado.";
+          } else if (data.status == 403) {
+            this.employeeNotFoundMessage = "Ya existe un usuario para el empleado.";
+          } else {
+            this.employeeNotFoundMessage = "";
+          }
         },
         (error: any) => {
-          console.error("Error al obtener el correo del empleado:", error);
-          this.employeeNotFoundMessage = "El empleado ya tiene un usuario"; // Establece el mensaje si no se encuentra el empleado
-          // Manejo de errores si es necesario
+          this.employeeNotFoundMessage = "Error al realizar la petición.";
         }
       );
     }
   }
+  clearEmployeeValidation() {
+    this.employeeNotFoundMessage = ''; 
+   
+  }
+  
+
+
 
   private inicializateForm(id: number): void {
     this.userForm = this.formBuilder.group({
       id_user: [],
       id_role: ["", [Validators.required]],
       id_employee: [],
-      username: ["", [Validators.required, Validators.maxLength(80)]],
+      username: ["", [Validators.required, Validators.maxLength(15), Validators.minLength(3)]],
       email: ["", [Validators.email]],
       observation_user: ["", [Validators.maxLength(100)]],
       state_user: [],
+      reason_anulate: [""],
       creation_date_user: [],
-      password: ["", [Validators.required]],
+      password: ["", [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
       name_employee: [""],
       name_role: [""],
       id_card_employee: [
@@ -111,7 +125,7 @@ export class UserDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(10),
-          Validators.minLength(7),
+          Validators.minLength(6),
           Validators.pattern("^[0-9]+$"),
         ],
       ],
@@ -120,11 +134,17 @@ export class UserDetailComponent implements OnInit {
     if (this.viewMode == "print") {
       this.userForm.disable();
     }
+    if (this.viewMode == "new") {
+      
+      this.email.disable();
+      this.name_employee.disable();
+
+    }
 
     if (this.viewMode != "new") {
       this.getUserByID(id);
-      this.email.disable();
-      this.id_card_employee.disable();
+      // this.email.disable();
+      // this.id_card_employee.disable();
     }
 
     if (this.viewMode != "new" && this.viewMode != "print") {
@@ -142,7 +162,9 @@ export class UserDetailComponent implements OnInit {
   loadRoles() {
     this.usersService.getAllRoles().subscribe(
       (data) => {
-        this.listRoles = data;
+        // Filtra solo los roles con estado 'Activo'
+        this.listRoles = data.filter((role) => role.state_role === 'Activo');
+  
         const roleIdString = this.route.snapshot.paramMap.get("id_role");
         const roleId = Number(roleIdString);
         this.getRoleName(roleId);
@@ -167,14 +189,11 @@ export class UserDetailComponent implements OnInit {
           role: this.rolesService.getRoleById(response.id_role),
         }).subscribe(
           ({ employee, role }) => {
-            console.log(employee);
-            console.log(role);
-
+         
             response.name_employee = employee.name_employee;
             response.id_card_employee = employee.id_card_employee;
             response.name_role = role.name_role;
 
-            console.log(response);
             this.userData = new UserFormModel(response);
             this.setDataUser();
 
@@ -217,6 +236,7 @@ export class UserDetailComponent implements OnInit {
           this.submit();
         },
         (error) => {
+         
           this.loading = false;
           console.error("Error al crear el usuario: ", this.toastr.error);
           const errorMessage = error.error
@@ -351,7 +371,9 @@ export class UserDetailComponent implements OnInit {
   }
 
   public submitUser(): void {
-    if (this.viewMode == "new") {
+    const userData = this.userForm.value;
+    if (this.viewMode == "new"  && this.email.disabled) {
+      userData.email = this.email.value;
       this.createUser();
     } else if (this.viewMode == "edit") {
       this.saveChanges();
@@ -364,6 +386,7 @@ export class UserDetailComponent implements OnInit {
       const updatedData = {
         username: this.userForm.get("username").value,
         password: this.userForm.get("password").value,
+        id_role: this.userForm.get("id_role").value,
         email: this.email.value,
         observation_user: this.userForm.get("observation_user").value,
       };
@@ -386,10 +409,17 @@ export class UserDetailComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.toastr.success("Usuario registrado con éxito.", "Éxito", {
-          progressBar: true,
-          timeOut: 3000,
-        });
+        if (this.viewMode === "new") {
+          this.toastr.success("Usuario registrado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        } else if (this.viewMode === "edit") {
+          this.toastr.success("Usuario modificado con éxito.", "Éxito", {
+            progressBar: true,
+            timeOut: 3000,
+          });
+        }
         setTimeout(() => {
           this.router.navigateByUrl("/users");
         });
@@ -407,6 +437,8 @@ export class UserDetailComponent implements OnInit {
       this.viewMode = "print";
     }
   }
+
+  
 
   get email() {
     return this.userForm.get("email");

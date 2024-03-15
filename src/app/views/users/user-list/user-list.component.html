@@ -72,7 +72,7 @@
               [minWidth]="200"
             >
               <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Nombre usuario</p>
+                <p style="font-size: 15px">Nombre Usuario</p>
               </ng-template>
               <ng-template
                 ngx-datatable-cell-template
@@ -89,7 +89,7 @@
               [canAutoResize]="true"
             >
               <ng-template ngx-datatable-header-template>
-                <p style="font-size: 15px">Cédula empleado</p>
+                <p style="font-size: 15px">Cédula Empleado</p>
               </ng-template>
               <ng-template ngx-datatable-cell-template let-row="row">
                 {{ row.id_card_employee }}
@@ -157,7 +157,7 @@
                   <i class="i-Eye"></i>
                 </button>
                 <button
-                  ngbTooltip="Editar"
+                  ngbTooltip="Modificar"
                   class="btn btn-info m-1"
                   [routerLink]="['/users/edit', row.id_user]"
                   [disabled]="row.state_user === 'Inactivo'"
@@ -165,7 +165,7 @@
                   <i class="i-Pen-4"></i>
                 </button>
                 <label
-                  ngbTooltip="Cambiar estado"
+                  ngbTooltip="Cambiar Estado"
                   class="switch switch-success me-3"
                   (click)="openFirstModal(row.id_user)"
                 >
@@ -186,30 +186,28 @@
 </div>
 
 <ng-template #deleteConfirmModal let-modal>
-   
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-title">Cambiar estado del usuario</h4>
-      
-    </div>
-    <div class="modal-body">
-        <p><strong>¿Está seguro de que desea cambiar el estado del usuario?</strong></p>
-        <form [formGroup]="reasonForm">
-            <div class="col-md-6 form-group mb-3">
-                <label for="reason_anulate">Motivo de cambio de estado</label>
-                <textarea class="form-control" id="reason_anulate" formControlName="reason_anulate" [style.resize]="'none'"></textarea>
-                <div *ngIf="reasonForm.get('reason_anulate').touched && reasonForm.get('reason_anulate').hasError('maxlength')"class="error-message">
-                  El campo supera los 100 caracteres.
-              </div>
-              </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn"
-            (click)="modal.dismiss('cancel')">Cancelar</button>
-        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn"
-            (click)="modal.close('Ok')">Aceptar</button>
-    </div>
+  <div class="modal-header" [closable]="false">
+    <h4 class="modal-title" id="modal-title">Cambiar Estado del Usuario</h4>
+  </div>
+  <div class="modal-body">
+    <p>
+      <strong>¿Está seguro de que desea cambiar el estado de este Usuario?</strong>
+    </p>
+    <label for="reasonAnulate">Razón de Cambio de estado:</label>
+    <textarea id="reasonAnulate" class="form-control" placeholder="Ingrese la razón de cambio de estado"
+      [(ngModel)]="reasonAnulate" style="resize: none" rows="5"></textarea>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn  btn-danger" (click)="modal.close('Cancel')">
+      Cancelar
+    </button>
+    <button type="button" ngbAutofocus class="btn btn-primary" (click)="modal.close('Ok')"
+      [disabled]="reasonAnulate == ''">
+      Aceptar
+    </button>
+  </div>
 </ng-template>
+
 
 <ng-template #changeModal let-modal>
   <div class="modal-header">
@@ -221,7 +219,7 @@
   <div class="modal-footer">
     <button
       type="button"
-      class="btn btn-outline-secondary btn"
+      class="btn btn-wide btn-danger btn"
       (click)="modal.dismiss('No')"
     >
       No
@@ -229,11 +227,12 @@
     <button
       type="button"
       ngbAutofocus
-      class="btn btn-wide btn-danger btn"
+      class="btn btn-wide btn-primary btn"
       (click)="modal.close('Ok')"
+      [disabled]="reasonAnulate == ''"
     >
       Sí
     </button>
   </div>
-    </ng-template
+  </ng-template
 >

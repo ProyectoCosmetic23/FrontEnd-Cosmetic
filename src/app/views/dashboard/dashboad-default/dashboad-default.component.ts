@@ -76,7 +76,7 @@ export class DashboadDefaultComponent implements OnInit {
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
-  this.getReportProductsPrediccion();
+
 
 }
 
@@ -84,56 +84,37 @@ export class DashboadDefaultComponent implements OnInit {
 
 onCheckboxChange(event: any) {
   this.isChecked = event.target.checked;
-  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
-  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
-  console.log('Checkbox state changed. isChecked:', this.isChecked);
+
   // Resto del código...
   this.getReportProducts();
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
-  this.getReportProductsPrediccion();
+
 }
 
 
 onMonthChangeYear(event: any) {
   this.selectedYear = event.target.value;
-  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
-  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
-  console.log("Año seleccionado:", this.selectedYear);
+ 
   // Resto del código...
   this.getReportProducts();
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
-  this.getReportProductsPrediccion();
+
 }
 
 onMonthChangeMonth(event: any) {
   this.selectedMonth = event.target.value;
   this.selectedMonth2 = event.target.value;
-  
-  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
-  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
-  console.log("Mes seleccionado:", this.selectedMonth);
+
   // Resto del código...
   this.getReportProducts();
   this.getReportCreditSales();
   this.getReportCards();
   this.getReportEmployees();
-  this.getReportProductsPrediccion();
-}
 
-onMonthChangeMonth2(event: any) {
-  this.selectedMonth2 = event.target.value;
-  
-  // Asegúrate de tener algún lugar donde obtienes el valor del año (podría ser otro elemento select)
-  // this.selectedYear = ...; // Asigna el valor del año adecuado aquí
-  console.log("Mes seleccionado:", this.selectedMonth2);
-
-
-this.getReportProductsPrediccion();
-  
 }
 
 
@@ -491,81 +472,6 @@ buildReportEmployeesChartBar(dataNames: any, dataValues: any, dataCommissions: a
           },
           valueAnimation: true,
           color: "#0168c1",
-        },
-      },
-    ],
-  };
-}
-
-
-getReportProductsPrediccion() {
-  
-  this.reportService.getPredictions().subscribe({
-    next: (response: any) => {
-      const months = Object.keys(response);
-      const selectedMonth = this.selectedMonth2 || '1_2024';
-      const topProducts = response[selectedMonth].top_products;
-      const data = Object.keys(topProducts).map(productName => {
-        return {
-          value: topProducts[productName],
-          name: productName,
-        };
-      });
-
-      this.buildReportPrediccionChartPie(data, selectedMonth);
-      
-    }
-  });
-}
-
-
-buildReportPrediccionChartPie(data: any , selectedMonth: string ) {
-  this.prediccionChartPie = {
-    color: ["#62549c", "#7566b5", "#7d6cbb", "#8877bd", "#9181bd", "#6957af"],
-    tooltip: {
-      show: true,
-      backgroundColor: "rgba(0, 0, 0, .8)",
-      textStyle: {
-        color: "white",
-      },
-    },
-    xAxis: [
-      {
-        axisLine: {
-          show: false,
-        },
-        splitLine: {
-          show: false,
-        },
-      },
-    ],
-    yAxis: [
-      {
-        axisLine: {
-          show: false,
-        },
-        splitLine: {
-          show: false,
-        },
-      },
-    ],
-    series: [
-      {
-        name: 'Productos',
-        type: 'pie',
-        radius: '55%',
-        center: ['50%', '60%'],
-        data: data,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
-        },
-        label: {
-          show: true,
-          formatter: '{b} : {c} ({d}%)',
         },
       },
     ],

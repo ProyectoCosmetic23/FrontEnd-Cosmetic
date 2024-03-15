@@ -74,6 +74,8 @@ export class SigninComponent implements OnInit {
 
   login() {
     const { email, password } = this.myForm.value;
+    this.loading = true;
+    this.loadingText = 'Iniciando sesión...';
     this.authService.login(email, password).subscribe({
       next: (response: any) => {
         if (!response) {
@@ -86,6 +88,7 @@ export class SigninComponent implements OnInit {
             progressBar: true,
             timeOut: 3000,
           });
+          this.loading = false; // Detener el spinner de carga en caso de error
           return;
         }
   
@@ -105,11 +108,12 @@ export class SigninComponent implements OnInit {
         }
       },
       error: (errorMessage: any) => {
-        console.error("Error del servidor:", errorMessage);
+        // Manejar errores de solicitud
         this.toastr.error(errorMessage, "Error de validación", {
           progressBar: true,
           timeOut: 3000,
         });
+        this.loading = false; // Detener el spinner de carga en caso de error
       },
     });
   }

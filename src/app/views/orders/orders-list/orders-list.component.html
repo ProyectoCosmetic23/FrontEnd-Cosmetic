@@ -344,37 +344,30 @@
       [(ngModel)]="message_observation" class="form-control" style="resize: none" rows="5"></textarea>
   </div>
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-danger btn"
-      (click)="modal.dismiss('cancel')"
-    >
+    <button type="button" class="btn btn-danger btn" (click)="modal.dismiss('cancel')">
       Cancelar
     </button>
-    <button
-      type="button"
-      [disabled]="!message_observation && usage != 'Enviar' "
-      ngbAutofocus
-      class="btn btn-wide btn-primary btn"
-      (click)="modal.close('Ok')"
-    >
+    <button type="button" [disabled]="!message_observation && usage != 'Enviar' " ngbAutofocus
+      class="btn btn-wide btn-primary btn" (click)="modal.close('Ok')">
       Aceptar
     </button>
   </div>
 </ng-template>
 
 <ng-template #paymentModal let-modal>
-  <ul class="nav nav-tabs">
-    <li class="nav-item" (click)="activTab = 'formulario'" style="cursor: pointer">
+  <ul class="nav nav-tabs" style="display: flex;">
+    <li class="nav-item" (click)="activTab = 'formulario'" style="cursor: pointer; margin-top: 1%;">
       <a class="nav-link" [class.active]="activTab === 'formulario'">Registrar pago</a>
+      <i class="i-Financial paym-icon" style="font-size: 2.1em">+</i> 
     </li>
-    <li class="nav-item" (click)="activTab = 'abonos'" style="cursor: pointer">
+    <li class="nav-item" (click)="activTab = 'abonos'" style="cursor: pointer; margin-top: 1%;">
       <a class="nav-link" [class.active]="activTab === 'abonos'">Pagos registrados</a>
+      <i class="i-Receipt abn-icon" style="font-size: 2.1em"></i> 
     </li>
   </ul>
 
   <div class="tab-content">
-    <div class="tab-pane" [class.active]="activTab === 'formulario'">
+    <div class="tab-pane custom-tab-payment payment-tab" [class.active]="activTab === 'formulario'">
       <form [formGroup]="formBasic" (ngSubmit)="submit()">
         <div class="row">
           <div class="col-md-6 form-group mb-3">
@@ -436,42 +429,47 @@
         </div>
       </form>
     </div>
-    <div class="tab-pane" [class.active]="activTab === 'abonos'">
-      <div class="tab-pane" [class.active]="activTab === 'abonos'">
+    <div class="tab-pane custom-tab-abonos abonos-tab" [class.active]="activTab === 'abonos'">
+      <div class="tab-pane custom-tab-abonos abonos-tab" [class.active]="activTab === 'abonos'">
         <h1 class="text-center">
           Pagos del pedido {{ currentOrder?.order_number }}
         </h1>
         <div>
-          <table class="table table-bordered table-hover">
-            <thead class="bg-gray-300">
-              <tr>
-                <th scope="col">Fecha Pago</th>
-                <th scope="col">Monto Pago</th>
-                <th scope="col">Monto Restante</th>
-                <th scope="col">Total Pedido</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let payment of paymentsForOrder">
-                <td>{{ payment.payment_date | date : "yyyy-MM-dd" }}</td>
-                <td>
-                  {{
-                  payment.total_payment | currency : "" : "symbol" : "1.2-2"
-                  }}
-                </td>
-                <td>
-                  {{
-                  payment.total_remaining | currency : "" : "symbol" : "1.2-2"
-                  }}
-                </td>
-                <td>
-                  {{
-                  totalOrder | currency : "" : "symbol" : "1.2-2"
-                  }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div *ngIf = "paymentsForOrder && paymentsForOrder.length > 0">
+            <table class="table table-bordered table-hover">
+              <thead class="bg-gray-300">
+                <tr>
+                  <th scope="col">Fecha Pago</th>
+                  <th scope="col">Monto Pago</th>
+                  <th scope="col">Monto Restante</th>
+                  <th scope="col">Total Pedido</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payment of paymentsForOrder">
+                  <td>{{ payment.payment_date | date : "yyyy-MM-dd" }}</td>
+                  <td>
+                    {{
+                    payment.total_payment | currency : "" : "symbol" : "1.2-2"
+                    }}
+                  </td>
+                  <td>
+                    {{
+                    payment.total_remaining | currency : "" : "symbol" : "1.2-2"
+                    }}
+                  </td>
+                  <td>
+                    {{
+                    totalOrder | currency : "" : "symbol" : "1.2-2"
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="!paymentsForOrder || paymentsForOrder.length === 0">
+            <h3>No se han realizado pagos para este pedido.</h3>
+          </div>
           <div style="display: flex; align-items: center;" class="justify-content-end">
             <button type="button" class="btn btn btn-danger" (click)="modal.close('cancel')">Cerrar</button>
           </div>
@@ -479,4 +477,4 @@
       </div>
     </div>
   </div>
-</ng-template>
+</ng-template>  

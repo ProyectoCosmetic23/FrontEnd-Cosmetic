@@ -82,7 +82,7 @@ export class EmployeeDetailComponent implements OnInit {
         "",
         [
           Validators.required,
-          Validators.maxLength(12), Validators.minLength(10),
+          Validators.maxLength(10), Validators.minLength(10),
           Validators.pattern("^[0-9]+$"),
         ],
       ],
@@ -159,9 +159,8 @@ export class EmployeeDetailComponent implements OnInit {
 
   validateNameSimbolAndNumber(control: FormControl) {
     const nameValue = control.value;
-    const combinedPattern = /^(?!.*\s{2})[\wáéíóúñÑ´\s]+$/;
-
-
+    const combinedPattern = /^(?!.*\s{2})[a-zA-ZáéíóúÁÉÍÓÚñÑ][a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*[a-zA-ZáéíóúÁÉÍÓÚñÑ]$/;
+  
     return new Promise((resolve) => {
       setTimeout(() => {
         if (combinedPattern.test(nameValue)) {
@@ -177,6 +176,8 @@ export class EmployeeDetailComponent implements OnInit {
       }, 0);
     });
   }
+  
+
 
   
   public checkEmailAvailability(): void {
@@ -326,12 +327,12 @@ export class EmployeeDetailComponent implements OnInit {
       setTimeout(() => {
         this.loading = false;
         if (this.viewMode === "new") {
-          this.toastr.success("Empleado Registrado con éxito.", "Éxito", {
+          this.toastr.success("Empleado registrado con éxito.", "Éxito", {
             progressBar: true,
             timeOut: 3000,
           });
         } else if (this.viewMode === "edit") {
-          this.toastr.success("Empleado Modificado con éxito.", "Éxito", {
+          this.toastr.success("Empleado modificado con éxito.", "Éxito", {
             progressBar: true,
             timeOut: 3000,
           });

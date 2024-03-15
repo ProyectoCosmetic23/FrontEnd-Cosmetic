@@ -187,7 +187,10 @@ export class OrdersListComponent implements OnInit {
 
               // Si encontramos un cliente coincidente, asignamos el nombre al pedido
               if (matchingClient) {
-                order.name_client = matchingClient.name_client + ' ' + matchingClient.last_name_client;
+                order.name_client =
+                  matchingClient.name_client +
+                  " " +
+                  matchingClient.last_name_client;
               }
             });
 
@@ -218,22 +221,32 @@ export class OrdersListComponent implements OnInit {
     );
   }
 
-  searchOrders($event) {
-    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+  searchOrders(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value
+      .trim()
+      .toLowerCase();
 
-    if (value.trim() !== "") {
-      this.listOrders = this.listOrders.filter((order) =>
+    if (searchTerm !== "") {
+      this.listOrders = this.listOrdersOriginal.filter((order) =>
         Object.values(order).some(
           (field) =>
             field !== null &&
             field !== undefined &&
-            field.toString().toLowerCase().includes(value)
+            this.normalizeString(field.toString()).includes(
+              this.normalizeString(searchTerm)
+            )
         )
       );
     } else {
-      // Si el valor de búsqueda está vacío, restaura la lista completa
       this.listOrders = this.listOrdersOriginal;
     }
+  }
+
+  normalizeString(str: string): string {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
   }
 
   getClients() {
@@ -247,7 +260,7 @@ export class OrdersListComponent implements OnInit {
               full_name: `${client.name_client} ${client.last_name_client}`,
             };
           });
-        console.log(this.listClients);
+        // console.log(this.listClients);
       },
       (error) => {
         console.error("Error al obtener Clientes:", error);
@@ -401,9 +414,9 @@ export class OrdersListComponent implements OnInit {
 
     // Verifica si total_payment es mayor que total_remaining
     if (totalPayment > totalRemaining) {
-      console.log(
-        "Error: El total_payment no puede ser mayor que total_remaining"
-      );
+      // console.log(
+      //   "Error: El total_payment no puede ser mayor que total_remaining"
+      // );
 
       return; // Detiene la ejecución de la función si hay un error
     }
@@ -412,7 +425,7 @@ export class OrdersListComponent implements OnInit {
         this.payments = data;
       },
       (error) => {
-        console.error("Error al obtener Clientes:", error);
+        // console.error("Error al obtener Clientes:", error);
       }
     );
   }
@@ -433,7 +446,7 @@ export class OrdersListComponent implements OnInit {
           progressBar: true,
           timeOut: 2000,
         });
-        console.error("Error al crear el pago:", error);
+        // console.error("Error al crear el pago:", error);
       }
     );
   }
@@ -449,7 +462,7 @@ export class OrdersListComponent implements OnInit {
   updateTotalRemaining() {
     const totalOrder = parseFloat(this.formBasic.get("total_order")?.value);
     const id_order = this.formBasic.get("id_order")?.value;
-    const totalPayment = parseFloat(this.formBasic.get("total_payment")?.value);
+    let totalPayment = parseFloat(this.formBasic.get("total_payment")?.value);
 
     // Obtén la ID del cliente desde la propiedad id_client
     const id_client = this.id_client;
@@ -458,7 +471,7 @@ export class OrdersListComponent implements OnInit {
     const paymentsForOrder = this.payments.filter(
       (payment) => payment.id_order === id_order
     );
-    console.log(paymentsForOrder);
+    // console.log(paymentsForOrder);
 
     if (paymentsForOrder.length > 0) {
       // Sumar los total_payment de los pagos
@@ -467,15 +480,15 @@ export class OrdersListComponent implements OnInit {
         0
       );
       this.remaining = totalOrder - totalPayments;
-      console.log(this.remaining);
+      // console.log(this.remaining);
       // Verificar si total_payment es mayor que total_remaining antes de calcular el nuevo total_remaining
       if (totalPayment > totalOrder - totalPayments) {
         this.isNegative = true;
         this.mensaje =
           "El pago no puede ser mayor que el restante del último pago o el total de la venta";
-        console.log(
-          "Error: El total_payment no puede ser mayor que total_remaining"
-        );
+        // console.log(
+        //   "Error: El total_payment no puede ser mayor que total_remaining"
+        // );
         // Detiene la ejecución de la función si hay un error
       } else {
         this.isNegative = false;
@@ -500,9 +513,9 @@ export class OrdersListComponent implements OnInit {
         this.isNegative = true;
         this.mensaje =
           "El pago no puede ser mayor que el restante del último pago o el total de la venta";
-        console.log(
-          "Error: El total_payment no puede ser mayor que el total de la venta"
-        );
+        // console.log(
+        //   "Error: El total_payment no puede ser mayor que el total de la venta"
+        // );
       } else {
         this.isNegative = false;
       }
@@ -595,7 +608,7 @@ export class OrdersListComponent implements OnInit {
           }
         },
         (error) => {
-          console.error("Error al obtener pagos:", error);
+          // console.error("Error al obtener pagos:", error);
           // Puedes manejar el error según tus necesidades
         }
       );
@@ -611,7 +624,7 @@ export class OrdersListComponent implements OnInit {
       // Resetea el valor de modalPayment a false
       this.modalPayment = false;
     } else {
-      console.error("modalRef no está definido al intentar cerrar el modal");
+      // console.error("modalRef no está definido al intentar cerrar el modal");
     }
   }
 }

@@ -29,16 +29,16 @@
             </div>
             
 
-            <div ngbDropdown [placement]="'bottom-right'" class="user col align-self-end">
+            <div ngbDropdown [placement]="'bottom-right'" class="user col align-self-end" style="cursor: pointer;">
                 <img src="./assets/images/faces/1.jpg" id="userDropdown" ngbDropdownToggle alt="">
-
+            
                 <div ngbDropdownMenu aria-labelledby="userDropdown">
-
-                    <button class="dropdown-item" (click)="onLogout(content)"><i class="i-Logout"></i>Cerrar
-                        Sesión</button>
-
+            
+                    <button class="dropdown-item" (click)="onLogout(content)"><i class="i-Logout"></i>Cerrar Sesión</button>
+            
                 </div>
             </div>
+            
 
         </div>
         <ng-template #content let-modal>

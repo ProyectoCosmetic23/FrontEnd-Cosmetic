@@ -10,7 +10,7 @@ export class UsersService {
   getEmployeeById(id: number) {
       throw new Error("Method not implemented.");
   }
-  url = environment.url + "/api/Users";
+  url = environment.url + "/api/users";
   url2 = environment.url + "/api/roles";
   url3 = environment.url + "/api/employees";
 
@@ -50,8 +50,12 @@ export class UsersService {
     return this.http.get<any>(`${this.url}/${id}`);
   }
 
-  userChangeStatus(id: any): Observable<any> {
-    return this.http.put<boolean>(`${this.url}/state/${id}`, {});
+  userChangeStatus(id: any, reason?: string): Observable<any> {
+     // Agregamos la razón al cuerpo de la solicitud
+     
+     const body = reason ? { reason_anulate: reason } : {};
+    return this.http.put<boolean>(`${this.url}/state/${id}`,body, {});
+    
   }
 
   getAllRoles(): Observable<any> {

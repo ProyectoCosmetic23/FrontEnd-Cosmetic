@@ -47,7 +47,6 @@ export class CategoryDetailComponent implements OnInit {
   ngOnInit() {
     this._authService.validateUserPermissions("Categorías de Productos");
     this.id = this.route.snapshot.params["id_category"];
-    console.log(this.id);
     this.isNew = !this.id;
     this.setViewMode();
     this.initializeForm(Number(this.id));
@@ -64,7 +63,7 @@ export class CategoryDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(80),
-          Validators.pattern("^[a-zA-ZáéíóúñÑ ]+$"),
+          Validators.pattern("^[a-zA-ZáéíóúñÑ]+(?:[a-zA-ZáéíóúñÑ ]*[a-zA-ZáéíóúñÑ])?$"),
           Validators.minLength(3),
         ],
         nameValidators,

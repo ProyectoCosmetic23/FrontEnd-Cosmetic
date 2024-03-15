@@ -14,7 +14,6 @@ const adminRoutes: Routes = [
         (m) => m.DashboardModule
       ),
   },
-
   {
     path: "proveedores",
     canActivate: [AuthGuard],
@@ -129,7 +128,7 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: "dashboard/v1",
+    redirectTo: "",
   },
 ];
 
