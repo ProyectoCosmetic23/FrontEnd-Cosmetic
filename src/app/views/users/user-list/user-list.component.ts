@@ -178,7 +178,7 @@ export class UserListComponent implements OnInit {
     if (!this.isFirstModalOpen) {
       this.isFirstModalOpen = true;
 
-      const modalRef = this.modalService.open(this.deleteConfirmModal, {centered: true,backdrop: 'static', keyboard: false}
+      const modalRef = this.modalService.open(this.deleteConfirmModal, { centered: true, backdrop: 'static', keyboard: false }
       );
 
       modalRef.result.then(
@@ -232,14 +232,14 @@ export class UserListComponent implements OnInit {
       });
     }
   }
-  
+
 
   confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
     const reasonAnulate = String(this.reasonAnulate);
-
     if (changeUser) {
       this._userService.userChangeStatus(idUser, reasonAnulate).subscribe(
         (userData) => {
+          console.log(userData);
           if (userData.msg.includes("éxito")) {
             if (changeEmployee) {
               const idEmployee = this.listUsers.find(user => user.id_user === idUser).id_employee;
@@ -262,8 +262,10 @@ export class UserListComponent implements OnInit {
         }
       );
     }
-  }  changeEmployeeStatus(idUser: number) {
-    this._employeeService.employeeChangeStatus(idUser).subscribe(
+  }
+
+  changeEmployeeStatus(idEmployee: number) {
+    this._employeeService.employeeChangeStatus(idEmployee).subscribe(
       (employeeData) => {
         this.toastr.success(
           "Cambio de estado del empleado realizado con éxito.",
