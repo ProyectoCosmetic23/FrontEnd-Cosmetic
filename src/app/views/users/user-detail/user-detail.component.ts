@@ -117,7 +117,7 @@ export class UserDetailComponent implements OnInit {
       state_user: [],
       reason_anulate: [],
       creation_date_user: [],
-      password: ["", [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
+      password: ["", [Validators.required, Validators.minLength(6), Validators.maxLength(10)]],
       name_employee: [""],
       name_role: [""],
       id_card_employee: [
