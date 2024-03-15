@@ -127,22 +127,30 @@ export class EmployeeListComponent implements OnInit {
   }
 
   searchEmployee($event) {
-    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+    const normalizeString = (str: string) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
   
-    if (value !== "") {
+    const value = ($event.target as HTMLInputElement).value.toLowerCase();
+    const normalizedValue = normalizeString(value);
+  
+    if (normalizedValue.trim() !== "") {
       this.filteredEmployees = this.listEmployees.filter(
         (employee) =>
-          employee.name_employee.toLowerCase().includes(value) ||
-          employee.id_card_employee.toLowerCase().includes(value) ||
-          employee.email.toLowerCase().includes(value) ||
-          (employee.state_employee.toLowerCase().slice(0, 3) === value.toLowerCase() || employee.state_employee.toLowerCase() === value.toLowerCase())
+          normalizeString(employee.name_employee.toLowerCase()).includes(normalizedValue) ||
+          employee.id_card_employee.toLowerCase().includes(normalizedValue) ||
+          employee.email.toLowerCase().includes(normalizedValue) ||
+          (normalizeString(employee.state_employee.toLowerCase()).slice(0, 3) === normalizedValue || normalizeString(employee.state_employee.toLowerCase()) === normalizedValue)
       );
     } else {
       this.filteredEmployees = this.listEmployees;
     }
   
     this.loadData();
-}
+  }
+  
+
+
 
 
   

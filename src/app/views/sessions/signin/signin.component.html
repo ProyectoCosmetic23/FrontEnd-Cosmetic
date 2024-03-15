@@ -43,9 +43,13 @@
             </div>
           </div>
 
-          <btn-loading btnClass="btn-primary w-100 mt-3" [loadingText]="loadingText" [loading]="loading" [disabled]="myForm.invalid">
-            Iniciar sesión
-          </btn-loading>
+          <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="myForm.invalid || loading">
+            <span *ngIf="!loading">Iniciar sesión</span>
+            <span *ngIf="loading">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Cargando...
+            </span>
+          </button>
         </form>
 
         <div class="mt-3 text-center">
