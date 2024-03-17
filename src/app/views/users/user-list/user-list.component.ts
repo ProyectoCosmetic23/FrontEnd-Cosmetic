@@ -109,7 +109,7 @@ export class UserListComponent implements OnInit {
 
   getUsers() {
     this.showLoadingScreen = true;
-
+  
     forkJoin({
       roles: this._rolesService.getAllRoles(),
       employees: this._employeeService.getAllEmployees(),
@@ -120,21 +120,27 @@ export class UserListComponent implements OnInit {
         this.employeesList = employees;
         // Obtén el usuario actual
         const currentUser = this._authService.getCurrentUser();
-        // Filtra el usuario actual de la lista
-        users = users.filter(user => user.id_user !== currentUser?.id_user);
-
+        // Verifica si el usuario actual está en la lista de usuarios
+        const currentUserIndex = users.findIndex(user => user.id_user === currentUser?.id_user);
+        if (currentUserIndex !== -1) {
+          // Elimina el usuario actual de la lista
+        
+        }
+  
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
           const employee = this.employeesList.find(
             (emp) => emp.id_employee === user.id_employee
           );
-
+  
           user.name_role = role ? role.name_role : "";
           user.id_card_employee = employee ? employee.id_card_employee : "";
-
+  
+           // Verifica si el usuario es el usuario actual
+          user.isCurrentUser = currentUser && user.id_user === currentUser.id_user;
           this.listUsers.push(user);
         }
-
+  
         this.filteredUsers = [...this.listUsers];
         this.sortListUsers();
         this.showLoadingScreen = false;
@@ -144,6 +150,12 @@ export class UserListComponent implements OnInit {
         this.showLoadingScreen = false;
       }
     );
+  }
+  
+
+  isCurrentUser(user: any): boolean {
+    const currentUser = this._authService.getCurrentUser();
+    return currentUser && user.id_user === currentUser.id_user;
   }
 
   sortListUsers() {

@@ -63,6 +63,7 @@ export class ProductDetailComponent implements OnInit {
   isShowForm: boolean;
   showLoadingScreen: boolean = false;
   // Agrega esta variable al inicio de tu componente
+  filteredProducts: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -87,9 +88,15 @@ export class ProductDetailComponent implements OnInit {
     this.loadCategories();
     this.inicializateForm(Number(this.id));
     
-    // this.toggleEnableFields();
-  }
+    // Inicializar el FormControl para el autocompletado
+    this.productForm = this.formBuilder.group({
+      search: [''],
+      selectedProduct: [null]
+    });
+  
 
+    
+  }
   private inicializateForm(id: number): void {
     this.productForm = this.formBuilder.group({
       id_product: [""],
@@ -101,7 +108,7 @@ export class ProductDetailComponent implements OnInit {
       ],
       quantity: [null, [Validators.required]], // Establece el valor inicial en 0
       max_stock: [null, [Validators.required, Validators.min(1), this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
-      min_stock: [null, [Validators.required, Validators.min(1), this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
+      min_stock: [null, [Validators.required, this.validateNonNegative]], // Establece el valor inicial en 0 y agrega validador requerido y validador de no negativos
       profit: [],
       cost_price: [null, [Validators.required, Validators.min(0)]], // Establece el valor inicial en 0 y agrega validador mínimo
       selling_price: [null, [Validators.required, Validators.min(1)]], // Establece el valor inicial en 0 y agrega validador mínimo
