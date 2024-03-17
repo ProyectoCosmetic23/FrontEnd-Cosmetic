@@ -45,6 +45,8 @@ export class UserDetailComponent implements OnInit {
   id_card_employeeString: any;
   name_employeeString: any;
   name_roleString: any;
+  showPassword: boolean = false;
+
   
 
   constructor(
@@ -98,9 +100,15 @@ export class UserDetailComponent implements OnInit {
       );
     }
   }
+  //Limpiar campo cedula
   clearEmployeeValidation() {
     this.employeeNotFoundMessage = ''; 
    
+  }
+
+  //Activar o desactivar visibilidad en campo contrasena
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
   
 

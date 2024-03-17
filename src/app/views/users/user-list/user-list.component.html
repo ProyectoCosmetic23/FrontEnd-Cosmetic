@@ -161,6 +161,7 @@
                   class="btn btn-info m-1"
                   [routerLink]="['/users/edit', row.id_user]"
                   [disabled]="row.state_user === 'Inactivo'"
+                  
                 >
                   <i class="i-Pen-4"></i>
                 </button>
@@ -168,6 +169,7 @@
                   ngbTooltip="Cambiar Estado"
                   class="switch switch-success me-3"
                   (click)="openFirstModal(row.id_user)"
+                
                 >
                   <input
                     type="checkbox"

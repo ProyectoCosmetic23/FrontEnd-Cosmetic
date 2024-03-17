@@ -44,6 +44,7 @@ export class UserListComponent implements OnInit {
     this.getUsers();
   }
 
+
   handleChange(event: any, row: any) {
     row.state_user = event.target.checked ? "Activo" : "Inactivo";
   }
@@ -118,10 +119,7 @@ export class UserListComponent implements OnInit {
       ({ roles, employees, users }) => {
         this.rolesList = roles;
         this.employeesList = employees;
-        // Obtén el usuario actual
-        const currentUser = this._authService.getCurrentUser();
-        // Filtra el usuario actual de la lista
-        users = users.filter(user => user.id_user !== currentUser?.id_user);
+
 
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
