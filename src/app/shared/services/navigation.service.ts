@@ -109,192 +109,192 @@ export class NavigationService {
   async validateUserModulesPermission() {
     const storedUser = this.getStoredUser();
 
-    var roleResponse
+    var roleResponse;
 
     if (storedUser != null) {
       roleResponse = await this.rolesService
         .getRoleById(storedUser.id_role)
         .toPromise();
-    }
 
-    const purchasesObjIndex = this.defaultMenu.findIndex(
-      (item: IMenuItem) => item.name === "Compras"
-    );
-
-    const salesObjIndex = this.defaultMenu.findIndex(
-      (item: IMenuItem) => item.name === "Ventas"
-    );
-
-    const servicesObjIndex = this.defaultMenu.findIndex(
-      (item: IMenuItem) => item.name === "Servicios"
-    );
-
-    const configObjIndex = this.defaultMenu.findIndex(
-      (item: IMenuItem) => item.name === "Configuraciones"
-    );
-
-    if (roleResponse.modules_role.includes("Proveedores")) {
-      const purchaseModuleIndex = this.defaultMenu[
-        purchasesObjIndex
-      ].sub.findIndex((module) => module.name === "Proveedores");
-      if (purchaseModuleIndex === -1) {
-        this.defaultMenu[purchasesObjIndex].sub.push({
-          icon: "i-Administrator",
-          name: "Proveedores",
-          state: "/proveedores",
-          type: "link",
-        });
-      }
-    }
-
-    if (roleResponse.modules_role.includes("Categorías de Productos")) {
-      const purchaseModuleIndex = this.defaultMenu[
-        purchasesObjIndex
-      ].sub.findIndex((module) => module.name === "Categorías");
-      if (purchaseModuleIndex === -1) {
-        this.defaultMenu[purchasesObjIndex].sub.push({
-          icon: "i-Tag-3",
-          name: "Categorías",
-          state: "/categories",
-          type: "link",
-        });
-      }
-    }
-
-    if (roleResponse.modules_role.includes("Productos")) {
-      const purchaseModuleIndex = this.defaultMenu[
-        purchasesObjIndex
-      ].sub.findIndex((module) => module.name === "Productos");
-      if (purchaseModuleIndex === -1) {
-        this.defaultMenu[purchasesObjIndex].sub.push({
-          icon: "i-File-Clipboard-Text--Image",
-          name: "Productos",
-          state: "/products",
-          type: "link",
-        });
-      }
-    }
-
-    if (roleResponse.modules_role.includes("Compras")) {
-      const purchaseModuleIndex = this.defaultMenu[
-        purchasesObjIndex
-      ].sub.findIndex((module) => module.name === "Compras");
-      if (purchaseModuleIndex === -1) {
-        this.defaultMenu[purchasesObjIndex].sub.push({
-          icon: "i-Full-Cart",
-          name: "Compras",
-          state: "/purchases",
-          type: "link",
-        });
-      }
-    }
-
-    if (roleResponse.modules_role.includes("Pedidos")) {
-      const salesModuleIndex = this.defaultMenu[salesObjIndex].sub.findIndex(
-        (module) => module.name === "Pedidos"
+      const purchasesObjIndex = this.defaultMenu.findIndex(
+        (item: IMenuItem) => item.name === "Compras"
       );
-      if (salesModuleIndex === -1) {
-        this.defaultMenu[salesObjIndex].sub.push({
-          icon: "i-Jeep",
-          name: "Pedidos",
-          state: "/orders",
-          type: "link",
-        });
-      }
-    }
 
-    if (roleResponse.modules_role.includes("Clientes")) {
-      const salesModuleIndex = this.defaultMenu[salesObjIndex].sub.findIndex(
-        (module) => module.name === "Clientes"
+      const salesObjIndex = this.defaultMenu.findIndex(
+        (item: IMenuItem) => item.name === "Ventas"
       );
-      if (salesModuleIndex === -1) {
-        this.defaultMenu[salesObjIndex].sub.push({
-          icon: "i-Business-Mens",
-          name: "Clientes",
-          state: "/clients",
-          type: "link",
-        });
-      }
-    }
 
-    if (roleResponse.modules_role.includes("Empleados")) {
-      const servicesModuleIndex = this.defaultMenu[
-        servicesObjIndex
-      ].sub.findIndex((module) => module.name === "Empleados");
-      if (servicesModuleIndex === -1) {
-        this.defaultMenu[servicesObjIndex].sub.push({
-          icon: "i-Conference",
-          name: "Empleados",
-          state: "/employees",
-          type: "link",
-        });
-      }
-    }
-
-    if (roleResponse.modules_role.includes("Comisiones")) {
-      const servicesModuleIndex = this.defaultMenu[
-        servicesObjIndex
-      ].sub.findIndex((module) => module.name === "Comisiones");
-      if (servicesModuleIndex === -1) {
-        this.defaultMenu[servicesObjIndex].sub.push({
-          icon: "i-Money-2",
-          name: "Comisiones",
-          state: "/comisiones",
-          type: "link",
-        });
-      }
-    }
-
-    if (roleResponse.modules_role.includes("Roles")) {
-      const configModuleIndex = this.defaultMenu[configObjIndex].sub.findIndex(
-        (module) => module.name === "Roles"
+      const servicesObjIndex = this.defaultMenu.findIndex(
+        (item: IMenuItem) => item.name === "Servicios"
       );
-      if (configModuleIndex === -1) {
-        this.defaultMenu[configObjIndex].sub.push({
-          icon: "i-Key",
-          name: "Roles",
-          state: "/roles",
-          type: "link",
-        });
-      }
-    }
 
-    if (roleResponse.modules_role.includes("Usuarios")) {
-      const configModuleIndex = this.defaultMenu[configObjIndex].sub.findIndex(
-        (module) => module.name === "Usuarios"
+      const configObjIndex = this.defaultMenu.findIndex(
+        (item: IMenuItem) => item.name === "Configuraciones"
       );
-      if (configModuleIndex === -1) {
-        this.defaultMenu[configObjIndex].sub.push({
-          icon: "i-Male-21",
-          name: "Usuarios",
-          state: "/users",
-          type: "link",
-        });
+
+      if (roleResponse.modules_role.includes("Proveedores")) {
+        const purchaseModuleIndex = this.defaultMenu[
+          purchasesObjIndex
+        ].sub.findIndex((module) => module.name === "Proveedores");
+        if (purchaseModuleIndex === -1) {
+          this.defaultMenu[purchasesObjIndex].sub.push({
+            icon: "i-Administrator",
+            name: "Proveedores",
+            state: "/proveedores",
+            type: "link",
+          });
+        }
       }
-    }
 
-    if (this.defaultMenu[purchasesObjIndex].sub.length == 0) {
-      this.defaultMenu[purchasesObjIndex].disabled = true;
-    } else {
-      this.defaultMenu[purchasesObjIndex].disabled = false;
-    }
+      if (roleResponse.modules_role.includes("Categorías de Productos")) {
+        const purchaseModuleIndex = this.defaultMenu[
+          purchasesObjIndex
+        ].sub.findIndex((module) => module.name === "Categorías");
+        if (purchaseModuleIndex === -1) {
+          this.defaultMenu[purchasesObjIndex].sub.push({
+            icon: "i-Tag-3",
+            name: "Categorías",
+            state: "/categories",
+            type: "link",
+          });
+        }
+      }
 
-    if (this.defaultMenu[salesObjIndex].sub.length == 0) {
-      this.defaultMenu[salesObjIndex].disabled = true;
-    } else {
-      this.defaultMenu[salesObjIndex].disabled = false;
-    }
+      if (roleResponse.modules_role.includes("Productos")) {
+        const purchaseModuleIndex = this.defaultMenu[
+          purchasesObjIndex
+        ].sub.findIndex((module) => module.name === "Productos");
+        if (purchaseModuleIndex === -1) {
+          this.defaultMenu[purchasesObjIndex].sub.push({
+            icon: "i-File-Clipboard-Text--Image",
+            name: "Productos",
+            state: "/products",
+            type: "link",
+          });
+        }
+      }
 
-    if (this.defaultMenu[servicesObjIndex].sub.length == 0) {
-      this.defaultMenu[servicesObjIndex].disabled = true;
-    } else {
-      this.defaultMenu[servicesObjIndex].disabled = false;
-    }
+      if (roleResponse.modules_role.includes("Compras")) {
+        const purchaseModuleIndex = this.defaultMenu[
+          purchasesObjIndex
+        ].sub.findIndex((module) => module.name === "Compras");
+        if (purchaseModuleIndex === -1) {
+          this.defaultMenu[purchasesObjIndex].sub.push({
+            icon: "i-Full-Cart",
+            name: "Compras",
+            state: "/purchases",
+            type: "link",
+          });
+        }
+      }
 
-    if (this.defaultMenu[configObjIndex].sub.length == 0) {
-      this.defaultMenu[configObjIndex].disabled = true;
-    } else {
-      this.defaultMenu[configObjIndex].disabled = false;
+      if (roleResponse.modules_role.includes("Pedidos")) {
+        const salesModuleIndex = this.defaultMenu[salesObjIndex].sub.findIndex(
+          (module) => module.name === "Pedidos"
+        );
+        if (salesModuleIndex === -1) {
+          this.defaultMenu[salesObjIndex].sub.push({
+            icon: "i-Jeep",
+            name: "Pedidos",
+            state: "/orders",
+            type: "link",
+          });
+        }
+      }
+
+      if (roleResponse.modules_role.includes("Clientes")) {
+        const salesModuleIndex = this.defaultMenu[salesObjIndex].sub.findIndex(
+          (module) => module.name === "Clientes"
+        );
+        if (salesModuleIndex === -1) {
+          this.defaultMenu[salesObjIndex].sub.push({
+            icon: "i-Business-Mens",
+            name: "Clientes",
+            state: "/clients",
+            type: "link",
+          });
+        }
+      }
+
+      if (roleResponse.modules_role.includes("Empleados")) {
+        const servicesModuleIndex = this.defaultMenu[
+          servicesObjIndex
+        ].sub.findIndex((module) => module.name === "Empleados");
+        if (servicesModuleIndex === -1) {
+          this.defaultMenu[servicesObjIndex].sub.push({
+            icon: "i-Conference",
+            name: "Empleados",
+            state: "/employees",
+            type: "link",
+          });
+        }
+      }
+
+      if (roleResponse.modules_role.includes("Comisiones")) {
+        const servicesModuleIndex = this.defaultMenu[
+          servicesObjIndex
+        ].sub.findIndex((module) => module.name === "Comisiones");
+        if (servicesModuleIndex === -1) {
+          this.defaultMenu[servicesObjIndex].sub.push({
+            icon: "i-Money-2",
+            name: "Comisiones",
+            state: "/comisiones",
+            type: "link",
+          });
+        }
+      }
+
+      if (roleResponse.modules_role.includes("Roles")) {
+        const configModuleIndex = this.defaultMenu[
+          configObjIndex
+        ].sub.findIndex((module) => module.name === "Roles");
+        if (configModuleIndex === -1) {
+          this.defaultMenu[configObjIndex].sub.push({
+            icon: "i-Key",
+            name: "Roles",
+            state: "/roles",
+            type: "link",
+          });
+        }
+      }
+
+      if (roleResponse.modules_role.includes("Usuarios")) {
+        const configModuleIndex = this.defaultMenu[
+          configObjIndex
+        ].sub.findIndex((module) => module.name === "Usuarios");
+        if (configModuleIndex === -1) {
+          this.defaultMenu[configObjIndex].sub.push({
+            icon: "i-Male-21",
+            name: "Usuarios",
+            state: "/users",
+            type: "link",
+          });
+        }
+      }
+
+      if (this.defaultMenu[purchasesObjIndex].sub.length == 0) {
+        this.defaultMenu[purchasesObjIndex].disabled = true;
+      } else {
+        this.defaultMenu[purchasesObjIndex].disabled = false;
+      }
+
+      if (this.defaultMenu[salesObjIndex].sub.length == 0) {
+        this.defaultMenu[salesObjIndex].disabled = true;
+      } else {
+        this.defaultMenu[salesObjIndex].disabled = false;
+      }
+
+      if (this.defaultMenu[servicesObjIndex].sub.length == 0) {
+        this.defaultMenu[servicesObjIndex].disabled = true;
+      } else {
+        this.defaultMenu[servicesObjIndex].disabled = false;
+      }
+
+      if (this.defaultMenu[configObjIndex].sub.length == 0) {
+        this.defaultMenu[configObjIndex].disabled = true;
+      } else {
+        this.defaultMenu[configObjIndex].disabled = false;
+      }
     }
   }
 
