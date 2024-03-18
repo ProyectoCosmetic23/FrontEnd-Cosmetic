@@ -44,7 +44,6 @@ export class UserListComponent implements OnInit {
     this.getUsers();
   }
 
-
   handleChange(event: any, row: any) {
     row.state_user = event.target.checked ? "Activo" : "Inactivo";
   }
@@ -110,7 +109,7 @@ export class UserListComponent implements OnInit {
 
   getUsers() {
     this.showLoadingScreen = true;
-
+  
     forkJoin({
       roles: this._rolesService.getAllRoles(),
       employees: this._employeeService.getAllEmployees(),
@@ -119,20 +118,29 @@ export class UserListComponent implements OnInit {
       ({ roles, employees, users }) => {
         this.rolesList = roles;
         this.employeesList = employees;
-
-
+        // Obtén el usuario actual
+        const currentUser = this._authService.getCurrentUser();
+        // Verifica si el usuario actual está en la lista de usuarios
+        const currentUserIndex = users.findIndex(user => user.id_user === currentUser?.id_user);
+        if (currentUserIndex !== -1) {
+          // Elimina el usuario actual de la lista
+        
+        }
+  
         for (let user of users) {
           const role = this.rolesList.find((r) => r.id_role === user.id_role);
           const employee = this.employeesList.find(
             (emp) => emp.id_employee === user.id_employee
           );
-
+  
           user.name_role = role ? role.name_role : "";
           user.id_card_employee = employee ? employee.id_card_employee : "";
-
+  
+           // Verifica si el usuario es el usuario actual
+          user.isCurrentUser = currentUser && user.id_user === currentUser.id_user;
           this.listUsers.push(user);
         }
-
+  
         this.filteredUsers = [...this.listUsers];
         this.sortListUsers();
         this.showLoadingScreen = false;
@@ -142,6 +150,12 @@ export class UserListComponent implements OnInit {
         this.showLoadingScreen = false;
       }
     );
+  }
+  
+
+  isCurrentUser(user: any): boolean {
+    const currentUser = this._authService.getCurrentUser();
+    return currentUser && user.id_user === currentUser.id_user;
   }
 
   sortListUsers() {
@@ -176,7 +190,7 @@ export class UserListComponent implements OnInit {
     if (!this.isFirstModalOpen) {
       this.isFirstModalOpen = true;
 
-      const modalRef = this.modalService.open(this.deleteConfirmModal, { centered: true, backdrop: 'static', keyboard: false }
+      const modalRef = this.modalService.open(this.deleteConfirmModal, {centered: true,backdrop: 'static', keyboard: false}
       );
 
       modalRef.result.then(
@@ -230,14 +244,14 @@ export class UserListComponent implements OnInit {
       });
     }
   }
-
+  
 
   confirmUserStatusChange(idUser: number, changeUser: boolean, changeEmployee: boolean) {
     const reasonAnulate = String(this.reasonAnulate);
+
     if (changeUser) {
       this._userService.userChangeStatus(idUser, reasonAnulate).subscribe(
         (userData) => {
-          console.log(userData);
           if (userData.msg.includes("éxito")) {
             if (changeEmployee) {
               const idEmployee = this.listUsers.find(user => user.id_user === idUser).id_employee;
@@ -260,10 +274,8 @@ export class UserListComponent implements OnInit {
         }
       );
     }
-  }
-
-  changeEmployeeStatus(idEmployee: number) {
-    this._employeeService.employeeChangeStatus(idEmployee).subscribe(
+  }  changeEmployeeStatus(idUser: number) {
+    this._employeeService.employeeChangeStatus(idUser).subscribe(
       (employeeData) => {
         this.toastr.success(
           "Cambio de estado del empleado realizado con éxito.",

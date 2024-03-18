@@ -109,9 +109,13 @@ export class NavigationService {
   async validateUserModulesPermission() {
     const storedUser = this.getStoredUser();
 
-    const roleResponse = await this.rolesService
-      .getRoleById(storedUser.id_role)
-      .toPromise();
+    var roleResponse
+
+    if (storedUser != null) {
+      roleResponse = await this.rolesService
+        .getRoleById(storedUser.id_role)
+        .toPromise();
+    }
 
     const purchasesObjIndex = this.defaultMenu.findIndex(
       (item: IMenuItem) => item.name === "Compras"

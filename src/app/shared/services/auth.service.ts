@@ -221,6 +221,13 @@ export class AuthService {
   }
 
 
+    //Metodo para ocultar el usuario logueado en la lista de usuarios
+    getCurrentUser(): User | null {
+      const storedUser = sessionStorage.getItem(this.userSessionStorageKey);
+      return storedUser ? JSON.parse(storedUser) : null;
+    }
+
+
 
   
 }

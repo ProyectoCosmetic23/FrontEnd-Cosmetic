@@ -161,22 +161,21 @@
                   class="btn btn-info m-1"
                   [routerLink]="['/users/edit', row.id_user]"
                   [disabled]="row.state_user === 'Inactivo'"
-                  
                 >
                   <i class="i-Pen-4"></i>
                 </button>
                 <label
-                  ngbTooltip="Cambiar Estado"
-                  class="switch switch-success me-3"
-                  (click)="openFirstModal(row.id_user)"
-                
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="row.state_user === 'Activo'"
-                    (change)="handleChange($event, row)"
-                  />
-                  <span class="slider"></span>
+                *ngIf="!isCurrentUser(row)"
+                ngbTooltip="Cambiar Estado"
+                class="switch switch-success me-3"
+                (click)="openFirstModal(row.id_user)"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="row.state_user === 'Activo'"
+                  (change)="handleChange($event, row)"
+                />
+                <span class="slider"></span>
                 </label>
               </ng-template>
             </ngx-datatable-column>
