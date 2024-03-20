@@ -216,19 +216,19 @@ export class ComissionsDetailComponent implements OnInit {
   getFilteredEmployees(id_commission: number) {
     const detail = this.listComisionDetail.find(detail => detail.id_commission_detail == id_commission);
 
-    console.log(detail.month_commission);
+    // console.log(detail.month_commission);
     const dateToString = detail.month_commission.slice(0, 7);
-    console.log(dateToString);
+    // console.log(dateToString);
     this._comissionsService.getFilteredEmployees(dateToString).subscribe(
       (data) => {
         this.activeEmployees = data.filter(
           (employee) => employee.state_employee === "Activo"
         );;
-        console.log(this.activeEmployees)
+        // console.log(this.activeEmployees)
       },
       (error) => {
         this.activeEmployees = [];  
-        console.error(error);
+        // console.error(error);
       } 
     )
     this.updateComs();
@@ -286,14 +286,14 @@ export class ComissionsDetailComponent implements OnInit {
     const Iddetail = this.formBasic.get("id_commission_detail")?.value;
     let idEmployee = this.formBasic.get("id_employee")?.value;
     idEmployee = Number(idEmployee);
-    console.log('Iddetail:', Iddetail);
-    console.log('idEmployee:', idEmployee);
+    // console.log('Iddetail:', Iddetail);
+    // console.log('idEmployee:', idEmployee);
     const selectedCommission = this.listComisionDetail.find(
       (commission) => commission.id_commission_detail === parseInt(Iddetail, 10)
     );
     this.month = selectedCommission.month_commission;
-    console.log(this.month);
-    console.log(idEmployee)
+    // console.log(this.month);
+    // console.log(idEmployee)
     this._comissionsService
       .getSalesByEmployeeAndMonth(idEmployee, this.month)
       .subscribe(
@@ -306,7 +306,7 @@ export class ComissionsDetailComponent implements OnInit {
           for (let sale of this.sales) {
             // Convertir el total_sale a número antes de sumarlo
             this.totalSale += parseFloat(sale.total_order);
-            console.log(sale)
+            // console.log(sale)
           }
 
           //Calcular el total
