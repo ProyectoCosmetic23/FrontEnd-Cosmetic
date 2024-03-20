@@ -29,6 +29,7 @@ export class ComissionsDetailComponent implements OnInit {
   formBasic: FormGroup;
   sales: any[];
   totalComs: number;
+  isReadOnly: boolean = true;
   Commission: any;
   Sales: any;
   month: string;
@@ -170,7 +171,7 @@ export class ComissionsDetailComponent implements OnInit {
         // console.log('Lista de empleados activos:', this.activeEmployees);
       },
       (error) => {
-        // console.error('Error al obtener la lista de empleados:', error);
+        // console.error('Error al obtener la lista de  pempleados:', error);
       }
     );
   }
