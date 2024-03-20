@@ -1,6 +1,6 @@
 <div class="breadcrumb">
-    <h1 *ngIf="viewMode === 'new'">Registrar Comision</h1>
-    <h1 *ngIf="viewMode === 'print'">Ver Detalle de la Comision</h1>
+    <h1 *ngIf="viewMode === 'new'">Registrar Comisión</h1>
+    <h1 *ngIf="viewMode === 'print'">Ver Detalle de la Comisión</h1>
 </div>
 
 <div *ngIf="
@@ -19,24 +19,6 @@
     
                     <form [formGroup]="formBasic" (ngSubmit)="submit()">
                         <div class="row">
-                            <div class="col-md-6 form-group mb-3" (change) = "textChange()">
-                                <label for="id_employee">Empleado<span *ngIf="viewMode === 'new'"
-                                        class="text-danger">*</span></label>
-                                <div *ngIf="viewMode === 'new'">
-                                    <select class="form-control" id="id_employee" formControlName="id_employee"
-                                        (change)="updateComs()">
-                                        
-                                        <option *ngFor="let employee of activeEmployees" [value]="employee.id_employee">
-                                            {{ employee.name_employee }}</option>
-                                    </select>
-                                </div>
-                                <div *ngIf = "employeeChosen === false" ><span *ngIf="viewMode === 'new'"
-                                    class="text-danger">Elija al empleado</span> </div>
-                                <div *ngIf="viewMode === 'print'">
-                                    <input type="text" class="form-control" [readonly]="true"
-                                        [ngClass]="{'placeholder-black': viewMode === 'print'}" [value]="selectedEmployee">
-                                </div>
-                            </div>
                             <div class="col-md-6 form-group mb-3" (change) = "textComChange()">
                                 <label for="id_comission_detail">Mes comisión<span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
@@ -57,6 +39,27 @@
                                         [value]="selectedMonth | date: 'yyyy-MM'">
                                 </div>
                             </div>
+                            <div class="col-md-6 form-group mb-3" (change)="textChange()">
+                                <label for="id_employee">Empleado<span *ngIf="viewMode === 'new'"
+                                        class="text-danger">*</span></label>
+                                <div *ngIf="viewMode === 'new'">
+                                    <select class="form-control" id="id_employee" formControlName="id_employee"
+                                        (change)="updateComs()">
+                                        <option *ngFor="let employee of activeEmployees" [value]="employee.id_employee" [disabled]="isReadOnly">
+                                            {{ employee.name_employee }}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="employeeChosen === false">
+                                    <span *ngIf="viewMode === 'new'" class="text-danger">Elija al empleado</span>
+                                </div>
+                                <div *ngIf="viewMode === 'print'">
+                                    <input type="text" class="form-control" [readonly]="true"
+                                        [ngClass]="{'placeholder-black': viewMode === 'print'}"
+                                        [value]="selectedEmployee">
+                                </div>
+                            </div>
+
+                            
                             <div class="col-md-6 form-group mb-3">
                                 <label for="total_commission">Total comisión</label>
                                 <input type="text" class="form-control" id="total_commission"
