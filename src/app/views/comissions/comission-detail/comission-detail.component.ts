@@ -209,6 +209,7 @@ export class ComissionsDetailComponent implements OnInit {
     }
     else if(employee === null || employee === undefined || employee === ""){
       // console.log("Falta el empleado")
+      this.isReadOnly = false
     }
     else{
       this.new_comission.id_employee = employee
