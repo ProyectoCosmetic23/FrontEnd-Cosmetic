@@ -84,12 +84,12 @@
                 </ng-template>
               </ngx-datatable-column>
 
-              <ngx-datatable-column name="cost_price" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
+              <ngx-datatable-column name="selling_price" [resizeable]="false" [canAutoResize]="true" [minWidth]="100">
                 <ng-template ngx-datatable-header-template>
-                  <p style="font-size: 15px">Precio de costo</p>
+                  <p style="font-size: 15px">Precio de Venta</p>
                 </ng-template>
                 <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-                  {{ row.cost_price | currency : "" : "symbol" : "1.0-0" }}
+                  {{ row.selling_price | currency : "" : "symbol" : "1.0-0" }}
                 </ng-template>
               </ngx-datatable-column>
 
