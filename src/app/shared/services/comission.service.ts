@@ -29,6 +29,12 @@ export class ComissionsService {
     return this.http.get<any[]>(this.url3, { headers });
   }
 
+  getFilteredEmployees(dateToString: string): Observable<any[]> {
+    const headers = this.token ? new HttpHeaders().set('x-token', this.token) : undefined;
+    // console.log("Los headers", headers);
+    return this.http.get<any[]>(`${this.baseUrl}/filterEmployee/${dateToString}`, { headers });
+  }
+
   getAllSales(): Observable<any> {
     return this.http.get(this.url5);
   }
