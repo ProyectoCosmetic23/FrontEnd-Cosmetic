@@ -19,26 +19,6 @@
     
                     <form [formGroup]="formBasic" (ngSubmit)="submit()">
                         <div class="row">
-                            <div class="col-md-6 form-group mb-3" (change) = "textComChange()">
-                                <label for="id_comission_detail">Mes comisión<span *ngIf="viewMode === 'new'"
-                                        class="text-danger">*</span></label>
-                                <div *ngIf="viewMode === 'new'">
-                                    <select class="form-control" id="id_comission_detail"
-                                        formControlName="id_commission_detail" (change)="updateComs()">
-                                        <option value="1.5">Elija el mes de la comisión</option>
-                                        <option *ngFor="let detail of listComisionDetail"
-                                            [value]="detail.id_commission_detail">
-                                            {{ detail.month_commission | date: 'yyyy-MM' }}</option>
-                                    </select>
-                                </div>
-                                <div *ngIf = "commissionChosen === false " ><span *ngIf="viewMode === 'new'"
-                                    class="text-danger">Elija el mes de la comisión</span> </div>
-                                <div *ngIf="viewMode === 'print'">
-                                    <input type="text" class="form-control" [readonly]="true"
-                                        [ngClass]="{'placeholder-black': viewMode === 'print'}"
-                                        [value]="selectedMonth | date: 'yyyy-MM'">
-                                </div>
-                            </div>
                             <div class="col-md-6 form-group mb-3" (change)="textChange()">
                                 <label for="id_employee">Empleado<span *ngIf="viewMode === 'new'"
                                         class="text-danger">*</span></label>
@@ -59,7 +39,26 @@
                                 </div>
                             </div>
 
-                            
+                            <div class="col-md-6 form-group mb-3" (change) = "textComChange()">
+                                <label for="id_comission_detail">Mes comisión<span *ngIf="viewMode === 'new'"
+                                        class="text-danger">*</span></label>
+                                <div *ngIf="viewMode === 'new'">
+                                    <select class="form-control" id="id_comission_detail"
+                                        formControlName="id_commission_detail" (change)="updateComs()">
+                                        <option value="1.5">Elija el mes de la comisión</option>
+                                        <option *ngFor="let detail of listComisionDetail"
+                                            [value]="detail.id_commission_detail">
+                                            {{ detail.month_commission | date: 'yyyy-MM' }}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf = "commissionChosen === false " ><span *ngIf="viewMode === 'new'"
+                                    class="text-danger">Elija el mes de la comisión</span> </div>
+                                <div *ngIf="viewMode === 'print'">
+                                    <input type="text" class="form-control" [readonly]="true"
+                                        [ngClass]="{'placeholder-black': viewMode === 'print'}"
+                                        [value]="selectedMonth | date: 'yyyy-MM'">
+                                </div>
+                            </div>
                             <div class="col-md-6 form-group mb-3">
                                 <label for="total_commission">Total comisión</label>
                                 <input type="text" class="form-control" id="total_commission"
