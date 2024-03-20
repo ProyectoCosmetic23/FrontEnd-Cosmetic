@@ -45,6 +45,7 @@ export class UserDetailComponent implements OnInit {
   id_card_employeeString: any;
   name_employeeString: any;
   name_roleString: any;
+  showPassword: boolean = false;
   
 
   constructor(
@@ -117,7 +118,7 @@ export class UserDetailComponent implements OnInit {
       state_user: [],
       reason_anulate: [],
       creation_date_user: [],
-      password: ["", [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
+      password: ["", [Validators.required, Validators.minLength(6), Validators.maxLength(10)]],
       name_employee: [""],
       name_role: [""],
       id_card_employee: [
@@ -351,6 +352,9 @@ export class UserDetailComponent implements OnInit {
     } else {
       return Promise.resolve({ invalidDomain: true }); // No es un correo válido en el dominio permitido
     }
+  }
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   saveUserChanges(id: number, updatedData: any) {
